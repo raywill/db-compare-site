@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>档案：Amazon Aurora - DB 选型参考</title>
+<link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">&#9672;</span> DB <span data-zh="选型参考" data-en="Compare">选型参考</span></a>
+    <nav class="mainnav">
+<a href="index.html" class="active" data-zh="首页" data-en="Home">首页</a>
+<a href="compare.html" class="" data-zh="维度对比" data-en="Compare">维度对比</a>
+<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
+<a href="advisor.html" class="" data-zh="AI选型" data-en="AI Selection">AI选型</a>
+    </nav>
+    <div class="cmp-tray">
+      <button id="cmp-tray-btn" type="button" class="tray-btn" aria-expanded="false" aria-haspopup="true"><span data-zh="对比" data-en="Compare">对比</span> <b class="tray-count"><i id="cmp-count">0</i>/4</b></button>
+      <div id="cmp-panel" class="tray-panel" hidden>
+        <div class="tray-sec"><span data-zh="已选" data-en="Selected">已选</span></div>
+        <div id="cmp-selected" class="tray-selected"></div>
+        <div class="tray-sec"><span data-zh="全部产品（最多选 4 款）" data-en="All products (up to 4)">全部产品（最多选 4 款）</span></div>
+        <div id="cmp-list" class="tray-list"></div>
+        <div class="tray-actions"><button id="cmp-clear" type="button" class="tray-clear"><span data-zh="清空选择" data-en="Clear selection">清空选择</span></button></div>
+      </div>
+    </div>
+    <button id="lang-toggle" class="lang-btn" type="button" aria-label="switch language">EN</button>
+  </div>
+</header>
+<main class="page">
+<div class="profile-hero">
+  <a class="back" href="index.html"><span data-zh="← 返回首页" data-en="← Back to home">← 返回首页</span></a>
+  <h1>档案：Amazon Aurora</h1>
+  <div class="meta-row"><span class="cat cat-oltp" data-zh="关系型 OLTP" data-en="Relational OLTP">关系型 OLTP</span> <span class="tag">#云原生</span> <span class="tag">#存算分离</span> <span class="tag">#全托管</span> <span class="tag">#MySQL兼容</span> <span class="tag">#PG兼容</span> <span class="tag">#Serverless</span> <span class="tag">#GlobalDatabase</span> <span class="tag">#AWS锁定</span></div>
+  <p class="oneliner"><div class="lang-block lang-zh">
+<p>AWS 的云原生关系型数据库：计算与存储分离、存储层 6 副本 quorum、MySQL / PostgreSQL 双协议兼容的**全托管**数据库，&quot;不想运维数据库&quot;的团队在 AWS 上的默认答案。</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<p>AWS&#x27;s cloud-native relational database: compute-storage separation, a 6-copy quorum storage layer, fully managed with MySQL / PostgreSQL dual-protocol compatibility — the default answer for teams on AWS that &quot;don&#x27;t want to operate a database&quot;.</p>
+</div></p>
+  <div class="ai-dive-row" data-product="档案：Amazon Aurora">
+    <span class="ai-dive-label" data-zh="用 AI 深挖这款：" data-en="Deep-dive with AI:">用 AI 深挖这款：</span>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('chatgpt', this)">ChatGPT <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('grok', this)">Grok <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('claude', this)">Claude <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn addcmp-btn" data-addcmp="aurora"><span class="addcmp-label">＋ 对比</span></button>
+  </div>
+  <div class="legend"><span class="legend-label" data-zh="证据等级：" data-en="Evidence levels: ">证据等级：</span><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></div>
+</div>
+<section class="doc-section">
+<h2><span data-zh="基本信息" data-en="Basics">基本信息</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>项</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td>厂商</td><td>Amazon Web Services（美国）</td></tr>
+<tr><td>起源</td><td>2014 年 re:Invent 发布，2015 年 GA；SIGMOD 2017 发表架构论文</td></tr>
+<tr><td>许可证</td><td>闭源商业，无开源版本</td></tr>
+<tr><td>托管服务</td><td>仅 AWS（这是它唯一的存在形态，无自建版）</td></tr>
+<tr><td>主类型</td><td>关系型（存算分离云原生架构）</td></tr>
+<tr><td>兼具类型</td><td>Aurora PostgreSQL Limitless（分片水平扩展，PG only）；向量检索（pgvector）</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Item</th><th>Content</th></tr></thead>
+<tbody>
+<tr><td>Vendor</td><td>Amazon Web Services (USA)</td></tr>
+<tr><td>Origins</td><td>Announced at re:Invent 2014, GA 2015; architecture paper published at SIGMOD 2017</td></tr>
+<tr><td>License</td><td>Closed-source commercial, no open-source edition</td></tr>
+<tr><td>Managed service</td><td>AWS only (its only form of existence, no self-hosted edition)</td></tr>
+<tr><td>Primary type</td><td>Relational (disaggregated cloud-native architecture)</td></tr>
+<tr><td>Also</td><td>Aurora PostgreSQL Limitless (sharded horizontal scale-out, PG only); vector search (pgvector)</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section"><h2><span data-zh="硬维度（14 项）" data-en="Hard dimensions (14)">硬维度（14 项）</span></h2>
+<div class="lang-block lang-zh">
+<div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。集群级 KMS AES-256，覆盖存储卷、自动备份、快照、副本；<strong>创建时开启，创建后不可修改</strong>（immutable，要加密旧库只能快照→加密复制→恢复→切换）。注意两点反直觉：MySQL 的 InnoDB 表空间级 TDE（<code>ENCRYPTION=&#x27;Y&#x27;</code>）<strong>不支持</strong>（查证为无），keyring 插件全系不支持——加密是卷级的，不是表级的。新集群默认开启加密为社区说法，<span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。TLS/SSL；Aurora MySQL 8.4 新集群默认强制 TLS（仅 1.2/1.3）；MySQL 侧 <code>require_secure_transport</code>、PG 侧 <code>rds.force_ssl</code>。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> 审计 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。Database Activity Streams（近实时活动流，KMS 加密，sync/async 两种模式，async 高负载可能丢日志）；Aurora MySQL 支持 MariaDB Audit Plugin（高级审计）；PG 支持 pgaudit 扩展；日志可导出 CloudWatch。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> 认证与权限 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。密码、IAM 数据库认证（token 15 分钟有效期）、Secrets Manager 集成、PG 支持 Kerberos/AD。上限是 <code>rds_superuser</code>，<strong>无 SUPER 权限</strong>：不能改 <code>pg_hba.conf</code>、不能 <code>ALTER SYSTEM</code>、不能建 C 语言函数、不能装非白名单扩展。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> 备份恢复 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。连续增量备份到 S3（对性能无影响）+ PITR 任意秒级恢复（保留期 1~35 天，恢复=建新集群）；手动快照；跨 Region 快照复制；克隆（copy-on-write）；Backtrack 仅 Aurora MySQL（建集群时启用，72 小时窗口）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> 大版本升级 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（官方文档 + 社区实测）。三条路：原地升级（要停机窗口）、蓝绿部署（厂商口径切换 &lt;1 分钟，2026-04 起支持 RDS Proxy 联动消 DNS 延迟）、快照恢复式升级。<strong>不可原地降级</strong>，in-place 升级无官方回滚（只能靠升级前快照恢复=丢数据，或蓝绿回切）；参数组族必须与目标版本匹配，否则升级失败或静默丢自定义参数；Aurora MySQL 8.4 新增自动升级 precheck。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> 可观测性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。CloudWatch（Database Insights）、Performance Insights（7 天保留免费，超期按 vCPU 收费）、Enhanced Monitoring（走 CloudWatch Logs 计费）、慢查询日志（要手动在参数组开启并导出，产生日志费用）、DevOps Guru for RDS。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> 连接模型 <span class="verdict v-neutral">每连接一个后端进程</span></h3><div class="dim-body"><p>每连接一个后端进程（MySQL 线程 / PG 进程），连接风暴靠 <strong>RDS Proxy</strong> 解<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>：托管连接池、IAM 认证、Secrets Manager、failover 感知（不靠 DNS）。reader endpoint 是 DNS 轮询（TTL 5 秒），<strong>不是真负载均衡</strong>——长连接池不回收会钉死在个别 reader 上。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> 事务与隔离级别 <span class="verdict v-neutral">继承引擎<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></span></h3><div class="dim-body"><p><strong>继承引擎</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。MySQL：InnoDB，默认 REPEATABLE READ；PG：默认 READ COMMITTED，支持 SERIALIZABLE。写转发下 MySQL 仅支持 REPEATABLE READ；Limitless 跨分片事务有限制；XA 支持（PG 需 <code>max_prepared_transactions &gt; 0</code>）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> 复制与一致性 <span class="verdict v-yes">有，架构核心</span></h3><div class="dim-body"><p><strong>有，架构核心</strong>（官方论文 + 官方文档）。存储层 6 副本跨 3 AZ，写 quorum 4/6、读 quorum 3/6；计算层只向存储层发 redo 日志（&quot;log is the database&quot;）；reader 共享同一存储卷，复制延迟为毫秒级<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>；Global Database 跨 Region 存储层异步物理复制（厂商口径典型 &lt;1 秒）；MySQL 另有 binlog / Enhanced Binlog 逻辑复制选项。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> 扩展方式 <span class="verdict v-neutral">纵向</span></h3><div class="dim-body"><p>纵向（实例规格；Serverless v2 0~256 ACU 自动）+ 横向读扩展（最多 15 副本）+ 存储自动扩容（10GB→256 TiB，<strong>只增不减</strong>）。写扩展靠 Aurora PostgreSQL Limitless（分片架构，router/shard 两层）。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> 兼容性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（官方文档 + 社区共识）。MySQL 协议（3.x ~ MySQL 8.0.45；8.4 ~ 社区 8.4.7 LTS 且版本号对齐）、PG 协议（18.4 等）。JDBC / ORM / DMS / Debezium 等生态工具通用。PG 扩展为白名单制（<code>SHOW rds.extensions</code>），冷门扩展无自助安装通道。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> 许可证与商业模式 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（官方文档，闭源商业 + 厂商口径计费模型）。闭源商业，按量付费：计算（实例小时 / ACU-秒）+ 存储（GB-月）+ I/O（Standard 版按百万次）+ 备份/传输；Database Savings Plans / RI 可打折；无开源版。<strong>AWS 锁定是最大的商业现实</strong>：无他云、无自建，迁出=逻辑迁移。只写计费模型，不写绝对标价。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> 中文资料丰富度 <span class="verdict v-yes">有中文版但部分页面翻译滞后</span></h3><div class="dim-body"><p><strong>中等</strong><span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。官方文档有中文版但部分页面翻译滞后；中文社区实践帖（CSDN/博客）不少，但深度调优、故障排查内容多为英文（re:Post、AWS Blog）。</p></div></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. Cluster-level KMS AES-256, covering storage volumes, automated backups, snapshots, replicas; <strong>enabled at creation time and immutable afterward</strong> (to encrypt an existing cluster you must snapshot → copy with encryption → restore → cut over). Two counter-intuitive notes: MySQL InnoDB tablespace-level TDE (<code>ENCRYPTION=&#x27;Y&#x27;</code>) is <strong>unsupported</strong> (verified absent), and keyring plugins are unsupported across the board — encryption is at the volume level, not the table level. &quot;New clusters have encryption on by default&quot; is a community claim, <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / transport encryption <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. TLS/SSL; Aurora MySQL 8.4 new clusters enforce TLS by default (1.2/1.3 only); <code>require_secure_transport</code> on the MySQL side, <code>rds.force_ssl</code> on the PG side.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> Auditing <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. Database Activity Streams (near-real-time activity stream, KMS-encrypted, sync/async modes; async mode can drop logs under heavy load); Aurora MySQL supports the MariaDB Audit Plugin (advanced auditing); PG supports the pgaudit extension; logs can be exported to CloudWatch.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> Authentication &amp; authorization <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. Passwords, IAM database authentication (tokens valid for 15 minutes), Secrets Manager integration, PG supports Kerberos/AD. The ceiling is <code>rds_superuser</code> — <strong>no SUPER privilege</strong>: you cannot edit <code>pg_hba.conf</code>, cannot <code>ALTER SYSTEM</code>, cannot create C-language functions, cannot install non-whitelisted extensions.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> Backup &amp; recovery <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. Continuous incremental backup to S3 (zero performance impact) + PITR recovery to any second (retention 1–35 days, recovery = create a new cluster); manual snapshots; cross-Region snapshot copy; clone (copy-on-write); Backtrack only on Aurora MySQL (enabled at cluster creation, 72-hour window).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> Major-version upgrades <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (official docs + community-tested). Three paths: in-place upgrade (requires a maintenance window), blue/green deployment (vendor claim: switchover &lt;1 minute; RDS Proxy integration to eliminate DNS lag since 2026-04), snapshot-restore upgrade. <strong>No in-place downgrade</strong>; in-place upgrades have no official rollback (only restoring from a pre-upgrade snapshot, which means data loss, or blue/green cutback); the parameter group family must match the target version or the upgrade fails or silently drops custom parameters; Aurora MySQL 8.4 added an automated upgrade precheck.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> Observability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. CloudWatch (Database Insights), Performance Insights (7-day retention free, beyond that billed per vCPU), Enhanced Monitoring (billed via CloudWatch Logs), slow query logs (must be manually enabled in the parameter group and exported, incurring log charges), DevOps Guru for RDS.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> Connection model <span class="verdict v-neutral">One backend proces</span></h3><div class="dim-body"><p>One backend process per connection (MySQL thread / PG process); connection storms are handled by <strong>RDS Proxy</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>: managed connection pooling, IAM authentication, Secrets Manager, failover-aware (not DNS-based). The reader endpoint is DNS round-robin (TTL 5 seconds), <strong>not true load balancing</strong> — connection pools that never recycle connections will pin to individual readers.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> Transactions &amp; isolation levels <span class="verdict v-neutral">Inherited from the</span></h3><div class="dim-body"><p><strong>Inherited from the engine</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. MySQL: InnoDB, default REPEATABLE READ; PG: default READ COMMITTED, SERIALIZABLE supported. Under write forwarding, MySQL supports only REPEATABLE READ; Limitless cross-shard transactions have restrictions; XA supported (PG requires <code>max_prepared_transactions &gt; 0</code>).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> Replication &amp; consistency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported, architectural core</strong> (official paper + official docs). Storage layer: 6 copies across 3 AZs, write quorum 4/6, read quorum 3/6; the compute layer only sends redo logs to the storage layer (&quot;log is the database&quot;); readers share the same storage volume, replication lag in milliseconds <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>; Global Database: cross-Region asynchronous physical replication at the storage layer (vendor claim: typically &lt;1 second); MySQL additionally offers binlog / Enhanced Binlog logical replication options.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> Scaling <span class="verdict v-neutral">Vertical</span></h3><div class="dim-body"><p>Vertical (instance classes; Serverless v2 0–256 ACU automatic) + horizontal read scale-out (up to 15 replicas) + automatic storage expansion (10GB → 256 TiB, <strong>grow-only</strong>). Write scale-out via Aurora PostgreSQL Limitless (sharded architecture, router/shard two-tier). <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> Compatibility <span class="verdict v-neutral">MySQL protocol</span></h3><div class="dim-body"><p>MySQL protocol (3.x ~ MySQL 8.0.45; 8.4 ~ community 8.4.7 LTS with aligned version numbers), PG protocol (18.4, etc.). JDBC / ORM / DMS / Debezium ecosystem tools all work. PG extensions are whitelist-based (<code>SHOW rds.extensions</code>); obscure extensions have no self-service installation channel.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> License &amp; business model <span class="verdict v-neutral">Closed-source comm</span></h3><div class="dim-body"><p>Closed-source commercial, pay-as-you-go: compute (instance-hours / ACU-seconds) + storage (GB-month) + I/O (Standard edition billed per million I/Os) + backup/transfer; Database Savings Plans / RIs can discount; no open-source edition. <strong>AWS lock-in is the biggest commercial reality</strong>: no other cloud, no self-hosted edition, leaving = logical migration.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> Chinese-language resources <span class="verdict v-neutral">Moderate</span></h3><div class="dim-body"><p><strong>Moderate</strong> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>. Official docs have a Chinese edition but some pages lag in translation; Chinese community practice posts (CSDN/blogs) are plentiful, but deep tuning and troubleshooting content is mostly in English (re:Post, AWS Blog).</p></div></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="杀手特性" data-en="Killer features">杀手特性</span></h2>
+<div class="lang-block lang-zh">
+<ol>
+<li><strong>存算分离 + 6 副本 quorum 存储层（&quot;log is the database&quot;）</strong> 真本事：计算层无本地持久化，跨过网络的只有 redo 日志；存储层 6 副本跨 3 AZ（写 4/6、读 3/6），单 AZ 故障写可用性不受影响；计算崩溃重启无需 redo 回放。这是 Aurora 故障切换能做到秒级、备份对性能零影响的根本原因（SIGMOD 2017 论文）。 边缘真相：见深水区一——&quot;存储无限弹性&quot;是错觉，单 writer 实例规格仍是写吞吐天花板；热点写入会让少数 10GB protection group 抖动，而存储层没有暴露给用户的分区级限流数字，排查只能靠指标推断。</li>
+<li><strong>Serverless v2（2026-04 起改名 Aurora serverless）：0~256 ACU、按秒计费、可缩到 0</strong> 真本事：扩容秒级、连接不断；2024-11 起支持缩到 0 ACU 自动暂停，暂停期间计算费为 0，约 15 秒恢复<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。波动/间歇负载和开发测试环境的&quot;不用不花钱&quot;终于名副其实。 边缘真相：见深水区六——&quot;零费用&quot;有三道关：默认最小 0.5 ACU 是地板价、暂停期间存储费照收、挂 RDS Proxy / 开逻辑复制 / 做 Global 主集群会阻止暂停。每天早上第一波流量要吃冷启动。</li>
+<li><strong>Global Database：跨 Region 单写多读 + Region 级 DR 一体</strong> 真本事：存储层物理复制不经过引擎，主实例性能不受影响；厂商口径典型延迟 &lt;1 秒；计划内 switchover 可做到 RPO=0（&lt;30 秒）。从 Region 本地读延迟低，全球化读场景的天然方案。 边缘真相：见深水区四——计划外 failover 的 RPO = 当时的实际复制延迟，必须看 <code>AuroraGlobalDBRPOLag</code> 实时指标；跨 Region 传输费 + 复制 I/O 费另计；写永远只在主 Region，跨 Region 写转发只是&quot;方便&quot;，每条 DML 付一次跨 Region RTT。</li>
+<li><strong>克隆（Clone）：copy-on-write 分钟级复制整个集群</strong> 真本事：与源共享存储块，初始几乎不占额外存储；测试、压测、故障复现&quot;复制一个生产库&quot;从小时级变成分钟级。 边缘真相：创建便宜≠持有便宜——克隆体持续写入会累积差异存储与 I/O 费用；克隆是&quot;快照式&quot;一次性复制，不会自动跟随源更新，过期克隆上的测试结论可能失真。</li>
+<li><strong>I/O-Optimized 计费模式：I/O 密集型负载的成本可预测性</strong> 真本事：取消按次 I/O 收费，I/O 费用占总支出超约 25%（厂商口径盈亏线）的负载切换后更划算，有案例总体节省可观。 边缘真相：代价是计算与存储单价上浮<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>；I/O 占比低、存储量大但访问少的库切过去反而亏；Standard→I/O-Optimized 30 天只能切一次，切错要等一个月。</li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<ol>
+<li><strong>Disaggregated storage + 6-copy quorum layer (&quot;log is the database&quot;)</strong> What it is: the compute layer has no local persistence; only redo logs cross the network; the storage layer holds 6 copies across 3 AZs (write 4/6, read 3/6), so a whole-AZ loss doesn&#x27;t affect write availability; a crashed compute instance restarts with no redo replay. This is the fundamental reason Aurora failover is measured in seconds and backups have zero performance impact (SIGMOD 2017 paper). Edge truth: see Deep water 1 — &quot;infinitely elastic storage&quot; is an illusion; the single writer instance class is still the write-throughput ceiling; hot writes can make a few 10GB protection groups jitter, and the storage layer exposes no user-visible partition-level throttling numbers, so diagnosis relies on inferring from metrics.</li>
+<li><strong>Serverless v2 (renamed Aurora Serverless in 2026-04): 0–256 ACU, per-second billing, can scale to 0</strong> What it is: scaling in seconds with connections intact; since 2024-11 it can scale to 0 ACU and auto-pause, with zero compute cost while paused and ~15 seconds to resume <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>. Fluctuating/intermittent workloads and dev/test environments finally get true &quot;pay nothing when idle&quot;. Edge truth: see Deep water 6 — &quot;zero cost&quot; has three gates: the default 0.5 ACU minimum is a floor price, storage is still billed while paused, and attaching RDS Proxy / enabling logical replication / being the primary of a Global Database blocks auto-pause. The first wave of morning traffic eats a cold start.</li>
+<li><strong>Global Database: cross-Region single-writer multi-reader + Region-level DR in one</strong> What it is: storage-layer physical replication bypasses the engine, so primary performance is unaffected; vendor-claimed typical lag &lt;1 second; planned switchover can achieve RPO=0 (&lt;30 seconds). Local reads in each Region with low latency — the natural solution for globalized read workloads. Edge truth: see Deep water 4 — for unplanned failover, RPO = the actual replication lag at that moment; you must watch the <code>AuroraGlobalDBRPOLag</code> metric in real time; cross-Region transfer + replicated I/O are billed separately; writes only ever happen in the primary Region — cross-Region write forwarding is &quot;convenience&quot;, each DML paying one cross-Region RTT.</li>
+<li><strong>Clone: copy-on-write, clone the whole cluster in minutes</strong> What it is: shares storage blocks with the source, consuming almost no extra storage initially; &quot;copy a production database&quot; for testing, load tests, or incident reproduction goes from hours to minutes. Edge truth: cheap to create ≠ cheap to keep — continued writes on the clone accumulate differential storage and I/O costs; a clone is a one-shot snapshot copy that never follows the source, so test conclusions on a stale clone can be misleading.</li>
+<li><strong>I/O-Optimized billing: cost predictability for I/O-heavy workloads</strong> What it is: removes per-operation I/O charges; workloads where I/O exceeds ~25% of total spend (vendor-claimed breakeven) come out cheaper, with real-world cases showing substantial total savings. Edge truth: the tradeoff is higher compute and storage unit prices <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>; databases with low I/O share but large, rarely-accessed storage do worse on it; Standard → I/O-Optimized switches are limited to once per 30 days — switch wrong and you wait a month.</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="深水区" data-en="Deep dives">深水区</span></h2>
+<div class="lang-block lang-zh">
+<p><strong>深水区一：quorum 存储层——数学很美，热点很痛</strong>（domain：存储引擎）</p>
+<ul>
+<li>机制：数据切 10 GiB protection group，6 副本跨 3 AZ，写 4/6、读 3/6；计算层只发 redo 日志，从不写数据页（官方论文）。</li>
+<li>推到边缘：丢整个 AZ（2 副本）写不受影响；再坏 1 个节点（共 3 副本丢失）写 quorum 凑不齐→写不可用、读仍可用——这是设计目标，不是 bug。写入高度倾斜时压力集中在少数 protection group，社区基准测试观察到规律性性能抖动，AWS 官方调优指南建议主键轻量、外键检查移到应用层。存储层<strong>没有暴露分区级限流数字</strong>，热点症状是写延迟抖动而非明确报错<span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</li>
+<li>选型含义：选 Aurora 是选&quot;计算无状态、故障切换不搬数据&quot;；但别把&quot;自动扩展&quot;理解成&quot;无限&quot;，单 writer 规格与写入热点模型必须先压测。</li>
+<li>来源：Verbitski et al. SIGMOD 2017 论文；AWS 官方文档；DZone 热点抖动基准</li>
+</ul>
+<p><strong>深水区二：写转发与读扩展——&quot;15 副本&quot;是 15 份计算，不是 15 份数据</strong>（domain：复制与读扩展）</p>
+<ul>
+<li>机制：reader 可接受写 SQL 并转发给 writer（Aurora MySQL 3.04+、PG 16.4+/15.8+/14.13+，官方文档）；reader endpoint 做 DNS 轮询分发。</li>
+<li>推到边缘：写转发硬限制多——MySQL 仅 REPEATABLE READ，两引擎均不支持 DDL / SAVEPOINT / XA / LOCK / TRUNCATE / COPY / 游标，PG 还不支持存储过程与 LISTEN/NOTIFY；转发会话占用 writer 连接池配额（MySQL 默认 10%、PG 默认 25%），突发写先触达的是这个配额。跨 Region 写转发每条 DML 付一次跨 Region RTT（官方博客实测 us-east-1↔us-east-2 每条 +12~15ms）。reader endpoint 是 DNS 轮询（TTL 5 秒）<strong>不是负载均衡</strong>，JVM 默认无限缓存 DNS、连接池长期持有连接都会导致&quot;读不均&quot;（官方博客）。</li>
+<li>选型含义：写转发是&quot;偶发写&quot;的便利功能，不是第二写入口，单 writer 本质不变；读一致性要求高的链路走 writer endpoint；长连接池必须配连接回收（ConnMaxLifetime）。</li>
+<li>来源：AWS 官方文档；官方博客</li>
+</ul>
+<p><strong>深水区三：故障切换——数据库 30 秒恢复，应用可能几分钟不可用</strong>（domain：高可用）</p>
+<ul>
+<li>机制：按 failover priority tier 提拔 reader 为 writer，共享存储无需拷贝数据；writer endpoint DNS（TTL 5 秒）切换；厂商口径通常 30 秒内完成，社区实测 30~60 秒端到端。已提交事务靠 4/6 quorum 不丢，未提交 in-flight 事务全丢。</li>
+<li>推到边缘：<strong>DNS 缓存是第一杀手</strong>——JVM 默认 DNS 缓存 30 秒~无限，不设 <code>networkaddress.cache.ttl</code> 会持续打旧 IP；社区压测显示一个 JVM 参数把应用恢复从约 5 秒降到约 100ms<span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。无 reader 的集群故障时间拉长到分钟级（生产至少配 1 个 reader 是硬要求）。RDS Proxy 可把应用侧恢复压到秒级（AWS 内部基准：平均约 3 秒 vs 直连约 14~24 秒，厂商口径）。MySQL vs PG 的 failover 目标时间<strong>无公开可区分数字</strong>，不应作为引擎取舍依据<span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</li>
+<li>选型含义：Aurora 的 RTO 本质是&quot;控制面切换&quot;，真正的 RTO 取决于应用侧重连工程；混沌演练要把客户端行为一起测。</li>
+<li>来源：AWS 官方文档；社区实测（re:Post）</li>
+</ul>
+<p><strong>深水区四：Global Database——RPO 必须绑定实时 lag 指标理解</strong>（domain：容灾）</p>
+<ul>
+<li>机制：1 主 Region + 最多 10 个从 Region（官方文档；上线初期为 5），存储层物理复制，厂商口径典型延迟 &lt;1 秒。</li>
+<li>推到边缘：计划内 switchover 可 RPO=0（&lt;30 秒）；<strong>计划外 failover 的数据丢失量 = 当时的实际复制延迟</strong>，必须用 <code>AuroraGlobalDBRPOLag</code> 度量而非默认 RPO=0（社区建议 lag &gt;2s 持续 5 分钟告警）。灾难切换后旧主 Region 卷被替换、需从快照重建（小时级）——<strong>DR 演练必须用 switchover，用 failover 做演练会引入不必要的重建与数据丢失风险</strong><span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。从 Region 挂载会挤占主集群 reader 配额（每挂 1 个从集群，主 reader 配额减 1）。<code>rds.global_db_rpo</code> 参数可把从 Region 落后反压回主 Region 写路径，打开后主写延迟与从 Region 健康度耦合。</li>
+<li>选型含义：Global Database 是&quot;单写多读 + Region 级 DR&quot;，不要当多活；把 &quot;~1s RPO&quot; 写进 SLA 前先看 P99 lag；跨 Region 传输费 + 复制 I/O 费另计，多 Region 预算至少按单 Region ×2 起。</li>
+<li>来源：AWS 官方文档；社区 runbook</li>
+</ul>
+<p><strong>深水区五：I/O 计费——Aurora 第一成本深水区</strong>（domain：成本）</p>
+<ul>
+<li>机制：Standard 版除计算 + 存储外，读写 I/O 按百万次单独计费（询价/看账单）。</li>
+<li>推到边缘：全表扫描/缺索引、working set 装不进内存（Serverless v2 上限配太小是典型诱因）会导致读放大；社区真实账单案例（2026-06）：某 1.0 ACU 上限的小库 I/O 费占当月 Aurora 总账单 68%~88%<span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。优化过的查询退化也会引爆 I/O 费。排查看 Cost Explorer 的 <code>Aurora:StorageIOUsage</code> 行项与 CloudWatch <code>VolumeReadIOPs/VolumeWriteIOPs</code>。</li>
+<li>选型含义：上 Aurora 第一件事是给 I/O 设账单告警；内存宁可配大一点，ACU 的钱比 I/O 惊魂账单便宜；I/O 占比超约 25% 就评估切 I/O-Optimized（但 30 天只能切一次，别切错）。</li>
+<li>来源：社区账单案例（2026-06，社区实测）；AWS 官方文档</li>
+</ul>
+<p><strong>深水区六：Serverless v2——&quot;serverless&quot;三道关</strong>（domain：成本/运维）</p>
+<ul>
+<li>机制：0~256 ACU，0.5 步长，按秒计费；0 ACU 自动暂停后约 15 秒恢复（厂商口径；暂停超 24 小时社区实测约 12~30 秒）。</li>
+<li>推到边缘：&quot;不用不花钱&quot;三道关——①默认最小 0.5 ACU 是 24×7 的地板价；②暂停期间存储费照收；③挂 RDS Proxy、开逻辑复制/binlog 复制、做 Global 主集群会<strong>阻止自动暂停</strong>，实例卡在 0.5 ACU<span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。扩容秒级但缩容按分钟级（防抖动）；恢复期间新连接排队/超时，有团队用定时 ping 保活规避冷启动<span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
+<li>选型含义：开发/测试/间歇负载设 0 ACU 最划算；在线业务设 2~4 ACU 保底避开早高峰冷启动；&quot;预置 writer + Serverless v2 reader&quot;混搭是社区验证过的省钱组合。</li>
+<li>来源：AWS 官方文档；AWS Database Blog；社区实测</li>
+</ul>
+<p><strong>深水区七：版本滞后与升级之痛——托管的代价是&quot;等 AWS 发版&quot;</strong>（domain：兼容/版本）</p>
+<ul>
+<li>机制：Aurora MySQL 3.x 对应社区 8.0 的小版本长期滞后数月；Aurora PG 大版本落后社区数月到一年以上（官方发版日历 + 社区共识）。</li>
+<li>推到边缘：2026-05-21 是个转折点——Aurora MySQL 8.4 GA，对齐社区 8.4.7 且版本号与社区对齐，官方承诺大版本 12 个月内、小版本 3 个月内跟上<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>，此前&quot;RDS MySQL 早有 8.4 而 Aurora 没有&quot;被 re:Post 反复追问。大版本升级是运维最痛：MySQL 2→3 的 precheck 常因数据字典不一致等问题失败、升级后执行计划回退（优化器变化、query cache 移除、默认字符集变 utf8mb4）；PG 升级靠蓝绿部署但有隐藏前提（源库不能有活跃逻辑复制槽——文档未写，社区实测排查数小时；切换期间禁 DDL；切换后需 ANALYZE/REINDEX）；in-place 升级无回滚。</li>
+<li>选型含义：追新特性的团队选 Aurora 要接受&quot;等发版&quot;的节奏，RDS（非 Aurora）通常跟得更快；大版本升级走蓝绿部署 + 升级前逐项 precheck，把回滚路径（蓝绿回切）当必选项。</li>
+<li>来源：AWS What&#x27;s New；AWS 官方文档；re:Post 社区实测</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<p><strong>Deep water 1: the quorum storage layer — beautiful math, painful hotspots</strong> (domain: storage engine)</p>
+<ul>
+<li>Mechanism: data is cut into 10 GiB protection groups, 6 copies across 3 AZs, write 4/6, read 3/6; the compute layer only emits redo logs and never writes data pages (official paper).</li>
+<li>At the edge: losing a whole AZ (2 copies) doesn&#x27;t affect writes; lose 1 more node (3 copies gone total) and the write quorum can&#x27;t be formed → writes unavailable, reads still available — that&#x27;s the design goal, not a bug. Highly skewed writes concentrate pressure on a few protection groups; community benchmarks observe regular performance jitter, and AWS&#x27;s own tuning guide recommends lightweight primary keys and moving foreign-key checks to the application. The storage layer <strong>exposes no partition-level throttling numbers</strong>; hotspot symptoms show up as write-latency jitter rather than explicit errors <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>.</li>
+<li>Selection implication: choosing Aurora means choosing &quot;stateless compute, failover without moving data&quot;; but don&#x27;t read &quot;auto-scaling&quot; as &quot;unlimited&quot; — the single-writer instance class and the write-hotspot model must be load-tested first.</li>
+<li>Sources: Verbitski et al. SIGMOD 2017 paper; AWS official docs; DZone hotspot-jitter benchmark</li>
+</ul>
+<p><strong>Deep water 2: write forwarding &amp; read scale-out — &quot;15 replicas&quot; is 15 copies of compute, not 15 copies of data</strong> (domain: replication &amp; read scale-out)</p>
+<ul>
+<li>Mechanism: readers can accept write SQL and forward it to the writer (Aurora MySQL 3.04+, PG 16.4+/15.8+/14.13+, official docs); the reader endpoint distributes via DNS round-robin.</li>
+<li>At the edge: write forwarding has many hard limits — MySQL only REPEATABLE READ, neither engine supports DDL / SAVEPOINT / XA / LOCK / TRUNCATE / COPY / cursors, and PG additionally doesn&#x27;t support stored procedures or LISTEN/NOTIFY; forwarded sessions consume writer connection-pool quota (MySQL default 10%, PG default 25%), so a write burst hits that quota first. Cross-Region write forwarding pays one cross-Region RTT per DML (official blog measured +12–15ms per statement between us-east-1 and us-east-2). The reader endpoint is DNS round-robin (TTL 5 seconds), <strong>not load balancing</strong> — JVMs caching DNS indefinitely by default and connection pools holding long-lived connections both cause &quot;uneven reads&quot; (official blog).</li>
+<li>Selection implication: write forwarding is a convenience feature for &quot;occasional writes&quot;, not a second write entrance — the single-writer nature doesn&#x27;t change; latency-sensitive read paths should go through the writer endpoint; long-lived connection pools must be configured with connection recycling (ConnMaxLifetime).</li>
+<li>Sources: AWS official docs; official blog</li>
+</ul>
+<p><strong>Deep water 3: failover — database recovers in 30 seconds, the application can be down for minutes</strong> (domain: high availability)</p>
+<ul>
+<li>Mechanism: promote a reader to writer by failover priority tier; shared storage means no data copy; writer endpoint DNS (TTL 5 seconds) switches; vendor-claimed typically under 30 seconds, community-measured 30–60 seconds end to end. Committed transactions survive via the 4/6 quorum; all uncommitted in-flight transactions are lost.</li>
+<li>At the edge: <strong>DNS caching is the #1 killer</strong> — JVMs cache DNS 30 seconds to indefinitely by default; without setting <code>networkaddress.cache.ttl</code> the app keeps hitting the old IP; one community benchmark showed a single JVM parameter dropping app recovery from ~5 seconds to ~100ms <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>. Clusters with no reader take minutes to fail over (at least 1 reader in production is a hard requirement). RDS Proxy can compress app-side recovery to seconds (AWS internal benchmark: ~3s average vs ~14–24s direct, vendor claim). There are <strong>no publicly distinguishable failover-time numbers between MySQL and PG</strong> — they must not be used to pick an engine <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>.</li>
+<li>Selection implication: Aurora&#x27;s RTO is essentially a &quot;control-plane switchover&quot;; real RTO depends on client-side reconnection engineering; chaos drills must test client behavior together with the database.</li>
+<li>Sources: AWS official docs; community tests (re:Post)</li>
+</ul>
+<p><strong>Deep water 4: Global Database — RPO must be understood bound to the real-time lag metric</strong> (domain: disaster recovery)</p>
+<ul>
+<li>Mechanism: 1 primary Region + up to 10 secondary Regions (official docs; 5 at launch), storage-layer physical replication, vendor-claimed typical lag &lt;1 second.</li>
+<li>At the edge: planned switchover can achieve RPO=0 (&lt;30 seconds); <strong>unplanned failover loses exactly the actual replication lag at that moment</strong>, which must be measured with <code>AuroraGlobalDBRPOLag</code>, not assumed to be 0 (community recommendation: alert when lag &gt;2s sustained for 5 minutes). After a disaster failover, the old primary Region&#x27;s volume is replaced and must be rebuilt from snapshot (hours) — <strong>DR drills must use switchover; using failover for drills introduces unnecessary rebuild and data-loss risk</strong> <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>. Each attached secondary Region consumes one reader slot on the primary cluster (one secondary = one fewer reader available). The <code>rds.global_db_rpo</code> parameter can back-pressure secondary lag into the primary Region&#x27;s write path — once on, primary write latency is coupled to secondary health.</li>
+<li>Selection implication: Global Database is &quot;single-writer multi-reader + Region-level DR&quot;, not multi-active; before writing &quot;~1s RPO&quot; into an SLA, look at the P99 lag; cross-Region transfer + replicated I/O are billed separately — budget at least 2× a single Region.</li>
+<li>Sources: AWS official docs; community runbooks</li>
+</ul>
+<p><strong>Deep water 5: I/O billing — Aurora&#x27;s #1 cost deep water</strong> (domain: cost)</p>
+<ul>
+<li>Mechanism: on the Standard edition, besides compute + storage, read/write I/O is billed separately per million operations (get a quote / check the bill).</li>
+<li>At the edge: full table scans / missing indexes, or a working set that doesn&#x27;t fit in memory (a classic trigger: Serverless v2 upper bound set too small) cause read amplification; a real community bill (2026-06): a small database capped at 1.0 ACU had I/O charges at 68%–88% of its total monthly Aurora bill <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>. A degraded previously-optimized query can detonate I/O costs too. Investigate via the <code>Aurora:StorageIOUsage</code> line item in Cost Explorer and the CloudWatch <code>VolumeReadIOPs</code>/<code>VolumeWriteIOPs</code> metrics.</li>
+<li>Selection implication: the first thing after adopting Aurora is a billing alarm on I/O; size memory generously — ACU spend is cheaper than an I/O horror bill; once I/O exceeds ~25% of spend, evaluate switching to I/O-Optimized (but only one switch per 30 days — don&#x27;t get it wrong).</li>
+<li>Sources: community bill cases (2026-06, community-tested); AWS official docs</li>
+</ul>
+<p><strong>Deep water 6: Serverless v2 — the three gates of &quot;serverless&quot;</strong> (domain: cost/operations)</p>
+<ul>
+<li>Mechanism: 0–256 ACU, 0.5-ACU steps, per-second billing; ~15 seconds to resume from a 0-ACU auto-pause (vendor claim; community-tested ~12–30 seconds after being paused more than 24 hours).</li>
+<li>At the edge: &quot;pay nothing when idle&quot; has three gates — ① the default 0.5 ACU minimum is a 24×7 floor price; ② storage is still billed while paused; ③ attaching RDS Proxy, enabling logical replication/binlog replication, or being a Global Database primary <strong>blocks auto-pause</strong>, leaving the instance pinned at 0.5 ACU <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>. Scale-up is seconds, scale-down is minutes (jitter protection); new connections queue/time out during resume, and some teams ping on a schedule to keep instances warm and dodge cold starts <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>.</li>
+<li>Selection implication: dev/test/intermittent workloads are cheapest at 0 ACU; online services should set a 2–4 ACU floor to dodge the morning-rush cold start; the &quot;provisioned writer + Serverless v2 reader&quot; mix is a community-validated cost-saving combination.</li>
+<li>Sources: AWS official docs; AWS Database Blog; community tests</li>
+</ul>
+<p><strong>Deep water 7: version lag &amp; upgrade pain — the price of managed is &quot;waiting for AWS releases&quot;</strong> (domain: compatibility/versions)</p>
+<ul>
+<li>Mechanism: Aurora MySQL 3.x minor versions lag community 8.0 by months; Aurora PG major versions lag community by months to over a year (official release calendar + community consensus).</li>
+<li>At the edge: 2026-05-21 was a turning point — Aurora MySQL 8.4 went GA, aligned with community 8.4.7 with matching version numbers, and AWS committed to major versions within 12 months and minor versions within 3 months <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>; before that, &quot;RDS MySQL has 8.4 but Aurora doesn&#x27;t&quot; was a recurring re:Post complaint. Major upgrades are the biggest ops pain: MySQL 2→3 prechecks commonly fail on data-dictionary inconsistencies and plans regress after upgrade (optimizer changes, query cache removal, default charset change to utf8mb4); PG upgrades rely on blue/green deployment but hide prerequisites (the source cluster must have no active logical replication slot — undocumented, community-tested, hours of debugging; no DDL during cutover; ANALYZE/REINDEX needed after cutover); in-place upgrades have no rollback.</li>
+<li>Selection implication: teams chasing the newest features must accept the &quot;wait for the release&quot; rhythm on Aurora — plain RDS usually tracks faster; do major upgrades via blue/green + pre-upgrade precheck item by item, and treat the rollback path (blue/green cutback) as mandatory.</li>
+<li>Sources: AWS What&#x27;s New; AWS official docs; re:Post community tests</li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="用户最买账的 5 点" data-en="What users love most">用户最买账的 5 点</span></h2>
+<div class="lang-block lang-zh">
+<ol>
+<li><strong>故障切换快</strong><ul>
+<li>为什么是真的：共享存储免数据拷贝，提拔 reader + 切 DNS 即可；厂商口径通常 30 秒内，社区实测 30~60 秒端到端，显著快于传统主从重建。</li>
+<li>边缘与限度：快的是&quot;数据库恢复&quot;，应用恢复取决于 DNS 缓存与重连工程；无 reader 的集群故障时间拉长到分钟级；配 RDS Proxy 或 Advanced JDBC Wrapper 才能把应用侧也压到秒级。</li>
+</ul></li>
+<li><strong>运维省心</strong><ul>
+<li>为什么是真的：OS/引擎打补丁、备份、存储扩容全托管；小版本可自动升级；计算层无状态，实例坏了重建即可。</li>
+<li>边缘与限度：省的是&quot;机器运维&quot;，不是&quot;数据库运维&quot;——慢 SQL、索引、参数调优、版本升级规划一件不少；无 SUPER 权限意味着某些救火手段（如直接改系统表、装任意扩展）用不了，救火天花板比自建低。</li>
+</ul></li>
+<li><strong>读扩展容易</strong><ul>
+<li>为什么是真的：加 reader 不拷贝数据，分钟级上线，最多 15 个；reader endpoint 自动分发。</li>
+<li>边缘与限度：endpoint 是 DNS 轮询不是真负载均衡，长连接池不回收会读不均；PG 的 ReplicaLag 是 page-cache 语义，平稳期之外的延迟解读要小心；写扩展没有——单 writer 是硬天花板，写到头只能上 Limitless（PG only）或分库分表。</li>
+</ul></li>
+<li><strong>Serverless 弹性</strong><ul>
+<li>为什么是真的：0~256 ACU 按秒计费，扩容连接不断；波动负载和开发环境是真的省。</li>
+<li>边缘与限度：见深水区六——地板价、存储费、阻止暂停的四种配置、冷启动；I/O-Optimized 下 ACU 单价更贵，选存储配置要连 ACU 单价一起算。</li>
+</ul></li>
+<li><strong>MySQL / PG 兼容，迁移平滑</strong><ul>
+<li>为什么是真的：协议兼容，JDBC/ORM/DMS/Debezium 通用；从自建 MySQL/PG 迁过来应用层基本不用改。</li>
+<li>边缘与限度：兼容的是&quot;协议与大部分语法&quot;，不是&quot;运维习惯&quot;——MyISAM 表要转 InnoDB、压缩表要解压、keyring/TDE 要改 KMS 卷加密、SUPER 权限要降级、C 扩展/PAM 认证要重做（官方迁移限制清单）；版本滞后意味着社区新特性要等。</li>
+</ul></li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<ol>
+<li><strong>Fast failover</strong><ul>
+<li>Why it&#x27;s real: shared storage means no data copy — promote a reader + flip DNS and you&#x27;re done; vendor-claimed typically under 30 seconds, community-measured 30–60 seconds end to end, significantly faster than traditional primary-standby rebuilds.</li>
+<li>Edges &amp; limits: the fast part is &quot;database recovery&quot; — application recovery depends on DNS caching and reconnection engineering; reader-less clusters take minutes; RDS Proxy or the Advanced JDBC Wrapper is needed to compress the app side to seconds too.</li>
+</ul></li>
+<li><strong>Worry-free operations</strong><ul>
+<li>Why it&#x27;s real: OS/engine patching, backups, storage expansion are all managed; minor versions can auto-upgrade; the stateless compute layer means a dead instance just gets rebuilt.</li>
+<li>Edges &amp; limits: what&#x27;s managed is &quot;machine operations&quot;, not &quot;database operations&quot; — slow SQL, indexes, parameter tuning, and upgrade planning all remain yours; no SUPER privilege means some firefighting tools (direct system-table edits, arbitrary extensions) are unavailable, so the self-hosted firefighting ceiling is higher.</li>
+</ul></li>
+<li><strong>Easy read scale-out</strong><ul>
+<li>Why it&#x27;s real: adding a reader copies no data, comes up in minutes, up to 15 of them; the reader endpoint distributes automatically.</li>
+<li>Edges &amp; limits: the endpoint is DNS round-robin, not true load balancing — pools that never recycle connections read unevenly; PG&#x27;s ReplicaLag is page-cache semantics, so lag readings outside steady state need care; there is no write scale-out — single writer is a hard ceiling, and once writes top out you either go Limitless (PG only) or shard manually.</li>
+</ul></li>
+<li><strong>Serverless elasticity</strong><ul>
+<li>Why it&#x27;s real: 0–256 ACU billed per second, scaling without dropping connections; genuinely cheap for bursty workloads and dev environments.</li>
+<li>Edges &amp; limits: see Deep water 6 — floor price, storage charges, the four pause-blocking configurations, cold starts; ACU unit prices are higher under I/O-Optimized, so storage-config decisions must account for ACU unit pricing together.</li>
+</ul></li>
+<li><strong>MySQL / PG compatibility, smooth migration</strong><ul>
+<li>Why it&#x27;s real: protocol compatibility, JDBC/ORM/DMS/Debezium all work; migrating from self-hosted MySQL/PG barely touches the application layer.</li>
+<li>Edges &amp; limits: what&#x27;s compatible is &quot;protocol and most syntax&quot;, not &quot;ops habits&quot; — MyISAM tables must become InnoDB, compressed tables must be uncompressed, keyring/TDE becomes KMS volume encryption, SUPER privileges must be downgraded, C extensions/PAM authentication must be redone (official migration limitation list); version lag means waiting for community features.</li>
+</ul></li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="吐槽清单" data-en="Complaints">吐槽清单</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>分类</th><th>吐槽</th><th>影响版本</th><th>状态</th></tr></thead>
+<tbody>
+<tr><td>成本坑</td><td>Standard 版 I/O 按量计费，内存配小/缺索引时 I/O 费可超计算费数倍（真实账单案例 I/O 占 68%~88%）</td><td>Standard 版全引擎</td><td>partially-fixed（I/O-Optimized 可解，需主动切换，30 天限切一次）</td></tr>
+<tr><td>成本坑</td><td>存储自动扩容只增不减；删 50% 数据当月账单按 GB-Month 均值只降约 10%<span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>；手动快照永久保留持续收费，删集群忘删快照是经典漏水</td><td>全引擎</td><td>open</td></tr>
+<tr><td>成本坑</td><td>Performance Insights 超 7 天保留收费、Enhanced Monitoring 走 CloudWatch Logs 计费、日志导出按量收费——开了长保留才发现账单项</td><td>全引擎</td><td>open</td></tr>
+<tr><td>成本坑</td><td>Global Database 跨 Region 传输费 + 复制 I/O 费另计，多 Region 预算至少 ×2</td><td>Global Database</td><td>open</td></tr>
+<tr><td>运维坑</td><td>无 SUPER 权限（最高 rds_superuser）；不能改 pg_hba.conf / ALTER SYSTEM / 建 C 函数 / 装非白名单扩展</td><td>全引擎</td><td>open（设计使然）</td></tr>
+<tr><td>运维坑</td><td>PG 扩展白名单：timescaledb、pgrouting、citus、自定义 C 扩展等不在列；想要只能发邮件请求，无 SLA</td><td>Aurora PG</td><td>partially-fixed（白名单逐年增加，pgvector/pg_cron 已支持）</td></tr>
+<tr><td>运维坑</td><td>大版本升级：MySQL 2→3 precheck 常失败、执行计划回退；PG 蓝绿部署要求源库无活跃逻辑复制槽（文档未写）、禁 DDL、切换后冷缓存需预热；in-place 无回滚</td><td>全引擎</td><td>open（每次大版本复现）</td></tr>
+<tr><td>运维坑</td><td>故障切换后 buffer cache 是冷的，性能数分钟到数小时才恢复</td><td>全引擎</td><td>open</td></tr>
+<tr><td>运维坑</td><td>DDL 必须在 writer 执行，reader 有复制延迟；大 DDL 期间读流量可能读到旧 schema；蓝绿期间禁 DDL</td><td>全引擎</td><td>open</td></tr>
+<tr><td>性能坑</td><td>Aurora MySQL reader 上 TempTable 溢出直接报 ERROR 1114，社区 MySQL 会转磁盘临时表——同样查询在 reader 上挂掉</td><td>Aurora MySQL 3.x</td><td>open</td></tr>
+<tr><td>兼容坑</td><td>版本滞后：Aurora MySQL 3.x 小版本落后社区数月；Aurora PG 大版本落后数月到一年以上</td><td>全引擎</td><td>partially-fixed（MySQL 8.4 GA 后承诺大小版本跟进 SLA，厂商口径）</td></tr>
+<tr><td>兼容坑</td><td>MySQL InnoDB 表空间级 TDE（ENCRYPTION=&#x27;Y&#x27;）不支持、keyring 插件不支持、MyISAM/压缩表/C 语言 UDF/自定义插件/PAM 认证不支持</td><td>Aurora MySQL</td><td>open（产品定位）</td></tr>
+<tr><td>生态坑</td><td>Serverless v1 已于 2025-03-31 EOL（自动迁移到 v2）；老文档/博客的 v1 经验过期</td><td>历史版本</td><td>fixed-in-v2</td></tr>
+<tr><td>授权坑</td><td>仅 MySQL/PG 双引擎，无 MariaDB 兼容版；Oracle/SQL Server 只能走 RDS；闭源无自建，AWS 锁定</td><td>全系</td><td>open（产品定位）</td></tr>
+<tr><td>运维坑</td><td>Multi-AZ DB cluster（RDS 的 1 写+2 可读 standby）与 Aurora 被频繁混淆，failover 时间与计费模型搞混是高频选型错误</td><td>概念</td><td>open</td></tr>
+<tr><td>中国区</td><td>宁夏/北京区功能与版本滞后全球区、定价独立；Serverless v2 auto-pause 与 I/O-Optimized 在中国区的实际可用状态待验证</td><td>中国区</td><td>partially-fixed / 待验证</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Category</th><th>Complaint</th><th>Affected versions</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Cost trap</td><td>Standard edition bills I/O separately; with undersized memory or missing indexes, I/O charges can exceed compute by multiples (real bill: I/O at 68%–88%)</td><td>Standard edition, all engines</td><td>partially-fixed (I/O-Optimized solves it, requires an active switch, once per 30 days)</td></tr>
+<tr><td>Cost trap</td><td>Storage auto-expansion is grow-only; deleting 50% of data only lowers the month&#x27;s bill by ~10% on GB-month average <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>; manual snapshots kept forever keep billing; deleting a cluster but forgetting snapshots is the classic leak</td><td>All engines</td><td>open</td></tr>
+<tr><td>Cost trap</td><td>Performance Insights beyond 7-day retention is billed, Enhanced Monitoring bills via CloudWatch Logs, log exports are metered — the bill items only surface after enabling long retention</td><td>All engines</td><td>open</td></tr>
+<tr><td>Cost trap</td><td>Global Database cross-Region transfer + replicated I/O are billed separately; multi-Region budgets start at ×2</td><td>Global Database</td><td>open</td></tr>
+<tr><td>Ops trap</td><td>No SUPER privilege (ceiling is rds_superuser); cannot edit pg_hba.conf / ALTER SYSTEM / create C functions / install non-whitelisted extensions</td><td>All engines</td><td>open (by design)</td></tr>
+<tr><td>Ops trap</td><td>PG extension whitelist: timescaledb, pgrouting, citus, custom C extensions and the like are not listed; requests go by email with no SLA</td><td>Aurora PG</td><td>partially-fixed (whitelist grows yearly, pgvector/pg_cron supported)</td></tr>
+<tr><td>Ops trap</td><td>Major upgrades: MySQL 2→3 prechecks commonly fail, plans regress; PG blue/green requires no active logical replication slot on the source (undocumented), no DDL, cold cache needs warmup after cutover; in-place has no rollback</td><td>All engines</td><td>open (recurs every major version)</td></tr>
+<tr><td>Ops trap</td><td>Buffer cache is cold after failover; performance takes minutes to hours to recover</td><td>All engines</td><td>open</td></tr>
+<tr><td>Ops trap</td><td>DDL must run on the writer and readers have replication lag; heavy DDL can have readers serving the old schema; no DDL during blue/green</td><td>All engines</td><td>open</td></tr>
+<tr><td>Performance trap</td><td>On Aurora MySQL readers, TempTable overflow throws ERROR 1114 outright — community MySQL spills to on-disk temp tables; the same query dies on the reader</td><td>Aurora MySQL 3.x</td><td>open</td></tr>
+<tr><td>Compatibility trap</td><td>Version lag: Aurora MySQL 3.x minors lag community by months; Aurora PG majors lag by months to over a year</td><td>All engines</td><td>partially-fixed (post-8.4 GA version-catchup SLA, vendor claim)</td></tr>
+<tr><td>Compatibility trap</td><td>MySQL InnoDB tablespace-level TDE (ENCRYPTION=&#x27;Y&#x27;) unsupported, keyring plugins unsupported, MyISAM/compressed tables/C UDFs/custom plugins/PAM authentication unsupported</td><td>Aurora MySQL</td><td>open (product positioning)</td></tr>
+<tr><td>Ecosystem trap</td><td>Serverless v1 EOL&#x27;d 2026-03-31 (auto-migrated to v2); old docs/blog v1 knowledge is stale</td><td>Historical versions</td><td>fixed-in-v2</td></tr>
+<tr><td>Licensing trap</td><td>MySQL/PG dual engine only, no MariaDB-compatible edition; Oracle/SQL Server only via RDS; closed-source, no self-hosted edition — AWS lock-in</td><td>Entire lineup</td><td>open (product positioning)</td></tr>
+<tr><td>Ops trap</td><td>Multi-AZ DB cluster (RDS&#x27;s 1-writer + 2-readable-standby) is frequently confused with Aurora; mixing up their failover times and billing models is a high-frequency selection error</td><td>Conceptual</td><td>open</td></tr>
+<tr><td>China regions</td><td>Ningxia/Beijing regions lag global regions in features and versions, with independent pricing; actual availability of Serverless v2 auto-pause and I/O-Optimized in China regions to-be-verified</td><td>China regions</td><td>partially-fixed / to-be-verified</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="判决" data-en="Verdict">判决</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li><strong>适合谁</strong>：已在 AWS 上的团队；不想运维数据库、愿意为托管付溢价的团队；读多写少、需要快速加读副本的业务；负载波动大/间歇性的业务（Serverless v2）；需要跨 Region 读就近 + Region 级 DR 的全球化业务（Global Database）；MySQL/PG 协议迁移上云。</li>
+<li><strong>不适合谁</strong>：预算敏感的小库（同等规格 RDS 或自建更便宜，Aurora 存储层开销在小稳负载上不划算）；写密集到单 writer 成为瓶颈且不愿接受 Limitless 分片改造成本的业务；需要最新社区 MySQL/PG 特性&quot;第一时间&quot;上线的团队；重度依赖 PG 冷门扩展、SUPER 权限、自建插件的团队；多云/信创/出 AWS 部署要求。</li>
+<li><strong>迁移成本</strong>：MySQL → 低（协议兼容，DMS/快照/XtraBackup 工具链成熟，注意 MyISAM/压缩表/TDE/keyring/SUPER 改造项）；PostgreSQL → 低（协议兼容，注意扩展白名单与 rds_superuser 降级）；Oracle → 高（无 Oracle 兼容模式，Babelfish 仅 PG 且 Limitless 不支持，走应用层改造或选 EDB 等）。</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li><strong>Good fit for</strong>: teams already on AWS; teams that don&#x27;t want to operate databases and will pay a premium for managed; read-heavy workloads needing fast reader additions; bursty/intermittent workloads (Serverless v2); globalized businesses needing near-Region reads + Region-level DR (Global Database); MySQL/PG protocol migrations to the cloud.</li>
+<li><strong>Poor fit for</strong>: budget-sensitive small databases (RDS or self-hosted is cheaper at the same spec — Aurora&#x27;s storage-layer overhead doesn&#x27;t pay off on small steady workloads); write-heavy businesses hitting the single-writer ceiling that won&#x27;t accept Limitless&#x27;s sharding rework cost; teams needing community MySQL/PG features &quot;day one&quot;; teams heavily dependent on obscure PG extensions, SUPER privileges, or self-built plugins; multi-cloud / xìnchuàng (IT localization) / must-run-outside-AWS requirements.</li>
+<li><strong>Migration cost</strong>: MySQL → low (protocol-compatible, mature DMS/snapshot/XtraBackup tooling; watch the MyISAM/compressed-table/TDE/keyring/SUPER rework items); PostgreSQL → low (protocol-compatible; watch the extension whitelist and rds_superuser downgrade); Oracle → high (no Oracle compatibility mode, Babelfish is PG-only and unsupported on Limitless — go the application-rework route or pick EDB etc.).</li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="来源与待验证清单" data-en="Sources & to-be-verified">来源与待验证清单</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li>版本信息：AWS What&#x27;s New（Aurora MySQL 3.13 GA 2026-08-28；Aurora MySQL 8.4 GA 2026-05-21）、AWS Aurora PostgreSQL 发版日历（18.4 / 17.10 / 16.14 / 15.18 均于 2026-08-21 发布；LTS：17.7 / 16.8 / 15.10）</li>
+<li>架构机制：Verbitski et al. SIGMOD 2017 论文（quorum 数学、log is the database）；AWS 官方文档（存储上限 256 TiB 2025-07 公告、Global Database、写转发、Backtrack、蓝绿部署）；AWS Database Blog（Serverless v2 缩到 0 ACU、写转发跨 Region 延迟实测、RDS Proxy 联动蓝绿 2026-04）</li>
+<li>深水区实测：DZone 热点抖动基准、re:Post（PG lag 语义、DNS 问题）、社区 runbook（Global Database lag 阈值、switchover vs failover）、Debezium 社区笔记（Backtrack 与 Enhanced Binlog 互斥）、aws-samples db-advisor 技能库（成本模型、升级清单）</li>
+<li>吐槽采集：re:Post、Hacker News 账单讨论、GitHub 社区笔记、aws-samples 迁移限制清单</li>
+<li>待验证项：中国区 Serverless v2 auto-pause / I/O-Optimized 实际可用状态与定价差异；新集群默认加密 at-rest 的默认策略；MySQL vs PG failover 时长的可区分数字；存储层热点的分区级限流数字</li>
+<li>下次评审：跟踪 Aurora MySQL 8.4 的版本跟进 SLA 是否兑现（官方承诺大版本 12 个月/小版本 3 个月）、Aurora PG 19 的发版节奏、Limitless 的扩展白名单与生产案例成熟度</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li>Version info: AWS What&#x27;s New (Aurora MySQL 3.13 GA 2026-08-28; Aurora MySQL 8.4 GA 2026-05-21), AWS Aurora PostgreSQL release calendar (18.4 / 17.10 / 16.14 / 15.18 all released 2026-08-21; LTS: 17.7 / 16.8 / 15.10)</li>
+<li>Architecture: Verbitski et al. SIGMOD 2017 paper (quorum math, log-is-the-database); AWS official docs (256 TiB storage cap announced 2025-07, Global Database, write forwarding, Backtrack, blue/green deployment); AWS Database Blog (Serverless v2 scale-to-0 ACU, cross-Region write-forwarding latency measurement, RDS Proxy blue/green integration 2026-04)</li>
+<li>Deep-water field tests: DZone hotspot-jitter benchmark, re:Post (PG lag semantics, DNS issues), community runbooks (Global Database lag thresholds, switchover vs failover), Debezium community notes (Backtrack vs Enhanced Binlog mutually exclusive), aws-samples db-advisor skill library (cost model, upgrade checklist)</li>
+<li>Complaint mining: re:Post, Hacker News billing threads, GitHub community notes, aws-samples migration limitation lists</li>
+<li>To-be-verified: actual availability and pricing differences of Serverless v2 auto-pause / I/O-Optimized in China regions; default at-rest encryption policy for new clusters; distinguishable MySQL vs PG failover-time numbers; partition-level throttling numbers for storage-layer hotspots</li>
+<li>Next review: track whether Aurora MySQL 8.4&#x27;s version-catchup SLA holds (officially committed: majors within 12 months / minors within 3 months), Aurora PG 19 release cadence, Limitless extension-whitelist and production-case maturity</li>
+</ul>
+</div>
+</section>
+</main>
+<footer class="footer">
+  <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
+</footer>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
