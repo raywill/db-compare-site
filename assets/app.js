@@ -77,7 +77,7 @@ var MAX_SEL = 4;
 function catalog() { return window.DB_CATALOG || [];}
 function prodName(slug) {
 var c = catalog();
-for (var i = 0; i < c.length; i++) if (c[i].slug === slug) return c[i].name;
+for (var i = 0; i < c.length; i++) if (c[i].slug === slug) return getLang() === 'zh'? c[i].name: (c[i].name_en || c[i].name);
 return slug;
 }
 function getSelection() {
@@ -277,6 +277,8 @@ paintAddCmpButtons();
 
 function apply(lang) {
 document.documentElement.setAttribute('lang', lang === 'zh'? 'zh-CN': 'en');
+var _t = document.querySelector('title[data-title-en]');
+if (_t) document.title = lang === 'zh'? _t.getAttribute('data-title-zh'): _t.getAttribute('data-title-en');
 var zhEls = document.querySelectorAll('.lang-zh');
 for (var i = 0; i < zhEls.length; i++) zhEls[i].hidden = (lang!== 'zh');
 var enEls = document.querySelectorAll('.lang-en');
