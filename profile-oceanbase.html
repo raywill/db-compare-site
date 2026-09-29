@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>OceanBase - DB 选型参考</title>
+<link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">&#9672;</span> DB <span data-zh="选型参考" data-en="Compare">选型参考</span></a>
+    <nav class="mainnav">
+<a href="index.html" class="active" data-zh="首页" data-en="Home">首页</a>
+<a href="compare.html" class="" data-zh="维度对比" data-en="Compare">维度对比</a>
+<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
+<a href="advisor.html" class="" data-zh="AI选型" data-en="AI Selection">AI选型</a>
+    </nav>
+    <div class="cmp-tray">
+      <button id="cmp-tray-btn" type="button" class="tray-btn" aria-expanded="false" aria-haspopup="true"><span data-zh="对比" data-en="Compare">对比</span> <b class="tray-count"><i id="cmp-count">0</i>/4</b></button>
+      <div id="cmp-panel" class="tray-panel" hidden>
+        <div class="tray-sec"><span data-zh="已选" data-en="Selected">已选</span></div>
+        <div id="cmp-selected" class="tray-selected"></div>
+        <div class="tray-sec"><span data-zh="全部产品（最多选 4 款）" data-en="All products (up to 4)">全部产品（最多选 4 款）</span></div>
+        <div id="cmp-list" class="tray-list"></div>
+        <div class="tray-actions"><button id="cmp-clear" type="button" class="tray-clear"><span data-zh="清空选择" data-en="Clear selection">清空选择</span></button></div>
+      </div>
+    </div>
+    <button id="lang-toggle" class="lang-btn" type="button" aria-label="switch language">EN</button>
+  </div>
+</header>
+<main class="page">
+<div class="profile-hero">
+  <a class="back" href="index.html"><span data-zh="← 返回首页" data-en="← Back to home">← 返回首页</span></a>
+  <h1>OceanBase</h1>
+  <div class="meta-row"><span class="cat cat-oltp" data-zh="关系型 OLTP" data-en="Relational OLTP">关系型 OLTP</span> <span class="tag">#分布式</span> <span class="tag">#金融级高可用</span> <span class="tag">#MySQL兼容</span> <span class="tag">#Oracle兼容</span> <span class="tag">#多租户</span> <span class="tag">#HTAP</span> <span class="tag">#信创</span></div>
+  <p class="oneliner"><div class="lang-block lang-zh">
+<p>蚂蚁集团自研的原生分布式关系型数据库，为金融级核心系统而生，&quot;去 O&quot;（替代 Oracle）场景的国产首选之一。</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<p>A natively distributed relational database developed in-house by Ant Group (蚂蚁集团), built for financial-grade core systems — one of the top domestic choices for &quot;qu-O&quot; (去 O, replacing Oracle) scenarios.</p>
+</div></p>
+  <div class="ai-dive-row" data-product="OceanBase">
+    <span class="ai-dive-label" data-zh="用 AI 深挖这款：" data-en="Deep-dive with AI:">用 AI 深挖这款：</span>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('chatgpt', this)">ChatGPT <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('grok', this)">Grok <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('claude', this)">Claude <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn addcmp-btn" data-addcmp="oceanbase"><span class="addcmp-label">＋ 对比</span></button>
+  </div>
+  <div class="legend"><span class="legend-label" data-zh="证据等级：" data-en="Evidence levels: ">证据等级：</span><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></div>
+</div>
+<section class="doc-section">
+<h2><span data-zh="基本信息" data-en="Basics">基本信息</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>项</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td>厂商</td><td>蚂蚁集团（OceanBase 已独立公司化运营）</td></tr>
+<tr><td>国家</td><td>中国</td></tr>
+<tr><td>起源</td><td>2010 年从支付宝核心账务系统起步，历经&quot;双十一&quot;极端场景验证</td></tr>
+<tr><td>许可证</td><td>社区版开源（2021 年 6 月起）；企业版商业授权</td></tr>
+<tr><td>托管服务</td><td>OB Cloud（公有云 / 专有云 / 多云）</td></tr>
+<tr><td>主类型</td><td>关系型（原生分布式）</td></tr>
+<tr><td>兼具类型</td><td>HTAP、向量检索（4.4 起 TP/AP/AI 一体化）</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Item</th><th>Details</th></tr></thead>
+<tbody>
+<tr><td>Vendor</td><td>Ant Group (OceanBase now operates as an independent company)</td></tr>
+<tr><td>Country</td><td>China</td></tr>
+<tr><td>Origin</td><td>Started in 2010 from Alipay&#x27;s (支付宝) core accounting system; battle-tested through extreme &quot;Singles&#x27; Day&quot; (双十一, Nov 11 shopping festival) traffic</td></tr>
+<tr><td>License</td><td>Community Edition open source (since June 2021); Enterprise Edition commercially licensed</td></tr>
+<tr><td>Managed service</td><td>OB Cloud (public cloud / dedicated cloud / multi-cloud)</td></tr>
+<tr><td>Primary type</td><td>Relational (natively distributed)</td></tr>
+<tr><td>Also covers</td><td>HTAP, vector search (TP/AP/AI convergence since 4.4)</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section"><h2><span data-zh="硬维度（14 项）" data-en="Hard dimensions (14)">硬维度（14 项）</span></h2>
+<div class="lang-block lang-zh">
+<div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——云数据库 OceanBase（托管服务）2021 年起支持 TDE 透明加密（阿里云官方产品动态）；内核有加密基础设施（备份加密 AES-256、密钥存储支持本地文件 / HSM / 云 KMS、微块支持用户指定加解密算法）。<strong>自建社区版的完整落盘加密能力边界未找到可靠证据</strong>，选型前需对照版本说明书。证据：阿里云官方动态<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>+ 社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——云服务支持 SSL 链路加密；<strong>自建版 TLS 配置与默认行为未找到可靠证据</strong>。证据：厂商口径 + 待验证。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> 审计 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——<code>GV$OB_SQL_AUDIT</code> 提供 SQL 级审计（需 <code>enable_sql_audit=true</code>，环形内存缓冲，滚动覆盖，巡检需带时间窗）；<strong>合规级安全审计（DDL/权限变更的长期留存审计）未找到证据</strong>，不得与 MySQL Enterprise Audit 等同。证据：<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>（easydba 巡检手册、mopheus skill）+ 官方文档待复核。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> 认证与权限 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——MySQL 模式支持用户/密码认证与 GRANT/REVOKE 权限体系，用户名可携带租户信息；Oracle 模式沿用其权限语义。<strong>角色（ROLE）与外部认证（LDAP/Kerberos）支持情况未找到可靠证据</strong>。证据：社区实测 + 待验证。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> 备份恢复 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——全量备份 → 增量备份 → 归档日志链路；支持按 SCN/时间点恢复（<code>ALTER SYSTEM RESTORE/RECOVER TENANT</code>）。证据：<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>（mopheus 备份恢复 skill），官方文档待复核。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> 大版本升级 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——存在官方升级矩阵与 barrier 版本约束，不可任意跨版本升级；4.4.2 CE BP3 官方发布了平滑升级路径。<strong>升级失败回退能力未找到可靠证据</strong>。证据：官方升级文档/发布说明<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> 可观测性 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——系统视图族（<code>GV$OB_SQL_AUDIT</code>、<code>GV$OB_PROCESSLIST</code>、<code>GV$SYSSTAT</code> 等）+ ODC/OCP 管控平台；第三方巡检手册生态成熟。<strong>标准化 APM/慢查询治理能力与社区版边界未找到可靠证据</strong>。证据：社区实测 + 厂商口径。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> 连接模型 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——支持直连 OBServer（常用 2881），也支持经 OBProxy/ODP 代理接入（ODP 默认监听 2883），用户名可携带租户/集群信息。证据：官方 ODP 文档<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>+ 社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> 事务与隔离级别 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——单分区事务经 Paxos 一次提交；跨分区/跨机事务走 2PC；MVCC 多版本读 + GTS 全局一致性读。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（底层引擎材料）+ 社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> 复制与一致性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——Paxos 多副本，多数派确认即写成功；RPO=0、RTO&lt;8 秒为三地五中心部署下的官方口径（厂商口径，切主非恢复）。证据：官方口径。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> 扩展方式 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——原生 scale-out，在线扩缩容不停服；4.0 起单机分布式一体化（同一架构可单机部署）。证据：官方口径。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> 兼容性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——租户级 MySQL 模式 / Oracle 模式双兼容；协议层对 MySQL 客户端友好。深水差异见深水区四。证据：官方口径 + 社区实测。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> 许可证与商业模式 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——社区版开源（2021-06 起）；企业版商业授权（订阅制）；OB Cloud 托管服务按云计费。替代 Oracle 可省大额 license 费用为选型口径，非承诺。证据：官方口径。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> 中文资料丰富度 <span class="verdict v-yes">有（丰富）</span></h3><div class="dim-body"><p><strong>有（丰富）</strong>——官方中文文档、社区、大量 CSDN/博客实践帖。证据：<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</p></div></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — the managed OceanBase cloud service has supported TDE transparent encryption since 2021 (Alibaba Cloud official product updates); the kernel has encryption infrastructure (AES-256 backup encryption, key storage via local files / HSM / cloud KMS, micro-blocks support user-specified encryption algorithms). <strong>No reliable evidence found for the full at-rest encryption boundary of the self-hosted Community Edition</strong> — check the edition manual before selecting. Evidence: Alibaba Cloud official updates <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> + community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / transport encryption <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — the cloud service supports SSL link encryption; <strong>no reliable evidence found for the self-hosted edition&#x27;s TLS configuration and default behavior</strong>. Evidence: vendor claim + to-be-verified.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> Auditing <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — <code>GV$OB_SQL_AUDIT</code> provides SQL-level auditing (requires <code>enable_sql_audit=true</code>, ring memory buffer with rolling overwrite — inspections must use a time window); <strong>no evidence found for compliance-grade security auditing (long-term retention of DDL / permission-change audits)</strong> — do not equate with MySQL Enterprise Audit. Evidence: community consensus (easydba inspection handbook, mopheus skill) + official docs pending re-verification.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> Authentication &amp; authorization <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — MySQL mode supports username/password authentication and the GRANT/REVOKE permission system, with usernames able to carry tenant info; Oracle mode follows its permission semantics. <strong>No reliable evidence found for ROLE support and external authentication (LDAP/Kerberos)</strong>. Evidence: community-tested + to-be-verified.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> Backup &amp; recovery <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — full backup → incremental backup → archived-log chain; point-in-time recovery by SCN/timestamp (<code>ALTER SYSTEM RESTORE/RECOVER TENANT</code>). Evidence: community consensus (mopheus backup-recovery skill), official docs pending re-verification.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> Major-version upgrades <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — an official upgrade matrix and barrier-version constraints exist; arbitrary cross-version upgrades are not allowed; 4.4.2 CE BP3 officially published a smooth upgrade path. <strong>No reliable evidence found for upgrade-failure rollback capability</strong>. Evidence: official upgrade docs / release notes <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> Observability <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — system-view family (<code>GV$OB_SQL_AUDIT</code>, <code>GV$OB_PROCESSLIST</code>, <code>GV$SYSSTAT</code>, etc.) + ODC/OCP management platforms; a mature third-party inspection-handbook ecosystem. <strong>No reliable evidence found for standardized APM / slow-query governance capabilities and the Community Edition boundary</strong>. Evidence: community-tested + vendor claim.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> Connection model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — direct connections to OBServer (commonly port 2881), plus proxied access via OBProxy/ODP (ODP listens on 2883 by default); usernames can carry tenant/cluster info. Evidence: official ODP docs <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> + community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> Transactions &amp; isolation levels <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — single-partition transactions commit in one Paxos round; cross-partition / cross-node transactions go through 2PC; MVCC multi-version reads + GTS globally consistent reads. Evidence: official docs (storage-engine materials) + community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> Replication &amp; consistency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — Paxos multi-replica, write succeeds on quorum acknowledgment; RPO=0, RTO&lt;8s is the vendor claim for three-geo five-IDC deployments (primary failover, not recovery). Evidence: vendor claim.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> Scaling <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — native scale-out, online scaling without downtime; since 4.0, single-node/distributed unification (the same architecture can run on a single node). Evidence: vendor claim.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> Compatibility <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — tenant-level MySQL-mode / Oracle-mode dual compatibility; protocol-level friendliness to MySQL clients. Deep-water differences: see Deep Dive 4. Evidence: vendor claim + community-tested.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> License &amp; business model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — Community Edition open source (since 2021-06); Enterprise Edition commercially licensed (subscription-based); OB Cloud managed service billed by cloud usage. &quot;Replacing Oracle saves big license fees&quot; is a selection-side claim, not a commitment. Evidence: vendor claim.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> Chinese-language resources <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported (rich)</strong> — official Chinese docs, community, many CSDN / blog practice posts. Evidence: community consensus.</p></div></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="杀手特性" data-en="Killer features">杀手特性</span></h2>
+<div class="lang-block lang-zh">
+<blockquote>
+<p>写法要求：每个特性 = 它是什么 + 为什么是真本事 + 推到边缘会发生什么。只写官方宣传稿的档案没有价值。</p>
+</blockquote>
+<ol>
+<li><strong>原生分布式 + 单机分布式一体化</strong> 真本事：4.0 起同一套代码既跑单机又跑分布式，开发测试用单机、生产切分布式，数据和 SQL 无需改造。 边缘真相：单机模式是&quot;退化&quot;的分布式——Paxos、GTS、多副本机制仍在，单机性能天花板天然低于为单机而生的 MySQL / PG。别指望它单机跑赢 MySQL，一体化的价值在&quot;架构统一&quot;不在&quot;单机更快&quot;。</li>
+<li><strong>Paxos 多副本金融级容灾</strong> 真本事：RPO=0、RTO&lt;8 秒，三地五中心；出身支付宝核心账务，正确性优先的工程文化是口碑根基。 边缘真相：RTO&lt;8 秒指的是&quot;故障自动切主&quot;，不是&quot;从备份恢复&quot;；多数派写确认意味着跨城部署时每次提交都要等最远的多数派，写延迟与物理距离强相关；网络分区时少数派分区直接拒绝写入——保正确性弃可用，这是 CAP 写在架构里的选择，不是 bug。</li>
+<li><strong>MySQL / Oracle 双模式兼容</strong> 真本事：租户级切换兼容模式，&quot;去 O&quot;迁移的改造成本在国产库里最低一档。 边缘真相：见下文深水区四——&quot;兼容 90%&quot; 剩下那 10% 往往是核心系统最难迁的部分，兼容性矩阵打勾不等于业务能跑。</li>
+<li><strong>多租户与资源隔离</strong> 真本事：单集群多租户，资源池弹性调整，适合&quot;一库多用&quot;的平台型团队做资源整合。 边缘真相：资源单元管的是 CPU / 内存配额，IO 和网络的 noisy neighbor 依然存在；混部 OLTP + OLAP 时，一个租户的大查询能拖慢邻居——逻辑隔离不等于物理隔离，核心业务建议独占资源。</li>
+<li><strong>LSM-Tree 高压缩低成本</strong> 真本事：编码压缩 + 通用压缩，归档场景存储成本优势明显；4.4 起 TP / AP / AI 一体化，向混合负载延伸。 边缘真相：见下文深水区一——LSM-Tree 的写放大和合并毛刺是写密集型业务必须面对的税，压缩省下来的钱，一部分会以 DBA 调优人力的形式还回去。</li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<blockquote>
+<p>Writing rule: each feature = what it is + why it&#x27;s genuinely good + what happens at the edge. A profile that only repeats the vendor&#x27;s marketing copy is worthless.</p>
+</blockquote>
+<ol>
+<li><strong>Native distribution + single-node/distributed unification</strong> Why it&#x27;s genuinely good: Since 4.0, the same codebase runs both standalone and distributed — develop and test on a single node, cut over to distributed in production, with no changes to data or SQL. Edge truth: Standalone mode is a &quot;degraded&quot; distributed system — Paxos, GTS, and multi-replica machinery are still there, so its single-node performance ceiling is inherently lower than databases born for single-node, like MySQL / PostgreSQL. Don&#x27;t expect it to beat MySQL on a single node; the value of unification is &quot;one architecture,&quot; not &quot;faster on one node.&quot;</li>
+<li><strong>Paxos multi-replica disaster recovery for financial-grade availability</strong> Why it&#x27;s genuinely good: RPO=0, RTO&lt;8s, three-geo five-IDC deployment; born in Alipay&#x27;s core accounting system, its correctness-first engineering culture is the foundation of its reputation. Edge truth: RTO&lt;8s means &quot;automatic primary failover on failure,&quot; not &quot;restore from backup&quot;; quorum write acknowledgment means every commit in a cross-city deployment waits for the farthest quorum member, so write latency is strongly correlated with physical distance; during a network partition the minority partition refuses writes outright — choosing consistency over availability is a CAP trade-off baked into the architecture, not a bug.</li>
+<li><strong>Dual MySQL / Oracle compatibility modes</strong> Why it&#x27;s genuinely good: Compatibility mode switches at the tenant level; migration cost for &quot;qu-O&quot; (replacing Oracle) projects is among the lowest of domestic databases. Edge truth: See Deep Dive 4 below — of the &quot;90% compatible,&quot; the remaining 10% is often the hardest part of a core-system migration; a checked box on the compatibility matrix doesn&#x27;t mean your workload will run.</li>
+<li><strong>Multi-tenancy and resource isolation</strong> Why it&#x27;s genuinely good: Multi-tenant single cluster with elastic resource pools — a fit for platform teams consolidating resources into &quot;one cluster, many uses.&quot; Edge truth: Resource units govern CPU / memory quotas; noisy-neighbor effects on IO and network remain; when OLTP and OLAP share a cluster, one tenant&#x27;s heavy query can slow its neighbors — logical isolation is not physical isolation; core workloads should use dedicated resources.</li>
+<li><strong>LSM-Tree with high compression and low cost</strong> Why it&#x27;s genuinely good: Encoding compression + general-purpose compression give it a clear storage-cost advantage for archival scenarios; since 4.4, TP/AP/AI convergence extends it toward mixed workloads. Edge truth: See Deep Dive 1 below — LSM-Tree write amplification and compaction jitter are the tax write-heavy workloads must pay; part of the money saved on compression gets paid back in DBA tuning labor.</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="深水区" data-en="Deep dives">深水区</span></h2>
+<div class="lang-block lang-zh">
+<blockquote>
+<p>很多能力问题，只有把系统推到边缘才能感知好坏。以下每条都标注了机制、边缘行为和选型含义。</p>
+</blockquote>
+<p><strong>深水区一：LSM-Tree 的转储与合并——写得越猛，欠的债越重</strong></p>
+<ul>
+<li>机制：写入先入 MemTable，冻结后转储为 L0 Mini SSTable，再逐层下沉到 L1 / L2 基线；合并分全量 / 增量 / 渐进三种。</li>
+<li>推到边缘：<ul>
+<li>写入洪峰时 memstore 涨得比转储快，会触发非计划合并，极端时直接报 <code>4030 Over tenant memory limits</code>（MemStore 内存超限）——这是 OB 压测和大促前最常见的报错之一，应急手段是限流 + 加租户内存。</li>
+<li>合并前会把本 zone 的所有 leader 切到其他 zone（社区实测记录），合并不是免费的后台任务，有 leader 迁移开销。</li>
+<li>频繁更新 / 删除后，读要穿越所有版本做融合，读放大导致点查性能肉眼可见下降；应急是手动触发合并，长期靠 Table Mode 自适应（4.x 起 queuing 表改为自适应，无需人工指定）。</li>
+<li>快速冻结的墓碑阈值 4.2 是 120s、4.3 起改为 300s——调优参数跨版本会变，照抄旧博客的参数可能适得其反。</li>
+</ul></li>
+<li>选型含义：写入密集型业务必须做合并窗口规划和 4030 预案；DBA 要会看 <code>GV$OB_MEMSTORE</code>。</li>
+</ul>
+<p><strong>深水区二：时间是命门——GTS 与 NTP</strong></p>
+<ul>
+<li>机制：分布式事务的全局一致性读依赖全局授时（GTS）；Paxos 自身也要求节点间时钟同步。</li>
+<li>推到边缘：NTP 不同步，OBServer 直接无法启动（真实故障案例：ntpdate 配置错误导致整节点起不来）；虚拟机时钟漂移是隐形杀手。早期版本社区曾反馈中心化 GTS 在高并发短事务下承压，4.x 持续优化，但&quot;全局授时&quot;这个中心化组件永远是架构评审时最值得追问的单点。</li>
+<li>选型含义：机房 NTP 基建是 OB 部署的前置条件，不是可选项；上云时要确认云厂商的时钟同步方案。</li>
+</ul>
+<p><strong>深水区三：分布式事务的 2PC 税</strong></p>
+<ul>
+<li>机制：单分区事务走 Paxos 一次提交；跨分区 / 跨机事务走两阶段提交。</li>
+<li>推到边缘：事务跨越的分区越多，2PC 协调开销越大；热点行上的分布式事务还会放大锁等待。表组（tablegroup）把关联表绑到同一分区，本质是&quot;把分布式事务变回本地事务&quot;——schema 设计直接决定事务成本，这和 MySQL 里&quot;随便跨表&quot;的习惯完全不同。大事务还受 memtable 内存限制，ETL 必须拆批，这是从 MySQL 迁过来最容易踩的坑。</li>
+<li>选型含义：POC 时一定要用真实的事务模型压测，不要只测单表点查；秒杀类热点写入场景要单独验证分区打散策略。</li>
+</ul>
+<p><strong>深水区四：Oracle 兼容的深水区——&quot;兼容 90%&quot; 的剩下 10%</strong></p>
+<ul>
+<li>社区实测差异（4.2.x，flydb / mopheus 实测记录）：<ul>
+<li><code>DBMS_LOCK.ALLOCATE_UNIQUE</code> 可调用，但 <code>REQUEST</code> / <code>RELEASE</code> 不可用；</li>
+<li><code>ALTER TABLE ... MODIFY</code> 不支持只改数值 scale，组合变更（改类型 + 改可空性）可能报 <code>-4007</code>，要拆成两条 DDL；</li>
+<li><code>ORA-01451</code> / <code>ORA-00955</code> 错误码兼容，但触发条件与真 Oracle 不同，不能按 Oracle 经验吞异常；</li>
+<li><code>ALTER SESSION SET CURRENT_SCHEMA</code> 不改变 <code>USER_*</code> 视图可见性，查元数据要用 <code>ALL_*</code> + OWNER 过滤；</li>
+<li>DDL 进异步队列：客户端断开 DDL 可能继续执行，在线 DDL 会暴露 <code>_hidden_</code> 中间表；</li>
+<li>数据类型：<code>LONG</code> / <code>ROWID</code> 部分兼容（ROWID 格式不同），<code>UROWID</code> / <code>XMLTYPE</code> / <code>BFILE</code> / 嵌套表 / <code>VARRAY</code> 不支持。</li>
+</ul></li>
+<li>选型含义：核心系统迁移必须逐项 POC，尤其是存储过程包、触发器、DB Job。另有一方观点（信创选型文章）认为 OB 的 Oracle 兼容弱于金仓 / 达梦这类集中式路线、迁移成本更高——该文有立场，需交叉验证，但&quot;重度 Oracle 依赖选集中式兼容路线&quot;这个判断值得认真对待。</li>
+</ul>
+<p><strong>深水区五：运维——概念多不是最贵的，版本差异才是</strong></p>
+<ul>
+<li>3.x vs 4.x 系统视图差异大：<code>GV$OB_PROCESSLIST</code>、<code>GV$OB_LOCKS</code> 是 4.x 新增，3.x 只能查内部虚拟表；<code>GV$SYSSTAT</code> 计数器名跨版本不一致，硬编码计数器名的巡检脚本升级就挂。</li>
+<li><code>GV$SQL_AUDIT</code> 是环形内存缓冲：巡检 SQL 必须带时间窗 + 租户过滤，否则全表扫描能把业务拖垮；高频巡检建议加 <code>READ_CONSISTENCY(WEAK)</code> 弱一致读降低影响。</li>
+<li>选型含义：DBA 的学习成本要按&quot;版本&quot;算；照抄博客巡检 SQL 之前先对版本号。</li>
+</ul>
+<p><strong>深水区六：RTO&lt;8s 的真实含义</strong></p>
+<ul>
+<li>RTO&lt;8s 指故障自动切主；TB 级集群从物理备份恢复是小时级。备份窗口、异地备份、恢复演练一个都不能少——&quot;高可用&quot;不等于&quot;不怕丢&quot;，这是两个预算。</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<blockquote>
+<p>Many capability issues only reveal their good or bad side when the system is pushed to the edge. Each entry below is labeled with mechanism, edge behavior, and selection implications.</p>
+</blockquote>
+<p><strong>Deep Dive 1: LSM-Tree dump and compaction — the harder you write, the heavier the debt</strong></p>
+<ul>
+<li>Mechanism: Writes go to the MemTable first; once frozen, data is dumped as L0 Mini SSTables, then sinks level by level into the L1 / L2 baselines; compaction comes in three flavors: major / minor / progressive.</li>
+<li>At the edge:<ul>
+<li>During write floods, the memstore grows faster than dumps can drain it, triggering unplanned compactions; in extreme cases it throws <code>4030 Over tenant memory limits</code> (MemStore memory exceeded) — one of the most common errors in OB load tests and pre–sales-event drills; the emergency response is throttling + adding tenant memory.</li>
+<li>Before compaction, all leaders in the local zone are switched to other zones <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span> — compaction is not a free background task; it carries leader-migration overhead.</li>
+<li>After frequent updates / deletes, reads must traverse and merge all versions, and read amplification visibly degrades point-lookup performance; the emergency fix is manual compaction, while the long-term answer is adaptive Table Mode (since 4.x, queuing tables became adaptive — no manual specification needed).</li>
+<li>The fast-freeze tombstone threshold is 120s in 4.2 and changed to 300s in 4.3+ — tuning parameters change across versions, so copying parameters from old blog posts can backfire.</li>
+</ul></li>
+<li>Selection implications: Write-intensive workloads must plan compaction windows and prepare a 4030 runbook; DBAs need to know how to read <code>GV$OB_MEMSTORE</code>.</li>
+</ul>
+<p><strong>Deep Dive 2: Time is the jugular — GTS and NTP</strong></p>
+<ul>
+<li>Mechanism: Globally consistent reads for distributed transactions depend on the Global Timestamp Service (GTS); Paxos itself also requires clock synchronization between nodes.</li>
+<li>At the edge: If NTP is out of sync, OBServer simply won&#x27;t start (real incident: an ntpdate misconfiguration kept an entire node from starting); VM clock drift is a silent killer. In early versions the community reported that the centralized GTS struggled under high-concurrency short transactions; 4.x keeps optimizing it, but the &quot;global timestamping&quot; centralized component will always be the single point most worth interrogating in an architecture review.</li>
+<li>Selection implications: Data-center NTP infrastructure is a prerequisite for OB deployment, not an option; when moving to the cloud, confirm the cloud vendor&#x27;s clock-synchronization solution.</li>
+</ul>
+<p><strong>Deep Dive 3: The 2PC tax on distributed transactions</strong></p>
+<ul>
+<li>Mechanism: Single-partition transactions commit via Paxos in one round; cross-partition / cross-node transactions go through two-phase commit.</li>
+<li>At the edge: The more partitions a transaction spans, the higher the 2PC coordination overhead; distributed transactions on hot rows further amplify lock waits. Table groups (tablegroup) colocate related tables in the same partition — essentially &quot;turning distributed transactions back into local ones&quot; — so schema design directly determines transaction cost, a complete departure from MySQL&#x27;s &quot;join any tables freely&quot; habit. Large transactions are also bound by memtable memory limits, so ETL must be batched — the easiest pitfall when migrating from MySQL.</li>
+<li>Selection implications: POC load tests must use the real transaction model, not just single-table point lookups; flash-sale-style hot-write scenarios need separate validation of partition-scattering strategies.</li>
+</ul>
+<p><strong>Deep Dive 4: The deep waters of Oracle compatibility — the remaining 10% of &quot;90% compatible&quot;</strong></p>
+<ul>
+<li>Community-tested differences (4.2.x, tested by flydb / mopheus):<ul>
+<li><code>DBMS_LOCK.ALLOCATE_UNIQUE</code> is callable, but <code>REQUEST</code> / <code>RELEASE</code> are unavailable;</li>
+<li><code>ALTER TABLE ... MODIFY</code> doesn&#x27;t support changing only numeric scale; combined changes (type change + nullability change) may throw <code>-4007</code> and must be split into two DDL statements;</li>
+<li><code>ORA-01451</code> / <code>ORA-00955</code> error codes are compatible, but their trigger conditions differ from real Oracle — don&#x27;t swallow exceptions based on Oracle experience;</li>
+<li><code>ALTER SESSION SET CURRENT_SCHEMA</code> doesn&#x27;t change <code>USER_*</code> view visibility; query metadata with <code>ALL_*</code> + OWNER filters instead;</li>
+<li>DDL goes into an async queue: DDL may keep executing after the client disconnects, and online DDL exposes <code>_hidden_</code> intermediate tables;</li>
+<li>Data types: <code>LONG</code> / <code>ROWID</code> partially compatible (ROWID format differs); <code>UROWID</code> / <code>XMLTYPE</code> / <code>BFILE</code> / nested tables / <code>VARRAY</code> unsupported.</li>
+</ul></li>
+<li>Selection implications: Core-system migrations must POC each item, especially stored procedure packages, triggers, and DB jobs. One other viewpoint (a xinchuang selection article) argues OB&#x27;s Oracle compatibility is weaker than centralized alternatives like Kingbase (金仓) / Dameng (达梦), with higher migration cost — that article has a position and needs cross-verification, but the judgment that &quot;heavy Oracle dependence favors the centralized compatibility route&quot; deserves serious consideration.</li>
+</ul>
+<p><strong>Deep Dive 5: Operations — concepts aren&#x27;t the most expensive part, version differences are</strong></p>
+<ul>
+<li>System views differ greatly between 3.x and 4.x: <code>GV$OB_PROCESSLIST</code> and <code>GV$OB_LOCKS</code> are new in 4.x; on 3.x you can only query internal virtual tables; <code>GV$SYSSTAT</code> counter names are inconsistent across versions, so inspection scripts with hardcoded counter names break on upgrade.</li>
+<li><code>GV$SQL_AUDIT</code> is a ring memory buffer: inspection SQL must include a time window + tenant filter, or a full scan will drag down production; for high-frequency inspections, add <code>READ_CONSISTENCY(WEAK)</code> (weak-consistency read) to reduce impact.</li>
+<li>Selection implications: DBA learning cost should be counted &quot;per version&quot;; check the version number before copying inspection SQL from blogs.</li>
+</ul>
+<p><strong>Deep Dive 6: What RTO&lt;8s really means</strong></p>
+<ul>
+<li>RTO&lt;8s means automatic primary failover on failure; restoring a TB-scale cluster from physical backup takes hours. Backup windows, off-site backups, and restore drills are all non-negotiable — &quot;high availability&quot; is not the same as &quot;not afraid of losing data&quot;; those are two separate budgets.</li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="用户最买账的 5 点" data-en="What users love most">用户最买账的 5 点</span></h2>
+<div class="lang-block lang-zh">
+<blockquote>
+<p>写法要求：好的也要有深度。每条 = 为什么是真的 + 边缘与限度（好到什么程度、在哪失效、代价是什么）。</p>
+</blockquote>
+<ol>
+<li><strong>金融级高可用口碑</strong><ul>
+<li>为什么是真的：Paxos 多副本 + 三地五中心是架构级能力，不是配置项；15 年支付宝 / 双十一验证，RPO=0、RTO&lt;8s 有官方口径和公开报道背书。</li>
+<li>边缘与限度：高可用的代价是写延迟（多数派确认）和运维复杂度；RTO&lt;8s 是切主不是恢复；小业务用三副本是&quot;大炮打蚊子&quot;，机器和人力成本可能超过收益。口碑成立的前提是你真的需要金融级——大多数业务的真实需求是&quot;别宕机&quot;，不是&quot;三地五中心&quot;。</li>
+</ul></li>
+<li><strong>&quot;去 O&quot;降本</strong><ul>
+<li>为什么是真的：Oracle 模式租户级兼容 + OMS 迁移工具链成熟；省下的 Oracle license（按 CPU 核数收费）是真金白银，CFO 看得懂。</li>
+<li>边缘与限度：省的是 license，花的是改造、DBA 学习和企业版订阅；深水区四的兼容坑意味着&quot;降本&quot;有个前提——POC 通过。算 TCO 要把 3 年人力成本算进去；有团队迁完发现省的钱又花在了原厂服务上。降本是结果，不是起点。</li>
+</ul></li>
+<li><strong>TPC-C / TPC-H 基准纪录（厂商口径，非判决依据）</strong><ul>
+<li>为什么被引用：2020 年 TPC-C 7.07 亿 tpmC 等公开基准纪录是厂商宣传的核心论据，用来证明分布式 OLTP 架构没有明显短板。</li>
+<li>边缘与限度：TPC 是&quot;实验室上限&quot;，不是&quot;你的业务下限&quot;；跑分用的硬件配置和调优投入普通团队达不到；OLTP 纪录不代表你的混合负载也快。<strong>本档案所有判决均不以该数字为依据</strong>。benchmark 的价值是&quot;证明架构上限高&quot;，不是&quot;保证你的 SQL 快&quot;——拿跑分成绩单去要求业务性能，是经典误用。</li>
+</ul></li>
+<li><strong>在线扩缩容</strong><ul>
+<li>为什么是真的：原生分布式，数据按分区自动均衡，加节点不停服，扩容不再是&quot;半夜停机窗口&quot;。</li>
+<li>边缘与限度：扩容时的数据均衡（tablet 迁移）会吃 IO 和网络，业务高峰期扩容等于&quot;给飞行中的飞机换引擎&quot;，要选低峰窗口；缩容更危险，数据迁出耗时更长。以及很多人高估了自己对扩容的需求——&quot;从 3 节点扩到 100 节点&quot;的故事很性感，但大多数业务 3 年都用不满 3 节点，为用不上的扩展性付了运维税。</li>
+</ul></li>
+<li><strong>中文生态 + 政策红利</strong><ul>
+<li>为什么是真的：中文文档、社区、原厂服务响应确实对国内团队友好；信创目录是实打实的订单来源。</li>
+<li>边缘与限度：政策红利是&quot;入场券&quot;不是&quot;护城河&quot;，目录里有几十家；中文生态强意味着英文生态相对弱，出海或招外籍 DBA 时是短板；对原厂依赖度高，社区版用户遇到深水区问题最终还是要找原厂——&quot;开源&quot;不等于&quot;能自己搞定&quot;。</li>
+</ul></li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<blockquote>
+<p>Writing rule: the good parts need depth too. Each entry = why it&#x27;s true + edges and limits (how good it is, where it breaks, what it costs).</p>
+</blockquote>
+<ol>
+<li><strong>Financial-grade high-availability reputation</strong><ul>
+<li>Why it&#x27;s true: Paxos multi-replica + three-geo five-IDC is an architectural capability, not a configuration item; 15 years of Alipay / Singles&#x27; Day validation back the RPO=0, RTO&lt;8s claims <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>, with public reporting to corroborate.</li>
+<li>Edges and limits: High availability costs write latency (quorum acknowledgment) and operational complexity; RTO&lt;8s is failover, not recovery; running three replicas for a small workload is &quot;using a cannon to kill a mosquito&quot; — machine and labor costs may exceed the benefit. The reputation holds only if you genuinely need financial-grade — most workloads&#x27; real requirement is &quot;don&#x27;t go down,&quot; not &quot;three geos, five IDCs.&quot;</li>
+</ul></li>
+<li><strong>&quot;Qu-O&quot; (replacing Oracle) cost reduction</strong><ul>
+<li>Why it&#x27;s true: Tenant-level Oracle-mode compatibility + a mature OMS (OceanBase Migration Service) toolchain; the Oracle licenses saved (charged per CPU core) are real money that a CFO can understand.</li>
+<li>Edges and limits: You save on licenses but spend on refactoring, DBA learning, and Enterprise Edition subscriptions; the compatibility pitfalls in Deep Dive 4 mean &quot;cost reduction&quot; has a precondition — passing the POC. TCO math must include 3 years of labor cost; some teams found the saved money went right back into vendor professional services. Cost reduction is the outcome, not the starting point.</li>
+</ul></li>
+<li><strong>TPC-C / TPC-H benchmark records (vendor claim, not a basis for verdicts)</strong><ul>
+<li>Why it&#x27;s cited: the public benchmark records — e.g., the 2020 TPC-C result of 707 million tpmC — are the centerpiece of the vendor&#x27;s marketing, cited to show the distributed OLTP architecture has no obvious weak spots.</li>
+<li>Edges and limits: TPC is a &quot;lab ceiling,&quot; not &quot;your workload&#x27;s floor&quot;; ordinary teams can&#x27;t match the benchmark&#x27;s hardware and tuning investment; an OLTP record doesn&#x27;t mean your mixed workload is fast. <strong>No verdict in this profile is based on these numbers.</strong> A benchmark&#x27;s value is &quot;proving the architecture&#x27;s ceiling is high,&quot; not &quot;guaranteeing your SQL is fast&quot; — demanding production performance from a benchmark scorecard is a classic misuse.</li>
+</ul></li>
+<li><strong>Online scaling</strong><ul>
+<li>Why it&#x27;s true: Natively distributed, data auto-balances by partition, nodes can be added without downtime — scaling is no longer a &quot;midnight maintenance window.&quot;</li>
+<li>Edges and limits: Data rebalancing during scale-out (tablet migration) consumes IO and network; scaling during peak hours is like &quot;changing engines mid-flight&quot; — pick an off-peak window; scaling in is riskier, as data migration-out takes longer. And many teams overestimate their scaling needs — the &quot;from 3 nodes to 100 nodes&quot; story is sexy, but most workloads won&#x27;t fill 3 nodes in 3 years, and they pay an operations tax for scalability they&#x27;ll never use.</li>
+</ul></li>
+<li><strong>Chinese-language ecosystem + policy tailwinds</strong><ul>
+<li>Why it&#x27;s true: Chinese documentation, community, and responsive vendor support are genuinely friendly to domestic teams; the xinchuang (信创, China&#x27;s IT application innovation) catalog is a real source of orders.</li>
+<li>Edges and limits: Policy tailwinds are an &quot;entry ticket,&quot; not a &quot;moat&quot; — the catalog has dozens of vendors; a strong Chinese ecosystem means a relatively weak English one, a disadvantage when expanding overseas or hiring non-Chinese DBAs; vendor dependence is high — Community Edition users with deep-water problems end up going to the vendor anyway. &quot;Open source&quot; doesn&#x27;t mean &quot;you can handle it yourself.&quot;</li>
+</ul></li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="吐槽清单" data-en="Complaints">吐槽清单</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>分类</th><th>吐槽</th><th>影响版本</th><th>状态</th></tr></thead>
+<tbody>
+<tr><td>运维坑</td><td>概念体系多（Zone / Observer / 租户 / 资源单元 / Primary Zone），DBA 上手慢</td><td>全版本</td><td>open（4.x 工具链持续改善中）</td></tr>
+<tr><td>运维坑</td><td>故障排查常需较深内核知识，慢 SQL 诊断依赖 GV$SQL_AUDIT 等内部视图；巡检 SQL 必须带时间窗 + 租户过滤，否则拖垮业务</td><td>全版本</td><td>partially-fixed（ODC / OCP 可观测性增强；高频巡检可用弱一致读）</td></tr>
+<tr><td>运维坑</td><td>3.x vs 4.x 系统视图差异大（GV$OB_PROCESSLIST / GV$OB_LOCKS 为 4.x 新增），照抄旧博客的巡检 SQL 可能直接报错</td><td>3.x→4.x</td><td>open（按版本对照文档）</td></tr>
+<tr><td>运维坑</td><td>强依赖 NTP 时钟同步，时钟漂移严重时 OBServer 无法启动；虚拟机部署要格外小心</td><td>全版本</td><td>open（基建前置条件）</td></tr>
+<tr><td>资源坑</td><td>Observer 内存占用高，小规模部署&quot;杀鸡用牛刀&quot;，单机性价比不如 MySQL / PG</td><td>全版本</td><td>open（选型前按需评估）</td></tr>
+<tr><td>资源坑</td><td>写入洪峰下 memstore 涨得比转储快，触发非计划合并，极端时报 4030（Over tenant memory limits）；合并前还会迁移本 zone 的 leader</td><td>全版本</td><td>open（需做合并窗口规划 + 写入限流预案）</td></tr>
+<tr><td>性能坑</td><td>频繁更新 / 删除后读放大，点查性能下降；靠手动合并或 Table Mode 自适应缓解</td><td>全版本</td><td>partially-fixed（4.x 自适应优化）</td></tr>
+<tr><td>性能坑</td><td>跨分区事务走 2PC，事务模型设计不好性能税很重；大事务受 memtable 内存限制，ETL 必须拆批</td><td>全版本</td><td>open（schema 设计时规避）</td></tr>
+<tr><td>兼容坑</td><td>早期版本复杂 SQL、存储过程、函数行为与 MySQL 有差异，迁移必须做回归测试</td><td>3.x 为主</td><td>partially-fixed（4.x 兼容性持续补齐）</td></tr>
+<tr><td>兼容坑</td><td>Oracle 模式深水区：DBMS_LOCK.REQUEST/RELEASE 不可用、ALTER MODIFY 组合变更报 -4007、DDL 异步执行暴露 _hidden_ 中间表、UROWID/XMLTYPE/BFILE/嵌套表/VARRAY 不支持</td><td>4.x</td><td>open（逐项 POC）</td></tr>
+<tr><td>版本坑</td><td>社区版与企业版功能差异（管控、安全、部分高可用能力），选型前需对照版本说明书</td><td>全版本</td><td>open</td></tr>
+<tr><td>版本坑</td><td>3.x → 4.x 架构变化大，老版本升级需要专门规划</td><td>3.x→4.x</td><td>fixed-in-v4.x（新部署直接上 4.x）</td></tr>
+<tr><td>生态坑</td><td>第三方工具 / ORM 适配成熟度不如 MySQL / PG 生态</td><td>全版本</td><td>partially-fixed</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Category</th><th>Complaint</th><th>Affected versions</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Ops</td><td>Too many concepts (Zone / Observer / tenant / resource unit / Primary Zone); slow DBA onboarding</td><td>All versions</td><td>open (improving in the 4.x toolchain)</td></tr>
+<tr><td>Ops</td><td>Troubleshooting often requires deep kernel knowledge; slow-SQL diagnosis depends on internal views like GV$SQL_AUDIT; inspection SQL must include a time window + tenant filter or it drags down production</td><td>All versions</td><td>partially-fixed (ODC / OCP observability improved; weak-consistency reads available for high-frequency inspections)</td></tr>
+<tr><td>Ops</td><td>Large system-view differences between 3.x and 4.x (GV$OB_PROCESSLIST / GV$OB_LOCKS are new in 4.x); copying inspection SQL from old blogs may fail outright</td><td>3.x→4.x</td><td>open (check version-specific docs)</td></tr>
+<tr><td>Ops</td><td>Hard dependency on NTP clock sync; OBServer won&#x27;t start under severe clock drift; extra caution needed for VM deployments</td><td>All versions</td><td>open (infrastructure prerequisite)</td></tr>
+<tr><td>Resources</td><td>High Observer memory footprint; overkill for small deployments — worse single-node price/performance than MySQL / PostgreSQL</td><td>All versions</td><td>open (evaluate needs before selecting)</td></tr>
+<tr><td>Resources</td><td>During write floods the memstore grows faster than dumps drain it, triggering unplanned compactions, in extreme cases error 4030 (Over tenant memory limits); leaders in the local zone are migrated before compaction</td><td>All versions</td><td>open (plan compaction windows + write-throttling runbook)</td></tr>
+<tr><td>Performance</td><td>Read amplification after frequent updates / deletes degrades point lookups; mitigated by manual compaction or adaptive Table Mode</td><td>All versions</td><td>partially-fixed (4.x adaptive improvements)</td></tr>
+<tr><td>Performance</td><td>Cross-partition transactions go through 2PC — poor transaction modeling carries a heavy performance tax; large transactions are bound by memtable memory limits, so ETL must be batched</td><td>All versions</td><td>open (avoid via schema design)</td></tr>
+<tr><td>Compatibility</td><td>Early versions differ from MySQL in complex SQL, stored procedures, and function behavior; migrations require regression testing</td><td>Mostly 3.x</td><td>partially-fixed (4.x keeps closing compatibility gaps)</td></tr>
+<tr><td>Compatibility</td><td>Oracle-mode deep waters: DBMS_LOCK.REQUEST/RELEASE unavailable, combined ALTER MODIFY changes throw -4007, async DDL exposes _hidden_ intermediate tables, UROWID/XMLTYPE/BFILE/nested tables/VARRAY unsupported</td><td>4.x</td><td>open (POC each item)</td></tr>
+<tr><td>Versioning</td><td>Community vs Enterprise feature differences (management, security, some HA capabilities); check the edition comparison before selecting</td><td>All versions</td><td>open</td></tr>
+<tr><td>Versioning</td><td>Major architectural changes from 3.x to 4.x; upgrading old versions needs dedicated planning</td><td>3.x→4.x</td><td>fixed-in-v4.x (new deployments go straight to 4.x)</td></tr>
+<tr><td>Ecosystem</td><td>Third-party tool / ORM adaptation maturity lags the MySQL / PostgreSQL ecosystems</td><td>All versions</td><td>partially-fixed</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="判决" data-en="Verdict">判决</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li><strong>适合谁</strong>：金融 / 政企核心系统（容灾要求极高）、&quot;去 O&quot;替换 Oracle、数据量大且持续增长需在线扩展、有信创目录要求、一套集群服务多业务线的平台型团队。</li>
+<li><strong>不适合谁</strong>：初创小团队的单机小库（运维和资源成本不划算）、重度依赖 MySQL 偏门特性且不愿做兼容测试、团队无专职 DBA 又想&quot;装完不管&quot;。</li>
+<li><strong>迁移成本</strong>：MySQL → 低（协议兼容，OMS 迁移工具成熟，复杂 SQL 需回归）；Oracle → 中（Oracle 模式兼容度高，PL/SQL 高级特性逐项验证）；PostgreSQL → 中高（无原生 PG 兼容，走应用层改造）。</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li><strong>Best for</strong>: Financial / government core systems (extremely high DR requirements), &quot;qu-O&quot; Oracle replacement, large and growing datasets needing online scaling, xinchuang catalog requirements, platform teams serving multiple business lines from one cluster.</li>
+<li><strong>Not for</strong>: Small startup teams with single-node small databases (ops and resource costs don&#x27;t pay off), heavy reliance on obscure MySQL features without willingness to compatibility-test, teams with no dedicated DBA hoping to &quot;install and forget.&quot;</li>
+<li><strong>Migration cost</strong>: MySQL → low (protocol-compatible, mature OMS migration toolchain, regression-test complex SQL); Oracle → medium (high Oracle-mode compatibility, verify advanced PL/SQL features item by item); PostgreSQL → medium-high (no native PG compatibility, application-layer rework).</li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="来源与待验证清单" data-en="Sources & to-be-verified">来源与待验证清单</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li>版本信息：GitHub oceanbase/oceanbase releases（v4.4.2_CE_BP3，2026-09-10 发布）</li>
+<li>架构与容灾口径：官方文档；证券时报 2026 年报道（RPO=0、RTO&lt;8 秒；TPC-C / TPC-H 纪录；客户数破 4000——均为厂商口径宣传，不作为判决依据）</li>
+<li>4.4 一体化与 AI 方向：官方发布（TP/AP/AI 融合内核；开源 AI 原生混合搜索数据库 seekdb）</li>
+<li>深水区机制：OceanBase 官方《底层引擎 V4.0》培训材料（分层转储 L0/L1/L2、转储触发机制）；CSDN 存储引擎系列（快速冻结 Table Mode 策略、合并分类）</li>
+<li>深水区实测：社区异常汇总（4030 内存超限分类、合并前 leader 切换、读放大排查）；ActionTech ChatDBA 案例（NTP 时钟不同步导致无法启动）；flydb Oracle 模式实测（4.2.1.2 兼容差异）；mopheus 迁移 Skill（Oracle 数据类型兼容矩阵）；easydba 巡检手册（3.x/4.x 视图差异、GV$SQL_AUDIT 环形缓冲、弱一致读巡检）</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li>Version info: GitHub oceanbase/oceanbase releases (v4.4.2_CE_BP3, released 2026-09-10)</li>
+<li>Architecture and DR claims: official docs; Securities Times (证券时报) 2026 reporting (RPO=0, RTO&lt;8s; TPC-C / TPC-H records; customer count past 4,000 — all vendor-claim publicity, not used as verdict basis)</li>
+<li>4.4 convergence and AI direction: official announcements (TP/AP/AI converged kernel; open-source AI-native hybrid-search database seekdb)</li>
+<li>Deep-dive mechanics: OceanBase official &quot;Storage Engine V4.0&quot; (底层引擎 V4.0) training materials (tiered dumps L0/L1/L2, dump triggers); CSDN storage-engine series (fast-freeze Table Mode policies, compaction taxonomy)</li>
+<li>Deep-dive testing: community incident compilations <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span> (4030 memory-limit taxonomy, pre-compaction leader switching, read-amplification troubleshooting); ActionTech ChatDBA case (NTP clock skew preventing startup); flydb Oracle-mode tests (4.2.1.2 compatibility differences); mopheus migration skill (Oracle data-type compatibility matrix); easydba inspection handbook (3.x/4.x view differences, GV$SQL_AUDIT ring buffer, weak-consistency inspections)</li>
+</ul>
+</div>
+</section>
+</main>
+<footer class="footer">
+  <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
+</footer>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
