@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>ClickHouse - DB 选型参考</title>
+<link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">&#9672;</span> DB <span data-zh="选型参考" data-en="Compare">选型参考</span></a>
+    <nav class="mainnav">
+<a href="index.html" class="active" data-zh="首页" data-en="Home">首页</a>
+<a href="compare.html" class="" data-zh="维度对比" data-en="Compare">维度对比</a>
+<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
+<a href="advisor.html" class="" data-zh="AI选型" data-en="AI Selection">AI选型</a>
+    </nav>
+    <div class="cmp-tray">
+      <button id="cmp-tray-btn" type="button" class="tray-btn" aria-expanded="false" aria-haspopup="true"><span data-zh="对比" data-en="Compare">对比</span> <b class="tray-count"><i id="cmp-count">0</i>/4</b></button>
+      <div id="cmp-panel" class="tray-panel" hidden>
+        <div class="tray-sec"><span data-zh="已选" data-en="Selected">已选</span></div>
+        <div id="cmp-selected" class="tray-selected"></div>
+        <div class="tray-sec"><span data-zh="全部产品（最多选 4 款）" data-en="All products (up to 4)">全部产品（最多选 4 款）</span></div>
+        <div id="cmp-list" class="tray-list"></div>
+        <div class="tray-actions"><button id="cmp-clear" type="button" class="tray-clear"><span data-zh="清空选择" data-en="Clear selection">清空选择</span></button></div>
+      </div>
+    </div>
+    <button id="lang-toggle" class="lang-btn" type="button" aria-label="switch language">EN</button>
+  </div>
+</header>
+<main class="page">
+<div class="profile-hero">
+  <a class="back" href="index.html"><span data-zh="← 返回首页" data-en="← Back to home">← 返回首页</span></a>
+  <h1>ClickHouse</h1>
+  <div class="meta-row"><span class="cat cat-olap" data-zh="OLAP" data-en="OLAP">OLAP</span> <span class="tag">#列存</span> <span class="tag">#OLAP</span> <span class="tag">#MergeTree</span> <span class="tag">#向量化</span> <span class="tag">#MPP</span> <span class="tag">#实时分析</span> <span class="tag">#Apache-2</span> <span class="tag">#存算分离</span></div>
+  <p class="oneliner"><div class="lang-block lang-zh">
+<p>面向高吞吐追加写和大规模扫描聚合的开源列式 OLAP 数据库——&quot;单机极致效率的实时分析引擎&quot;：以列存、向量化执行和 MergeTree 为核心，一台机器就能打出传统数仓集群的扫描吞吐；代价是几乎没有通用 ACID 事务、高频更新/删除是架构级税、分布式复制与 DDL 运维得自己设计好。</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<p>An open-source columnar OLAP database for high-throughput append writes and massive scan-aggregation — &quot;a real-time analytics engine with extreme single-node efficiency&quot;: columnar storage, vectorized execution and MergeTree at its core, delivering scan throughput on one box that row-store warehouses need clusters for; the price is almost no general-purpose ACID transactions, architecturally expensive high-frequency updates/deletes, and distributed replication plus DDL operations you must design yourself.</p>
+</div></p>
+  <div class="ai-dive-row" data-product="ClickHouse">
+    <span class="ai-dive-label" data-zh="用 AI 深挖这款：" data-en="Deep-dive with AI:">用 AI 深挖这款：</span>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('chatgpt', this)">ChatGPT <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('grok', this)">Grok <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('claude', this)">Claude <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn addcmp-btn" data-addcmp="clickhouse"><span class="addcmp-label">＋ 对比</span></button>
+  </div>
+  <div class="legend"><span class="legend-label" data-zh="证据等级：" data-en="Evidence levels: ">证据等级：</span><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></div>
+</div>
+<section class="doc-section">
+<h2><span data-zh="基本信息" data-en="Basics">基本信息</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>项</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td>厂商</td><td>ClickHouse, Inc.（2021 年成立，总部旧金山；欧洲工程团队在阿姆斯特丹）</td></tr>
+<tr><td>国家</td><td>美国（技术起源于俄罗斯 Yandex）</td></tr>
+<tr><td>起源</td><td>2009 年由 Alexey Milovidov 在 Yandex 为 Yandex.Metrica 点击流分析立项；2012 年投产；2016 年以 Apache 2.0 开源</td></tr>
+<tr><td>许可证</td><td>Apache License 2.0（开源内核，无 BSL/open-core 限制）</td></tr>
+<tr><td>商业版说明</td><td>ClickHouse Cloud 为全托管商业服务；官方口径按使用量计费——计算按分钟、存储按 15 分钟计量，另有数据传输等维度；具体价格随版本/地区变化，本档案不写绝对价格</td></tr>
+<tr><td>托管服务</td><td>ClickHouse Cloud（2022 年 GA，覆盖 AWS/GCP/Azure），另有 ClickPipes 托管摄入</td></tr>
+<tr><td>主类型</td><td>列式 OLAP（实时分析数据库）</td></tr>
+<tr><td>兼具类型</td><td>日志/事件分析、数据仓库、时序分析、可观测性（ClickStack）；向量检索/embedding 相关能力随版本快速演进，评审线仅记&quot;存在&quot;，细节待验证</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Item</th><th>Content</th></tr></thead>
+<tbody>
+<tr><td>Vendor</td><td>ClickHouse, Inc. (founded 2021, HQ San Francisco; engineering base in Amsterdam)</td></tr>
+<tr><td>Country</td><td>USA (technology originated at Russia&#x27;s Yandex)</td></tr>
+<tr><td>Origin</td><td>Started 2009 by Alexey Milovidov at Yandex for Yandex.Metrica clickstream analytics; in production 2012; open-sourced 2016 under Apache 2.0</td></tr>
+<tr><td>License</td><td>Apache License 2.0 (open-source core, no BSL/open-core restrictions)</td></tr>
+<tr><td>Commercial note</td><td>ClickHouse Cloud is the fully managed commercial service; usage-based billing per official description — compute metered per minute, storage per 15 minutes, plus data transfer and other dimensions; exact prices vary by version/region and are intentionally not quoted here</td></tr>
+<tr><td>Managed service</td><td>ClickHouse Cloud (GA 2022, on AWS/GCP/Azure), plus ClickPipes managed ingestion</td></tr>
+<tr><td>Primary type</td><td>Columnar OLAP (real-time analytical database)</td></tr>
+<tr><td>Also covers</td><td>Log/event analytics, data warehousing, time-series analytics, observability (ClickStack); vector search/embedding capabilities are evolving fast across versions — noted as &quot;exists&quot; on the review line, details pending verification</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section"><h2><span data-zh="硬维度（14 项）" data-en="Hard dimensions (14)">硬维度（14 项）</span></h2>
+<div class="lang-block lang-zh">
+<div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——提供 <code>encrypted</code> 虚拟磁盘（storage policy 层），可包装本地盘、S3 等底层磁盘，按 AES-CTR 加密写入的数据文件，可按表/存储策略选择加密范围；不是&quot;一键覆盖全部数据目录&quot;的传统全库 TDE。ClickHouse Operator 文档明确：加密覆盖 MergeTree data parts，但 server metadata 与日志不覆盖——这部分仍需 LUKS、CSI 或云盘加密兜底；密钥丢失则已加密 part 无法读取。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（operator storage 指南、storing-data）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——支持 HTTPS（8443）、secure native TCP（9440）、interserver HTTPS；支持服务端证书校验与 mTLS 客户端证书。注意：TLS 需显式配置，启用安全端口不会自动关闭明文端口（8123/9000/9009），需另行关闭或防火墙隔离。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（operator FIPS 指南、客户端配置文档）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> 审计 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——<code>system.query_log</code> 记录查询文本、用户、起止时间、异常与资源用量，可作为数据库活动审计的基础；ClickHouse Cloud 默认开启 query logging。但自建版可被有权限的用户用 <code>log_queries=0</code> 关掉（除非把该设置的 writability 锁为 CONST），日志是本地表、无防篡改与集中归集，需要自己配留存 TTL、导出与不可篡改流程；ClickHouse Cloud 控制面审计边界本轮未找到足够官方证据，不下&quot;完整支持&quot;结论。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（query_log 系统表）+ 社区安全实践。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> 认证与权限 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——SQL 驱动的 RBAC：用户、角色、权限、行策略（row policy）、settings profile、quota；支持 LDAP、Kerberos、X.509 等外部认证。但存在两套管理面：传统 <code>users.xml</code> 与 SQL 管理的 access entity 不能混管同一个实体；集群 RBAC 的同步方式与版本边界本轮未逐项核实，保守表述。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> + 社区安全实践。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> 备份恢复 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——原生 <code>BACKUP</code>/<code>RESTORE</code> SQL（22.8+），可备份到本地盘与对象存储；生态常用 <code>clickhouse-backup</code> 工具。但分片集群的一致备份点、恢复并发、Keeper 元数据的重建都需要 runbook 与实际演练；本轮未找到可引用的恢复速度数字，不写。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> + 社区实践。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> 大版本升级 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——副本集可逐节点滚动升级，前提是同一 shard 的副本不同时离线；但长期混跑多版本不推荐，升级前必须阅读跨版本 release notes 并先 canary。硬伤：配置默认值、SQL 行为、磁盘元数据变化会影响降级路径，官方与社区都不承诺通用无损回退；2026 年的明确检查项是 26.6 起默认 x86 构建要求 x86-64-v3（AVX2），老 CPU 必须用 amd64compat 构建。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（update.md）+ Altinity 升级知识库 + 26.6 changelog。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> 可观测性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——<code>system.*</code> 表极丰富：query_log、processes、parts、merges、metrics、events、replicas、disks、mutations、query_thread_log、text_log、part_log；支持 Prometheus endpoint；OpenTelemetry span 可写入 <code>system.opentelemetry_span_log</code>。注意：自观测日志本身是 MergeTree 表，会吃磁盘，必须配 TTL/留存。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（opentelemetry.md）+ 社区实践。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> 连接模型 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——native TCP（9000/9440）与一等 HTTP(S) 接口（8123/8443）并存；HTTP 查询可以是完全无状态的单次请求，LB 友好；另有 MySQL（9004）/PostgreSQL（9005）wire 协议、JDBC/ODBC、gRPC、Arrow Flight。但没有 OLTP 式长事务会话语义；并发由 <code>max_concurrent_queries</code>（默认 100/节点）、用户 quota/profile、内存限制控制，超限排队或直接拒绝/OOM——连接本身不是瓶颈，&quot;查询并发预算&quot;才是。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> + 社区客户端指南。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> 事务与隔离级别 <span class="verdict v-no">查证为无</span></h3><div class="dim-body"><p><strong>查证为无</strong>——不提供 PostgreSQL/MySQL 式跨多语句、跨多表的通用 ACID 事务与标准隔离级别（读已提交/可重复读/可串行化均无）。单个 INSERT 的 block/part 写入具有原子可见性，但这不等于事务支持。这是 OLAP 追加写模型的设计选择，不是功能遗漏。证据：官方文档 + 社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> 复制与一致性 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——<code>ReplicatedMergeTree</code> 以 part 为复制单位，Keeper（Raft，推荐 ≥3 节点）维护复制日志，副本异步拉取 part；默认最终一致，读非主副本可能读到旧状态。可用 <code>insert_quorum</code> 提高写入确认强度，但把副本/跨 AZ 延迟放进写路径，且 quorum 写在副本不足时直接失败（拿可用性换一致性）；默认不写 RPO=0。Keeper 只做协调不存表数据；Keeper 与 ZooKeeper 快照格式不兼容，混搭 quorum 不支持。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（academic overview、Keeper 知识库）+ 社区实践。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> 扩展方式 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——手工/配置式 shard + replica 拓扑，<code>Distributed</code> 表做查询路由与结果聚合；存储可通过 storage policy 落到对象存储（存算分离方向），ClickHouse Cloud 走弹性计算路线。但自建经典集群&quot;加节点&quot;不等于&quot;自动再平衡&quot;：分片、数据迁移、流量切换要自己规划。证据：官方文档 + 社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> 兼容性 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——接口广：HTTP/native、JDBC/ODBC、MySQL/PostgreSQL wire 协议（仅协议兼容，方言仍是 ClickHouse SQL）、Kafka/S3/Parquet/Iceberg 等表函数与外部表。但不是行为兼容：ORM 事务语义、<code>UPDATE/DELETE</code>、约束、MySQL/PG 特有 DDL 发过来基本跑不通；<code>ORDER BY</code> 在 MergeTree 中是排序键/稀疏索引定义，不是&quot;结果排序保证/唯一主键&quot;。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（postgresql/mysql 接口）+ 社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> 许可证与商业模式 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——开源内核 Apache License 2.0，无 BSL/open-core 限制，自建无商业授权成本；ClickHouse Cloud 为全托管商业服务，使用量计费（官方口径：计算按分钟、存储按 15 分钟计量，另有数据传输等维度）。证据：官方口径（Cloud 计费博客）+ 第三方拆解（价格数字易变，本档案不引用绝对价格）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> 中文资料丰富度 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——官方文档有中文版（clickhouse.com/docs/zh）、中文社区（clickhouse.cn）、CSDN/博客园/腾讯云开发者社区及《ClickHouse 实战》等书籍、美团/字节等大厂实践分享，入门到运维资料丰富。但最新版本特性与深水区内容英文更新更快，部分中文博客参数已过期，查参数以英文官方文档为准。证据：<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</p></div></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — an <code>encrypted</code> virtual disk (storage-policy layer) can wrap local disks, S3 and other underlying disks, encrypting written data files with AES-CTR, selectable per table/storage policy; not a traditional &quot;one switch encrypts the whole data directory&quot; full-database TDE. ClickHouse Operator docs are explicit: encryption covers MergeTree data parts, but server metadata and logs are not covered — those still need LUKS, CSI or cloud-disk encryption; losing the key makes encrypted parts unreadable. Evidence: official docs (operator storage guide, storing-data).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / transport encryption <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — HTTPS (8443), secure native TCP (9440), interserver HTTPS; server certificate verification and mTLS client certificates. Caveat: TLS must be configured explicitly; enabling secure ports does not automatically close plaintext ports (8123/9000/9009) — close them separately or firewall them off. Evidence: official docs (operator FIPS guide, client configuration docs).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> Auditing <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — <code>system.query_log</code> records query text, user, start/finish times, exceptions and resource usage, a workable basis for database-activity auditing; query logging is on by default in ClickHouse Cloud. But on self-managed deployments any privileged user can switch it off with <code>log_queries=0</code> (unless the setting&#x27;s writability is locked to CONST); logs are local tables with no tamper-proofing or centralized collection — retention TTLs, export and immutability pipelines are on you. The ClickHouse Cloud control-plane audit boundary lacked sufficient official evidence this round, so no &quot;fully supported&quot; claim. Evidence: official docs (query_log system table) + community security practices.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> Authentication &amp; authorization <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — SQL-driven RBAC: users, roles, grants, row policies, settings profiles, quotas; external authentication via LDAP, Kerberos, X.509. But two management planes exist: the legacy <code>users.xml</code> and SQL-managed access entities cannot co-manage the same entity; how RBAC syncs across a cluster and its version boundaries were not item-by-item verified this round — stated conservatively. Evidence: official docs + community security practices.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> Backup &amp; recovery <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — native <code>BACKUP</code>/<code>RESTORE</code> SQL (22.8+), targets local disk and object storage; <code>clickhouse-backup</code> is the common ecosystem tool. But consistent backup points for sharded clusters, restore concurrency, and Keeper metadata rebuild all need a runbook and real rehearsals; no citable restore-speed figures were found this round — none are given. Evidence: official docs + community practices.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> Major-version upgrades <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — replica sets can be upgraded node by node as long as not all replicas of one shard go offline at once; but running mixed versions long-term is discouraged — read cross-version release notes and canary first. The hard limit: config defaults, SQL behavior and on-disk metadata changes affect the downgrade path; neither official docs nor community practice promise a generic lossless rollback. One concrete 2026 checklist item: since 26.6 the default x86 build requires x86-64-v3 (AVX2); older CPUs must use the amd64compat build. Evidence: official docs (update.md) + Altinity upgrade knowledge base + 26.6 changelog.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> Observability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — extremely rich <code>system.*</code> tables: query_log, processes, parts, merges, metrics, events, replicas, disks, mutations, query_thread_log, text_log, part_log; Prometheus endpoint; OpenTelemetry spans can be written to <code>system.opentelemetry_span_log</code>. Caveat: the self-observability logs are themselves MergeTree tables and eat disk — TTLs/retention are mandatory. Evidence: official docs (opentelemetry.md) + community practices.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> Connection model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — native TCP (9000/9440) alongside a first-class HTTP(S) interface (8123/8443); HTTP queries can be fully stateless single requests, LB-friendly; plus MySQL (9004)/PostgreSQL (9005) wire protocols, JDBC/ODBC, gRPC, Arrow Flight. But there are no OLTP-style long-transaction session semantics; concurrency is governed by <code>max_concurrent_queries</code> (default 100/node), user quotas/profiles and memory limits — over the budget means queueing, rejection or OOM. Connections themselves are not the bottleneck; the &quot;query concurrency budget&quot; is. Evidence: official docs + community client guides.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> Transactions &amp; isolation levels <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><p><strong>Not supported</strong> — no PostgreSQL/MySQL-style general-purpose ACID transactions spanning multiple statements or tables, and none of the standard isolation levels (read committed/repeatable read/serializable). A single INSERT&#x27;s block/part write has atomic visibility, but that is not transaction support. This is a design choice of the OLAP append-write model, not a missing feature. Evidence: official docs + community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> Replication &amp; consistency <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — <code>ReplicatedMergeTree</code> replicates at part granularity; Keeper (Raft, ≥3 nodes recommended) holds the replication log, replicas pull parts asynchronously; default is eventual consistency — reads on non-leader replicas can see stale state. <code>insert_quorum</code> strengthens write acknowledgement but puts replica/cross-AZ latency into the write path, and quorum writes fail outright when replicas are short (consistency bought with availability); RPO=0 is not claimed by default. Keeper coordinates only and stores no table data; Keeper and ZooKeeper snapshot formats are incompatible — mixed quorums unsupported. Evidence: official docs (academic overview, Keeper knowledge base) + community practices.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> Scaling <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — manual/configured shard + replica topologies, <code>Distributed</code> tables for query routing and result aggregation; storage can land on object storage via storage policies (disaggregation direction), ClickHouse Cloud goes the elastic-compute route. But on a classic self-managed cluster &quot;adding nodes&quot; is not &quot;automatic rebalancing&quot;: sharding, data migration and traffic cutover need planning. Evidence: official docs + community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> Compatibility <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — broad interfaces: HTTP/native, JDBC/ODBC, MySQL/PostgreSQL wire protocols (protocol-compatible only — the dialect is still ClickHouse SQL), Kafka/S3/Parquet/Iceberg table functions and external tables. Not behavior-compatible: ORM transaction semantics, <code>UPDATE/DELETE</code>, constraints and MySQL/PG-specific DDL mostly won&#x27;t run; <code>ORDER BY</code> in MergeTree defines the sorting key/sparse index, not a &quot;result-order guarantee/unique primary key&quot;. Evidence: official docs (postgresql/mysql interfaces) + community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> License &amp; business model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — open-source core under Apache License 2.0, no BSL/open-core restrictions, zero license cost for self-hosting; ClickHouse Cloud is the fully managed commercial service with usage-based billing (official: compute per minute, storage per 15 minutes, plus data transfer and other dimensions). Evidence: official statements (Cloud billing blog) + third-party teardown (prices change fast — no absolute figures quoted).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> Chinese-language resources <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — official docs have a Chinese edition (clickhouse.com/docs/zh), a Chinese community (clickhouse.cn), abundant CSDN/cnblogs/Tencent Cloud developer-community posts, books like 《ClickHouse 实战》, and production write-ups from Meituan/ByteDance — rich from入门 to operations. But English updates faster for the newest versions and deep-dive topics, and some Chinese blog posts carry stale parameters — verify parameters against the English official docs. Evidence: community consensus.</p></div></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="杀手特性" data-en="Killer features">杀手特性</span></h2>
+<div class="lang-block lang-zh">
+<blockquote>
+<p>写法要求：每个特性 = 它是什么 + 为什么是真本事 + 推到边缘会发生什么。</p>
+</blockquote>
+<ol>
+<li><strong>列式存储 + 向量化执行 + 高压缩：扫描聚合的暴力美学</strong> 真本事：列存只读查询涉及的列，配合 SIMD 向量化执行与高压缩；宽表聚合查询只扫少量列，IO 和 CPU 双降，一台单机就能跑出传统行存数仓集群的扫描吞吐。 边缘真相：宽行点查、逐行更新是反模式；压缩率高低极度依赖列基数与 codec 选择，无脑建表拿不到宣传数字；高基数列配低效 codec 等于磁盘与 CPU 双输。</li>
+<li><strong>MergeTree 物理排序 + 稀疏主索引：数据跳过</strong> 真本事：<code>ORDER BY</code> 定义物理排序键，稀疏主索引按 granule（默认 8192 行）记录首行值，查询按排序键过滤时直接跳过整个 granule；索引极小，内存占用低。 边缘真相：排序键是写死在物理布局里的&quot;合同&quot;——选错列，后期改表等于建新表回灌（见深水区六）；第一排序列决定绝大部分跳过效果，第二列之后收益递减。</li>
+<li><strong>单机纵向效率优先的 MPP：先吃满一台，再横向</strong> 真本事：单节点本身极强（向量化 + 多线程 + 直接 IO），分片后 <code>Distributed</code> 表并行聚合；很多场景 1–3 台机器就解决问题，集群规模和运维复杂度远小于同量级 Hadoop 系方案。 边缘真相：跨 shard 的 JOIN/聚合要走网络 shuffle，大 JOIN 依然可能 OOM（见深水区五）；热点分片不会自己消失；加分片不等于自动再平衡。</li>
+<li><strong>实时追加写：批量/async ingest 下的秒级可查</strong> 真本事：<code>async_insert</code>、Buffer 表引擎、Kafka 表引擎把高频小写入聚成大 part；日志/埋点/可观测场景&quot;写入即查询&quot;，不需要 T+1 ETL。 边缘真相：逐行直写等于积累 part 债务，最终 <code>TOO_MANY_PARTS</code> 拒绝写入（见深水区一）；实时性的前提是&quot;接受批量&quot;，不接受批量写入的应用模型不适合 ClickHouse。</li>
+<li><strong>生态接口广度：Kafka/S3/Parquet/Iceberg 即插</strong> 真本事：表函数与表引擎直读外部系统，HTTP 接口让任何语言 curl 可查；数仓/湖仓链路里 ClickHouse 可以当&quot;查询加速层&quot;，不用先搬数据。 边缘真相：外部系统挂了、schema 漂了，故障会沿查询链路传进来；<code>s3()</code> 读大量小文件曾因 prefetch 回退为同步读而显著变慢（26.5 changelog 修过相关回归），对象存储延迟永远是税（见深水区七）。</li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<blockquote>
+<p>Style rule: each feature = what it is + why it&#x27;s genuinely good + what happens at the edge.</p>
+</blockquote>
+<ol>
+<li><strong>Columnar storage + vectorized execution + high compression: brute-force scan aggregation</strong> Why it&#x27;s real: columnar reads only the columns a query touches; SIMD vectorized execution plus high compression cut IO and CPU together — one box delivers scan throughput that row-store warehouses need clusters for. Edge truth: wide-row point lookups and row-by-row updates are anti-patterns; compression ratios depend heavily on column cardinality and codec choice — thoughtless table design won&#x27;t reach the advertised numbers; high-cardinality columns with poor codecs lose on both disk and CPU.</li>
+<li><strong>MergeTree physical sorting + sparse primary index: data skipping</strong> Why it&#x27;s real: <code>ORDER BY</code> defines the physical sorting key; the sparse primary index records the first row value per granule (default 8192 rows), so filters on the sorting key skip whole granules without reading them; the index is tiny and memory-cheap. Edge truth: the sorting key is a &quot;contract&quot; baked into the physical layout — pick the wrong columns and fixing the table means building a new one and backfilling (see Deep dive 6); the first sorting column decides the vast majority of skipping benefit, returns diminish after that.</li>
+<li><strong>Single-node-first MPP: saturate one box before scaling out</strong> Why it&#x27;s real: a single node is already extremely strong (vectorization + multi-threading + direct IO); after sharding, <code>Distributed</code> tables aggregate in parallel — many workloads are solved with 1–3 boxes, far less cluster scale and operational complexity than Hadoop-era alternatives at the same data volume. Edge truth: cross-shard JOINs/aggregations go over network shuffle, and big JOINs can still OOM (see Deep dive 5); hot shards don&#x27;t disappear on their own; adding shards is not automatic rebalancing.</li>
+<li><strong>Real-time append ingestion: seconds-to-query under batched/async ingest</strong> Why it&#x27;s real: <code>async_insert</code>, the Buffer engine and the Kafka engine coalesce high-frequency small writes into big parts; log/telemetry/observability workloads get &quot;write then query&quot; with no T+1 ETL pipeline. Edge truth: row-by-row direct writes accumulate part debt until <code>TOO_MANY_PARTS</code> rejects writes (see Deep dive 1); &quot;real-time&quot; presupposes accepting batching — application models that won&#x27;t batch are not a fit for ClickHouse.</li>
+<li><strong>Ecosystem interface breadth: Kafka/S3/Parquet/Iceberg plug-in</strong> Why it&#x27;s real: table functions and table engines read external systems directly, and the HTTP interface makes any language <code>curl</code>-queryable; inside a warehouse/lakehouse pipeline ClickHouse can serve as the &quot;query acceleration layer&quot; without moving data first. Edge truth: when the external system is down or its schema drifts, the failure propagates in along the query path; <code>s3()</code> over many small files once regressed badly when prefetch fell back to synchronous reads (fixed per the 26.5 changelog) — object-storage latency is forever a tax (see Deep dive 7).</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="深水区" data-en="Deep dives">深水区</span></h2>
+<div class="lang-block lang-zh">
+<blockquote>
+<p>以下每条 = 领域 + 机制一句话 + 推到边缘会发生什么 + 选型含义。证据类型已标注。</p>
+</blockquote>
+<p><strong>深水区一：MergeTree 的 part 机制——后台合并是生命线</strong></p>
+<ul>
+<li>领域：写入路径 / 存储引擎。</li>
+<li>机制一句话：每次 INSERT 至少生成一个不可变 part，后台 merge 线程把小 part 合并成大 part；part 是复制、TTL、mutation 的基本单位。</li>
+<li>边缘行为：高频小批次写入、高基数分区、一次写入横跨大量分区、merge 的 IO/CPU 配额不足，都会让 part 数爆炸；先触发 <code>parts_to_delay_insert</code> 降速（写入被限流），超过 <code>parts_to_throw_insert</code> 直接 <code>TOO_MANY_PARTS</code> 拒绝写入。调大阈值只是把债务藏起来；<code>OPTIMIZE TABLE FINAL</code> 在事故期会和后台 merge 抢资源，未必救命。</li>
+<li>选型含义：实时逐行写入必须在 Kafka/缓冲层先聚合；批量/async insert 是生产铁律；监控 <code>system.parts</code> 的 part 数与 <code>system.merges</code>。</li>
+<li>来源：官方文档 + 社区诊断实践（clickhouse-diagnostics known-patterns）。</li>
+</ul>
+<p><strong>深水区二：Mutation——更新/删除的&quot;重写税&quot;</strong></p>
+<ul>
+<li>领域：更新/删除语义。</li>
+<li>机制一句话：<code>ALTER TABLE ... UPDATE/DELETE</code> 不原地改行，而是异步重写所有受影响的 part，代价按受影响 part 大小算，不按逻辑修改行数。</li>
+<li>边缘行为：mutation 默认异步、不原子覆盖整表，查询可能同时看到新旧 part；提交后不可普通回滚，跨重启继续执行，除非显式 <code>KILL MUTATION</code>；大范围 mutation 会和后台 merge 抢 IO，拖慢整表。轻量 delete/patch parts 等机制按版本逐步改善，但&quot;重写 part&quot;的本质未变。</li>
+<li>选型含义：ClickHouse 不是库存扣减、账户余额这类 OLTP 更新库；频繁更新考虑 Replacing/CollapsingMergeTree、TTL 或 DROP PARTITION——但这些把复杂度转移到读语义（<code>FINAL</code>/去重时机）上。</li>
+<li>来源：官方文档 + 社区最佳实践。</li>
+</ul>
+<p><strong>深水区三：ReplicatedMergeTree + Keeper——最终一致的代价</strong></p>
+<ul>
+<li>领域：复制与一致性。</li>
+<li>机制一句话：Keeper（Raft）只存协调与复制日志，数据 part 由副本异步从主副本拉取。</li>
+<li>边缘行为：默认写入只等本地/单副本确认就返回，读其他副本可能读到旧状态；<code>insert_quorum</code> 把&quot;等待 N 个副本确认&quot;放进写路径，跨 AZ 延迟直接变成写延迟，且 quorum 写在副本不足时直接失败（拿可用性换一致性）；网络分区、配错的 interserver 地址、落后副本会让 replication queue 堆积——Keeper 健康不等于数据已同步，必须看 <code>system.replicas</code> 的 <code>absolute_delay</code>/<code>queue_size</code>。Keeper 与 ZooKeeper 快照格式不兼容，混搭 quorum 不支持，迁移要 converter 或重建。</li>
+<li>选型含义：默认不写 RPO=0；一致性是可调参数不是默认属性；POC 必须测副本落后与 quorum 写下的 P99。</li>
+<li>来源：官方文档（academic overview、Keeper 知识库）+ 社区实践。</li>
+</ul>
+<p><strong>深水区四：分布式 DDL——<code>ON CLUSTER</code> 的幽灵执行</strong></p>
+<ul>
+<li>领域：集群运维。</li>
+<li>机制一句话：<code>ON CLUSTER</code> 把 DDL 放入 Keeper 队列，各节点 DDLWorker 按序本地执行。</li>
+<li>边缘行为：客户端超时（常见 180s）不等于任务停止，DDL 可能仍在后台逐节点执行，重试可能造成重复/冲突；死节点、过期 cluster 定义、积压任务会导致部分节点永久错过 DDL（队列有生命周期/容量）；必须查 <code>system.distributed_ddl_queue</code> 和所有节点的实际 schema，不能只看客户端返回。25.8 曾出现 operator <code>replicas_path</code> 不匹配导致 ON CLUSTER 挂起的问题（altinity/clickhouse#1391，修复状态本轮未复核）。</li>
+<li>选型含义：集群 DDL 要有&quot;下发—逐节点验 schema&quot;的 runbook；CI 自动 DDL 必须幂等设计。</li>
+<li>来源：官方文档 + 社区诊断实践 + GitHub issue。</li>
+</ul>
+<p><strong>深水区五：JOIN 内存爆炸——默认 hash join 的獠牙</strong></p>
+<ul>
+<li>领域：查询执行。</li>
+<li>机制一句话：默认 hash join 把右表完整构建为内存 hash table 后再扫左表。</li>
+<li>边缘行为：大右表不是&quot;慢一点&quot;，而是直接 <code>MEMORY_LIMIT_EXCEEDED</code> 把查询杀死；分布式 JOIN 还会把数据广播/重分布，网络和内存双重放大。缓解手段：小表放右侧、用字典/预聚合、切可 spill 到磁盘的 join 算法（grace hash、full sorting merge）——spill 是用磁盘延迟换&quot;不死&quot;。</li>
+<li>选型含义：POC 必须包含真实最大的 JOIN，不能只测单表聚合；宽表预 join（非范式化）是 ClickHouse 的常规设计。</li>
+<li>来源：官方文档 + 社区性能实践。</li>
+</ul>
+<p><strong>深水区六：排序键是物理设计合同——选错等于重建表</strong></p>
+<ul>
+<li>领域：schema 设计。</li>
+<li>机制一句话：MergeTree 的 <code>ORDER BY</code> 决定物理排序与稀疏主索引，第一批列决定 data skipping 能力。</li>
+<li>边缘行为：排序键选错，查询退化为全表扫描 granule，稀疏索引形同虚设；上线后无法低成本原地重排，必须建新表回灌数据。<code>ReplacingMergeTree</code> 的去重依赖后台 merge 或查询时 <code>FINAL</code>：merge 前重复版本对查询可见，<code>FINAL</code> 则给每次查询加税。</li>
+<li>选型含义：schema 必须由真实过滤模式（最常用的 WHERE 列）倒推设计，不能照搬 OLTP 主键；建表评审是 ClickHouse 项目里 ROI 最高的环节。</li>
+<li>来源：官方文档 + 社区共识。</li>
+</ul>
+<p><strong>深水区七：对象存储的延迟税——存算分离不是免费午餐</strong></p>
+<ul>
+<li>领域：存储架构。</li>
+<li>机制一句话：S3 disk 把 part 文件放对象存储，本地只做缓存（filesystem cache）；ClickHouse Cloud 则用带直连 SSD 缓存的计算节点 + 分布式缓存弥合差距。</li>
+<li>边缘行为：官方博客数据：S3 的 P99.99 延迟约 500ms，SSD 约 1ms——延迟差两个数量级；吞吐可用多线程读 + 异步预取弥合，延迟弥合不了；短查询只读几个压缩块时，延迟是主导瓶颈。merge/mutation 会产生大量小对象 GET/PUT（单次 merge 约百级 S3 操作），放大请求成本与延迟；冷读未命中缓存时查询可能从&quot;毫秒级&quot;掉到&quot;秒级&quot;。自建把 S3 当热存储用，必须把本地缓存命中率、热点分层、对象请求成本算进 POC。</li>
+<li>选型含义：S3 适合冷热分层中的冷层；热数据仍建议本地 SSD；Cloud 的分布式缓存是&quot;花钱买延迟&quot;的方案，自建没有等价物。</li>
+<li>来源：官方博客（Building a Distributed Cache for S3）+ 社区实测分析。</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<blockquote>
+<p>Each entry = domain + mechanism in one sentence + what happens at the edge + what it means for selection. Evidence graded.</p>
+</blockquote>
+<p><strong>Deep dive 1: MergeTree parts — background merges are the lifeline</strong></p>
+<ul>
+<li>Domain: write path / storage engine.</li>
+<li>Mechanism in one sentence: every INSERT creates at least one immutable part; background merge threads compact small parts into big ones; parts are the unit of replication, TTL and mutations.</li>
+<li>At the edge: high-frequency micro-batches, high-cardinality partitioning, single writes spanning many partitions, or insufficient IO/CPU quota for merges all explode the part count; first <code>parts_to_delay_insert</code> throttles writes, then past <code>parts_to_throw_insert</code> writes are rejected outright with <code>TOO_MANY_PARTS</code>. Raising the thresholds only hides the debt; <code>OPTIMIZE TABLE FINAL</code> during an incident competes with background merges for resources and may not save you.</li>
+<li>Selection meaning: real-time row-by-row writes must be pre-aggregated in Kafka/a buffer layer; batched/async inserts are a production iron rule; monitor part counts in <code>system.parts</code> and <code>system.merges</code>.</li>
+<li>Source: official docs + community diagnostic practices (clickhouse-diagnostics known-patterns).</li>
+</ul>
+<p><strong>Deep dive 2: Mutations — the &quot;rewrite tax&quot; on updates/deletes</strong></p>
+<ul>
+<li>Domain: update/delete semantics.</li>
+<li>Mechanism in one sentence: <code>ALTER TABLE ... UPDATE/DELETE</code> never edits rows in place; it asynchronously rewrites every affected part, with cost proportional to affected part size, not to the logical row count.</li>
+<li>At the edge: mutations are async by default and don&#x27;t atomically flip the whole table — queries can see old and new parts simultaneously; once submitted they can&#x27;t be ordinarily rolled back, survive restarts, and continue unless explicitly <code>KILL</code>ed; wide mutations fight background merges for IO and slow the whole table. Lightweight deletes/patch parts improve things version by version, but the &quot;rewrite the part&quot; essence remains.</li>
+<li>Selection meaning: ClickHouse is not an OLTP update store (inventory decrements, account balances); for frequent updates consider Replacing/CollapsingMergeTree, TTLs or DROP PARTITION — which move the complexity into read semantics (<code>FINAL</code>/dedup timing) instead.</li>
+<li>Source: official docs + community best practices.</li>
+</ul>
+<p><strong>Deep dive 3: ReplicatedMergeTree + Keeper — the price of eventual consistency</strong></p>
+<ul>
+<li>Domain: replication &amp; consistency.</li>
+<li>Mechanism in one sentence: Keeper (Raft) stores only coordination and the replication log; data parts are pulled asynchronously by replicas from the leader.</li>
+<li>At the edge: default writes return after local/single-replica acknowledgement — reads on other replicas can be stale; <code>insert_quorum</code> puts &quot;wait for N replica acks&quot; into the write path, turning cross-AZ latency directly into write latency, and quorum writes fail outright when replicas are short (availability traded for consistency); network partitions, misconfigured interserver addresses or lagging replicas pile up the replication queue — a healthy Keeper does not mean data is in sync; watch <code>absolute_delay</code>/<code>queue_size</code> in <code>system.replicas</code>. Keeper and ZooKeeper snapshot formats are incompatible; mixed quorums are unsupported; migration needs a converter or rebuild.</li>
+<li>Selection meaning: don&#x27;t claim RPO=0 by default; consistency is a tunable parameter, not a default property; POCs must measure replica lag and P99 under quorum writes.</li>
+<li>Source: official docs (academic overview, Keeper knowledge base) + community practices.</li>
+</ul>
+<p><strong>Deep dive 4: Distributed DDL — the ghost execution of <code>ON CLUSTER</code></strong></p>
+<ul>
+<li>Domain: cluster operations.</li>
+<li>Mechanism in one sentence: <code>ON CLUSTER</code> puts DDL into a Keeper queue; each node&#x27;s DDLWorker executes it locally in order.</li>
+<li>At the edge: a client timeout (commonly 180s) does not mean the job stopped — the DDL may still be executing node by node in the background, and retrying can cause duplicates/conflicts; dead nodes, stale cluster definitions or a backlogged queue can make some nodes miss the DDL permanently (the queue has lifecycle/capacity limits); you must check <code>system.distributed_ddl_queue</code> and the actual schema on every node — never trust the client return alone. 25.8 saw an operator <code>replicas_path</code> mismatch hanging ON CLUSTER (altinity/clickhouse#1391; fix status not re-verified this round).</li>
+<li>Selection meaning: cluster DDL needs a &quot;distribute — verify schema on every node&quot; runbook; CI-driven DDL must be idempotent by design.</li>
+<li>Source: official docs + community diagnostic practices + GitHub issue.</li>
+</ul>
+<p><strong>Deep dive 5: JOIN memory blowups — the fangs of the default hash join</strong></p>
+<ul>
+<li>Domain: query execution.</li>
+<li>Mechanism in one sentence: the default hash join builds the entire right table into an in-memory hash table before scanning the left.</li>
+<li>At the edge: a big right table doesn&#x27;t make the query &quot;a bit slower&quot; — it kills it outright with <code>MEMORY_LIMIT_EXCEEDED</code>; distributed JOINs additionally broadcast/reshuffle data, amplifying network and memory together. Mitigations: put the small table on the right, use dictionaries/pre-aggregation, or switch to a disk-spilling join algorithm (grace hash, full sorting merge) — spilling trades disk latency for &quot;not dying&quot;.</li>
+<li>Selection meaning: POCs must include the real largest JOIN, not just single-table aggregations; denormalized wide tables with pre-joined data are the conventional ClickHouse design.</li>
+<li>Source: official docs + community performance practices.</li>
+</ul>
+<p><strong>Deep dive 6: The sorting key is a physical design contract — get it wrong, rebuild the table</strong></p>
+<ul>
+<li>Domain: schema design.</li>
+<li>Mechanism in one sentence: MergeTree&#x27;s <code>ORDER BY</code> fixes the physical sort order and the sparse primary index; the leading columns decide data-skipping power.</li>
+<li>At the edge: a wrong sorting key degrades queries to full granule scans with a useless sparse index; after going live there is no cheap in-place re-sort — you build a new table and backfill. <code>ReplacingMergeTree</code> dedup depends on background merges or query-time <code>FINAL</code>: duplicates are visible to queries before merging, and <code>FINAL</code> taxes every query.</li>
+<li>Selection meaning: schema must be reverse-designed from real filter patterns (the most-used WHERE columns), never copied from OLTP primary keys; the table-design review is the highest-ROI meeting in a ClickHouse project.</li>
+<li>Source: official docs + community consensus.</li>
+</ul>
+<p><strong>Deep dive 7: The object-storage latency tax — disaggregation is no free lunch</strong></p>
+<ul>
+<li>Domain: storage architecture.</li>
+<li>Mechanism in one sentence: an S3 disk puts part files on object storage with only a local cache (filesystem cache); ClickHouse Cloud instead bridges the gap with compute nodes carrying directly attached SSD caches plus a distributed cache.</li>
+<li>At the edge: official blog figures — S3 P99.99 latency ≈ 500ms vs SSD ≈ 1ms, two orders of magnitude; throughput can be bridged with multi-threaded reads + async prefetch, latency cannot; for short queries touching a few compressed blocks, latency dominates. Merges/mutations generate large numbers of small-object GETs/PUTs (on the order of a hundred S3 ops per merge), amplifying request cost and latency; a cold read missing the cache can drop a query from &quot;milliseconds&quot; to &quot;seconds&quot;. Self-managing S3 as hot storage means putting local cache hit rate, hot-tiering and object-request cost into the POC.</li>
+<li>Selection meaning: S3 fits the cold tier of hot-cold tiering; hot data still wants local SSDs; Cloud&#x27;s distributed cache is a &quot;pay money for latency&quot; solution with no self-managed equivalent.</li>
+<li>Source: official blog (Building a Distributed Cache for S3) + community measured analysis.</li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="用户最买账的 5 点" data-en="What users love most">用户最买账的 5 点</span></h2>
+<div class="lang-block lang-zh">
+<ol>
+<li><strong>扫描聚合的速度与成本效率</strong> 为什么是真的：列存 + 向量化 + 高压缩，TB 级宽表聚合秒级返回；单机效率高意味着达到同样吞吐所需机器数少。 边缘与失效条件：只在&quot;读少量列、扫大量行&quot;的 OLAP 模型下成立；点查、宽行返回、高频小更新下优势消失甚至反杀；压缩比依赖列基数与 codec。 来源：官方文档 + 社区共识。观察版本：25.8 LTS。</li>
+<li><strong>高压缩、冷热分层与 TTL</strong> 为什么是真的：列存压缩比高（社区口径常见 5–10x），storage policy 可把冷 part 自动沉降到对象存储，TTL 自动过期/移动分区，日志类场景存储成本可控。 边缘与失效条件：压缩比是&quot;常见&quot;不是&quot;保证&quot;；冷热分层的冷读延迟税见深水区七；TTL 按 part 粒度后台清理，不是精确到秒的删除。 来源：官方文档 + 社区实践。观察版本：25.8 LTS。</li>
+<li><strong>秒级实时分析，不必等 T+1</strong> 为什么是真的：批量/async insert 下写入后秒级可查，Kafka 表引擎直连流，实时大盘/埋点分析不需要 ETL 链路。 边缘与失效条件：&quot;实时&quot;的前提是批量写入；逐行直写触发 part 债务（深水区一）；实时不等于强一致（深水区三）。 来源：官方文档 + 社区共识。观察版本：25.8 LTS。</li>
+<li><strong>SQL 与生态接口广度</strong> 为什么是真的：标准 SQL 方言、HTTP 一等接口、JDBC/ODBC、MySQL/PG wire 协议、Kafka/S3/Parquet/Iceberg 表函数，BI 工具与现有链路接入成本低。 边缘与失效条件：wire 协议只兼容协议不兼容方言；外部表把外部系统的故障与 schema drift 引进查询链路；<code>s3()</code> 大量小文件曾有 prefetch 回归（26.5 changelog）。 来源：官方文档 + 社区实践。观察版本：25.8 LTS。</li>
+<li><strong>Apache 2.0 开源与自建/托管双路线</strong> 为什么是真的：内核 Apache 2.0，无 BSL/open-core 限制，自建零授权成本；ClickHouse Cloud 全托管，AWS/GCP/Azure 可用；社区活跃，issue 与文档迭代快。 边缘与失效条件：开源的是代码不是运维能力——分片、Keeper、DDL、升级 runbook 都要自己写；Cloud 使用量计费下，低效查询直接变成账单。 来源：官方口径 + 社区共识。观察版本：25.8 LTS。</li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<ol>
+<li><strong>Scan-aggregation speed and cost efficiency</strong> Why it&#x27;s real: columnar + vectorized + high compression returns TB-scale wide-table aggregations in seconds; high single-node efficiency means fewer boxes for the same throughput. Edge &amp; failure conditions: only holds for the &quot;read few columns, scan many rows&quot; OLAP shape; point lookups, wide-row returns and high-frequency small updates erase the advantage or reverse it; compression ratios depend on column cardinality and codecs. Source: official docs + community consensus. Observed on: 25.8 LTS.</li>
+<li><strong>High compression, hot-cold tiering and TTL</strong> Why it&#x27;s real: high columnar compression ratios (community reports commonly 5–10x), storage policies that automatically sink cold parts to object storage, TTLs that expire/move partitions — storage cost stays controllable for log workloads. Edge &amp; failure conditions: ratios are &quot;common&quot;, not &quot;guaranteed&quot;; cold-tier reads pay the latency tax (Deep dive 7); TTL cleanup works at part granularity in the background, not second-precise deletion. Source: official docs + community practices. Observed on: 25.8 LTS.</li>
+<li><strong>Second-level real-time analytics, no T+1 wait</strong> Why it&#x27;s real: under batched/async inserts data is queryable within seconds; the Kafka engine streams directly — real-time dashboards/telemetry need no ETL pipeline. Edge &amp; failure conditions: &quot;real-time&quot; presupposes batched writes; row-by-row direct writes trigger part debt (Deep dive 1); real-time does not mean strongly consistent (Deep dive 3). Source: official docs + community consensus. Observed on: 25.8 LTS.</li>
+<li><strong>SQL and ecosystem interface breadth</strong> Why it&#x27;s real: standard SQL dialect, first-class HTTP, JDBC/ODBC, MySQL/PG wire protocols, Kafka/S3/Parquet/Iceberg table functions — low integration cost for BI tools and existing pipelines. Edge &amp; failure conditions: wire protocols are protocol-compatible, not dialect-compatible; external tables import the external system&#x27;s failures and schema drift into the query path; the <code>s3()</code> small-files prefetch regression (26.5 changelog) is a cautionary tale. Source: official docs + community practices. Observed on: 25.8 LTS.</li>
+<li><strong>Apache 2.0 open source with self-hosted/managed dual track</strong> Why it&#x27;s real: Apache 2.0 core, no BSL/open-core restrictions, zero license cost for self-hosting; ClickHouse Cloud fully managed on AWS/GCP/Azure; active community with fast-moving issues and docs. Edge &amp; failure conditions: what&#x27;s open-sourced is code, not operational capability — sharding, Keeper, DDL and upgrade runbooks are yours to write; under Cloud usage billing, inefficient queries become line items on the invoice. Source: official statements + community consensus. Observed on: 25.8 LTS.</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="吐槽清单" data-en="Complaints">吐槽清单</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>分类</th><th>吐槽</th><th>影响版本</th><th>状态</th></tr></thead>
+<tbody>
+<tr><td>写入</td><td>高频小 INSERT 攒出海量 part，最终 <code>TOO_MANY_PARTS</code> 拒绝写入</td><td>全版本</td><td>open</td></tr>
+<tr><td>更新删除</td><td><code>ALTER UPDATE/DELETE</code> 异步重写 part，无普通回滚，大范围 mutation 拖慢整表</td><td>全版本</td><td>partially-fixed</td></tr>
+<tr><td>事务</td><td>无通用多语句 ACID 事务与标准隔离级别</td><td>全版本</td><td>open</td></tr>
+<tr><td>一致性</td><td>默认异步复制，读其他副本可能读到旧状态；quorum 写把延迟/可用性代价还回来</td><td>全版本</td><td>open</td></tr>
+<tr><td>DDL</td><td><code>ON CLUSTER</code> 客户端超时后仍在后台执行，节点间 schema 可能漂移，需逐节点校验</td><td>全版本</td><td>open</td></tr>
+<tr><td>DDL</td><td>25.8 operator <code>replicas_path</code> 不匹配导致分布式 DDL 挂起（altinity/clickhouse#1391，修复状态本轮未复核）</td><td>25.8 相关组合</td><td>partially-fixed</td></tr>
+<tr><td>查询</td><td>默认 hash join 大右表直接 <code>MEMORY_LIMIT_EXCEEDED</code>，不是变慢是变死</td><td>全版本</td><td>partially-fixed</td></tr>
+<tr><td>建模</td><td><code>ORDER BY</code> 排序键选错等于物理布局选错，后期只能建新表回灌</td><td>全版本</td><td>open</td></tr>
+<tr><td>去重</td><td><code>ReplacingMergeTree</code> 去重最终一致，merge 前重复可见，<code>FINAL</code> 给每次查询加税</td><td>全版本</td><td>open</td></tr>
+<tr><td>扩展</td><td>自建分片/再平衡不够自动化，加节点不等于数据自动就位</td><td>全版本</td><td>open</td></tr>
+<tr><td>升级</td><td>默认值/SQL 行为/元数据变化影响降级，官方不承诺通用无损回退；26.6 起默认构建要求 AVX2</td><td>全版本 / 26.6+</td><td>open</td></tr>
+<tr><td>可观测性</td><td>自观测日志（query_log 等）本身是 MergeTree 表，不配 TTL 会吃掉大量磁盘</td><td>全版本</td><td>open</td></tr>
+<tr><td>安全</td><td>权限不足时 HTTP 返回 500 而非 403，<code>ACCESS_DENIED</code> 藏在 500 里，排障与监控容易误判</td><td>全版本</td><td>open</td></tr>
+<tr><td>审计</td><td>query_log 可被有权限用户关掉（<code>log_queries=0</code>），不锁 writability 就不是可靠审计</td><td>全版本</td><td>open</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Category</th><th>Complaint</th><th>Affected versions</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Writes</td><td>High-frequency micro-INSERTs accumulate a sea of parts, ending in <code>TOO_MANY_PARTS</code> write rejections</td><td>All</td><td>open</td></tr>
+<tr><td>Updates/deletes</td><td><code>ALTER UPDATE/DELETE</code> asynchronously rewrites parts, no ordinary rollback, wide mutations slow the whole table</td><td>All</td><td>partially-fixed</td></tr>
+<tr><td>Transactions</td><td>No general-purpose multi-statement ACID transactions or standard isolation levels</td><td>All</td><td>open</td></tr>
+<tr><td>Consistency</td><td>Async replication by default — reads on other replicas can be stale; quorum writes hand the latency/availability bill back</td><td>All</td><td>open</td></tr>
+<tr><td>DDL</td><td><code>ON CLUSTER</code> keeps executing in the background after client timeout; schemas can drift across nodes, verify every node</td><td>All</td><td>open</td></tr>
+<tr><td>DDL</td><td>25.8 operator <code>replicas_path</code> mismatch hanging distributed DDL (altinity/clickhouse#1391; fix status not re-verified this round)</td><td>25.8 combos</td><td>partially-fixed</td></tr>
+<tr><td>Queries</td><td>Default hash join on a big right table dies outright with <code>MEMORY_LIMIT_EXCEEDED</code> — not slower, dead</td><td>All</td><td>partially-fixed</td></tr>
+<tr><td>Modeling</td><td>A wrong <code>ORDER BY</code> sorting key is a wrong physical layout — only fix is a new table + backfill</td><td>All</td><td>open</td></tr>
+<tr><td>Dedup</td><td><code>ReplacingMergeTree</code> dedup is eventually consistent; duplicates visible pre-merge, <code>FINAL</code> taxes every query</td><td>All</td><td>open</td></tr>
+<tr><td>Scaling</td><td>Self-managed sharding/rebalancing is not automated enough — adding nodes ≠ data automatically in place</td><td>All</td><td>open</td></tr>
+<tr><td>Upgrades</td><td>Defaults/SQL behavior/metadata changes affect downgrade; no promised generic lossless rollback; default builds require AVX2 since 26.6</td><td>All / 26.6+</td><td>open</td></tr>
+<tr><td>Observability</td><td>Self-observability logs (query_log etc.) are themselves MergeTree tables — without TTLs they eat serious disk</td><td>All</td><td>open</td></tr>
+<tr><td>Security</td><td>Insufficient privileges over HTTP return 500 instead of 403 — <code>ACCESS_DENIED</code> hides inside 500s, misleading triage and monitoring</td><td>All</td><td>open</td></tr>
+<tr><td>Auditing</td><td>query_log can be switched off by privileged users (<code>log_queries=0</code>) — not a reliable audit trail unless writability is locked</td><td>All</td><td>open</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="判决" data-en="Verdict">判决</span></h2>
+<div class="lang-block lang-zh">
+<p><strong>适合谁</strong>：TB~PB 级追加写为主的分析场景——用户行为/埋点分析、日志与可观测性、实时大盘/广告/风控特征、数据仓库加速层；团队能接受&quot;批量写入、预聚合、非范式化宽表&quot;的建模纪律，且有专人负责分片/Keeper/升级 runbook。</p>
+<p><strong>不适合谁</strong>：需要多语句 ACID 事务的 OLTP；高频行级更新/删除（库存、余额、订单状态机）；强一致读写的金融核心账务；指望&quot;加节点自动搞定一切&quot;的零运维团队；ORM 自动生成 SQL 重度依赖且不愿改写的项目。</p>
+<p><strong>迁移成本</strong>：中等偏高。SQL 方言迁移相对平滑，但真正的成本在三处：(1) 建模重构——排序键、分区、宽表预 join、更新改 TTL/DROP PARTITION；(2) 写入链路改造——批量/async/Kafka 聚合；(3) 运维体系重建——Keeper、分片拓扑、分布式 DDL、备份恢复演练。从 MySQL/PG 迁来，最大的坑是把 OLTP 习惯（逐行写、频繁 UPDATE、事务）原样搬过来。</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<p><strong>Good fit for</strong>: TB-to-PB-scale append-write-dominant analytics — user behavior/telemetry analysis, logs and observability, real-time dashboards/adtech/risk features, data-warehouse acceleration layers; teams that accept the modeling discipline of &quot;batched writes, pre-aggregation, denormalized wide tables&quot; and can staff sharding/Keeper/upgrade runbooks.</p>
+<p><strong>Poor fit for</strong>: OLTP needing multi-statement ACID transactions; high-frequency row-level updates/deletes (inventory, balances, order state machines); strongly consistent financial ledgers; zero-ops teams expecting &quot;adding nodes fixes everything&quot;; projects heavily dependent on ORM-generated SQL that won&#x27;t be rewritten.</p>
+<p><strong>Migration cost</strong>: medium-high. The SQL dialect migrates relatively smoothly, but the real cost sits in three places: (1) remodeling — sorting keys, partitioning, wide pre-joined tables, replacing updates with TTLs/DROP PARTITION; (2) reworking the write path — batching/async/Kafka aggregation; (3) rebuilding the operations stack — Keeper, shard topology, distributed DDL, backup/restore rehearsals. The biggest trap migrating from MySQL/PG is carrying OLTP habits (row-by-row writes, frequent UPDATEs, transactions) over unchanged.</p>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="来源与待验证清单" data-en="Sources & to-be-verified">来源与待验证清单</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li>官方文档：ClickHouse 文档（系统表、操作、接口章节）、ClickHouse Cloud 计费博客、S3 分布式缓存博客、26.6 changelog（x86-64-v3 默认构建）。</li>
+<li>社区实践：Altinity 安全/审计/升级知识库、clickhouse-diagnostics 已知模式、clickhouse-expert 系列 skill（复制分片、安全、客户端集成、数据摄入）。</li>
+<li>GitHub：altinity/clickhouse#1391（25.8 operator 分布式 DDL 问题）。</li>
+<li>第三方分析：Beton ClickHouse Cloud 价格拆解（2026-05，仅作商业模式参考，未引用绝对价格）。</li>
+<li>本轮明确未覆盖：ClickHouse Cloud 控制面审计边界、向量检索/embedding 能力的版本细节——标待验证，未写入结论。</li>
+<li>v1.0（2026-09-29）：首版建档。<code>last_reviewed: 2026-09-29</code>，评审版本 25.8 LTS（兼注 26.x 滚动版本差异）。</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li>Official docs: ClickHouse documentation (system tables, operations, interfaces), ClickHouse Cloud billing blog, S3 distributed-cache blog, 26.6 changelog (x86-64-v3 default build).</li>
+<li>Community practices: Altinity security/audit/upgrade knowledge bases, clickhouse-diagnostics known patterns, clickhouse-expert skill series (replication &amp; sharding, security, client integrations, data ingestion).</li>
+<li>GitHub: altinity/clickhouse#1391 (25.8 operator distributed-DDL issue).</li>
+<li>Third-party analysis: Beton ClickHouse Cloud pricing teardown (2026-05, business-model reference only — no absolute prices quoted).</li>
+<li>Explicitly out of scope this round: ClickHouse Cloud control-plane audit boundary, version details of vector search/embedding capabilities — marked pending verification, not written into conclusions.</li>
+<li>v1.0 (2026-09-29): initial profile. <code>last_reviewed: 2026-09-29</code>, review version 25.8 LTS (26.x rolling-line differences noted).</li>
+</ul>
+</div>
+</section>
+</main>
+<footer class="footer">
+  <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
+</footer>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
