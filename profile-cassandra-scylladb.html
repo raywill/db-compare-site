@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Apache Cassandra / ScyllaDB - DB 选型参考</title>
+<link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">&#9672;</span> DB <span data-zh="选型参考" data-en="Compare">选型参考</span></a>
+    <nav class="mainnav">
+<a href="index.html" class="active" data-zh="首页" data-en="Home">首页</a>
+<a href="compare.html" class="" data-zh="维度对比" data-en="Compare">维度对比</a>
+<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
+<a href="advisor.html" class="" data-zh="AI选型" data-en="AI Selection">AI选型</a>
+    </nav>
+    <div class="cmp-tray">
+      <button id="cmp-tray-btn" type="button" class="tray-btn" aria-expanded="false" aria-haspopup="true"><span data-zh="对比" data-en="Compare">对比</span> <b class="tray-count"><i id="cmp-count">0</i>/4</b></button>
+      <div id="cmp-panel" class="tray-panel" hidden>
+        <div class="tray-sec"><span data-zh="已选" data-en="Selected">已选</span></div>
+        <div id="cmp-selected" class="tray-selected"></div>
+        <div class="tray-sec"><span data-zh="全部产品（最多选 4 款）" data-en="All products (up to 4)">全部产品（最多选 4 款）</span></div>
+        <div id="cmp-list" class="tray-list"></div>
+        <div class="tray-actions"><button id="cmp-clear" type="button" class="tray-clear"><span data-zh="清空选择" data-en="Clear selection">清空选择</span></button></div>
+      </div>
+    </div>
+    <button id="lang-toggle" class="lang-btn" type="button" aria-label="switch language">EN</button>
+  </div>
+</header>
+<main class="page">
+<div class="profile-hero">
+  <a class="back" href="index.html"><span data-zh="← 返回首页" data-en="← Back to home">← 返回首页</span></a>
+  <h1>Apache Cassandra / ScyllaDB</h1>
+  <div class="meta-row"><span class="cat cat-kvdoc" data-zh="KV · 宽列 · 文档" data-en="KV · Wide-column · Document">KV · 宽列 · 文档</span> <span class="tag">#宽列</span> <span class="tag">#最终一致性</span> <span class="tag">#可调一致性</span> <span class="tag">#无主架构</span> <span class="tag">#线性扩展</span> <span class="tag">#高写入</span> <span class="tag">#CQL</span> <span class="tag">#跨数据中心</span></div>
+  <p class="oneliner"><div class="lang-block lang-zh">
+<p>宽列分布式 NoSQL 的鼻祖与它的 C++ 重写：为&quot;写密集、永远在线、线性扩展&quot;而生的最终一致性存储。Cassandra 是生态与许可证中立性的代表；ScyllaDB 是单节点性能与尾延迟的代表，代价是 2025 年起的 source-available 许可证与更小的社区。</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<p>The original wide-column distributed NoSQL and its C++ rewrite: storage built for &quot;write-heavy, always-on, linearly scalable&quot; workloads, with tunable consistency on an eventually consistent base. Cassandra stands for ecosystem maturity and license neutrality; ScyllaDB stands for per-node performance and tail-latency control — at the cost of a source-available license since 2025 and a smaller community.</p>
+</div></p>
+  <div class="ai-dive-row" data-product="Apache Cassandra / ScyllaDB">
+    <span class="ai-dive-label" data-zh="用 AI 深挖这款：" data-en="Deep-dive with AI:">用 AI 深挖这款：</span>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('chatgpt', this)">ChatGPT <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('grok', this)">Grok <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('claude', this)">Claude <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn addcmp-btn" data-addcmp="cassandra-scylladb"><span class="addcmp-label">＋ 对比</span></button>
+  </div>
+  <div class="legend"><span class="legend-label" data-zh="证据等级：" data-en="Evidence levels: ">证据等级：</span><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></div>
+</div>
+<section class="doc-section">
+<h2><span data-zh="基本信息" data-en="Basics">基本信息</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>项</th><th>Apache Cassandra</th><th>ScyllaDB</th></tr></thead>
+<tbody>
+<tr><td>厂商 / 组织</td><td>Apache 软件基金会（社区驱动；商业生态曾由 DataStax 主导）</td><td>ScyllaDB Inc.（美国加州 Sunnyvale）</td></tr>
+<tr><td>国家</td><td>美国（ASF）</td><td>美国</td></tr>
+<tr><td>首次发布</td><td>2008（Facebook 开源）</td><td>2015（AGPL 开源）</td></tr>
+<tr><td>许可证</td><td>Apache 2.0（纯开源）</td><td><strong>2025.1 起统一为 source-available</strong>；6.2 是最后一个 AGPL 版本</td></tr>
+<tr><td>托管服务</td><td>生态托管：DataStax Astra DB（2025-05 被 IBM 收购，现归属 watsonx.data）、AWS Keyspaces、Azure Managed Instance、Google Cloud</td><td>ScyllaDB Cloud / X Cloud（DBaaS）</td></tr>
+<tr><td>主类型</td><td>宽列（wide-column）分布式 NoSQL</td><td>宽列（wide-column）分布式 NoSQL</td></tr>
+<tr><td>兼具类型</td><td>向量搜索（5.0 起原生）</td><td>向量搜索（2026 年加入，Cloud 优先）、DynamoDB API（Alternator）</td></tr>
+<tr><td>一致性模型</td><td>可调一致性（最终一致打底）</td><td>可调一致性（最终一致打底），与 Cassandra 语义一致</td></tr>
+<tr><td>复制协议</td><td>无主复制 + Gossip + hinted handoff + 反熵修复</td><td>同 Cassandra 语义；拓扑变更由 Raft 驱动；数据分布自 2025.1 默认用 tablets</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Item</th><th>Apache Cassandra</th><th>ScyllaDB</th></tr></thead>
+<tbody>
+<tr><td>Vendor / Organization</td><td>Apache Software Foundation (community-driven; commercial ecosystem formerly led by DataStax)</td><td>ScyllaDB Inc. (Sunnyvale, California, USA)</td></tr>
+<tr><td>Country</td><td>USA (ASF)</td><td>USA</td></tr>
+<tr><td>First release</td><td>2008 (open-sourced by Facebook)</td><td>2015 (open-sourced under AGPL)</td></tr>
+<tr><td>License</td><td>Apache 2.0 (pure open source)</td><td><strong>Source-available since 2025.1</strong>; 6.2 was the last AGPL release</td></tr>
+<tr><td>Managed service</td><td>Ecosystem-managed: DataStax Astra DB (acquired by IBM in 2025-05, now part of watsonx.data), AWS Keyspaces, Azure Managed Instance, Google Cloud</td><td>ScyllaDB Cloud / X Cloud (DBaaS)</td></tr>
+<tr><td>Primary type</td><td>Wide-column distributed NoSQL</td><td>Wide-column distributed NoSQL</td></tr>
+<tr><td>Also supports</td><td>Vector search (native since 5.0)</td><td>Vector search (added 2026, Cloud-first), DynamoDB API (Alternator)</td></tr>
+<tr><td>Consistency model</td><td>Tunable consistency (eventually consistent by default)</td><td>Tunable consistency (eventually consistent by default), semantics consistent with Cassandra</td></tr>
+<tr><td>Replication protocol</td><td>Leaderless replication + Gossip + hinted handoff + anti-entropy repair</td><td>Same semantics as Cassandra; topology changes driven by Raft; data distribution defaults to tablets since 2025.1</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section"><h2><span data-zh="硬维度（14 项）" data-en="Hard dimensions (14)">硬维度（14 项）</span></h2>
+<div class="lang-block lang-zh">
+<div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>Cassandra：<strong>部分支持</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。commitlog 可加密（<code>transparent_data_encryption_options</code>）；<strong>SSTable 落盘加密在开源版查证为无</strong>（该能力历史上保留给 DataStax Enterprise）；备份（nodetool snapshot）无内置加密，依赖对象存储服务端加密<span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。<ul>
+<li>ScyllaDB：<strong>有</strong>（官方文档/官方博客）。统一版本包含原企业版的落盘加密；Cloud 版支持数据库级加密（AES-128/256，用户表 + commitlog + batchlog + hint 均加密，支持 AWS/GCP KMS 客户主密钥）；自建版 KMS 集成细节待验证。</li>
+</ul></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。Cassandra：<code>client_encryption_options</code>（客户端↔节点）与 <code>server_encryption_options</code>（节点间，<code>internode_encryption: all/dc/none</code>）；5.0 新增 <strong>mTLS 证书认证</strong>（官方发布口径）。ScyllaDB：同等 client/server 加密选项，支持证书认证（<code>CertificateAuthenticator</code>，社区实测）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> 审计 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>Cassandra：<strong>有</strong>（官方文档，4.0+）。<code>audit_logging_options</code>：按节点落文件的审计日志，类别含 QUERY/DML/DDL/DCL/AUTH/ERROR/PREPARE，支持 keyspace/用户过滤，可运行时经 nodetool 开关；堆内存与磁盘占用有界（官方口径）。<ul>
+<li>ScyllaDB：<strong>有</strong>（官方仓库代码/社区论坛）。audit 子系统支持输出到 syslog 或 <code>audit.audit_log</code> 表，类别 QUERY/DML/DDL/DCL/AUTH/ADMIN，可按 keyspace/table 选择性审计，密码脱敏；原为企业版能力，2025 年初已合并入统一代码库。</li>
+</ul></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> 认证与权限 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。Cassandra：<code>PasswordAuthenticator</code> + <code>CassandraAuthorizer</code>，CQL <code>GRANT/REVOKE</code> 的 RBAC（keyspace/table 级），角色可嵌套；Kerberos/LDAP 为 DSE 企业版能力（开源版查证为无）。ScyllaDB：密码认证 + 角色权限（与 CQL 语义一致）+ <strong>LDAP/AD 集成</strong>（原企业版，现统一版本包含，官方发布口径）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> 备份恢复 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>Cassandra：<strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。<code>nodetool snapshot</code>（硬链接冻结 SSTable，秒级、无 IO 冲击但占同卷磁盘）+ 增量备份 + commitlog 归档可拼出 PITR；开源 <strong>Medusa</strong>（Spotify 起源，现由社区维护）支持全量/差异备份到 S3/GCS 并可校验；恢复为逐节点拷贝 SSTable 或 <code>sstableloader</code>，TB 级大集群恢复耗时以小时计<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。<ul>
+<li>ScyllaDB：<strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。<strong>ScyllaDB Manager</strong> 提供计划备份到 S3/GCS/Azure（<code>sctool</code>）；底层同样是 snapshot 机制；官方集成测试矩阵注明：恢复<strong>不支持 Authentication 与 Service Levels</strong> 的还原（官方仓库文档，选型时注意）。</li>
+</ul></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> 大版本升级 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。Cassandra：逐节点滚动升级，不停服；但<strong>大版本单向、不可降级</strong>（SSTable 格式升级后无法回退）；5.0 仅支持从 4.0/4.1 升级（官方文档口径），3.11 需先到 4.x。ScyllaDB：滚动升级；2025.1 起 Raft 驱动的一致性拓扑变更使扩缩容与升级更稳；同样不支持跨大版本降级。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> 可观测性 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>Cassandra：<strong>部分支持</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。<code>nodetool</code> + JMX 指标是官方链路；Prometheus/Grafana 需外部 exporter 或第三方采集器拼装，无官方内置端到端监控栈。<ul>
+<li>ScyllaDB：<strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。内置 <strong>Prometheus metrics 端点</strong> + 官方 <strong>ScyllaDB Monitoring</strong> Grafana 仪表盘栈（含告警），另有 REST API、tracing 与轻量慢查询日志。</li>
+</ul></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> 连接模型 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。CQL 原生二进制协议；官方多语言驱动均为 <strong>token-aware</strong>（直连负责副本的节点，避开 coordinator 跳转）；ScyllaDB 另提供 <strong>shard-aware 端口（19042）</strong> 与专用驱动，直连目标 CPU shard。连接本身轻量，无 PG 式连接数瓶颈；但 coordinator 仍是跨分区查询的汇聚点，超大应用机群仍建议经代理或驱动侧限流<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> 事务与隔离级别 <span class="verdict v-no">无多行 ACID</span></h3><div class="dim-body"><p><strong>无多行 ACID</strong>（官方文档，查证为无）。单行写入原子；<strong>LWT</strong>（<code>IF NOT EXISTS</code> / <code>IF 条件</code>）提供单分区 Paxos compare-and-set 线性一致；<code>BATCH</code> 保证同分区原子性（非隔离性），跨分区 batch 仅保证最终写入、无隔离。Cassandra 4.1+ 可切 <strong>Paxos v2</strong>（<code>paxos_variant: v2</code>），无竞争 LWT 从 4 RTT 降到写 2 RTT/读 1 RTT（CEP-14，社区技术文档）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> 复制与一致性 <span class="verdict v-no">无主对等复制</span></h3><div class="dim-body"><p><strong>可调一致性</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。无主对等复制；每查询指定一致性级别（ONE / QUORUM / LOCAL_QUORUM / ALL 等）；<code>W+R&gt;N</code> 保证读写集合交集；副本缺失时靠 <strong>hinted handoff</strong>（默认 3 小时窗口）+ <strong>read repair</strong> + 周期性 <strong>anti-entropy repair</strong> 收敛。ScyllaDB 语义相同，数据分布层自 2025.1 默认 <strong>tablets</strong>（替代 vnodes，Raft 负载均衡）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> 扩展方式 <span class="verdict v-neutral">横向 scale-out，在线</span></h3><div class="dim-body"><p><strong>横向 scale-out，在线</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。加节点自动分担 token/tablet 范围；Cassandra 4.0 起符合条件的 SSTable 走零拷贝 streaming（官方口径，扩容快 5 倍为厂商口径）；ScyllaDB tablets + 文件级 streaming 使加节点更快（30 倍为厂商口径，见深水区）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> 兼容性 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。CQL（类 SQL 但无 join/子查询/任意 WHERE）；多语言官方驱动；Spark/Hadoop 连接器；<strong>ScyllaDB 额外兼容 Amazon DynamoDB API（Alternator）</strong>，DynamoDB 应用可低改迁移（官方口径）。Cassandra 5.0 新增 SAI 与向量索引，补齐部分二级索引/相似检索场景。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> 许可证与商业模式 <span class="verdict v-neutral">Cassandra：Apache</span></h3><div class="dim-body"><ul>
+<li>Cassandra：<strong>Apache 2.0 纯开源</strong>；商业围绕服务与托管：DataStax（DSE 企业版、Astra DB Serverless 按读写请求量计费）<strong>2025 年 5 月被 IBM 收购</strong>并入 watsonx.data（公开报道）；另有 K8ssandra 等云原生发行版。<ul>
+<li>ScyllaDB：<strong>2025.1 起 source-available 统一版本</strong>（官方公告 2024-12）；免费额度为<strong>每组织 10TB 配置磁盘 + 50 vCPU</strong>（跨所有集群，官方 FAQ 口径），超出需商业许可；6.2 AGPL 为最后一个纯开源版本；托管为 ScyllaDB Cloud / X Cloud（按节点/资源计费模型，具体单价以官网为准，此处不引用）。</li>
+</ul></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> 中文资料丰富度 <span class="verdict v-neutral">Cassandra 中等</span></h3><div class="dim-body"><p>Cassandra <strong>中等</strong>（官方文档以英文为主；CSDN/博客中文教程多，但大量内容停留在 3.x/4.0 时代）；ScyllaDB <strong>较少</strong>（官方英文文档为主，中文社区内容稀缺）——均为社区共识。</p></div></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><ul>
+<li>Cassandra: <strong>Partially supported</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. The commitlog can be encrypted (<code>transparent_data_encryption_options</code>); <strong>SSTable data-at-rest encryption is confirmed absent in the open-source edition</strong> (that capability was historically reserved for DataStax Enterprise); backups (nodetool snapshot) have no built-in encryption and rely on object-store server-side encryption <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>.<ul>
+<li>ScyllaDB: <strong>Supported</strong> (official docs / official blog). The unified release includes what was formerly the enterprise edition&#x27;s data-at-rest encryption; the Cloud edition supports database-level encryption (AES-128/256, encrypting user tables + commitlog + batchlog + hints, with AWS/GCP KMS customer master keys); self-hosted KMS integration details to-be-verified.</li>
+</ul></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / transport encryption <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. Cassandra: <code>client_encryption_options</code> (client↔node) and <code>server_encryption_options</code> (internode, <code>internode_encryption: all/dc/none</code>); 5.0 adds <strong>mTLS certificate authentication</strong> (official release claim). ScyllaDB: equivalent client/server encryption options with certificate authentication support (<code>CertificateAuthenticator</code>, community-tested).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> Auditing <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><ul>
+<li>Cassandra: <strong>Supported</strong> (official docs, 4.0+). <code>audit_logging_options</code>: per-node file-based audit logs with categories QUERY/DML/DDL/DCL/AUTH/ERROR/PREPARE, keyspace/user filtering, and runtime on/off via nodetool; heap-memory and disk usage are bounded <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.<ul>
+<li>ScyllaDB: <strong>Supported</strong> (official repo code / community forums). The audit subsystem outputs to syslog or the <code>audit.audit_log</code> table, with categories QUERY/DML/DDL/DCL/AUTH/ADMIN, selective auditing by keyspace/table, and password redaction; formerly an enterprise-edition capability, merged into the unified codebase in early 2025.</li>
+</ul></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> Authentication &amp; authorization <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. Cassandra: <code>PasswordAuthenticator</code> + <code>CassandraAuthorizer</code>, CQL <code>GRANT/REVOKE</code> RBAC (keyspace/table level) with nestable roles; Kerberos/LDAP are DSE enterprise-edition capabilities (confirmed absent in the open-source edition). ScyllaDB: password authentication + role-based authorization (same CQL semantics) + <strong>LDAP/AD integration</strong> (formerly enterprise, now included in the unified release, per official release announcements).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> Backup &amp; recovery <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><ul>
+<li>Cassandra: <strong>Supported</strong> (official docs / community consensus). <code>nodetool snapshot</code> (hard-link freeze of SSTables — instant, no IO impact, but consumes same-volume disk) + incremental backups + commitlog archiving can together approximate PITR; the open-source <strong>Medusa</strong> (originated at Spotify, now community-maintained) supports full/differential backups to S3/GCS with verification; recovery is per-node SSTable copies or <code>sstableloader</code>, with TB-scale large-cluster recovery taking hours <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.<ul>
+<li>ScyllaDB: <strong>Supported</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. <strong>ScyllaDB Manager</strong> provides scheduled backups to S3/GCS/Azure (<code>sctool</code>); the underlying mechanism is the same snapshot approach; the official integration-test matrix notes that recovery <strong>does not restore Authentication and Service Levels</strong> (official repo docs — note this when evaluating).</li>
+</ul></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> Major-version upgrades <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (official docs / community consensus). Cassandra: rolling node-by-node upgrades with no downtime; but <strong>major upgrades are one-way — no downgrade</strong> (SSTable format upgrades cannot be rolled back); 5.0 only supports upgrades from 4.0/4.1 (per official docs), and 3.11 must go to 4.x first. ScyllaDB: rolling upgrades; since 2025.1, Raft-driven consistent topology changes make scale-out/in and upgrades steadier; cross-major-version downgrades are likewise unsupported.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> Observability <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><ul>
+<li>Cassandra: <strong>Partially supported</strong> (official docs / community consensus). <code>nodetool</code> + JMX metrics form the official path; Prometheus/Grafana require an external exporter or a third-party collector assembled yourself — there is no official built-in end-to-end monitoring stack.<ul>
+<li>ScyllaDB: <strong>Supported</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. Built-in <strong>Prometheus metrics endpoint</strong> + the official <strong>ScyllaDB Monitoring</strong> Grafana dashboard stack (with alerting), plus a REST API, tracing, and a lightweight slow-query log.</li>
+</ul></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> Connection model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>. CQL native binary protocol; all official multi-language drivers are <strong>token-aware</strong> (connecting directly to the nodes owning the replicas, avoiding coordinator hops); ScyllaDB additionally offers a <strong>shard-aware port (19042)</strong> and dedicated drivers that connect directly to the target CPU shard. Connections themselves are lightweight — no PG-style connection-count bottleneck; but the coordinator remains the aggregation point for cross-partition queries, so very large application fleets should still go through a proxy or driver-side throttling <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> Transactions &amp; isolation levels <span class="verdict v-no">No multi-row ACID</span></h3><div class="dim-body"><p><strong>No multi-row ACID</strong> (official docs, confirmed absent). Single-row writes are atomic; <strong>LWT</strong> (<code>IF NOT EXISTS</code> / <code>IF &lt;condition&gt;</code>) provides single-partition Paxos compare-and-set linearizable consistency; <code>BATCH</code> guarantees atomicity within a partition (not isolation), while cross-partition batches guarantee only eventual writes with no isolation. Cassandra 4.1+ can switch to <strong>Paxos v2</strong> (<code>paxos_variant: v2</code>), reducing contention-free LWT from 4 RTTs to 2 RTTs for writes / 1 RTT for reads (CEP-14, community technical docs).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> Replication &amp; consistency <span class="verdict v-neutral">Tunable consistenc</span></h3><div class="dim-body"><p><strong>Tunable consistency</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. Leaderless peer replication; per-query consistency levels (ONE / QUORUM / LOCAL_QUORUM / ALL, etc.); <code>W+R&gt;N</code> guarantees read/write set intersection; when replicas are missing, convergence relies on <strong>hinted handoff</strong> (default 3-hour window) + <strong>read repair</strong> + periodic <strong>anti-entropy repair</strong>. ScyllaDB semantics are the same; its data-distribution layer defaults to <strong>tablets</strong> since 2025.1 (replacing vnodes, with Raft-based load balancing).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> Scaling <span class="verdict v-neutral">Horizontal scale-o</span></h3><div class="dim-body"><p><strong>Horizontal scale-out, online</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. Adding nodes automatically re-shares token/tablet ranges; since Cassandra 4.0, eligible SSTables use zero-copy streaming (vendor claim: 5x faster scale-out); ScyllaDB&#x27;s tablets + file-level streaming make adding nodes even faster (30x is a vendor claim — see deep-dive).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> Compatibility <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (official docs / community consensus). CQL (SQL-like but no joins/subqueries/arbitrary WHERE); official drivers in multiple languages; Spark/Hadoop connectors; <strong>ScyllaDB additionally supports the Amazon DynamoDB API (Alternator)</strong>, so DynamoDB applications can migrate with minimal changes <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>. Cassandra 5.0 adds SAI and vector indexing, filling in some secondary-index / similarity-search scenarios.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> License &amp; business model <span class="verdict v-neutral">Cassandra: Apach</span></h3><div class="dim-body"><ul>
+<li>Cassandra: <strong>Apache 2.0, pure open source</strong>; commercial activity centers on services and managed offerings: DataStax (DSE enterprise edition, Astra DB serverless billed per read/write request) <strong>was acquired by IBM in May 2025</strong> and folded into watsonx.data (public reporting); there are also cloud-native distributions such as K8ssandra.<ul>
+<li>ScyllaDB: <strong>Source-available unified release since 2025.1</strong> (official announcement, 2024-12); the free tier is <strong>10TB of provisioned disk + 50 vCPU per organization</strong> (across all clusters, per official FAQ), with commercial licensing required beyond that; AGPL 6.2 was the last purely open-source release; managed offerings are ScyllaDB Cloud / X Cloud (per-node/resource billing model; exact pricing per the official site — not quoted here).</li>
+</ul></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> Chinese-language resources <span class="verdict v-neutral">Cassandra is moder</span></h3><div class="dim-body"><p>Cassandra is <strong>moderate</strong> (official docs are primarily English; many CSDN/blog Chinese tutorials exist but much of the content is stuck in the 3.x/4.0 era); ScyllaDB is <strong>sparse</strong> (official English docs dominate; Chinese community content is scarce) — both per community consensus.</p></div></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="杀手特性" data-en="Killer features">杀手特性</span></h2>
+<div class="lang-block lang-zh">
+<ol>
+<li><strong>无主对等架构 + 可调一致性：为&quot;写不能停&quot;而生</strong> 真本事：没有主从之分，任何节点都可做 coordinator；一致性级别按查询指定——<code>LOCAL_QUORUM</code> 在多活跨 DC 部署下兼顾延迟与正确性。这是 Cassandra 系在断网、单 DC 故障下仍能写入的根本原因。 边缘真相：见深水区一——quorum 数学只保证&quot;读写集合相交&quot;，不保证&quot;所有副本最终收敛&quot;；后者靠 repair，而 repair 是运维动作不是自动魔法。</li>
+<li><strong>线性横向扩展：加机器就扩容</strong> 真本事：shared-nothing，加节点、数据自动重分布，在线完成；从 3 节点到上百节点的扩展曲线是这一品类立身之本（Apple、Netflix 级部署是公开报道的背书）。 边缘真相：扩容期间 streaming 吃网络与 IO，高峰期扩容等于给飞行中的飞机换引擎；Cassandra vnode 拓扑下大集群加节点历史上偏慢（ScyllaDB 的 tablets 正是为治这个）。</li>
+<li><strong>ScyllaDB 的 shard-per-core 重写：把多核吃干抹净</strong> 真本事：C++ / Seastar，每核一个独立 shard，无共享内存、无 GC、无锁，用户态 IO 调度；同等吞吐所需节点数显著少于 Cassandra（TCO 优势的来源，独立测试多观测到 2x 起，10x 多为厂商口径）。 边缘真相：见深水区四——热点分区仍受单个 shard 上限约束；对硬件亲和（NUMA、本地 NVMe）要求高，超售严重的虚拟化环境收益打折。</li>
+<li><strong>Cassandra 5.0 的 SAI + 原生向量搜索：查询能力的补课</strong> 真本事：Storage-Attached Indexes（SAI）把二级索引做进存储引擎，终结了传统二级索引&quot;全集群 fan-out&quot;的痼疾；原生向量与 ANN 搜索让 Cassandra 能直接服务 RAG/推荐场景。 边缘真相：这些能力只在 5.0+，3.11/4.x 老集群享受不到；SAI 仍不是关系型索引的替代品，query-first 建模的纪律不能丢。</li>
+<li><strong>ScyllaDB Alternator：DynamoDB 的逃生舱</strong> 真本事：线级兼容 DynamoDB API，DynamoDB 用户可不改应用逻辑迁移，顺带甩掉按请求计费的账单（&quot;sticker shock&quot;是官方反复引用的迁移动因）。 边缘真相：兼容的是 API 不是 DynamoDB 的运维语义（限流、分区行为仍是 ScyllaDB 内核）；DynamoDB 的强一致读/GIS 等高级语义需逐项验证。</li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<ol>
+<li><strong>Leaderless peer architecture + tunable consistency: built so writes never stop</strong> The real deal: no primary/replica distinction — any node can serve as coordinator; consistency level is chosen per query — <code>LOCAL_QUORUM</code> balances latency and correctness in multi-active cross-DC deployments. This is the fundamental reason the Cassandra family keeps accepting writes during network partitions or single-DC failures. The edge truth: see deep-dive 1 — quorum math only guarantees &quot;read and write sets intersect&quot;, not &quot;all replicas eventually converge&quot;; the latter depends on repair, and repair is an operational action, not automatic magic.</li>
+<li><strong>Linear horizontal scaling: add machines, get capacity</strong> The real deal: shared-nothing — adding nodes redistributes data online without downtime; the scaling curve from 3 nodes to hundreds of nodes is what this category lives by (Apple- and Netflix-scale deployments are publicly reported endorsements). The edge truth: streaming during scale-out eats network and IO — expanding at peak traffic is like swapping an airplane&#x27;s engine mid-flight; large Cassandra clusters historically expanded slowly under the vnode topology (ScyllaDB&#x27;s tablets exist precisely to fix that).</li>
+<li><strong>ScyllaDB&#x27;s shard-per-core rewrite: squeezing every core dry</strong> The real deal: C++ / Seastar — one independent shard per core, no shared memory, no GC, no locks, userspace IO scheduling; the node count needed for equivalent throughput is materially lower than Cassandra (the source of its TCO advantage — independent tests commonly observe 2x and up; 10x figures are mostly vendor claims). The edge truth: see deep-dive 4 — a hot partition is still bounded by a single shard&#x27;s ceiling; adding cores won&#x27;t help, the fix is at the modeling layer (scatter the keys); it demands hardware affinity (NUMA, local NVMe) — heavily oversold virtualized environments discount the gains.</li>
+<li><strong>Cassandra 5.0&#x27;s SAI + native vector search: catching up on query capability</strong> The real deal: Storage-Attached Indexes (SAI) push secondary indexing into the storage engine, ending the legacy secondary index&#x27;s &quot;fan-out across the whole cluster&quot; pathology; native vector and ANN search let Cassandra directly serve RAG/recommendation workloads. The edge truth: these exist only in 5.0+ — 3.11/4.x clusters don&#x27;t get them; SAI is still no substitute for relational indexes, and query-first modeling discipline remains mandatory.</li>
+<li><strong>ScyllaDB Alternator: DynamoDB&#x27;s escape hatch</strong> The real deal: wire-compatible with the DynamoDB API — DynamoDB users can migrate without changing application logic, shedding per-request billing along the way (&quot;sticker shock&quot; is the migration driver the vendor repeatedly cites). The edge truth: what&#x27;s compatible is the API, not DynamoDB&#x27;s operational semantics (throttling, partition behavior are still the ScyllaDB engine); advanced DynamoDB semantics like strongly consistent reads / GIS need item-by-item verification.</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="深水区" data-en="Deep dives">深水区</span></h2>
+<div class="lang-block lang-zh">
+<p><strong>深水区一：可调一致性——quorum 只保证相交，不保证收敛</strong></p>
+<ul>
+<li>机制：无主复制，写时 coordinator 按一致性级别等待 W 个副本确认；读时等待 R 个副本，取最新时间戳。<code>W+R&gt;N</code> 保证读写集合必有交集。</li>
+<li>推到边缘：某节点宕机超过 hinted handoff 默认 3 小时窗口 → hint 被丢弃 → 该节点永久缺失这批写入；之后它恢复并参与 <code>R=2</code> 的读，读到的可能是旧值；若周期性 repair 也没跑，这批 key 将<strong>静默分歧</strong>——quorum 数学对此无能为力（社区教学案例实证）。<code>CL=ALL</code> 则任一副本抖动就写失败，可用性雪崩。</li>
+<li>选型含义：最终一致性是&quot;运维出来&quot;的——repair 排期必须写进 runbook，且周期 &lt; <code>gc_grace_seconds</code>；跨 DC 部署默认用 <code>LOCAL_QUORUM</code> 而非 <code>QUORUM</code>。</li>
+<li>来源：社区技术文档（rustyrazorblade/cassandra-expert repair/hinted-handoff，2026-09 更新）、tub99 分布式系统教学案例。</li>
+</ul>
+<p><strong>深水区二：tombstone 与 repair——删除是最贵的写</strong></p>
+<ul>
+<li>机制：SSTable 不可变，删除 = 写 tombstone 标记；tombstone 在 <code>gc_grace_seconds</code>（默认 10 天）后才允许被 compaction 清除；清除前所有副本必须经 repair 见过这个 tombstone。</li>
+<li>推到边缘：批量删除/集合整列替换/<code>SET col = null</code> 会制造 tombstone 风暴 → 读要穿越海量墓碑，读放大、堆内存压力，超 <code>tombstone_failure_threshold</code>（默认 10 万）查询直接失败；把 <code>gc_grace_seconds</code> 调得比 repair 周期短 → 墓碑提前清除 → 错过删除的副本在下次 repair 时把<strong>已删除数据复活</strong>（zombie rows），且静默无报错。</li>
+<li>选型含义：能 TTL 过期就别显式 DELETE；repair 周期必须 &lt; gc_grace；监控 <code>TombstoneScannedHistogram</code>；时间序列场景优先按时间分表 + 整表 DROP（零墓碑）。</li>
+<li>来源：社区技术文档（tombstones/repair 参考，2026-09 更新）、heatware 实测指南。</li>
+</ul>
+<p><strong>深水区三：hinted handoff——只有 3 小时的临时桥</strong></p>
+<ul>
+<li>机制：副本短暂不可用时，coordinator 把写暂存为本地 hint（<code>max_hint_window_in_ms</code> 默认 3 小时），节点恢复后重放。</li>
+<li>推到边缘：三种丢 hint 的方式——(1) 节点宕机超 3 小时，hint 直接丢弃；(2) coordinator 自己崩溃，hint 随它陪葬（hint 不复制）；(3) hint 堆积打满 <code>max_hints_size_per_host_in_mb</code>，新 hint 被丢弃。以及故障检测器没及时发现的&quot;半死&quot;节点：写超时但 hint 已存，coordinator 内存压力堆积甚至抛 <code>OverloadedException</code> 拒绝写入。</li>
+<li>选型含义：hinted handoff 不是 repair 的替代品；任何超窗口的宕机恢复后必须跑 repair；<code>CL=ANY</code>（&quot;hint 算成功&quot;）语义危险，生产慎用。</li>
+<li>来源：官方文档概念、社区运维手册（2026-09 更新）。</li>
+</ul>
+<p><strong>深水区四：ScyllaDB shard-per-core——快，但按 shard 思考容量</strong></p>
+<ul>
+<li>机制：Seastar 框架，每 CPU 核一个 shard，各自拥有内存、memtable/SSTable、缓存分区、网络连接与 IO 调度队列；shard 间只经消息传递通信，无共享状态。</li>
+<li>推到边缘：热点分区（partition key 高度集中）仍受<strong>单个 shard</strong> 的吞吐上限约束，加核不解决问题，得从建模层打散；跨 shard 的聚合/全局二级索引查询有消息汇聚开销；云上超售 vCPU、远端盘场景下&quot;贴近硬件&quot;的设计收益会被吃掉一部分。</li>
+<li>选型含义：容量规划按 shard 不是按节点；热点 key 建模评审与 Cassandra 同等重要；压测必须用生产级硬件形态，笔记本/超售云主机上的数字没有意义。</li>
+<li>来源：ScyllaDB 官方产品页、社区架构分析（softwaremill 2026-09）、维基百科（独立测试 2x~10x 差异的综述）。</li>
+</ul>
+<p><strong>深水区五：ScyllaDB 许可证——2025 年后不再是&quot;开源免费&quot;</strong></p>
+<ul>
+<li>机制：2024-12 官方宣布、2025.1（2025-04 发布）起 OSS 与 Enterprise 合并为<strong>统一的 source-available</strong> 版本；最后一个纯开源版本是 AGPL 的 6.2；免费额度为每组织 <strong>10TB 配置磁盘 + 50 vCPU</strong>（跨所有集群，官方 FAQ 口径）。</li>
+<li>推到边缘：超出免费额度的集群需商业许可——此前按&quot;开源免费&quot;做的 TCO 预算要重算；云厂商/大客户法务需审查 source-available 条款（与 OSI 开源定义不兼容）；AGPL 6.2 理论上可被社区分叉，但分叉版拿不到后续 tablets/Raft 等演进。</li>
+<li>选型含义：新部署直接按商业条款做预算与法务评估；小规模/评估场景免费额度通常够用；把&quot;许可证变更风险&quot;写进选型纪要。</li>
+<li>来源：ScyllaDB 官方公告（2024-12-18）、官方产品 FAQ、第三方分析（softwaremill 2026-09）。</li>
+</ul>
+<p><strong>深水区六：Cassandra 4.x/5.0 现状——老用户是时候升级了</strong></p>
+<ul>
+<li>机制：截至 2026-09，<strong>5.0.9 为最新 GA</strong>；5.0 带来 SAI、原生向量搜索、统一压缩策略（UCS）、动态数据脱敏、mTLS 认证；<strong>5.0.8+ 把自动 repair 调度 backport 为可选项</strong>（opt-in）；6.0 仍为 pre-GA（alpha），在研事务性集群元数据与 Accord 跨分区事务。</li>
+<li>推到边缘：3.11 老集群的升级是&quot;逐级跳&quot;（3.11→4.x→5.0），SSTable 格式单向升级不可回退，升级窗口要留足验证时间；5.0 的 SAI/向量/auto-repair 老版本一概没有，&quot;等 6.0 的 Accord&quot;属于期货，不能进当前选型决策。</li>
+<li>选型含义：新部署直接 5.0.x；现存 3.11/4.0 集群先规划升级路径再评估新特性；把 Accord/6.0 当作跟踪项而非决策依据。</li>
+<li>来源：ASF 5.0 发布公告、第三方版本综述（softwaremill 2026-09，确认 5.0.9 为最新 GA）。</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<p><strong>Deep-dive 1: Tunable consistency — quorum guarantees intersection, not convergence</strong></p>
+<ul>
+<li>Mechanism: leaderless replication — the coordinator waits for W replica acknowledgments on writes per the consistency level; on reads it waits for R replicas and takes the newest timestamp. <code>W+R&gt;N</code> guarantees read/write sets must intersect.</li>
+<li>At the edge: a node goes down past the hinted-handoff default 3-hour window → its hints are discarded → that node permanently misses those writes; it then recovers and participates in an <code>R=2</code> read, which may return the stale value; if periodic repair never ran either, those keys <strong>silently diverge</strong> — quorum math can do nothing about it (demonstrated in community teaching cases). With <code>CL=ALL</code>, any single flapping replica fails the write — an availability avalanche.</li>
+<li>Implication for selection: eventual consistency is &quot;operated into existence&quot; — repair scheduling must be written into the runbook, with the interval shorter than <code>gc_grace_seconds</code>; cross-DC deployments should default to <code>LOCAL_QUORUM</code>, not <code>QUORUM</code>.</li>
+<li>Sources: community technical docs (rustyrazorblade/cassandra-expert repair/hinted-handoff, updated 2026-09), tub99 distributed-systems teaching case.</li>
+</ul>
+<p><strong>Deep-dive 2: Tombstones and repair — deletes are the most expensive writes</strong></p>
+<ul>
+<li>Mechanism: SSTables are immutable, so a delete = writing a tombstone marker; tombstones may only be purged by compaction after <code>gc_grace_seconds</code> (default 10 days); before purging, all replicas must have seen the tombstone via repair.</li>
+<li>At the edge: bulk deletes / whole-collection replacements / <code>SET col = null</code> create tombstone storms → reads must traverse mountains of tombstones — read amplification, heap pressure — and beyond <code>tombstone_failure_threshold</code> (default 100k) the query fails outright; setting <code>gc_grace_seconds</code> shorter than the repair interval → tombstones purged early → replicas that missed the delete <strong>resurrect the deleted data</strong> on the next repair (zombie rows), silently, with no error.</li>
+<li>Implication for selection: prefer TTL expiry over explicit DELETE; repair interval must be &lt; gc_grace; monitor <code>TombstoneScannedHistogram</code>; for time-series workloads, partition tables by time and DROP whole tables (zero tombstones).</li>
+<li>Sources: community technical docs (tombstones/repair reference, updated 2026-09), heatware hands-on guide.</li>
+</ul>
+<p><strong>Deep-dive 3: Hinted handoff — only a 3-hour temporary bridge</strong></p>
+<ul>
+<li>Mechanism: when a replica is briefly unavailable, the coordinator stashes the write as a local hint (<code>max_hint_window_in_ms</code>, default 3 hours) and replays it after the node recovers.</li>
+<li>At the edge: three ways hints get lost — (1) the node stays down past 3 hours and hints are discarded; (2) the coordinator itself crashes and the hints die with it (hints are not replicated); (3) hints pile up past <code>max_hints_size_per_host_in_mb</code> and new hints are dropped. Plus the &quot;half-dead&quot; node the failure detector hasn&#x27;t caught yet: writes time out but hints were stored, coordinator memory pressure builds and can throw <code>OverloadedException</code>, refusing writes.</li>
+<li>Implication for selection: hinted handoff is not a substitute for repair; any recovery from an over-window outage must be followed by repair; <code>CL=ANY</code> (&quot;a hint counts as success&quot;) is dangerous semantics — use with extreme caution in production.</li>
+<li>Sources: official docs concepts, community operations handbooks (updated 2026-09).</li>
+</ul>
+<p><strong>Deep-dive 4: ScyllaDB shard-per-core — fast, but think capacity per shard</strong></p>
+<ul>
+<li>Mechanism: Seastar framework — one shard per CPU core, each owning its memory, memtables/SSTables, cache partitions, network connections, and IO scheduling queues; shards communicate only via message passing, with no shared state.</li>
+<li>At the edge: a hot partition (highly concentrated partition keys) is still bounded by a <strong>single shard&#x27;s</strong> throughput ceiling — adding cores doesn&#x27;t help; the fix is at the modeling layer (scatter the keys); cross-shard aggregation / global secondary-index queries pay message-fan-in overhead; on oversold cloud vCPUs or remote-disk setups, the &quot;close to the hardware&quot; design&#x27;s gains are partly eaten away.</li>
+<li>Implication for selection: plan capacity per shard, not per node; hot-key modeling reviews matter just as much as with Cassandra; benchmarking must use production-grade hardware shapes — numbers from a laptop or oversold cloud hosts are meaningless.</li>
+<li>Sources: ScyllaDB official product pages, community architecture analysis (softwaremill 2026-09), Wikipedia (survey of independent test speedup claims).</li>
+</ul>
+<p><strong>Deep-dive 5: ScyllaDB licensing — no longer &quot;open source and free&quot; after 2025</strong></p>
+<ul>
+<li>Mechanism: announced 2024-12, effective with 2025.1 (released 2025-04) — OSS and Enterprise merged into a <strong>unified source-available</strong> release; the last purely open-source version was AGPL 6.2; the free tier is <strong>10TB of provisioned disk + 50 vCPU per organization</strong> (across all clusters, per official FAQ).</li>
+<li>At the edge: clusters beyond the free tier need commercial licensing — TCO budgets built on &quot;open source is free&quot; must be redone; cloud-vendor / large-customer legal teams need to review the source-available terms (incompatible with the OSI open-source definition); AGPL 6.2 could theoretically be forked by the community, but a fork wouldn&#x27;t receive later tablets/Raft evolution.</li>
+<li>Implication for selection: new deployments should be budgeted and legally evaluated under commercial terms from the start; the free tier usually suffices for small-scale / evaluation use; write &quot;license-change risk&quot; into the selection notes.</li>
+<li>Sources: ScyllaDB official announcement (2024-12-18), official product FAQ, third-party analysis (softwaremill 2026-09).</li>
+</ul>
+<p><strong>Deep-dive 6: Cassandra 4.x/5.0 today — it&#x27;s time for old users to upgrade</strong></p>
+<ul>
+<li>Mechanism: as of 2026-09, <strong>5.0.9 is the latest GA</strong>; 5.0 brings SAI, native vector search, Unified Compaction Strategy (UCS), dynamic data masking, mTLS authentication; <strong>5.0.8+ backports automatic repair scheduling as an opt-in option</strong>; 6.0 remains pre-GA (alpha), with transactional cluster metadata and Accord cross-partition transactions in development.</li>
+<li>At the edge: upgrading a 3.11-era cluster is a &quot;stepping-stone&quot; jump (3.11→4.x→5.0), SSTable format upgrades are one-way with no rollback — leave enough validation time in the upgrade window; 5.0&#x27;s SAI / vector / auto-repair are all absent from older versions, and &quot;waiting for 6.0&#x27;s Accord&quot; is futures territory — it must not enter current selection decisions.</li>
+<li>Implication for selection: new deployments go straight to 5.0.x; existing 3.11/4.0 clusters should plan their upgrade path before evaluating new features; treat Accord/6.0 as a tracking item, not a decision input.</li>
+<li>Sources: ASF 5.0 release announcement, third-party version survey (softwaremill 2026-09, confirming 5.0.9 as latest GA).</li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="用户最买账的 5 点" data-en="What users love most">用户最买账的 5 点</span></h2>
+<div class="lang-block lang-zh">
+<ol>
+<li><strong>&quot;永远在线&quot;的写可用性口碑</strong><ul>
+<li>为什么是真的：无主架构 + hinted handoff + 可调一致性，单节点甚至单 DC 故障下写路径不中断；这是从 Facebook 收件箱/Digg 时代一路验证下来的核心资产。</li>
+<li>边缘与限度：可用性的代价是&quot;一致性靠运维&quot;——repair、hint 窗口、gc_grace 三者配错会出现静默分歧；<code>CL=ALL</code> 下可用性优势荡然无存。口碑成立的前提是团队愿意为最终一致性配运维纪律。</li>
+</ul></li>
+<li><strong>加机器就扩容的线性扩展</strong><ul>
+<li>为什么是真的：shared-nothing + 一致性哈希，扩容是在线的数据重分布，不停服；从个位数节点到数百节点的案例是公开报道过的。</li>
+<li>边缘与限度：Cassandra vnode 拓扑下大集群加节点历史上偏慢且不均；扩容期的 streaming 与数据均衡吃网络 IO，高峰期扩容要选低峰窗口；以及很多人高估了自己对&quot;百节点扩展&quot;的真实需求。</li>
+</ul></li>
+<li><strong>ScyllaDB 的 p99 稳定性（无 GC 停顿）</strong><ul>
+<li>为什么是真的：C++ 无 GC + 每 shard 独立 IO 调度，延迟毛刺主要来自硬件而非运行时；延迟敏感型业务（广告、实时推荐）这是换 ScyllaDB 的第一动因。</li>
+<li>边缘与限度：p99 稳不等于 p9999 稳，跨 shard 查询、compaction 毛刺依然存在；收益与硬件亲和强相关，超售云主机上测不出宣传数字；独立测试的加速比从 2x 到 10x 不等，厂商的 10x 按厂商口径理解。</li>
+</ul></li>
+<li><strong>CQL 生态与驱动成熟度</strong><ul>
+<li>为什么是真的：CQL 形似 SQL 学习曲线平缓；Java/Python/Go 等官方与社区驱动均为 token-aware，生态工具（Medusa、Reaper、K8ssandra、各类 exporter）齐全；ScyllaDB 复用同一套驱动与 SSTable 格式，迁移 friction 低。</li>
+<li>边缘与限度：生态成熟的是&quot;操作面&quot;，不是&quot;查询面&quot;——CQL 的表达能力天花板（无 join）不会因驱动成熟而提高；ScyllaDB 专用能力（shard-aware）要用它的专用驱动才吃满。</li>
+</ul></li>
+<li><strong>互联网大厂十年验证</strong><ul>
+<li>为什么是真的：Cassandra 侧有 Netflix 等公开站台（5.0 发布时官方引述其 LWT 50% 提升受益）；ScyllaDB 侧有 Discord（万亿级消息）、Comcast、Samsung 等（厂商公开客户名单，客户名本身为公开报道）。</li>
+<li>边缘与限度：大厂的验证结论绑定它们的 workload（写密集、key-value 型访问）；&quot;Discord 能跑&quot;不等于&quot;你的复杂查询能跑&quot;；客户名单是厂商口径，POC 仍要用自己的读写模型压。</li>
+</ul></li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<ol>
+<li><strong>&quot;Always-on&quot; write-availability reputation</strong><ul>
+<li>Why it&#x27;s true: leaderless architecture + hinted handoff + tunable consistency — the write path survives single-node, even single-DC, failures; this core asset has been validated continuously since the Facebook inbox / Digg era.</li>
+<li>Edge and limits: the price of availability is &quot;consistency by operations&quot; — misconfiguring repair, hint windows, and gc_grace produces silent divergence; under <code>CL=ALL</code> the availability advantage evaporates entirely. The reputation holds only if the team is willing to pair eventual consistency with operational discipline.</li>
+</ul></li>
+<li><strong>Linear scaling: add machines, get capacity</strong><ul>
+<li>Why it&#x27;s true: shared-nothing + consistent hashing — scaling out is online data redistribution, no downtime; the publicly reported cases range from single-digit nodes to hundreds.</li>
+<li>Edge and limits: under Cassandra&#x27;s vnode topology, large-cluster scale-outs were historically slow and uneven; scale-out-era streaming and data rebalancing eat network IO — pick off-peak windows for expansions at peak traffic; and many teams overestimate their real need for &quot;hundred-node scaling&quot;.</li>
+</ul></li>
+<li><strong>ScyllaDB&#x27;s p99 stability (no GC pauses)</strong><ul>
+<li>Why it&#x27;s true: C++ with no GC + per-shard independent IO scheduling — latency spikes come mostly from hardware, not the runtime; for latency-sensitive businesses (ads, realtime recommendations) this is the #1 reason to switch to ScyllaDB.</li>
+<li>Edge and limits: stable p99 does not mean stable p9999 — cross-shard queries and compaction spikes still exist; gains correlate strongly with hardware affinity — oversold cloud hosts won&#x27;t show the advertised numbers; independent tests show speedups ranging from 2x to 10x — treat the vendor&#x27;s 10x as a vendor claim.</li>
+</ul></li>
+<li><strong>CQL ecosystem and driver maturity</strong><ul>
+<li>Why it&#x27;s true: CQL&#x27;s SQL-like shape flattens the learning curve; official and community drivers for Java/Python/Go and others are all token-aware; the ops-side tooling (Medusa, Reaper, K8ssandra, assorted exporters) is complete; ScyllaDB reuses the same drivers and SSTable format, so migration friction is low.</li>
+<li>Edge and limits: what&#x27;s mature is the &quot;operations surface&quot;, not the &quot;query surface&quot; — driver maturity doesn&#x27;t raise CQL&#x27;s expressiveness ceiling (no joins); ScyllaDB-specific capabilities (shard-aware) need its dedicated drivers to be fully exploited.</li>
+</ul></li>
+<li><strong>A decade of validation at internet giants</strong><ul>
+<li>Why it&#x27;s true: on the Cassandra side, Netflix and others have publicly stood behind it (its LWT benefiting ~50% from 5.0 was cited in the official 5.0 announcement); on the ScyllaDB side, Discord (trillion-message scale), Comcast, Samsung, and others (public customer lists from the vendor — the customer names themselves are public reporting).</li>
+<li>Edge and limits: big-tech validation is tied to their workloads (write-heavy, key-value-style access); &quot;Discord can run it&quot; doesn&#x27;t mean &quot;your complex queries can run&quot;; customer lists are vendor claims — POC with your own read/write model anyway.</li>
+</ul></li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="吐槽清单" data-en="Complaints">吐槽清单</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>分类</th><th>吐槽</th><th>影响版本</th><th>状态</th></tr></thead>
+<tbody>
+<tr><td>运维坑</td><td>tombstone 风暴导致读放大、查询超时（<code>tombstone_failure_threshold</code> 默认 10 万直接失败）</td><td>全版本</td><td>open</td></tr>
+<tr><td>运维坑</td><td>repair 是强制性周期运维，不跑会有静默分歧；大集群 repair 本身耗时且吃资源</td><td>全版本</td><td>partially-fixed（5.0.8+ auto repair opt-in backport）</td></tr>
+<tr><td>运维坑</td><td><code>gc_grace_seconds</code> 与 repair 周期配错导致已删除数据复活（zombie rows），且无报错</td><td>全版本</td><td>open（配置纪律问题）</td></tr>
+<tr><td>性能坑</td><td>LWT 走 Paxos，约数倍于普通写的延迟与开销；热点分区上竞争加剧甚至超时</td><td>全版本</td><td>partially-fixed（4.1+ Paxos v2 / CEP-14 降到写 2 RTT）</td></tr>
+<tr><td>性能坑</td><td>传统二级索引全集群 fan-out、物化视图有已知一致性边缘情况，生产慎用</td><td>全版本</td><td>partially-fixed（5.0 SAI 解决索引 fan-out；MV 仍实验性）</td></tr>
+<tr><td>兼容坑</td><td>CQL 无 join/子查询，查询必须事先建模（query-first），关系型思维迁移阵痛大</td><td>全版本</td><td>open（by design）</td></tr>
+<tr><td>运维坑</td><td>单分区 2GB 硬限制，大分区导致堆内存/压缩/修复全方位恶化</td><td>全版本</td><td>open</td></tr>
+<tr><td>运维坑</td><td><code>ALLOW FILTERING</code> 轻易写出全表扫描；跨分区 batch 比单条写更慢（coordinator 开销 + batchlog）</td><td>全版本</td><td>open</td></tr>
+<tr><td>运维坑</td><td>大版本升级单向不可回滚；3.11→5.0 需逐级升级，升级窗口规划成本高</td><td>全版本</td><td>open</td></tr>
+<tr><td>运维坑</td><td>Cassandra 官方无内置 Prometheus/Grafana 端到端监控栈，需自拼 exporter</td><td>全版本</td><td>open</td></tr>
+<tr><td>授权坑</td><td>ScyllaDB 2025.1 起改为 source-available，超免费额度（10TB/50vCPU）需商业许可</td><td>2025.1+</td><td>open</td></tr>
+<tr><td>生态坑</td><td>ScyllaDB 中文资料稀缺、社区规模小于 Cassandra，疑难问题更依赖原厂/英文社区</td><td>全版本</td><td>open</td></tr>
+<tr><td>运维坑</td><td>ScyllaDB Manager 恢复不支持 Authentication 与 Service Levels 还原（官方仓库文档注明）</td><td>全版本</td><td>open（按官方集成测试矩阵）</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Category</th><th>Complaint</th><th>Affected versions</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Ops pitfall</td><td>Tombstone storms causing read amplification and query timeouts (<code>tombstone_failure_threshold</code> fails outright at the default 100k)</td><td>All versions</td><td>open</td></tr>
+<tr><td>Ops pitfall</td><td>Repair is mandatory periodic operations — skipping it risks silent divergence; repair itself is time-consuming and resource-hungry on large clusters</td><td>All versions</td><td>partially-fixed (5.0.8+ auto repair opt-in backport)</td></tr>
+<tr><td>Ops pitfall</td><td>Misconfigured <code>gc_grace_seconds</code> vs. repair interval resurrects deleted data (zombie rows) with no error</td><td>All versions</td><td>open (configuration-discipline issue)</td></tr>
+<tr><td>Perf pitfall</td><td>LWT goes through Paxos — latency and cost several times a normal write; contention on hot partitions worsens it, even timing out</td><td>All versions</td><td>partially-fixed (4.1+ Paxos v2 / CEP-14 drops writes to 2 RTT)</td></tr>
+<tr><td>Perf pitfall</td><td>Legacy secondary indexes fan out across the whole cluster; materialized views have known consistency edge cases — use with caution in production</td><td>All versions</td><td>partially-fixed (5.0 SAI fixes index fan-out; MVs still experimental)</td></tr>
+<tr><td>Compatibility pitfall</td><td>CQL has no joins/subqueries — queries must be modeled up front (query-first); painful adjustment for relational-minded migrations</td><td>All versions</td><td>open (by design)</td></tr>
+<tr><td>Ops pitfall</td><td>Hard 2GB per-partition limit — large partitions degrade heap memory, compaction, and repair across the board</td><td>All versions</td><td>open</td></tr>
+<tr><td>Ops pitfall</td><td><code>ALLOW FILTERING</code> makes full-table scans easy to write; cross-partition batches are slower than individual writes (coordinator overhead + batchlog)</td><td>All versions</td><td>open</td></tr>
+<tr><td>Ops pitfall</td><td>Major-version upgrades are one-way with no rollback; 3.11→5.0 requires stepwise upgrades — costly upgrade-window planning</td><td>All versions</td><td>open</td></tr>
+<tr><td>Ops pitfall</td><td>Cassandra ships no built-in Prometheus/Grafana end-to-end monitoring stack — you assemble exporters yourself</td><td>All versions</td><td>open</td></tr>
+<tr><td>License pitfall</td><td>ScyllaDB switched to source-available from 2025.1 — commercial licensing required past the free tier (10TB/50 vCPU)</td><td>2025.1+</td><td>open</td></tr>
+<tr><td>Ecosystem pitfall</td><td>ScyllaDB&#x27;s Chinese-language resources are scarce and its community smaller than Cassandra&#x27;s — hard problems lean more on the vendor / English community</td><td>All versions</td><td>open</td></tr>
+<tr><td>Ops pitfall</td><td>ScyllaDB Manager restore does not restore Authentication and Service Levels (per official repo docs)</td><td>All versions</td><td>open (per official integration-test matrix)</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="判决" data-en="Verdict">判决</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li><strong>一句话定位</strong>：写密集、永远在线、线性扩展场景的默认选项之一；要生态与许可证中立选 Cassandra，要单机性能与低运维选 ScyllaDB（接受新许可证）。</li>
+<li><strong>适合谁</strong>：<ul>
+<li>日均写入亿级、key-value 型访问的物联网/日志/埋点/用户行为存储；</li>
+<li>多活跨 DC、&quot;写不能停&quot;优先于&quot;强一致&quot;的业务；</li>
+<li>已有 Cassandra 生态、想以更少节点降本的团队（→ ScyllaDB）；</li>
+<li>想逃离 DynamoDB 按请求计费账单且应用改动预算小的团队（→ ScyllaDB Alternator）；</li>
+<li>需要在宽列模型上做向量/相似检索的新业务（Cassandra 5.0+）。</li>
+</ul></li>
+<li><strong>不适合谁</strong>：<ul>
+<li>需要多行 ACID 事务、复杂 join/聚合的业务（这是关系型的地盘）；</li>
+<li>读多写少且要求强一致读的场景；</li>
+<li>团队无专职运维又想&quot;装完不管&quot;（自建版 repair/tombstone/升级都是活；这种情况请用托管版）；</li>
+<li>法务不接受 source-available 且数据规模超免费额度的（ScyllaDB）。</li>
+</ul></li>
+<li><strong>迁移成本</strong>：<ul>
+<li>MySQL → 高：数据模型重构（query-first、反范式、无 join），应用数据访问层重写；CQL 形似 SQL 是陷阱，语义完全不同。</li>
+<li>PostgreSQL → 高：同上；PG 的复杂查询/事务能力在 CQL 里没有对应物。</li>
+<li>Oracle → 高：同上；且 Oracle 生态的存储过程/触发器需应用层重构。</li>
+</ul></li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li><strong>One-liner</strong>: One of the default options for write-heavy, always-on, linearly scaling workloads; choose Cassandra for ecosystem maturity and license neutrality, ScyllaDB for per-node performance and low-maintenance operation (accepting the new license).</li>
+<li><strong>Best for</strong>:<ul>
+<li>IoT / logging / event-tracking / user-behavior stores with hundreds of millions of daily writes and key-value-style access;</li>
+<li>Multi-active cross-DC businesses where &quot;writes must not stop&quot; outranks &quot;strong consistency&quot;;</li>
+<li>Teams already on the Cassandra ecosystem wanting to cut costs with fewer nodes (→ ScyllaDB);</li>
+<li>Teams wanting to escape DynamoDB&#x27;s per-request billing with a small application-change budget (→ ScyllaDB Alternator);</li>
+<li>New businesses needing vector / similarity search on a wide-column model (Cassandra 5.0+).</li>
+</ul></li>
+<li><strong>Not for</strong>:<ul>
+<li>Workloads needing multi-row ACID transactions or complex joins/aggregations (that&#x27;s relational territory);</li>
+<li>Read-heavy, write-light scenarios requiring strongly consistent reads;</li>
+<li>Teams with no dedicated ops staff wanting &quot;install and forget&quot; (self-hosted repair/tombstones/upgrades are ongoing work — use the managed edition instead);</li>
+<li>Legal teams that reject source-available licensing with data scale beyond the free tier (ScyllaDB).</li>
+</ul></li>
+<li><strong>Migration cost</strong>:<ul>
+<li>MySQL → High: data-model rebuild (query-first, denormalized, no joins), application data-access layer rewrite; CQL&#x27;s SQL-like shape is a trap — the semantics are completely different.</li>
+<li>PostgreSQL → High: same as above; PG&#x27;s complex-query / transaction capabilities have no CQL counterparts.</li>
+<li>Oracle → High: same as above; plus Oracle-ecosystem stored procedures / triggers need application-layer rewrites.</li>
+</ul></li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="来源与待验证清单" data-en="Sources & to-be-verified">来源与待验证清单</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li>版本信息：softwaremill《If You Last Used Cassandra 3.11…》（2026-09，确认 5.0.9 为最新 GA、6.0 pre-GA）；libredb 实测记录（2026-08-20 验证 5.0.9）；ScyllaDB 官方 Version Support 页（2026.3/2026.2/2026.1 LTS/2025.1 LTS）；ScyllaDB 论坛 release 公告（2026.1.10，2026-08）</li>
+<li>5.0 特性口径：ASF 官方发布公告（globenewswire，SAI/向量搜索/动态脱敏/mTLS）；softwaremill 版本综述（UCS、auto repair backport、Accord/6.0 在研）</li>
+<li>机制与运维：rustyrazorblade/cassandra-expert 参考文档（tombstones/repair/hinted-handoff/LWT/security，2026-09 更新）；heatware tombstone 实测指南；devweekends 集群运维手册</li>
+<li>ScyllaDB 架构与许可：官方产品页（shard-per-core/Alternator/Cloud 加密）；官方许可证变更公告（2024-12-18）；linuxiac 报道；softwaremill tablets/Raft 分析（2026-09）；维基百科（独立测试加速比综述）</li>
+<li>商业动态：DBTA（IBM 2025-05-28 完成收购 DataStax）；TrustRadius（Astra DB 归属 watsonx.data）</li>
+<li>中文资料：CSDN/博客中文教程抽样（多为 3.x/4.0 时代内容）</li>
+<li>下次评审：跟踪 Cassandra 6.0 GA（Accord/事务性集群元数据）、ScyllaDB 2026.3+ 的 tablets 在线迁移（2026.2 为实验性）与向量搜索自建版状态</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li>Version information: softwaremill&#x27;s &quot;If You Last Used Cassandra 3.11…&quot; (2026-09, confirming 5.0.9 as latest GA and 6.0 as pre-GA); libredb hands-on notes (2026-08-20 verified 5.0.9); ScyllaDB official Version Support page (2026.3 / 2026.2 / 2026.1 LTS / 2025.1 LTS); ScyllaDB forum release announcements (2026.1.10, 2026-08)</li>
+<li>5.0 feature claims: ASF official release announcement (globenewswire — SAI / vector search / dynamic masking / mTLS); softwaremill version survey (UCS, auto repair backport, Accord/6.0 in development)</li>
+<li>Mechanisms &amp; operations: rustyrazorblade/cassandra-expert reference docs (tombstones/repair/hinted-handoff/LWT/security, updated 2026-09); heatware tombstone hands-on guide; devweekends cluster operations handbook</li>
+<li>ScyllaDB architecture &amp; licensing: official product pages (shard-per-core / Alternator / Cloud encryption); official license-change announcement (2024-12-18); linuxiac coverage; softwaremill tablets/Raft analysis (2026-09); Wikipedia (survey of independent-test speedup claims)</li>
+<li>Business developments: DBTA (IBM completed its DataStax acquisition on 2025-05-28); TrustRadius (Astra DB now part of watsonx.data)</li>
+<li>Chinese-language resources: sampling of CSDN/blog Chinese tutorials (mostly 3.x/4.0-era content)</li>
+<li>Next review: track Cassandra 6.0 GA (Accord / transactional cluster metadata), ScyllaDB 2026.3+ online tablets migration (experimental in 2026.2), and vector search status in self-hosted editions</li>
+</ul>
+</div>
+</section>
+</main>
+<footer class="footer">
+  <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
+</footer>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
