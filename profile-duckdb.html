@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>DuckDB - DB 选型参考</title>
+<link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">&#9672;</span> DB <span data-zh="选型参考" data-en="Compare">选型参考</span></a>
+    <nav class="mainnav">
+<a href="index.html" class="active" data-zh="首页" data-en="Home">首页</a>
+<a href="compare.html" class="" data-zh="维度对比" data-en="Compare">维度对比</a>
+<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
+<a href="advisor.html" class="" data-zh="AI选型" data-en="AI Selection">AI选型</a>
+    </nav>
+    <div class="cmp-tray">
+      <button id="cmp-tray-btn" type="button" class="tray-btn" aria-expanded="false" aria-haspopup="true"><span data-zh="对比" data-en="Compare">对比</span> <b class="tray-count"><i id="cmp-count">0</i>/4</b></button>
+      <div id="cmp-panel" class="tray-panel" hidden>
+        <div class="tray-sec"><span data-zh="已选" data-en="Selected">已选</span></div>
+        <div id="cmp-selected" class="tray-selected"></div>
+        <div class="tray-sec"><span data-zh="全部产品（最多选 4 款）" data-en="All products (up to 4)">全部产品（最多选 4 款）</span></div>
+        <div id="cmp-list" class="tray-list"></div>
+        <div class="tray-actions"><button id="cmp-clear" type="button" class="tray-clear"><span data-zh="清空选择" data-en="Clear selection">清空选择</span></button></div>
+      </div>
+    </div>
+    <button id="lang-toggle" class="lang-btn" type="button" aria-label="switch language">EN</button>
+  </div>
+</header>
+<main class="page">
+<div class="profile-hero">
+  <a class="back" href="index.html"><span data-zh="← 返回首页" data-en="← Back to home">← 返回首页</span></a>
+  <h1>DuckDB</h1>
+  <div class="meta-row"><span class="cat cat-olap" data-zh="OLAP" data-en="OLAP">OLAP</span> <span class="tag">#嵌入式</span> <span class="tag">#OLAP</span> <span class="tag">#单机</span> <span class="tag">#列存</span> <span class="tag">#向量化执行</span> <span class="tag">#MIT开源</span> <span class="tag">#Python生态</span> <span class="tag">#零运维</span></div>
+  <p class="oneliner"><div class="lang-block lang-zh">
+<p>&quot;分析型 SQLite&quot;——跑在进程里的单机列存 OLAP 引擎：pip install 即用、向量化执行吃满多核、直接对 Parquet/CSV/S3 做 SQL，把&quot;不够上数仓、pandas 又太慢&quot;的中间地带一口吃掉；代价是单写者、单机天花板，以及所有服务端能力（认证、审计、多用户）一概没有。</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<p>The &quot;analytical SQLite&quot; — an in-process, single-node columnar OLAP engine: `pip install` and go, vectorized execution saturating all cores, SQL directly against Parquet/CSV/S3. It devours the middle ground between &quot;not enough for a warehouse, too slow in pandas&quot; — at the cost of a single-writer lock, a single-node ceiling, and zero server-side capabilities (auth, audit, multi-user).</p>
+</div></p>
+  <div class="ai-dive-row" data-product="DuckDB">
+    <span class="ai-dive-label" data-zh="用 AI 深挖这款：" data-en="Deep-dive with AI:">用 AI 深挖这款：</span>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('chatgpt', this)">ChatGPT <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('grok', this)">Grok <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('claude', this)">Claude <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn addcmp-btn" data-addcmp="duckdb"><span class="addcmp-label">＋ 对比</span></button>
+  </div>
+  <div class="legend"><span class="legend-label" data-zh="证据等级：" data-en="Evidence levels: ">证据等级：</span><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></div>
+</div>
+<section class="doc-section">
+<h2><span data-zh="基本信息" data-en="Basics">基本信息</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>项</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td>厂商</td><td>DuckDB Labs（2026-05 更名为 DuckLabs，30+ 人）；2026-08-26 宣布加入 AWS，DuckDB/DuckLake/Quack 等开源项目仍归独立的 DuckDB Foundation 所有、保持 MIT 许可</td></tr>
+<tr><td>国家</td><td>荷兰（阿姆斯特丹；源自 CWI 国家数学与计算机科学研究中心）</td></tr>
+<tr><td>起源</td><td>2018 年 Hannes Mühleisen 与 Mark Raasveldt 在 CWI 启动；2019 年 SIGMOD 发布 v0.1；2024-06 发布 v1.0</td></tr>
+<tr><td>许可证</td><td>MIT（建项目第一天起即开源；DuckDB Foundation 持有大部分 IP）</td></tr>
+<tr><td>托管服务</td><td>MotherDuck（独立公司，serverless 托管 + 混合执行）；DuckLake（开放湖仓格式，v1.0 于 2026-04-13 发布）</td></tr>
+<tr><td>主类型</td><td>关系型（嵌入式、进程内 OLAP）</td></tr>
+<tr><td>兼具类型</td><td>数据湖查询（直接读 Parquet/Iceberg/Delta）、联邦查询（ATTACH 外部库）</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Item</th><th>Content</th></tr></thead>
+<tbody>
+<tr><td>Vendor</td><td>DuckDB Labs (renamed DuckLabs in May 2026, 30+ people); on 2026-08-26 announced it will join AWS — the open-source projects DuckDB/DuckLake/Quack remain owned by the independent DuckDB Foundation under the MIT license</td></tr>
+<tr><td>Country</td><td>Netherlands (Amsterdam; originated at CWI, the national research institute for mathematics and computer science)</td></tr>
+<tr><td>Origins</td><td>Started 2018 at CWI by Hannes Mühleisen and Mark Raasveldt; v0.1 at SIGMOD 2019; v1.0 released 2024-06</td></tr>
+<tr><td>License</td><td>MIT (open source since day one; DuckDB Foundation holds most of the IP)</td></tr>
+<tr><td>Managed service</td><td>MotherDuck (independent company, serverless hosting + hybrid execution); DuckLake (open lakehouse format, v1.0 released 2026-04-13)</td></tr>
+<tr><td>Primary type</td><td>Relational (embedded, in-process OLAP)</td></tr>
+<tr><td>Also</td><td>Data-lake querying (reads Parquet/Iceberg/Delta directly), federated querying (ATTACH external databases)</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section"><h2><span data-zh="硬维度（14 项）" data-en="Hard dimensions (14)">硬维度（14 项）</span></h2>
+<div class="lang-block lang-zh">
+<div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——v1.4.0 起支持透明加密：<code>ATTACH &#x27;f.db&#x27; AS d (ENCRYPTION_KEY &#x27;...&#x27;)</code>，AES-256-GCM（默认）/ AES-CTR-256，覆盖主文件、WAL 和溢出临时文件；密钥丢失则数据不可恢复，不支持原地加密/解密/轮换（需 COPY 到新库）；官方声明尚未达到 NIST 合规要求（跟踪 issue #20162）。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（1.4.0 发布公告、encryption 博客）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-neutral">不适用</span></h3><div class="dim-body"><p><strong>不适用</strong>——进程内嵌入式，无服务端、无网络协议、无监听端口；httpfs 读 S3/HTTPS 是客户端 TLS；云端传输加密是 MotherDuck 托管服务的能力。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（架构）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> 审计 <span class="verdict v-neutral">不适用</span></h3><div class="dim-body"><p><strong>不适用</strong>——无用户体系、无服务端审计日志；谁拿到文件谁就能读。审计需求由宿主应用自己实现。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（架构）+ 社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> 认证与权限 <span class="verdict v-neutral">不适用</span></h3><div class="dim-body"><p><strong>不适用</strong>——进程内嵌入式，无服务端/用户体系、无 GRANT 模型；文件系统权限即权限边界。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（架构）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> 备份恢复 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——无在线备份工具、无 WAL 归档、无 PITR。可用方式：<code>EXPORT DATABASE &#x27;dir&#x27; (FORMAT PARQUET)</code>（MVCC 一致快照，可在线，是社区推荐默认方式）、<code>COPY FROM DATABASE</code> 跨库拷贝、进程关闭后直接拷贝 <code>.duckdb</code> 文件；<strong>打开状态下直接 cp 文件可能损坏</strong><span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。恢复 = <code>IMPORT DATABASE</code> 或文件替换。证据：官方文档 + 社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> 大版本升级 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——存储格式向后兼容自 v0.10 起是官方目标；格式变化时无原地升级，必须&quot;旧二进制 EXPORT DATABASE + 新二进制 IMPORT DATABASE&quot;（需同时保留两个版本的可执行文件）；回退同理。v1.0–v1.5 默认存储格式 pin 在 v1.0（政策非承诺）；v2.0 将换新默认存储格式。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（storage）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> 可观测性 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——有：<code>EXPLAIN</code> / <code>EXPLAIN ANALYZE</code>、PRAGMA profiling（json 输出可画火焰图）、<code>duckdb_memory()</code>、<code>pragma_database_size()</code>、<code>duckdb_temporary_files()</code>、<code>duckdb_settings()</code>、<code>duckdb_databases()</code>；<strong>查证为无</strong>：慢查询日志、跨会话查询历史（<code>duckdb_queries()</code>/<code>duckdb_connections()</code> 不存在，社区探针 v1.5.5 实测确认）、<code>PRAGMA integrity_check</code>。证据：官方文档 + 社区实测。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> 连接模型 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——进程内连接，创建开销极低；查询自动用满全部 CPU 核心（<code>SET threads</code> 可调）；无网络往返、无连接池概念（不需要）。证据：官方文档 + 社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> 事务与隔离级别 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——ACID；为批量优化的 MVCC（借鉴 HyPer），默认快照隔离（Snapshot Isolation）；进程内多线程写走乐观并发：append 永不冲突，并发 update/delete 同一行后者报冲突失败；跨进程只允许&quot;单进程读写&quot;或&quot;多进程只读&quot;，第二进程写会报文件锁错误；<strong>无 SAVEPOINT</strong><span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（concurrency）+ 社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> 复制与一致性 <span class="verdict v-neutral">不适用</span></h3><div class="dim-body"><p><strong>不适用</strong>——单机进程内引擎，无复制协议、无多副本一致性；&quot;多副本&quot; = 文件拷贝；多机协作靠 DuckLake（对象存储 + 元数据）或 MotherDuck；Quack client-server 协议 2026-05 技术预览、beta 中。证据：官方文档 + 社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> 扩展方式 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——纵向扩展（scale-up）<strong>有</strong>：多核并行 + 外存溢出，单机吃到 GB~数百 GB；横向扩展（scale-out）<strong>查证为无</strong>：引擎本身不支持分布式查询，多机方案只有 MotherDuck 托管（serverless ducklings）或应用层分片。证据：官方文档 + 社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> 兼容性 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——SQL 方言对标 PostgreSQL（非 PG 线协议）；扩展可 ATTACH 外部库做联邦查询（postgres/sqlite/mysql 扫描扩展）；Python/R/Arrow/Polars/pandas 零拷贝集成；dbt 有社区适配器 dbt-duckdb；WASM 可跑浏览器。证据：官方文档 + 社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> 许可证与商业模式 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——MIT 全开源，无功能阉割的社区版；DuckDB Foundation（非营利）持有 IP；商业化 = DuckLabs（原 DuckDB Labs）支持/咨询服务 + MotherDuck 独立公司的 serverless 托管（按存储 GB 与计算秒计费，免费层 10GB——厂商口径）。2026-08-26 DuckLabs 宣布加入 AWS，开源项目治理与许可不变（官方口径）。证据：官方 history + AWS 官方博客。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> 中文资料丰富度 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——官方文档为英文；中文资料以博客、课程、知乎/CSDN 实践帖为主，体量远小于 MySQL/PG 及国产主流库；出海/英文生态反而是强项。证据：<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</p></div></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — since v1.4.0: <code>ATTACH &#x27;f.db&#x27; AS d (ENCRYPTION_KEY &#x27;...&#x27;)</code>, AES-256-GCM (default) / AES-CTR-256, covering the main file, WAL, and spilled temp files; a lost key means unrecoverable data; no in-place encrypt/decrypt/re-key (copy to a new database instead); officially not yet NIST-compliant (tracked in issue #20162). Evidence: official docs (1.4.0 release notes, encryption blog).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / transport encryption <span class="verdict v-neutral">N/A — in-process e</span></h3><div class="dim-body"><p><strong>N/A</strong> — in-process embedded library, no server, no network protocol, no listening port; httpfs reading S3/HTTPS is client-side TLS; cloud transport encryption is MotherDuck&#x27;s managed-service capability. Evidence: official docs (architecture).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> Auditing <span class="verdict v-neutral">N/A — no user mode</span></h3><div class="dim-body"><p><strong>N/A</strong> — no user model, no server-side audit log; whoever can read the file can read the data. Auditing is the host application&#x27;s job. Evidence: official docs (architecture) + community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> Authentication &amp; authorization <span class="verdict v-neutral">N/A — in-process e</span></h3><div class="dim-body"><p><strong>N/A</strong> — in-process embedded, no server/user system, no GRANT model; filesystem permissions are the permission boundary. Evidence: official docs (architecture).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> Backup &amp; recovery <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — no online backup tool, no WAL archiving, no PITR. Available: <code>EXPORT DATABASE &#x27;dir&#x27; (FORMAT PARQUET)</code> (MVCC-consistent snapshot, online, the community-recommended default), <code>COPY FROM DATABASE</code> for cross-database copies, copying the <code>.duckdb</code> file after the process closes; <strong>copying the file while the database is open can corrupt it</strong> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>. Restore = <code>IMPORT DATABASE</code> or file replacement. Evidence: official docs + community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> Major-version upgrades <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — storage-format backward compatibility is an official goal since v0.10; there is no in-place upgrade when the format changes — the only path is old-binary <code>EXPORT DATABASE</code> + new-binary <code>IMPORT DATABASE</code> (both executables must be kept); rollback works the same way. Default storage format pinned at v1.0 for the v1.0–v1.5 line (policy, not a promise); v2.0 introduces a new default storage format. Evidence: official docs (storage).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> Observability <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — has <code>EXPLAIN</code> / <code>EXPLAIN ANALYZE</code>, PRAGMA profiling (JSON output, flamegraph-able), <code>duckdb_memory()</code>, <code>pragma_database_size()</code>, <code>duckdb_temporary_files()</code>, <code>duckdb_settings()</code>, <code>duckdb_databases()</code>; <strong>verified absent</strong>: slow-query log, cross-session query history (<code>duckdb_queries()</code> / <code>duckdb_connections()</code> don&#x27;t exist, confirmed by a community probe on v1.5.5), <code>PRAGMA integrity_check</code>. Evidence: official docs + community testing.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> Connection model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — in-process connections with negligible setup cost; queries automatically use all CPU cores (<code>SET threads</code> adjustable); no network round-trips, no connection pooling concept (none needed). Evidence: official docs + community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> Transactions &amp; isolation levels <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — ACID; batch-optimized MVCC (HyPer-inspired), default snapshot isolation; in-process multi-threaded writes use optimistic concurrency: appends never conflict, concurrent update/delete of the same row fails the later one; cross-process only allows &quot;single process read-write&quot; or &quot;multiple processes read-only&quot; — a second writer gets a file-lock error; <strong>no SAVEPOINT</strong> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>. Evidence: official docs (concurrency) + community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> Replication &amp; consistency <span class="verdict v-neutral">N/A — single-node</span></h3><div class="dim-body"><p><strong>N/A</strong> — single-node in-process engine, no replication protocol, no multi-copy consistency; &quot;more copies&quot; = file copies; multi-node collaboration via DuckLake (object storage + metadata) or MotherDuck; the Quack client-server protocol is in technical preview/beta (May 2026). Evidence: official docs + community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> Scaling <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — scale-up <strong>supported</strong>: multi-core parallelism + out-of-core spilling, single node handles GBs to hundreds of GBs; scale-out <strong>verified absent</strong>: the engine has no distributed queries; multi-node options are MotherDuck managed (serverless ducklings) or application-level sharding. Evidence: official docs + community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> Compatibility <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — SQL dialect targets PostgreSQL (not the PG wire protocol); extensions ATTACH external databases for federated scans (postgres/sqlite/mysql); zero-copy Python/R/Arrow/Polars/pandas integration; community dbt-duckdb adapter; WASM runs in browsers. Evidence: official docs + community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> License &amp; business model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — fully MIT open source, no crippled community edition; DuckDB Foundation (non-profit) holds the IP; commercialization = DuckLabs (formerly DuckDB Labs) support/consulting + MotherDuck&#x27;s independent serverless hosting (per-GB storage and per-second compute, 10GB free tier — vendor claim). On 2026-08-26 DuckLabs announced joining AWS; open-source governance and license unchanged (official statement). Evidence: official history + AWS official blog.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> Chinese-language resources <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — official docs are English; Chinese material is mostly blogs, courses, and community practice posts, far smaller than for MySQL/PG or major domestic databases; the English/international ecosystem is a strength instead. Evidence: community consensus.</p></div></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="杀手特性" data-en="Killer features">杀手特性</span></h2>
+<div class="lang-block lang-zh">
+<blockquote>
+<p>每个特性 = 它是什么 + 为什么是真本事 + 推到边缘会发生什么。</p>
+</blockquote>
+<ol>
+<li><strong>进程内向量化执行：单机分析性能的第一性原理</strong> 真本事：算子一次处理 2048 行的列向量（非逐行火山模型），配合 morsel-driven 并行（Leis 等，SIGMOD 2014）把数据切成 morsel 丢进线程池动态调度，列存 row group（约 12 万行）+ zonemap + 轻量压缩（FSST/ALP/Chimp/字典/RLE/bitpacking）。社区实测：TPC-H SF10（约 11GB）22 条查询 4.3 秒跑完（i7-13700H，嵌入版 v1.5.2）。 边缘真相：快的是&quot;单机多核扫描聚合&quot;；<code>preserve_insertion_order</code> 默认 true 为保序付出代价；小查询有固定开销；TB 级以上或巨型 shuffle 依然是 Spark/数仓的地盘。单机上限是物理定律，不是调优问题。</li>
+<li><strong>零导入查文件：SQL 直接对 Parquet/CSV/S3</strong> 真本事：<code>SELECT * FROM &#x27;s3://bucket/*.parquet&#x27;</code> 即查即走，列裁剪 + 谓词下推 + 分区消除（hive 分区）让几十 GB 文件常常只读几 MB；CSV/JSON 自动嗅探 schema。探索和 ETL 的&quot;先建表再导数&quot;整段消失。 边缘真相：CSV auto-detect 会猜错分隔符/类型/日期（生产管线必须显式关 auto_detect）；远程文件延迟进 P99；同一文件被反复高频查询时，导入成 DuckDB 表更快。以及：这是&quot;读&quot;神器，&quot;写回 Parquet&quot;是另一回事。</li>
+<li><strong>零运维嵌入：pip install 就是部署</strong> 真本事：单二进制/单 pip 包，无 server、无端口、无配置，Python/R/Node/Java/Rust/Go/WASM 全语言绑定，DataFrame 零拷贝直查。把分析能力嵌进应用、notebook、CLI、边缘设备的摩擦力趋近于零。 边缘真相：省掉的运维没有消失，只是转移——备份、监控、多用户、权限全部变成应用层的责任（见硬维度：四项不适用）。&quot;免运维&quot;是把 DBA 的工作外包给了写应用的人。</li>
+<li><strong>扩展生态：一个引擎，多种形态</strong> 真本事：httpfs（S3/HTTP）、spatial（GIS）、postgres/mysql/sqlite（联邦扫描）、iceberg、aws（凭证链）、json 等官方扩展；外围有 MotherDuck（serverless+混合执行）、DuckLake（开放湖仓格式，v1.0 已发布）、Quack（client-server 协议，v2.0 转正）。 边缘真相：扩展与引擎版本锁定，升级 DuckDB 后必须 <code>UPDATE EXTENSIONS</code>，版本错配会崩；Quack 仍是 beta，并发写线程数有限（社区口径约 8）；DuckLake/Iceberg 写支持等能力在补齐中。生态在爆发，但&quot;稳定版&quot;和&quot;预览版&quot;要分开看。</li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<blockquote>
+<p>Each feature = what it is + why it&#x27;s genuinely strong + the edge truth.</p>
+</blockquote>
+<ol>
+<li><strong>In-process vectorized execution: single-node analytics from first principles</strong> Genuinely strong: operators process 2,048-row column vectors (not row-at-a-time volcano), with morsel-driven parallelism (Leis et al., SIGMOD 2014) slicing work into morsels scheduled dynamically across the thread pool; columnar row groups (~120k rows) + zone maps + lightweight compression (FSST/ALP/Chimp/dictionary/RLE/bitpacking). Community measurement: TPC-H SF10 (~11GB), all 22 queries in 4.3s (i7-13700H, embedded v1.5.2). Edge truth: what&#x27;s fast is &quot;single-node multi-core scan-aggregate&quot;; <code>preserve_insertion_order</code> defaults to true at a real cost; small queries carry fixed overhead; beyond TB scale or giant shuffles it&#x27;s Spark/warehouse territory. The single-node ceiling is physics, not tuning.</li>
+<li><strong>Zero-import file queries: SQL straight at Parquet/CSV/S3</strong> Genuinely strong: <code>SELECT * FROM &#x27;s3://bucket/*.parquet&#x27;</code> just works; column pruning + predicate pushdown + partition elimination (hive partitioning) mean tens of GB of files often read only a few MB; CSV/JSON schema auto-sniffing. The &quot;create table, then load&quot; ritual disappears for exploration and ETL. Edge truth: CSV auto-detect misfires on production data (delimiters, types, dates) — pin parameters and disable auto_detect in pipelines; remote-file latency lands in your P99; repeatedly hot files are faster imported as DuckDB tables. Also: it&#x27;s a read superpower; writing back to Parquet is a different story.</li>
+<li><strong>Zero-ops embedding: <code>pip install</code> is the deployment</strong> Genuinely strong: single binary/package, no server, no ports, no config; bindings for Python/R/Node/Java/Rust/Go/WASM; DataFrames queried in place with zero copies. Friction of embedding analytics into apps, notebooks, CLIs, and edge devices approaches zero. Edge truth: the ops didn&#x27;t vanish, they moved — backup, monitoring, multi-user, permissions all become the application&#x27;s job (see hard dimensions: four N/A). &quot;No ops&quot; outsources the DBA&#x27;s work to whoever writes the app.</li>
+<li><strong>Extension ecosystem: one engine, many shapes</strong> Genuinely strong: official extensions httpfs (S3/HTTP), spatial (GIS), postgres/mysql/sqlite (federated scans), iceberg, aws (credential chain), json; around it MotherDuck (serverless + hybrid execution), DuckLake (open lakehouse format, v1.0 out), Quack (client-server protocol, goes stable in v2.0). Edge truth: extensions are version-locked to the engine — after upgrading DuckDB you must run <code>UPDATE EXTENSIONS</code>, mismatches crash; Quack is still beta with limited concurrent writers (community claim ~8 threads); DuckLake/Iceberg write support is still maturing. The ecosystem is exploding, but &quot;stable&quot; and &quot;preview&quot; must be read separately.</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="深水区" data-en="Deep dives">深水区</span></h2>
+<div class="lang-block lang-zh">
+<p><strong>深水区一：单写者——刻在架构里的并发天花板（领域：并发模型）</strong></p>
+<ul>
+<li>机制：进程内多线程写走 MVCC + 乐观并发（append 永不冲突，同行并发改后者冲突报错）；跨进程靠文件锁二选一：单进程读写，或多进程只读。</li>
+<li>推到边缘：第二个进程以写模式打开同一文件直接报 <code>Could not set lock on file</code>；多 worker ETL 并行写同一 <code>.duckdb</code> 文件必须串行化，否则第二个部署直接撞锁——这是&quot;第二个节点上线就炸&quot;的经典生产事故；Docker 里忘记挂 volume，容器一停数据全丢（社区高频坑）。</li>
+<li>选型含义：任何&quot;多进程/多机并发写同一文件&quot;的架构，DuckDB 直接出局。标准解法：单写进程 + 其他进程 <code>ATTACH ... (READ_ONLY)</code>，或写时分文件、读时合并；真要多用户读写，上 MotherDuck 或等 Quack 转正。这是选型第一问，答不上来后面都不用谈。</li>
+<li>来源：官方文档（concurrency）；社区共识（多独立技术文档）；社区实测（sq/neilotoole 驱动文档）。</li>
+</ul>
+<p><strong>深水区二：内存与外存溢出——&quot;能跑 100GB&quot;的账单（领域：资源管理）</strong></p>
+<ul>
+<li>机制：统一 buffer manager 掌管进程全部内存（页缓存与算子临时内存动态互借）；<code>memory_limit</code> 默认 80% 系统内存；超限后阻塞算子（分组、join、排序、窗口函数）把中间结果溢出到 <code>temp_directory</code>。</li>
+<li>推到边缘：没有 <code>temp_directory</code>（或无 swap）时内存限制<strong>执行不下去</strong>，进程内存无界增长直到被 OOM killer 干掉（源码级确认）；深嵌套查询的溢出量可达数据集 30 倍且&quot;不总是可靠&quot;<span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>；第三方评测：50GB 输入在 16GB 机器上外存聚合比内存慢约 30 倍——&quot;能跑&quot;和&quot;能用&quot;是两回事；加密库用户若没开 <code>temp_file_encryption</code>，溢出的临时文件是明文（官方实现者文档警示）。</li>
+<li>选型含义：生产环境三件套必须配齐：<code>SET memory_limit</code> + <code>SET temp_directory</code>（放 SSD，留足磁盘）+ 容器内存/disk 双限额。把 DuckDB 当&quot;无限内存&quot;用的管线，第一个大促就是 OOM 演练。</li>
+<li>来源：官方文档（memory 管理）；社区实测（nlesc 指南、firepanda 评测）；源码注释（temporary_memory_manager.cpp）。</li>
+</ul>
+<p><strong>深水区三：存储格式与版本升级——没有&quot;原地升级&quot;这回事（领域：运维/升级）</strong></p>
+<ul>
+<li>机制：存储格式向后兼容自 v0.10 起是官方目标；前向兼容仅 best-effort；格式变化时官方迁移路径是旧二进制 <code>EXPORT DATABASE</code> + 新二进制 <code>IMPORT DATABASE</code>。</li>
+<li>推到边缘：升级后旧文件可能直接打不开，且<strong>必须同时保留新旧两个版本的可执行文件</strong>才能迁移——CI 自动升级的单二进制部署没有迁移路径；降级更惨：新格式文件旧版本打不开，只能删库或重导；2026-02/03 曾出现 checkpoint 并发 bug 导致 WAL 回放失败、文件无法打开（后修复，但作者承认修复成立的前提是&quot;checkpoint 期间禁删表&quot;——恢复子系统仍在重构中）；v2.0 将切换新默认存储格式，1.x 用户要提前规划。</li>
+<li>选型含义：把&quot;升级 DuckDB&quot;当成一次 ETL 演练来排期：pin 版本、EXPORT/IMPORT 演练、回滚预案。关键报表库建议 pin 住小版本，因为每个补丁版都在修&quot;wrong results&quot;类 bug（v1.5.6 一次修了多个静默错误结果问题）。</li>
+<li>来源：官方文档（storage）；官方发布公告（1.5.6）；社区分析（powerbrowser 研究文档，PR #21067/#21285）。</li>
+</ul>
+<p><strong>深水区四：备份的诚实边界——快照有，PITR 没有（领域：备份恢复）</strong></p>
+<ul>
+<li>机制：<code>EXPORT DATABASE (FORMAT PARQUET)</code> 利用 MVCC 读一致快照，可在线备份，输出为 Parquet 目录 + schema.sql；或关进程后拷文件。</li>
+<li>推到边缘：打开状态下直接 cp <code>.duckdb</code> 文件可能拷到写一半的状态，恢复出来是坏的（社区共识：必须先 CHECKPOINT，仍有竞态窗口）；删数据后文件<strong>不缩小</strong>（VACUUM 只做统计信息/空间复用，缩文件唯一可靠办法是 EXPORT+IMPORT）；无 WAL 归档、无时间点恢复——&quot;删库跑路&quot;的恢复点就是上次导出；真实案例：checkpoint 损坏后靠&quot;只读 ATTACH 逐表 COPY 到新库&quot;救回 60M 行数据（62 秒），但重建后文件从 9.0GB 膨胀到 14.2GB（压缩与插入顺序强相关）。</li>
+<li>选型含义：DuckDB 是&quot;分析引擎&quot;不是&quot;交易库&quot;——把它当唯一持久层存关键数据是架构错误；正确姿势是上游 OLTP 库（PG/MySQL）做 PITR，DuckDB 当可重建的派生层。备份策略 = 定时 EXPORT + 版本化 Parquet 目录。</li>
+<li>来源：官方文档；社区实测（johngavin 备份方案对比、osmpbudynkiv2 恢复实录）；社区共识。</li>
+</ul>
+<p><strong>深水区五：直接查文件的代价账本（领域：查询执行）</strong></p>
+<ul>
+<li>机制：读 Parquet 时列裁剪 + 谓词下推 + row group 统计信息剪枝；hive 分区消除；httpfs 范围请求读远程文件。</li>
+<li>推到边缘：CSV auto-detect 在生产数据上翻车是常态（分隔符、表头、日期格式猜错），社区建议生产管线一律显式指定参数、关 auto_detect；TIMESTAMP 解析默认按本地时区，跨时区管线会静默错位；反复被查询的热文件每次都要重新解析元数据+走网络，不如 <code>CREATE TABLE AS</code> 导入一次；S3 上的&quot;选择性查询&quot;省 IO，但全表扫描的 egress 费用照付。</li>
+<li>选型含义：探索/adhoc/ETL 落地前用&quot;直接查&quot;，高频服务查询用&quot;导入表&quot;；对象存储做热查询前先算 egress 账。这是&quot;快&quot;的另一面：快在计算，慢（贵）在 IO。</li>
+<li>来源：官方文档；社区共识（多独立实践指南）；社区实测（DuckDB vs Spark 对比）。</li>
+</ul>
+<p><strong>深水区六：加密的合规边界（领域：安全）</strong></p>
+<ul>
+<li>机制：v1.4.0+ 的 <code>ENCRYPTION_KEY</code> 做 AES-256-GCM 整文件加密（含 WAL 与溢出临时文件），<code>duckdb_databases()</code> 可查 <code>encrypted/cipher</code>。</li>
+<li>推到边缘：官方明确<strong>未达 NIST 合规要求</strong>（跟踪 issue #20162），强合规行业（金融/医疗）评审会卡住；密钥丢失 = 数据永久不可恢复，无任何后门；不支持原地加解密与轮换，轮换 = COPY 到新库（停机窗口）；加密的只是 <code>.duckdb</code> 文件——<code>COPY TO</code> 导出的 Parquet/CSV 是明文，冷数据要靠卷加密或对象存储 SSE。</li>
+<li>选型含义：加密解决了&quot;丢盘/丢文件&quot;的威胁模型，解决不了&quot;能读进程内存/能读密钥的人&quot;；合规 checklist 上它算&quot;有&quot;，但&quot;有&quot;和&quot;够&quot;是两回事，先问审计要什么再选。</li>
+<li>来源：官方文档（1.4.0 公告、encryption 博客）；社区实测（efcoreprovider 加密文档）。</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<p><strong>Deep dive 1: Single writer — the concurrency ceiling cast into the architecture (Domain: concurrency model)</strong></p>
+<ul>
+<li>Mechanism: in-process multi-threaded writes use MVCC + optimistic concurrency (appends never conflict; concurrent writes to the same row fail the later one); cross-process is a file-lock binary choice: single read-write process, or multiple read-only processes.</li>
+<li>At the edge: a second process opening the same file for writes gets <code>Could not set lock on file</code>; multi-worker ETL writing the same <code>.duckdb</code> file must serialize or split files, otherwise the second deployment crashes into the lock — the classic &quot;second node goes live and explodes&quot; production incident; in Docker, forgetting the volume mapping means the data is gone when the container stops (a high-frequency community pitfall).</li>
+<li>Selection meaning: any architecture with &quot;multi-process/multi-node concurrent writes to one file&quot; rules DuckDB out. Standard patterns: one writer process + <code>ATTACH ... (READ_ONLY)</code> elsewhere, or split files on write and merge on read; for real multi-user read-write, use MotherDuck or wait for Quack GA. This is selection question #1 — if you can&#x27;t answer it, nothing else matters.</li>
+<li>Sources: official docs (concurrency); community consensus (multiple independent technical write-ups); community testing (sq/neilotoole driver docs).</li>
+</ul>
+<p><strong>Deep dive 2: Memory and spilling — the bill for &quot;it can run 100GB&quot; (Domain: resource management)</strong></p>
+<ul>
+<li>Mechanism: a unified buffer manager owns all process memory (page cache and operator scratch borrow from each other); <code>memory_limit</code> defaults to 80% of system RAM; when exceeded, blocking operators (group-by, join, sort, window functions) spill intermediates to <code>temp_directory</code>.</li>
+<li>At the edge: without <code>temp_directory</code> (or swap) the memory limit <strong>cannot be enforced</strong> — process memory grows unboundedly until the OOM killer takes it (confirmed in source); deeply nested queries can spill 30× the dataset size, &quot;not always reliably&quot; (community measurement); third-party benchmark: 50GB input on a 16GB box made external aggregation ~30× slower than in-memory — &quot;can run&quot; and &quot;usable&quot; are different things; encrypted-database users who leave <code>temp_file_encryption</code> off spill plaintext temp files (warned by the official implementer&#x27;s docs).</li>
+<li>Selection meaning: production needs the full triad: <code>SET memory_limit</code> + <code>SET temp_directory</code> (on SSD, with disk headroom) + both memory and disk limits on the container. Pipelines treating DuckDB as &quot;infinite memory&quot; get an OOM drill on the first traffic spike.</li>
+<li>Sources: official docs (memory management); community testing (nlesc guide, firepanda benchmark); source comments (temporary_memory_manager.cpp).</li>
+</ul>
+<p><strong>Deep dive 3: Storage format and upgrades — there is no &quot;in-place upgrade&quot; (Domain: operations/upgrades)</strong></p>
+<ul>
+<li>Mechanism: backward compatibility of the storage format is an official goal since v0.10; forward compatibility is best-effort only; the official migration path on format changes is old-binary <code>EXPORT DATABASE</code> + new-binary <code>IMPORT DATABASE</code>.</li>
+<li>At the edge: an old file may simply not open after upgrading, and migration <strong>requires keeping both the old and new executables</strong> — single-binary CI auto-upgrades have no migration path; downgrades are worse: new-format files don&#x27;t open on old versions, so it&#x27;s delete-and-reimport; in Feb/Mar 2026 a checkpoint-concurrency bug broke WAL replay and left files unopenable (later fixed, though the author admits the fix only holds because &quot;dropping tables during checkpoint is currently disallowed&quot; — the recovery subsystem is still being rebuilt); v2.0 switches to a new default storage format, so 1.x users should plan now.</li>
+<li>Selection meaning: schedule &quot;upgrade DuckDB&quot; as an ETL rehearsal: pin versions, rehearse EXPORT/IMPORT, keep a rollback plan. Pin the patch version for critical reporting — every patch fixes &quot;wrong results&quot; class bugs (v1.5.6 fixed several silent wrong-result issues in one go).</li>
+<li>Sources: official docs (storage); official release notes (1.5.6); community analysis (powerbrowser research doc, PRs #21067/#21285).</li>
+</ul>
+<p><strong>Deep dive 4: The honest boundaries of backup — snapshots yes, PITR no (Domain: backup &amp; restore)</strong></p>
+<ul>
+<li>Mechanism: <code>EXPORT DATABASE (FORMAT PARQUET)</code> uses an MVCC-consistent snapshot, can run online, and emits a Parquet directory + schema.sql; or copy the file after the process stops.</li>
+<li>At the edge: <code>cp</code> on an open <code>.duckdb</code> file can capture a half-written state that restores corrupted (community consensus: CHECKPOINT first still leaves a race window); deleted data <strong>doesn&#x27;t shrink the file</strong> (VACUUM only does statistics/space reuse — EXPORT+IMPORT is the only reliable shrink); no WAL archiving, no point-in-time recovery — your recovery point is your last export; real case: after checkpoint corruption, a user rescued 60M rows via read-only ATTACH + table-by-table COPY into a new database (62s), but the rebuilt file ballooned from 9.0GB to 14.2GB (compression is strongly tied to insertion order).</li>
+<li>Selection meaning: DuckDB is an analytics engine, not a transactional store — using it as the sole persistence for critical data is an architecture error. The correct posture: upstream OLTP (PG/MySQL) does PITR, DuckDB is a rebuildable derived layer. Backup strategy = scheduled EXPORTs + versioned Parquet directories.</li>
+<li>Sources: official docs; community testing (johngavin backup comparison, osmpbudynkiv2 recovery write-up); community consensus.</li>
+</ul>
+<p><strong>Deep dive 5: The cost ledger of querying files directly (Domain: query execution)</strong></p>
+<ul>
+<li>Mechanism: reading Parquet gets column pruning + predicate pushdown + row-group statistics pruning; hive partition elimination; httpfs uses range requests on remote files.</li>
+<li>At the edge: CSV auto-detect fails routinely on production data (delimiters, headers, date formats) — the community recommendation is explicit parameters and auto_detect off in pipelines; TIMESTAMP parsing defaults to the local timezone, silently shifting cross-timezone pipelines; hot files get re-parsed and re-fetched on every query — <code>CREATE TABLE AS</code> once is faster; on S3, selective queries save I/O but full scans still pay egress.</li>
+<li>Selection meaning: use &quot;direct query&quot; for exploration/ad-hoc/pre-load ETL, &quot;imported tables&quot; for hot serving queries; price the egress before putting hot queries on object storage. The other side of &quot;fast&quot;: compute is fast, I/O is slow (and expensive).</li>
+<li>Sources: official docs; community consensus (multiple independent practice guides); community testing (DuckDB vs Spark comparison).</li>
+</ul>
+<p><strong>Deep dive 6: The compliance boundary of encryption (Domain: security)</strong></p>
+<ul>
+<li>Mechanism: v1.4.0+ <code>ENCRYPTION_KEY</code> gives AES-256-GCM whole-file encryption (WAL and spilled temp files included); <code>duckdb_databases()</code> exposes <code>encrypted/cipher</code>.</li>
+<li>At the edge: officially <strong>not NIST-compliant</strong> (tracked in issue #20162) — regulated industries (finance/healthcare) will stall in review; lost key = permanently unrecoverable data, no backdoor; no in-place encryption/decryption or rotation — rotation means COPY to a new database (a downtime window); only the <code>.duckdb</code> file is encrypted — Parquet/CSV from <code>COPY TO</code> is plaintext, cold data needs volume encryption or object-store SSE.</li>
+<li>Selection meaning: encryption solves the &quot;lost disk/lost file&quot; threat model, not &quot;someone who can read process memory or the key&quot;; on the compliance checklist it&#x27;s a &quot;have&quot;, but &quot;have&quot; ≠ &quot;enough&quot; — ask the auditor what they need first.</li>
+<li>Sources: official docs (1.4.0 announcement, encryption blog); community testing (efcoreprovider encryption docs).</li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="用户最买账的 5 点" data-en="What users love most">用户最买账的 5 点</span></h2>
+<div class="lang-block lang-zh">
+<ol>
+<li><strong>单机分析性能，&quot;小机器跑出集群感&quot;</strong><ul>
+<li>为什么是真的：向量化（2048 行/向量）+ morsel 并行 + 列存剪枝是架构级优势，不是调优技巧；社区实测 TPC-H SF10 22 查询 4.3 秒；i7 级笔记本处理几十 GB 是日常。</li>
+<li>边缘与限度：甜蜜点在 GB~数百 GB；TB 级以上、巨型分布式 shuffle、流式，依然是 Spark/数仓的地盘；&quot;比 pandas 快 10~100 倍&quot;的对比成立的前提是&quot;数据已超出内存舒适区&quot;，小数据上 pandas 启动更快。来源：社区实测；观察版本：v1.5.2。</li>
+</ul></li>
+<li><strong>Python/Arrow 零拷贝集成，&quot;pandas 不够大、Spark 太重&quot;之间的答案</strong><ul>
+<li>为什么是真的：<code>duckdb.sql(&quot;SELECT ... FROM df&quot;)</code> 直接查 DataFrame，无需 register；Arrow 零拷贝双向流通；Polars 互操作顺滑。数据科学家不用离开 notebook 就有完整 SQL。</li>
+<li>边缘与限度：替代的是&quot;数据处理&quot;不是&quot;pandas API&quot;——<code>df.groupby().agg()</code> 链式代码要重写成 SQL（chDB 这类方案才保留链式 API）；UDF/复杂 Python 逻辑下推有限。来源：官方文档 + 社区共识；观察版本：v1.5.x。</li>
+</ul></li>
+<li><strong>SQL 方言好用，&quot;写着爽&quot;</strong><ul>
+<li>为什么是真的：<code>QUALIFY</code>（窗口函数直接过滤）、<code>PIVOT/UNPIVOT</code> 原生、嵌套类型（LIST/STRUCT/MAP）+ <code>UNNEST</code>、宏、对标 PG 的函数库。分析师从&quot;CTE 套 CTE&quot;里解放。</li>
+<li>边缘与限度：方言甜点不等于 PG 兼容——存储过程、触发器等 PG 特性没有；从 PG/MySQL 迁分析负载要过一遍函数差异；VARIANT/GEOMETRY 等新类型在 1.5 仍在打磨（v2.0 重写 VARIANT）。来源：官方文档 + 社区共识；观察版本：v1.5.x。</li>
+</ul></li>
+<li><strong>部署零摩擦，&quot;pip install duckdb&quot;</strong><ul>
+<li>为什么是真的：单二进制/单包，无 server、无端口、无配置；WASM 直接跑浏览器；Docker/边缘/CI 里即插即用。把&quot;搭个分析环境&quot;从半天变成一条命令。</li>
+<li>边缘与限度：零摩擦的是&quot;跑起来&quot;，生产化（备份、内存配额、版本 pin、多用户）一件都少不了；npm 旧包 <code>duckdb</code> 已废弃，要迁 <code>@duckdb/node-api</code>。来源：官方文档 + 社区共识；观察版本：v1.5.x。</li>
+</ul></li>
+<li><strong>MIT 开源 + 基金会治理，&quot;收购也拿不走&quot;</strong><ul>
+<li>为什么是真的：MIT 无功能阉割；IP 在独立非营利基金会手里；2026-08 AWS 收购的是 DuckLabs 公司，开源项目治理与许可不变（AWS 官方博客口径）；社区 star 数万、日下载量百万级<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>边缘与限度：许可是 MIT，路线图话语权仍在核心团队/雇主手里；收购后&quot;技术咨询委员会&quot;&quot;开放扩展签名&quot;等承诺尚未交付<span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>；生产级支持依然要买服务。来源：官方 history + AWS 官方博客；观察版本：2026-09。</li>
+</ul></li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<ol>
+<li><strong>Single-node analytics performance — &quot;cluster feel on a small box&quot;</strong><ul>
+<li>Why it&#x27;s real: vectorization (2,048 rows/vector) + morsel parallelism + columnar pruning is an architectural advantage, not a tuning trick; community measurement: TPC-H SF10, 22 queries in 4.3s; an i7-class laptop on tens of GBs is routine.</li>
+<li>Edges: the sweet spot is GBs to hundreds of GBs; beyond TB scale, giant distributed shuffles, and streaming remain Spark/warehouse land; &quot;10–100× faster than pandas&quot; holds when data has outgrown memory comfort — pandas starts faster on small data. Sources: community testing; observed on v1.5.2.</li>
+</ul></li>
+<li><strong>Zero-copy Python/Arrow integration — the answer between &quot;pandas too small, Spark too heavy&quot;</strong><ul>
+<li>Why it&#x27;s real: <code>duckdb.sql(&quot;SELECT ... FROM df&quot;)</code> queries DataFrames directly, no registration; zero-copy Arrow in both directions; smooth Polars interop. Data scientists get full SQL without leaving the notebook.</li>
+<li>Edges: it replaces data <em>processing</em>, not the pandas <em>API</em> — <code>df.groupby().agg()</code> chains must be rewritten as SQL (chDB-style APIs keep chains instead); UDF/complex Python logic pushdown is limited. Sources: official docs + community consensus; observed on v1.5.x.</li>
+</ul></li>
+<li><strong>A SQL dialect that&#x27;s a joy to write</strong><ul>
+<li>Why it&#x27;s real: <code>QUALIFY</code> (filter on window functions directly), native <code>PIVOT/UNPIVOT</code>, nested types (LIST/STRUCT/MAP) + <code>UNNEST</code>, macros, a PG-grade function library. Analysts escape the &quot;CTE inside CTE&quot; hell.</li>
+<li>Edges: dialect sugar ≠ PG compatibility — stored procedures, triggers and other PG features don&#x27;t exist; moving analytical workloads from PG/MySQL means walking the function diffs; VARIANT/GEOMETRY and other new types were still being refined in 1.5 (v2.0 rewrites VARIANT). Sources: official docs + community consensus; observed on v1.5.x.</li>
+</ul></li>
+<li><strong>Zero-friction deployment — &quot;pip install duckdb&quot;</strong><ul>
+<li>Why it&#x27;s real: single binary/package, no server, no ports, no config; WASM runs in browsers; drop-in for Docker, edge, CI. &quot;Set up an analytics environment&quot; goes from half a day to one command.</li>
+<li>Edges: what&#x27;s frictionless is &quot;getting it running&quot; — productionization (backups, memory quotas, version pinning, multi-user) skips nothing; the old npm <code>duckdb</code> package is deprecated, migrate to <code>@duckdb/node-api</code>. Sources: official docs + community consensus; observed on v1.5.x.</li>
+</ul></li>
+<li><strong>MIT open source + foundation governance — &quot;an acquisition can&#x27;t take it away&quot;</strong><ul>
+<li>Why it&#x27;s real: MIT with no feature-crippled edition; IP held by the independent non-profit foundation; in August 2026 AWS acquired the DuckLabs company while open-source governance and licensing stayed unchanged (AWS official blog); community of tens of thousands of stars and million-plus daily downloads <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>Edges: the license is MIT but roadmap influence still sits with the core team/employer; post-acquisition promises (technical advisory board, open extension signing) are not yet delivered (to verify); production-grade support still means buying services. Sources: official history + AWS official blog; observed September 2026.</li>
+</ul></li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="吐槽清单" data-en="Complaints">吐槽清单</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>分类</th><th>吐槽</th><th>影响版本</th><th>状态</th></tr></thead>
+<tbody>
+<tr><td>运维坑</td><td>单写者：第二进程写同一文件直接报文件锁错误；多 worker 并行写必须串行化或分文件</td><td>全版本</td><td>open（架构性；Quack 转正前无解）</td></tr>
+<tr><td>运维坑</td><td>无服务端能力：认证、审计、慢查询日志、会话管理一概没有，全是应用层的事</td><td>全版本</td><td>open（架构性）</td></tr>
+<tr><td>运维坑</td><td>存储格式升级无原地迁移：必须&quot;旧二进制 EXPORT + 新二进制 IMPORT&quot;，CI 自动升级的单二进制部署没有迁移路径</td><td>全版本</td><td>open</td></tr>
+<tr><td>运维坑</td><td>降级无恢复：新格式文件旧版本打不开，只能删库或重导</td><td>全版本</td><td>open</td></tr>
+<tr><td>运维坑</td><td>扩展与引擎版本锁定：升级后必须 <code>UPDATE EXTENSIONS</code>，错配会崩</td><td>全版本</td><td>open</td></tr>
+<tr><td>运维坑</td><td>Docker 忘记挂 volume，容器停止数据即丢</td><td>全版本</td><td>open（用法坑）</td></tr>
+<tr><td>运维坑</td><td><code>PRAGMA integrity_check</code> 不存在；无 <code>duckdb_queries()</code>/<code>duckdb_connections()</code>，跨会话可观测性缺失</td><td>v1.5.x 实测</td><td>open</td></tr>
+<tr><td>性能坑</td><td>无 temp_directory 时 memory_limit 执行不下去，大查询 OOM 被系统杀掉</td><td>全版本</td><td>open（必须显式配置）</td></tr>
+<tr><td>性能坑</td><td>深嵌套查询溢出量可达数据集 30 倍且不稳定；外存聚合比内存慢一个数量级</td><td>全版本</td><td>open（架构现实）</td></tr>
+<tr><td>性能坑</td><td>删数据后文件不缩小：VACUUM 不缩文件，唯一可靠办法 EXPORT+IMPORT</td><td>全版本</td><td>open（架构现实）</td></tr>
+<tr><td>性能坑</td><td><code>preserve_insertion_order</code> 默认为 true，为保序付出可观性能代价</td><td>全版本</td><td>open（可关）</td></tr>
+<tr><td>兼容坑</td><td>CSV auto-detect 生产翻车：分隔符/类型/日期猜错；TIMESTAMP 默认按本地时区解析致跨时区错位</td><td>全版本</td><td>open</td></tr>
+<tr><td>兼容坑</td><td>无 SAVEPOINT；外键 DDL 可建但写时不强制（社区口径，待验证）</td><td>全版本</td><td>open</td></tr>
+<tr><td>兼容坑</td><td>npm 旧包 <code>duckdb</code> 已废弃，需迁 <code>@duckdb/node-api</code>（prebuilt 二进制，不再源码编译）</td><td>1.4+</td><td>fixed-in-v1.4.x（迁移指引）</td></tr>
+<tr><td>版本坑</td><td>每个补丁版都在修 &quot;wrong results&quot; 类静默错误（如 v1.5.6 修 LIMIT/UNNEST/Top-N 下推错误结果），关键报表必须 pin 版本 + 回归</td><td>1.5.x</td><td>partially-fixed（持续修复中）</td></tr>
+<tr><td>版本坑</td><td>checkpoint/WAL 并发恢复 bug 曾致文件无法打开（2026-02/03），恢复子系统仍在重构</td><td>1.5.x 早期</td><td>partially-fixed</td></tr>
+<tr><td>生态坑</td><td>Quack client-server 仍 beta，并发写能力有限（社区口径约 8 线程），多用户读写生产未到火候</td><td>v1.5.x</td><td>open（v2.0 转正待验证）</td></tr>
+<tr><td>成本坑</td><td>MotherDuck 按计算秒计费：突发/低效查询直接变账单；数据出境与驻留需过安全评审</td><td>托管服务</td><td>open</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Category</th><th>Complaint</th><th>Affected versions</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Ops pitfall</td><td>Single writer: a second process writing the same file gets a file-lock error; multi-worker parallel writes must serialize or split files</td><td>All versions</td><td>open (architectural; no fix before Quack GA)</td></tr>
+<tr><td>Ops pitfall</td><td>No server-side capabilities: auth, audit, slow-query log, session management — all on the application</td><td>All versions</td><td>open (architectural)</td></tr>
+<tr><td>Ops pitfall</td><td>Upgrades have no in-place migration: &quot;old-binary EXPORT + new-binary IMPORT&quot; only; single-binary CI auto-upgrades have no migration path</td><td>All versions</td><td>open</td></tr>
+<tr><td>Ops pitfall</td><td>No downgrade recovery: new-format files won&#x27;t open on old versions — delete and reimport only</td><td>All versions</td><td>open</td></tr>
+<tr><td>Ops pitfall</td><td>Extensions are version-locked to the engine: <code>UPDATE EXTENSIONS</code> required after upgrades; mismatches crash</td><td>All versions</td><td>open</td></tr>
+<tr><td>Ops pitfall</td><td>Docker without a volume mapping: container stops, data is gone</td><td>All versions</td><td>open (usage pitfall)</td></tr>
+<tr><td>Ops pitfall</td><td><code>PRAGMA integrity_check</code> doesn&#x27;t exist; no <code>duckdb_queries()</code>/<code>duckdb_connections()</code> — cross-session observability gaps</td><td>v1.5.x (probed)</td><td>open</td></tr>
+<tr><td>Performance pitfall</td><td>Without temp_directory, memory_limit can&#x27;t be enforced — big queries get OOM-killed</td><td>All versions</td><td>open (must be configured explicitly)</td></tr>
+<tr><td>Performance pitfall</td><td>Deeply nested queries can spill 30× the dataset and behave unreliably; external aggregation an order of magnitude slower than in-memory</td><td>All versions</td><td>open (architectural reality)</td></tr>
+<tr><td>Performance pitfall</td><td>Deleted data doesn&#x27;t shrink the file: VACUUM doesn&#x27;t shrink; EXPORT+IMPORT is the only reliable way</td><td>All versions</td><td>open (architectural reality)</td></tr>
+<tr><td>Performance pitfall</td><td><code>preserve_insertion_order</code> defaults to true — order preservation costs real performance</td><td>All versions</td><td>open (can be disabled)</td></tr>
+<tr><td>Compatibility pitfall</td><td>CSV auto-detect fails in production: delimiters/types/dates misguessed; TIMESTAMP defaults to local-timezone parsing, shifting cross-timezone pipelines</td><td>All versions</td><td>open</td></tr>
+<tr><td>Compatibility pitfall</td><td>No SAVEPOINT; foreign keys can be declared but aren&#x27;t enforced on writes (community claim, to verify)</td><td>All versions</td><td>open</td></tr>
+<tr><td>Compatibility pitfall</td><td>Old npm <code>duckdb</code> package deprecated — migrate to <code>@duckdb/node-api</code> (prebuilt binaries, no source builds)</td><td>1.4+</td><td>fixed-in-v1.4.x (migration guide)</td></tr>
+<tr><td>Version pitfall</td><td>Every patch fixes &quot;wrong results&quot; class silent errors (e.g. v1.5.6 fixed LIMIT/UNNEST/Top-N pushdown wrong results) — pin versions + regression-test critical reports</td><td>1.5.x</td><td>partially-fixed (ongoing)</td></tr>
+<tr><td>Version pitfall</td><td>A checkpoint/WAL concurrency recovery bug once left files unopenable (Feb/Mar 2026); the recovery subsystem is still being reworked</td><td>Early 1.5.x</td><td>partially-fixed</td></tr>
+<tr><td>Ecosystem pitfall</td><td>Quack client-server still beta with limited concurrent-write capacity (community claim ~8 threads) — not production-ready for multi-user writes</td><td>v1.5.x</td><td>open (GA pending, to verify)</td></tr>
+<tr><td>Cost pitfall</td><td>MotherDuck bills per compute-second: bursty/inefficient queries become bills directly; data residency/exfiltration needs security review</td><td>Managed service</td><td>open</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="判决" data-en="Verdict">判决</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li><strong>适合谁</strong>：笔记本/单机上的数据分析与探索；Python 数据科学管线（pandas 瓶颈后的第一升级）；轻量 ETL（CSV/Parquet/S3 落地）；嵌入式分析（应用内、边缘、WASM）；CI/测试里的 OLAP 断言；GB~数百 GB 的交互式分析。</li>
+<li><strong>不适合谁</strong>：多进程/多用户并发写；OLTP 与高频小事务；需要认证/审计/行列权限的合规系统；TB 级以上分布式分析；7×24 服务端 SLA 场景；把 DuckDB 当唯一持久层存关键数据。</li>
+<li><strong>迁移成本</strong>：pandas/polars → 低（主要是把链式 API 重写成 SQL）；PG/MySQL 的分析负载 → 低-中（方言差异逐项过，ATTACH 可做联邦过渡）；Spark/数仓 → 中（分布式作业重写 + 数据规模先降到单机装得下）；传统 BI 报表 → 中（报表语义回归 + 版本 pin）。</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li><strong>Good for</strong>: data analysis and exploration on laptops/single nodes; Python data-science pipelines (the first upgrade past the pandas wall); light ETL (CSV/Parquet/S3 landing); embedded analytics (in-app, edge, WASM); OLAP assertions in CI/tests; interactive analysis on GBs to hundreds of GBs.</li>
+<li><strong>Not for</strong>: multi-process/multi-user concurrent writes; OLTP and high-frequency small transactions; compliance systems needing auth/audit/row-column permissions; distributed analysis beyond TB scale; 7×24 server SLA scenarios; using DuckDB as the sole persistence for critical data.</li>
+<li><strong>Migration cost</strong>: pandas/polars → low (mostly rewriting chained APIs into SQL); analytical workloads from PG/MySQL → low-medium (walk the dialect diffs; ATTACH enables federated transition); Spark/data warehouses → medium (rewrite distributed jobs + first fit data onto one node); traditional BI reporting → medium (report-semantics regression + version pinning).</li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="来源与待验证清单" data-en="Sources & to-be-verified">来源与待验证清单</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li>历史与治理：duckdb.org/history（官方；2018 CWI 起步、2019 SIGMOD v0.1、2021-07-14 DuckDB Labs spin-off、DuckDB Foundation 持 IP、MIT；2026-05 更名 DuckLabs；DuckLake 1.0 2026-04-13；Quack 2026-05 技术预览；2026-08-26 DuckLabs 加入 AWS）</li>
+<li>收购口径：AWS News Blog 2026-08-31（官方口径：收购 DuckLabs 公司，开源项目归基金会、MIT 不变）</li>
+<li>版本：duckdb.org 2026-09-28 公告 v1.5.6（当前最新；1.4.x LTS）；v2.0-alpha&quot;Cyanoptera&quot;预览（Quack v1.0、新 PEG 解析器、新存储格式，计划 2026-10 发布——官方 preview 口径，落地待验证）</li>
+<li>加密：官方 1.4.0 发布公告（ENCRYPTION_KEY、AES-256-GCM、覆盖主文件/WAL/临时文件）；官方 encryption 博客 2025-11-19（AES-GCM-256/CTR-256；NIST 未合规，issue #20162）</li>
+<li>并发与存储：官方文档 concurrency（单写者/MVCC/乐观并发/文件锁）；官方文档 storage（向后兼容自 v0.10、前向 best-effort、EXPORT/IMPORT 迁移）</li>
+<li>执行引擎：社区技术解析（2048 向量、morsel-driven 并行 SIGMOD 2014、列存 row group/zonemap/FSST/ALP/Chimp 压缩、DPhyp 优化器）——多独立来源交叉，机制级为社区共识</li>
+<li>社区实测：MariaDB 官方仓库嵌入 DuckDB 的 TPC-H SF10（22 查询 4.30s，v1.5.2）；firepanda 评测（50GB/16GB 外存聚合慢约 30x）；nlesc 指南（深嵌套 spill 30x）；osmpbudynkiv2 恢复实录（checkpoint 损坏、62 秒重建、9.0GB→14.2GB）；libredb-studio v1.5.5 探针（无 integrity_check/duckdb_queries/duckdb_connections）；juanlara18（DuckDB vs Spark 500GB 分界）</li>
+<li>社区共识（多独立来源）：单写者文件锁、内存默认 80%、无 temp 目录限不住内存、扩展版本锁定、CSV auto-detect、时区、SAVEPOINT 缺失</li>
+<li>待验证：Quack 并发写上限（单社区口径约 8 线程）；外键写时强制状态（单社区口径）；v2.0 正式发布时间；AWS 收购后基金会治理变化（技术咨询委员会、开放扩展签名）</li>
+<li>下次评审：跟踪 v2.0 正式发布（存储格式、Quack 转正、VARIANT 重写）后重写&quot;存储格式与版本升级&quot;&quot;复制与一致性&quot;条目；复核 NIST 合规进展（issue #20162）</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li>History &amp; governance: duckdb.org/history (official; 2018 CWI start, v0.1 at SIGMOD 2019, 2021-07-14 DuckDB Labs spin-off, Foundation holds IP, MIT; renamed DuckLabs May 2026; DuckLake 1.0 2026-04-13; Quack technical preview May 2026; DuckLabs to join AWS 2026-08-26)</li>
+<li>Acquisition statement: AWS News Blog 2026-08-31 (official: acquiring the DuckLabs company; open-source projects stay with the Foundation under MIT)</li>
+<li>Versions: duckdb.org announcement 2026-09-28 for v1.5.6 (current; 1.4.x LTS); v2.0-alpha &quot;Cyanoptera&quot; preview (Quack v1.0, new PEG parser, new storage format, planned October 2026 — official preview statement, delivery to verify)</li>
+<li>Encryption: official 1.4.0 release notes (ENCRYPTION_KEY, AES-256-GCM, covers main file/WAL/temp files); official encryption blog 2025-11-19 (AES-GCM-256/CTR-256; not NIST-compliant, issue #20162)</li>
+<li>Concurrency &amp; storage: official docs on concurrency (single writer/MVCC/optimistic concurrency/file locks); official docs on storage (backward compatibility goal since v0.10, forward best-effort, EXPORT/IMPORT migration)</li>
+<li>Execution engine: community technical write-ups (2,048-row vectors, morsel-driven parallelism SIGMOD 2014, columnar row groups/zone maps/FSST/ALP/Chimp compression, DPhyp optimizer) — cross-checked across independent sources; community consensus at the mechanism level</li>
+<li>Community testing: MariaDB&#x27;s official repo embedding DuckDB with TPC-H SF10 (22 queries in 4.30s, v1.5.2); firepanda benchmark (~30× slower external aggregation on 50GB/16GB); nlesc guide (30× spill on deep nesting); osmpbudynkiv2 recovery write-up (checkpoint corruption, 62s rebuild, 9.0GB→14.2GB); libredb-studio v1.5.5 probe (no integrity_check/duckdb_queries/duckdb_connections); juanlara18 (DuckDB vs Spark, ~500GB boundary)</li>
+<li>Community consensus (multiple independent sources): single-writer file locks, default 80% memory, memory limit unenforceable without a temp directory, extension version locking, CSV auto-detect pitfalls, timezone handling, missing SAVEPOINT</li>
+<li>To verify: Quack concurrent-write ceiling (single community claim ~8 threads); foreign-key enforcement status on writes (single community claim); v2.0 GA date; post-acquisition foundation governance changes (technical advisory board, open extension signing)</li>
+<li>Next review: after v2.0 GA (storage format, Quack GA, VARIANT rewrite), rewrite the &quot;storage format &amp; upgrades&quot; and &quot;replication &amp; consistency&quot; entries; recheck NIST compliance progress (issue #20162)</li>
+</ul>
+</div>
+</section>
+</main>
+<footer class="footer">
+  <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
+</footer>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
