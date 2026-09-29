@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>DB 选型参考 - 方法论</title>
+<link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">&#9672;</span> DB <span data-zh="选型参考" data-en="Compare">选型参考</span></a>
+    <nav class="mainnav">
+<a href="index.html" class="" data-zh="首页" data-en="Home">首页</a>
+<a href="compare.html" class="" data-zh="维度对比" data-en="Compare">维度对比</a>
+<a href="methodology.html" class="active" data-zh="方法论" data-en="Methodology">方法论</a>
+<a href="advisor.html" class="" data-zh="AI选型" data-en="AI Selection">AI选型</a>
+    </nav>
+    <div class="cmp-tray">
+      <button id="cmp-tray-btn" type="button" class="tray-btn" aria-expanded="false" aria-haspopup="true"><span data-zh="对比" data-en="Compare">对比</span> <b class="tray-count"><i id="cmp-count">0</i>/4</b></button>
+      <div id="cmp-panel" class="tray-panel" hidden>
+        <div class="tray-sec"><span data-zh="已选" data-en="Selected">已选</span></div>
+        <div id="cmp-selected" class="tray-selected"></div>
+        <div class="tray-sec"><span data-zh="全部产品（最多选 4 款）" data-en="All products (up to 4)">全部产品（最多选 4 款）</span></div>
+        <div id="cmp-list" class="tray-list"></div>
+        <div class="tray-actions"><button id="cmp-clear" type="button" class="tray-clear"><span data-zh="清空选择" data-en="Clear selection">清空选择</span></button></div>
+      </div>
+    </div>
+    <button id="lang-toggle" class="lang-btn" type="button" aria-label="switch language">EN</button>
+  </div>
+</header>
+<main class="page">
+<div class="hero hero-slim"><h1><span data-zh="方法论" data-en="Methodology">方法论</span></h1><p class="hero-sub"><span data-zh="我们如何保证对比的中立与可用" data-en="How we keep this comparison neutral and useful">我们如何保证对比的中立与可用</span></p></div><section class="doc-section"><h2><span data-zh="覆盖粒度一致（中立性护栏）" data-en="Coverage parity (neutrality guardrail)">覆盖粒度一致（中立性护栏）</span></h2><div class="lang-block lang-zh">
+<p>每个档案都必须逐项回答固定的 14 个硬维度，给出"有 / 无 / 部分支持 / 未找到证据 / 查证为无"的结论并标注证据等级，<strong>不允许"因为不是特色就不写"</strong>。这条规则的存在理由：特性天然会被相对各自基线放大（"对社区 PG 而言 TDE 是加分项"），但同一能力在不同档案里覆盖粒度不同，就是偏颇。护栏保证的是<strong>覆盖一致</strong>，权重可以不同。</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<p>Every profile must answer the same fixed 14 hard dimensions, each with a verdict (<em>supported / not supported / partially supported / no evidence found / verified absent</em>) and an evidence level. <strong>Skipping a dimension "because it is not a highlight" is not allowed.</strong> The rationale: a feature always looks bigger against its own baseline, but inconsistent coverage of the same capability across profiles is bias. The guardrail guarantees <strong>consistent coverage</strong>; weights may differ.</p>
+</div></section>
+<section class="doc-section"><h2><span data-zh="选型权重自定：不做综合总分、不做排名" data-en="You set the weights: no aggregate scores, no rankings">选型权重自定：不做综合总分、不做排名</span></h2><div class="lang-block lang-zh">
+<p>本站<strong>不做综合总分、不做排名</strong>。对比页只做维度级并排，不做跨库加权。原因是：权重取决于你的场景——金融核心系统里"复制与一致性"的权重可能是初创 MVP 的十倍；任何替你定权重的做法都是在替你做决定。正确用法：先列出你自己的必备维度与否决项，再到对比矩阵里按行（产品）逐项核对。</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<p>This site produces <strong>no aggregate scores and no rankings</strong>. The comparison page only places dimensions side by side; it never computes a cross-database weighted total. The reason: weights depend on your scenario — "replication & consistency" may weigh ten times more for a financial core system than for a startup MVP. Anyone who sets the weights for you is making your decision for you. The right way to use this site: list your own must-have dimensions and deal-breakers first, then check them row by row (per product) in the matrix.</p>
+</div></section>
+<section class="doc-section"><h2><span data-zh="证据分级" data-en="Evidence levels">证据分级</span></h2><div class="lang-block lang-zh">
+<p>档案中每条关键结论都标注证据等级（彩色徽章）：</p><ul><li><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>：来自厂商官方文档、论文或 release notes，可信度最高，但注意"官方口径"可能只讲上限；</li><li><span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>：厂商发布、新闻稿、定价页中的说法，未经独立验证，引用时请打折；</li><li><span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>：来自生产事故报告、benchmark、故障复盘等一手实践，有具体版本与场景才可信；</li><li><span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>：多份独立社区资料一致指向的结论，单篇博客不算共识；</li><li><span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>：信息不全或存在冲突，明确标出，不写进判决依据。</li></ul><p>AI 顾问（待接入）在引用档案回答时，必须原样携带证据等级徽章。</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<p>Key claims in every profile carry an evidence level (colored badge):</p><ul><li><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>: from vendor documentation, papers or release notes — the most trustworthy, but note that official statements may only describe the ceiling;</li><li><span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>: from vendor announcements, press releases or pricing pages — not independently verified, discount accordingly;</li><li><span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>: from production incident reports, benchmarks or postmortems — only credible with a concrete version and scenario;</li><li><span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>: pointed to by multiple independent community sources — a single blog post is not consensus;</li><li><span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>: incomplete or conflicting information, explicitly marked, never used as a basis for verdicts.</li></ul><p>The AI advisor (pending integration) must carry these badges unchanged whenever it cites profile evidence.</p>
+</div></section>
+<section class="doc-section"><h2><span data-zh="“未找到证据”不等于“不支持”" data-en="“No evidence found” ≠ “not supported”">“未找到证据”不等于“不支持”</span></h2><div class="lang-block lang-zh">
+<p>档案中"未找到证据"只表示：在本次信息采集范围内没有找到可靠出处，<strong>不能反推出"该产品不支持"</strong>。同样，"查证为无"是经过核实确认缺失的结论，证据效力完全不同。做选型否决项判断时，请区分这两者；拿不准的，请以官方文档最新版本为准，或在 POC 中实测验证。</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<p>"No evidence found" in a profile only means no reliable source was found within this research pass — it <strong>must not be read as "not supported"</strong>. "Verified absent", by contrast, is a confirmed gap. These two carry completely different evidential weight when you are judging deal-breakers. When in doubt, check the latest official documentation or verify with a POC.</p>
+</div></section>
+<section class="doc-section"><h2><span data-zh="信息时效" data-en="Freshness">信息时效</span></h2><div class="lang-block lang-zh">
+<p>全部档案信息截至 <strong>2026-09-29</strong>，各档案头部标注了评审版本。数据库迭代快，结论会过期：看到"深水区"里的版本号与调优参数时，请先对一下你手上的版本再照抄。</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<p>All profiles are current as of <strong>2026-09-29</strong>, and each profile header notes the reviewed version. Databases iterate fast and conclusions expire: before copying tuning parameters or workarounds from the "deep dives", check them against the version you actually run.</p>
+</div></section>
+</main>
+<footer class="footer">
+  <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
+</footer>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
