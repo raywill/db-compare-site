@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>EDB Postgres / EDB Postgres Advanced Server（EPAS） - DB 选型参考</title>
+<link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">&#9672;</span> DB <span data-zh="选型参考" data-en="Compare">选型参考</span></a>
+    <nav class="mainnav">
+<a href="index.html" class="active" data-zh="首页" data-en="Home">首页</a>
+<a href="compare.html" class="" data-zh="维度对比" data-en="Compare">维度对比</a>
+<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
+<a href="advisor.html" class="" data-zh="AI选型" data-en="AI Selection">AI选型</a>
+    </nav>
+    <div class="cmp-tray">
+      <button id="cmp-tray-btn" type="button" class="tray-btn" aria-expanded="false" aria-haspopup="true"><span data-zh="对比" data-en="Compare">对比</span> <b class="tray-count"><i id="cmp-count">0</i>/4</b></button>
+      <div id="cmp-panel" class="tray-panel" hidden>
+        <div class="tray-sec"><span data-zh="已选" data-en="Selected">已选</span></div>
+        <div id="cmp-selected" class="tray-selected"></div>
+        <div class="tray-sec"><span data-zh="全部产品（最多选 4 款）" data-en="All products (up to 4)">全部产品（最多选 4 款）</span></div>
+        <div id="cmp-list" class="tray-list"></div>
+        <div class="tray-actions"><button id="cmp-clear" type="button" class="tray-clear"><span data-zh="清空选择" data-en="Clear selection">清空选择</span></button></div>
+      </div>
+    </div>
+    <button id="lang-toggle" class="lang-btn" type="button" aria-label="switch language">EN</button>
+  </div>
+</header>
+<main class="page">
+<div class="profile-hero">
+  <a class="back" href="index.html"><span data-zh="← 返回首页" data-en="← Back to home">← 返回首页</span></a>
+  <h1>EDB Postgres / EDB Postgres Advanced Server（EPAS）</h1>
+  <div class="meta-row"><span class="cat cat-oltp" data-zh="关系型 OLTP" data-en="Relational OLTP">关系型 OLTP</span> <span class="tag">#商业PostgreSQL发行版</span> <span class="tag">#Oracle兼容</span> <span class="tag">#Oracle迁移</span> <span class="tag">#TDE</span> <span class="tag">#主备自动切换</span> <span class="tag">#多主复制</span> <span class="tag">#混合云</span> <span class="tag">#订阅制</span></div>
+  <p class="oneliner"><div class="lang-block lang-zh">
+<p>EDB Postgres Advanced Server 是把 PostgreSQL 内核、Oracle 迁移兼容层和商业支持 / HA / 安全工具打包成一套企业平台的商业发行版；它的价值不在于替代社区 PostgreSQL，而在于**降低大型 Oracle 迁移与受监管企业标准化 Postgres 的组织风险**。</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<p>EDB Postgres Advanced Server is a commercial distribution that bundles the PostgreSQL kernel, an Oracle-migration compatibility layer, and commercial support / HA / security tooling into one enterprise platform. Its value is not in replacing community PostgreSQL, but in **reducing organizational risk for large Oracle migrations and for regulated enterprises standardizing on Postgres**.</p>
+</div></p>
+  <div class="ai-dive-row" data-product="EDB Postgres / EDB Postgres Advanced Server（EPAS）">
+    <span class="ai-dive-label" data-zh="用 AI 深挖这款：" data-en="Deep-dive with AI:">用 AI 深挖这款：</span>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('chatgpt', this)">ChatGPT <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('grok', this)">Grok <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('claude', this)">Claude <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn addcmp-btn" data-addcmp="edb"><span class="addcmp-label">＋ 对比</span></button>
+  </div>
+  <div class="legend"><span class="legend-label" data-zh="证据等级：" data-en="Evidence levels: ">证据等级：</span><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></div>
+</div>
+<section class="doc-section">
+<h2><span data-zh="基本信息" data-en="Basics">基本信息</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>项</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td>厂商</td><td>EnterpriseDB（EDB），美国</td></tr>
+<tr><td>国家</td><td>美国</td></tr>
+<tr><td>起源</td><td>待验证（EPAS 前身 Postgres Plus Advanced Server 可追溯至 2000 年代中后期，此处未独立核实；2026 年公司主推品牌为 &quot;EDB Postgres AI&quot; 平台）</td></tr>
+<tr><td>许可证</td><td>商业订阅授权；EPAS 的 Oracle 兼容增强等为闭源组件（第三方分析口径，见 druce/dbengines 2026-06-04 档案）</td></tr>
+<tr><td>托管服务</td><td>EDB Postgres AI Cloud Service / Hybrid Management Platform（官方口径）</td></tr>
+<tr><td>主类型</td><td>关系型（基于 PostgreSQL 内核的商业发行版）</td></tr>
+<tr><td>兼具类型</td><td>Oracle 兼容模式（EPAS）、多主复制（PGD 组件）、向量/AI 能力（平台层面，非单机内核标配）</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Item</th><th>Content</th></tr></thead>
+<tbody>
+<tr><td>Vendor</td><td>EnterpriseDB (EDB), USA</td></tr>
+<tr><td>Country</td><td>USA</td></tr>
+<tr><td>Origin</td><td>To-be-verified (EPAS&#x27;s predecessor Postgres Plus Advanced Server dates back to the mid-2000s; not independently verified here; the company&#x27;s lead brand in 2026 is the &quot;EDB Postgres AI&quot; platform)</td></tr>
+<tr><td>License</td><td>Commercial subscription; EPAS&#x27;s Oracle-compatibility enhancements are closed-source components (third-party analysis, see druce/dbengines profile 2026-06-04)</td></tr>
+<tr><td>Managed service</td><td>EDB Postgres AI Cloud Service / Hybrid Management Platform <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></td></tr>
+<tr><td>Primary type</td><td>Relational (commercial distribution based on the PostgreSQL kernel)</td></tr>
+<tr><td>Secondary types</td><td>Oracle compatibility mode (EPAS), multi-master replication (PGD component), vector/AI capabilities (platform-level, not single-node kernel defaults)</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section"><h2><span data-zh="硬维度（14 项）" data-en="Hard dimensions (14)">硬维度（14 项）</span></h2>
+<div class="lang-block lang-zh">
+<div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——EPAS/PGE 15+ 内核级 TDE（数据文件 + WAL + 查询临时文件，对应用透明；密钥可经 PGDATAKEYWRAPCMD/UNWRAPCMD 对接外部 KMS）；initdb 时决定，事后难改。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（2026-09-28 查阅）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——TLS/SSL（继承 PG 机制，<code>ssl=on</code> + 证书配置）。证据：<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>（PG 机制沿用），官方文档待逐项复核。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> 审计 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——<code>edb_audit</code>（xml/csv 输出）+ <code>edb_audit_statement</code>（ddl/dml/select/set/rollback/error 可按库/角色/库+角色粒度配置）+ <code>edb_audit_connect/disconnect</code> 完整审计参数体系。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（EPAS 13/14 审计日志章节，厂商口径）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> 认证与权限 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——继承 PG 认证体系（密码/SCRAM/证书/LDAP 等 via pg_hba）与角色权限模型；<strong>EPAS 专有增强（password_profiles 等）的完整矩阵未独立验证</strong>。证据：社区共识 + 待验证。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> 备份恢复 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——物理备份（pgBackRest/Barman；BART 在 PG/EPAS 14+ 已退役）+ 逻辑备份 + WAL 归档 PITR；对 TDE 需按 pgBackRest 官方文档调参（关 <code>archive-header-check</code> 与 <code>checksum-page</code>）。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> + pgBackRest 官方文档。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> 大版本升级 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——<code>pg_upgrade</code>（<code>--link</code> 硬链接，停机分钟级）；逻辑复制平滑切换；dump/restore。商业增强本身可成为升级 blocker（PGE 18.2.0 password_profiles 致 pg_upgrade 失败个案）；<strong>无</strong>官方原地回退（继承 PG，查证为无）。证据：官方 release notes<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>+ 社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> 可观测性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——PEM（Postgres Enterprise Manager）商业管控平台；继承 PG <code>pg_stat_*</code> 视图族与 <code>pg_stat_statements</code>。用户反馈默认监控能力仍不足（PeerSpot）。证据：<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> + 用户评价。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> 连接模型 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——继承 PG 进程模型（每连接一个后端 OS 进程），高并发需池化（深水区五）；EDB 官方安装介质自带 pgBouncer 包（<code>ppaspgbouncer16</code>），PEM 有 pgBouncer 配置指南。证据：官方安装指南<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>+ 社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> 事务与隔离级别 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——单机 EPAS 继承 PostgreSQL 的 MVCC 与三档隔离级别（Read Committed/Repeatable Read/Serializable）；DDL 事务性同 PG。PGD 多主为最终一致语义，<strong>不是</strong>跨节点强一致事务的替代品。证据：PG 社区共识 + 官方口径。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> 复制与一致性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——流复制主备（EFM 管理自动故障转移）；逻辑复制；PGD 多主（异步/最终收敛，带冲突管理）。证据：官方口径 + 第三方分析。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> 扩展方式 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——纵向扩展 + 读副本/分区表为主；PGD 提供多主写入扩展，但语义代价高（见深水区八）。证据：官方口径 + 第三方分析。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> 兼容性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——PostgreSQL 协议/生态兼容；EPAS 另有 Oracle 兼容模式（SPL、Oracle 数据类型/SQL/数据字典视图、MERGE、OCI/OCL 互操作），语义缺口见深水区一、二。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> 许可证与商业模式 <span class="verdict v-yes">有（商业订阅）</span></h3><div class="dim-body"><p><strong>有（商业订阅）</strong>——按 <code>uniCore</code>（物理核或分配给 VM 的 vCore/vCPU）或 <code>Server</code> 计量，以订单为准；非永久授权，订阅到期即失去商业软件使用权。<strong>当前公开材料未发现可靠统一标价，按惯例询价。</strong>证据：EDB 现行订阅协议（2026-09-28 查阅，官方口径）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> 中文资料丰富度 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——官方文档以英文为主；国内社区实践内容明显少于 MySQL / OceanBase。证据：编辑判断（待规模化采集验证）。</p></div></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — EPAS/PGE 15+ kernel-level TDE (data files + WAL + query temp files, transparent to applications; keys can integrate with external KMS via PGDATAKEYWRAPCMD/UNWRAPCMD); decided at initdb time, hard to change afterwards. Evidence: official docs (reviewed 2026-09-28).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / transport encryption <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — TLS/SSL (inherits the PG mechanism, <code>ssl=on</code> + certificate configuration). Evidence: community consensus (PG mechanism carried over), official docs pending item-by-item re-verification.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> Auditing <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — <code>edb_audit</code> (xml/csv output) + <code>edb_audit_statement</code> (ddl/dml/select/set/rollback/error configurable at database/role/database+role granularity) + <code>edb_audit_connect/disconnect</code> — a complete audit parameter system. Evidence: official docs (EPAS 13/14 audit logging chapters, vendor claim).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> Authentication &amp; authorization <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — inherits the PG authentication system (password/SCRAM/certificate/LDAP etc. via pg_hba) and the role permission model; <strong>the complete matrix of EPAS-specific enhancements (e.g., password_profiles) has not been independently verified</strong>. Evidence: community consensus + to-be-verified.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> Backup &amp; recovery <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — physical backups (pgBackRest/Barman; BART is retired on PG/EPAS 14+) + logical backups + WAL-archiving PITR; for TDE, parameters must be tuned per pgBackRest&#x27;s official docs (disable <code>archive-header-check</code> and <code>checksum-page</code>). Evidence: official docs + pgBackRest official docs.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> Major-version upgrades <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — <code>pg_upgrade</code> (<code>--link</code> hard links, minutes of downtime); logical-replication cutover; dump/restore. Commercial enhancements can themselves become upgrade blockers (PGE 18.2.0 case: password_profiles broke pg_upgrade); <strong>no</strong> official in-place rollback (inherited from PG, confirmed absent). Evidence: official release notes <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> + community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> Observability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — PEM (Postgres Enterprise Manager) commercial management platform; inherits the PG <code>pg_stat_*</code> view family and <code>pg_stat_statements</code>. Users report default monitoring is still insufficient (PeerSpot). Evidence: vendor claim + user reviews.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> Connection model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — inherits the PG process model (one backend OS process per connection); high concurrency needs pooling (Deep Dive 5); EDB&#x27;s official installation media ships a pgBouncer package (<code>ppaspgbouncer16</code>), and PEM has a pgBouncer configuration guide. Evidence: official installation guide <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> + community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> Transactions &amp; isolation levels <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — single-node EPAS inherits PostgreSQL&#x27;s MVCC and three isolation levels (Read Committed/Repeatable Read/Serializable); DDL is transactional as in PG. PGD multi-master uses eventual-consistency semantics and is <strong>not</strong> a substitute for cross-node strongly consistent transactions. Evidence: PG community consensus + vendor claim.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> Replication &amp; consistency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — streaming-replication primary/standby (EFM-managed automatic failover); logical replication; PGD multi-master (async/eventual convergence with conflict management). Evidence: vendor claim + third-party analysis.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> Scaling <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — vertical scaling + read replicas/partitioned tables as the main approaches; PGD offers multi-master write scaling at high semantic cost (see Deep Dive 8). Evidence: vendor claim + third-party analysis.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> Compatibility <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — PostgreSQL protocol/ecosystem compatible; EPAS additionally offers an Oracle compatibility mode (SPL, Oracle data types/SQL/data-dictionary views, MERGE, OCI/OCL interop); semantic gaps: see Deep Dives 1–2. Evidence: official docs.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> License &amp; business model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported (commercial subscription)</strong> — metered in <code>uniCore</code> (physical cores or vCores/vCPUs allocated to VMs) or <code>Server</code> units, per the order form; not a perpetual license — commercial software rights lapse when the subscription expires. <strong>No reliable unified list price found in current public materials; expect quote-based pricing.</strong> Evidence: EDB&#x27;s current subscription agreement (reviewed 2026-09-28, vendor claim).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> Chinese-language resources <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — official docs are primarily in English; domestic community practice content is clearly sparser than for MySQL / OceanBase. Evidence: editorial judgment (pending scaled collection verification).</p></div></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="杀手特性" data-en="Killer features">杀手特性</span></h2>
+<div class="lang-block lang-zh">
+<blockquote>
+<p>写法要求：每个特性 = 它是什么 + 为什么是真本事 + 推到边缘会发生什么。</p>
+</blockquote>
+<ol>
+<li><strong>Postgres 发行版里最完整的一档 Oracle 兼容层</strong> 真本事：SPL（兼容 PL/SQL 风格的过程、函数、触发器、包）、Oracle 兼容数据类型 / SQL / 系统函数 / 数据字典兼容视图、MERGE，以及 EDB\<em>Plus、EDB\</em>Loader、DRITA、EDB\*Wrap、OCL 等工具链（EPAS 16 官方文档，2026-09-28 查阅）；增强连接器支持 REF_CURSOR、命名参数、VARCHAR2/STRUCT/ARRAY、多个 OUT/INOUT 参数（EDB 官方迁移工具说明）。这是&quot;让 Oracle 代码尽量少改就跑起来&quot;的最短路径。 边缘真相：兼容的是&quot;方言&quot;，不是 Oracle 内核复刻。分区表的唯一性语义、全文检索、ASM、表压缩、外部表等存在明确缺口（见深水区一、二），且空字符串与 NULL 的语义差异需要 <code>edb_redwood_strings</code> 等开关显式处理。兼容性矩阵打勾 ≠ 业务能直接跑，重度依赖必须逐项 POC。</li>
+<li><strong>社区 PostgreSQL 路线 + 商业责任主体</strong> 真本事：EPAS 18.x 持续跟进上游 PostgreSQL 点版本合并（18.1→18.6，2025-11 至 2026-08），企业获得 24×7 支持与安全补丁的责任主体；EDB 自称对 PostgreSQL 18 有 OAuth、优化器、extension_control_path 等上游贡献（2025-09 新闻稿，厂商口径）。 边缘真相：&quot;基于开源&quot;不等于&quot;可自由替换&quot;。迁离 EPAS 时 SPL 包、Oracle 兼容对象、OCL 驱动依赖都要处理；且商业增强本身会成为升级依赖——PGE 18.2.0 的 release notes 曾记录 password_profiles 特性导致 pg_upgrade 无法完成（见深水区七）。买的是&quot;有人负责&quot;，代价是新的供应商依赖。</li>
+<li><strong>两条发行路线：PGE 守 PG 兼容，EPAS 扛 Oracle 迁移</strong> 真本事：不需要 Oracle 兼容时可选更轻的 PGE（PG 行为兼容 + TDE + PGD 复制优化 + WAL pacing + 诊断增强），避免为用不上的兼容层付费和测试；要迁 Oracle 时再上 EPAS。同一厂商内给了&quot;轻重两档&quot;选择。 边缘真相：产品 / 订阅 / 组件矩阵复杂（EPAS、PGE、PGD、EPRS、PEM、LiveCompare、Cloud Service、Hybrid Management……），选错发行版意味着重装、重测与 entitlement 返工。POC 前第一件事是把&quot;我们到底需不需要 Oracle 兼容模式&quot;这个问题关掉。</li>
+<li><strong>内核级 TDE（EPAS / PGE 15+）</strong> 真本事：透明数据加密做在内核层而非扩展里，加密数据文件 + WAL + 查询临时文件，对应用透明；密钥可经 PGDATAKEYWRAPCMD/UNWRAPCMD 对接外部 KMS（如 HashiCorp Vault transit 引擎）（EDB 官方文档，2026-09-28 查阅）。这是社区 PostgreSQL 长期缺失、合规场景（金融、政企）硬性要求的能力。 边缘真相：TDE 是 initdb 时的决定（Cloud Service 上事后不能开关）；有 CPU/内存开销；备份链必须配合调整——pgBackRest 官方文档明确要求对 EDB TDE 关闭 <code>archive-header-check</code> 与 <code>checksum-page</code>（因 EDB TDE 在加密页上算校验和）；远端副本的密钥管理是额外运维面。加密的是&quot;静态数据&quot;，传输中与内存中的数据不在范围内。</li>
+<li><strong>从 EFM 主备到 PGD 多主的 HA 梯度，单一厂商覆盖</strong> 真本事：EFM 管理基于流复制的主备自动故障转移（见证节点 + 仲裁 + STONITH，开箱即用）；PGD 提供跨地域 active-active 多主。Oracle 迁移项目里，HA 方案不用再跨厂商拼装。 边缘真相：EFM 不改变流复制本身的 RPO 取舍（异步可能丢尾部事务；同步则在副本不可用时牺牲写可用性），脑裂防护、旧主 fencing、客户端重连仍是整体设计题；PGD 的多主冲突管理不是强一致事务的替代品（见深水区八），且 EFM、PGD、MTK、增强连接器、LiveCompare 长期使用<strong>全部要求 EDB 数据库订阅</strong>——HA 能力与订阅深度绑定。</li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<blockquote>
+<p>Writing rule: each feature = what it is + why it&#x27;s genuinely strong + what happens at the edge.</p>
+</blockquote>
+<ol>
+<li><strong>The most complete Oracle compatibility layer among Postgres distributions</strong> What it really is: SPL (PL/SQL-style procedures, functions, triggers, packages), Oracle-compatible data types / SQL / system functions / data-dictionary compatibility views, MERGE, plus the EDB\<em>Plus, EDB\</em>Loader, DRITA, EDB\*Wrap, OCL toolchain (EPAS 16 official docs, reviewed 2026-09-28); enhanced connectors supporting REF_CURSOR, named parameters, VARCHAR2/STRUCT/ARRAY, multiple OUT/INOUT parameters (EDB official migration tooling docs). This is the shortest path to &quot;run Oracle code with minimal changes.&quot; Edge truth: what&#x27;s compatible is the &quot;dialect,&quot; not a replica of the Oracle kernel. There are explicit gaps in partition-table uniqueness semantics, full-text search, ASM, table compression, external tables (see Deep Dives 1–2), and empty-string vs NULL semantic differences require explicit handling via switches like <code>edb_redwood_strings</code>. A checked box in the compatibility matrix ≠ the business workload will just run; heavy dependencies need item-by-item POCs.</li>
+<li><strong>Community PostgreSQL track + a commercial party accountable</strong> What it really is: EPAS 18.x keeps merging upstream PostgreSQL point releases (18.1→18.6, 2025-11 to 2026-08), giving enterprises a 24×7 support and security-patch party on the hook; EDB claims upstream contributions to PostgreSQL 18 in OAuth, the optimizer, and extension_control_path (2025-09 press release, vendor statement). Edge truth: &quot;based on open source&quot; ≠ &quot;freely swappable.&quot; Leaving EPAS means dealing with SPL packages, Oracle-compatible objects, and OCL driver dependencies; and the commercial enhancements themselves become upgrade dependencies — PGE 18.2.0&#x27;s release notes once recorded a password_profiles feature that broke pg_upgrade (see Deep Dive 7). You buy &quot;someone is responsible&quot;; the price is a new vendor dependency.</li>
+<li><strong>Two distribution tracks: PGE guards PG compatibility, EPAS carries Oracle migration</strong> What it really is: when Oracle compatibility isn&#x27;t needed, the lighter PGE (PG behavioral compatibility + TDE + PGD replication optimizations + WAL pacing + diagnostic enhancements) avoids paying for and testing a compatibility layer you won&#x27;t use; go EPAS when migrating Oracle. One vendor offering &quot;light and heavy&quot; options. Edge truth: the product / subscription / component matrix is complex (EPAS, PGE, PGD, EPRS, PEM, LiveCompare, Cloud Service, Hybrid Management…); picking the wrong distribution means reinstalling, retesting, and entitlement rework. The first thing to settle before a POC is &quot;do we actually need Oracle compatibility mode?&quot;</li>
+<li><strong>Kernel-level TDE (EPAS / PGE 15+)</strong> What it really is: transparent data encryption implemented in the kernel rather than as an extension, encrypting data files + WAL + query temp files, transparent to applications; keys can integrate with external KMS via PGDATAKEYWRAPCMD/UNWRAPCMD (e.g., HashiCorp Vault transit engine) (EDB official docs, reviewed 2026-09-28). This is a capability long missing from community PostgreSQL and a hard requirement in compliance scenarios (finance, 政企 zhèngqǐ — government and state-owned enterprises). Edge truth: TDE is a decision made at initdb time (can&#x27;t be toggled after the fact on Cloud Service); it carries CPU/memory overhead; the backup chain must be adjusted accordingly — pgBackRest&#x27;s official docs explicitly require disabling <code>archive-header-check</code> and <code>checksum-page</code> for EDB TDE (because EDB TDE computes checksums on encrypted pages); key management for remote replicas is an extra ops surface. What gets encrypted is &quot;data at rest&quot;; data in transit and in memory is out of scope.</li>
+<li><strong>An HA gradient from EFM primary/standby to PGD multi-master, from a single vendor</strong> What it really is: EFM manages streaming-replication-based primary/standby automatic failover (witness nodes + arbitration + STONITH, working out of the box); PGD offers cross-region active-active multi-master. Oracle migration projects no longer need to assemble HA from multiple vendors. Edge truth: EFM doesn&#x27;t change streaming replication&#x27;s inherent RPO trade-off (async can lose tail transactions; sync sacrifices write availability when the replica is unreachable); split-brain protection, old-primary fencing, and client reconnect remain whole-design questions; PGD&#x27;s multi-master conflict management is no substitute for strongly consistent transactions (see Deep Dive 8); and long-term use of EFM, PGD, MTK enhanced capabilities, enhanced connectors, and LiveCompare <strong>all require an EDB database subscription</strong> — HA capability is deeply tied to the subscription.</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="深水区" data-en="Deep dives">深水区</span></h2>
+<div class="lang-block lang-zh">
+<blockquote>
+<p>每条 = 机制 + 推到边缘的行为 + 选型含义 + 来源。</p>
+</blockquote>
+<p><strong>深水区一（SQL 层）：Oracle 兼容的&quot;语法通过&quot;不等于&quot;语义等价&quot;——以分区唯一性为例</strong></p>
+<ul>
+<li>机制：EPAS 18 官方文档明确列出 Oracle 兼容分区的限制——分区表上允许非分区键列参与主键 / 唯一键，但约束只建在子分区上；新增分区时不会自动创建该键；唯一性不跨整个分区层级；interval / automatic partitioning 仅支持单列键，并有 DEFAULT、MAXVALUE、NULL/NaN/Infinity 等限制。</li>
+<li>推到边缘：从 Oracle 迁过来的分区表，建表语句&quot;跑通了&quot;，但全局唯一约束在语义上已经悄悄退化为&quot;分区内唯一&quot;。业务在 Oracle 上依赖的跨分区唯一性，在 EPAS 上需要应用层或额外机制补足；新增分区后缺失的键不会报错，只会静默地不保护你。</li>
+<li>选型含义：Oracle 兼容 POC 必须包含&quot;约束语义&quot;测试，而不仅是&quot;语句能否执行&quot;；数据字典里查到的约束定义要逐条核对是否与 Oracle 语义一致。</li>
+<li>来源：EDB 官方 EPAS 18 文档 Oracle 兼容分区限制页（2026-09-28 查阅）——官方口径。</li>
+</ul>
+<p><strong>深水区二（迁移与生态）：MTK 自动迁移在&quot;不支持对象&quot;面前会止步</strong></p>
+<ul>
+<li>机制：Migration Toolkit 官方文档明确——不支持特性的对象无法迁移；Oracle 全文检索实现不同，MTK 无法迁移使用它的对象；ASM、表压缩、外部表属于不支持 / 不能直接等价迁移的领域；多 profile 迁移后需手工把 profile 分配给用户。</li>
+<li>推到边缘：官方给的替代建议（压缩文件系统、staging 表 + EDB\*Loader）是 workaround，不是语义等价——压缩比、加载路径、运维方式全变了。一个&quot;90% 自动迁移&quot;的项目，剩下 10% 往往是全文检索、外部表集成、压缩策略这些与周边系统耦合最深的部分，也是工作量评估最容易漏的部分。</li>
+<li>选型含义：迁移评估的第一步是拉出&quot;不支持对象清单&quot;做人工估算，而不是先看&quot;支持率百分比&quot;；workaround 的性能与运维语义要重新验证。</li>
+<li>来源：EDB 官方 Migration Toolkit v55 文档（2026-09-28 查阅）——官方口径。</li>
+</ul>
+<p><strong>深水区三（迁移与生态）：LiveCompare 的哈希比较机制与盲区</strong></p>
+<ul>
+<li>机制：LiveCompare 默认 <code>comparison_algorithm = block_hash</code>：对取到的数据块先算块哈希（哈希的哈希，类似两级 Merkle 树），块命中则整块跳过，不命中则回退到 <code>row_hash</code> 逐行定位差异行；跨 Oracle/PG 比较时用&quot;公共哈希&quot;——把整行拼成文本（PG 侧对 timestamp / numeric / bytea 做 Oracle 风格拟合）再算 MD5。另有 <code>--conflicts</code> 模式可只比对 PGD/BDR 冲突日志涉及的主键行。</li>
+<li>推到边缘：哈希比较的速度优势建立在&quot;表示一致&quot;上——BLOB/CLOB/NCLOB 默认只比前 2000 字符；Oracle 侧整行文本表示超过 4000 字符会触发 ORA-01489 并中止该表比较；Oracle 10g 只能用最慢的 <code>full_row</code>。更重要的是：LiveCompare 验证的是&quot;数据行是否一致&quot;，不验证约束语义、序列当前值、权限、profile 绑定——它和深水区一、二是互补关系，不是替代关系。</li>
+<li>选型含义：把 LiveCompare 写进迁移验收标准时，要同时定义&quot;哈希算法 + 排除列（如 ROWID / ORA_ROWSCN）+ 精度容差 + 人工核对项（约束/序列/权限）&quot;，否则验收报告会给你虚假的安全感。</li>
+<li>来源：EDB 官方 LiveCompare 文档（settings 页与 2.0 release notes，2026-09-28 查阅）——官方口径；长用需订阅（官方迁移工具说明）。</li>
+</ul>
+<p><strong>深水区四（存储与事务）：长事务冻结 VACUUM——一个报表查询能拖垮全库的膨胀</strong></p>
+<ul>
+<li>机制：EPAS 继承 PostgreSQL 的 MVCC：UPDATE/DELETE 产生死元组，靠 VACUUM 回收；任何持有老快照的事务（长查询、idle-in-transaction 连接、预备事务）都会抬高全库的 xmin horizon，使 autovacuum 对<strong>整个数据库</strong>的死元组都无法回收。32 位事务 ID 耗尽则触发 wraparound 保护，集群进入拒绝写入的应急状态。</li>
+<li>推到边缘：一个在主库上跑 8 小时的报表事务，症状不是&quot;报表慢&quot;，而是全库表膨胀、索引膨胀、磁盘 steady 上涨，而 autovacuum 看似在跑却什么都回收不了。救火手段是 <code>idle_in_transaction_session_timeout</code> 熔断 + 找到并处理 offender（看 <code>pg_stat_activity.backend_xmin</code>），而不是加磁盘。<code>max_slot_wal_keep_size</code>（PG13+）是复制槽场景的同类安全阀，但<strong>默认不设就是无限保留</strong>。</li>
+<li>选型含义：这是&quot;买了商业版也躲不掉&quot;的机制税。选型时要确认团队有 PG 运维基本功（autovacuum 调优、长事务治理、datfrozenxid 巡检），而不是假设&quot;商业版会自动搞定&quot;；报表负载一律走备库。</li>
+<li>来源：PostgreSQL 社区共识（多份生产运维实测总结，2026-09-28 采集）；EPAS 未改变该机制（EDB 未宣称改动，PGE 文档仅提 WAL pacing 等外围优化）。</li>
+</ul>
+<p><strong>深水区五（连接与并发）：一个连接一个后端进程——连接风暴先耗尽的是 CPU/内存</strong></p>
+<ul>
+<li>机制：PostgreSQL（含 EPAS）每个客户端连接对应一个后端 OS 进程，有真实的内存开销；<code>max_connections</code> 是硬上限，打满后新连接直接 <code>FATAL: too many connections</code>。</li>
+<li>推到边缘：微服务多实例 × 每实例连接池的乘法效应，或 serverless 突发，会在业务低峰的深夜把连接数打到上限——故障现象是&quot;应用连不上库&quot;，但库本身负载不高。解法是 PgBouncer（transaction 模式）等池化，且池大小要按库的实际预算反推，而不是按应用实例数正推。</li>
+<li>选型含义：EPAS 的商业属性不改变进程模型；任何&quot;高并发接入&quot;的 POC 都要把连接拓扑（直连 / PgBouncer / 应用池）作为必测项。</li>
+<li>来源：PostgreSQL 社区共识（2026-09-28 采集）。</li>
+</ul>
+<p><strong>深水区六（复制与容灾）：EFM 自动切主 ≠ 自动消灭数据丢失窗口；闲置复制槽能打满主库磁盘</strong></p>
+<ul>
+<li>机制：EFM 管理的是流复制主备 + 自动故障转移。异步复制下，主库宕机时备库未收到的尾部事务必然丢失（RPO&gt;0）；同步复制下，唯一同步备库不可用时写操作阻塞（牺牲可用性保零丢失）。另一面：主库为复制槽保留 WAL 是无上限承诺——备库下线后若槽未删，主库 pg_wal 无限堆积直到磁盘打满、主库拒绝写入。</li>
+<li>推到边缘：最常见的&quot;双杀&quot;是：备库硬件故障 → 槽变闲置 → 无人告警 → 数天后主库磁盘满 → 主库停写。这不是 EFM 的 bug，是&quot;槽保留语义 + 缺监控&quot;的组合。<code>max_slot_wal_keep_size</code> 应作为标配，代价是超限后槽变 <code>lost</code>、备库需重建——用&quot;可重建的备库&quot;换&quot;不死的的主库&quot;。</li>
+<li>选型含义：HA 方案评审要同时回答 RPO 选择（同步/异步/仲裁）、脑裂防护（STONITH/仲裁）、旧主 fencing、客户端重连四件事；复制槽监控（<code>pg_replication_slots</code> 闲置 + 滞后字节）是上线 checklist 必备项。</li>
+<li>来源：EFM 官方迁移工具说明（2026-09-28 查阅）——官方口径；复制槽机制为 PostgreSQL 社区共识。</li>
+</ul>
+<p><strong>深水区七（运维与升级）：大版本升级不是补丁；商业增强本身会成为升级依赖</strong></p>
+<ul>
+<li>机制：PostgreSQL 大版本之间数据文件格式不兼容，升级路径是 <code>pg_upgrade</code>（<code>--link</code> 硬链接，停机分钟级）、逻辑复制平滑切换，或 dump/restore；升级后统计信息不继承，必须 <code>ANALYZE</code>，扩展需逐个确认版本兼容。</li>
+<li>推到边缘：PGE 18.2.0 的 release notes 记录过 password_profiles 特性导致 pg_upgrade 无法完成——商业增强的 bug 会卡住整个升级窗口，而这类问题在社区 PG 升级手册里查不到，只能等厂商修复。此外 BART 备份工具在 PG/EPAS 14+ 已不受官方支持，必须迁到 Barman 或 pgBackRest（EPAS 18 release notes，官方口径）——备份工具链的迁移是升级规划的一部分。</li>
+<li>选型含义：把&quot;大版本升级演练&quot;写进首年运维计划；升级前逐项核对 EPAS release notes 里&quot;上游合并 + EDB 增强变更&quot;两部分；备份工具若还在用 BART，升级 PG14+ 前先换。</li>
+<li>来源：EDB 官方 EPAS 18 release notes、PGE 18.2 release notes（2026-09-28 查阅）——官方口径；pg_upgrade 机制为社区共识。</li>
+</ul>
+<p><strong>深水区八（一致性与多主）：PGD 的冲突管理不是强一致事务的替代品</strong></p>
+<ul>
+<li>机制：PGD（原 BDR）是基于逻辑复制的多主方案，官方宣称带冲突管理、数据丢失保护、吞吐达原生逻辑复制 5 倍、可用性最高五个 9——<strong>均为 EDB 官方口径</strong>。其默认语义是异步 / 最终收敛：跨节点同时修改同一业务键时，由冲突规则裁决，没有跨节点的强一致事务。</li>
+<li>推到边缘：第三方分析（druce/dbengines，2026-06-04，高置信度）指出，即使是厂商自己跑的 Jepsen 框架测试也曾发现罕见的更新冲突数据分歧。冲突处理策略、复制集划分、&quot;最后一写胜出&quot;是否可接受，全部是应用与数据模型的设计题——用 PGD 之前必须先有答案，而不是上线后才发现。</li>
+<li>选型含义：若目标架构要用 PGD，Oracle 迁移 POC 必须把它纳入（EDB 官方迁移指南亦如此建议），因为应用和数据库设计可能需要调整；把官方的&quot;五个 9 / 5 倍吞吐&quot;当作待 POC 验证的营销口径。</li>
+<li>来源：EDB 官方迁移工具说明（2026-09-28 查阅）——官方口径；druce/dbengines 第三方分析（2026-06-04）——第三方判断，待进一步验证。</li>
+</ul>
+<p><strong>深水区九（授权与成本）：uniCore/Server 订阅在弹性与 HA 场景的计量边界</strong></p>
+<ul>
+<li>机制：EDB 现行订阅协议：软件使用权是有期限、不可转让的订阅；计量单位（UOM）为 <code>uniCore</code>（物理核或分配给 VM 的 vCore/vCPU）或 <code>Server</code>，以订单为准；仅在订阅费有效期内拥有商业软件使用权（2026-09-28 查阅）。</li>
+<li>推到边缘：真正的成本风险不在单价（本来就不公开），而在计量边界——HA 备库、灾备节点、只读副本、测试环境是否计入？容器按 request 还是 limit 算？大促时临时扩的 vCPU 按峰值还是按月？Kubernetes 下&quot;分配给 VM 的 vCore&quot;如何界定？这些在报价单/UOM 条款里不问清楚，三年 TCO 模型就是建在沙子上。另注意：EFM、PGD、MTK 增强能力、增强连接器、LiveCompare 长期使用<strong>全部要求 EDB 数据库订阅</strong>——&quot;买了数据库&quot;和&quot;能用全套工具&quot;是两回事。</li>
+<li>选型含义：询价阶段就把&quot;副本/DR/测试/entitlement 边界/超量扩容&quot;写成书面问题清单，要求厂商在订单层面回答；&quot;比 Oracle 便宜&quot;只能作为相对定位，不可无证据折算百分比。</li>
+<li>来源：EDB 官方订阅协议（2026-09-28 查阅）——官方口径；2005–2015 年间的旧价格资料已过时，<strong>不得作为当前价格引用</strong>。</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<blockquote>
+<p>Each item = mechanism + edge behavior + selection implication + source.</p>
+</blockquote>
+<p><strong>Deep Dive 1 (SQL layer): &quot;Syntax passes&quot; in Oracle compatibility ≠ &quot;semantic equivalence&quot; — partitioned uniqueness as an example</strong></p>
+<ul>
+<li>Mechanism: EPAS 18&#x27;s official docs explicitly list Oracle-compatibility partitioning limitations — non-partition-key columns may participate in primary / unique keys on partitioned tables, but the constraint is only built on child partitions; the key is not auto-created on new partitions; uniqueness does not span the whole partition hierarchy; interval / automatic partitioning only supports single-column keys, with DEFAULT, MAXVALUE, NULL/NaN/Infinity and other restrictions.</li>
+<li>At the edge: a partitioned table migrated from Oracle has CREATE TABLE statements that &quot;run fine,&quot; but the global unique constraint has silently degraded to &quot;unique within a partition.&quot; Cross-partition uniqueness the business relied on in Oracle needs application-layer or extra mechanisms to make up; a missing key on a new partition raises no error — it just silently stops protecting you.</li>
+<li>Selection implication: an Oracle-compatibility POC must include &quot;constraint semantics&quot; tests, not just &quot;can this statement execute&quot;; constraint definitions found in the data dictionary must be checked item by item against Oracle semantics.</li>
+<li>Source: EDB official EPAS 18 docs, Oracle compatibility partitioning limitations page (reviewed 2026-09-28) — official docs.</li>
+</ul>
+<p><strong>Deep Dive 2 (Migration &amp; ecosystem): MTK auto-migration stops at &quot;unsupported objects&quot;</strong></p>
+<ul>
+<li>Mechanism: the Migration Toolkit&#x27;s official docs are explicit — objects using unsupported features cannot be migrated; Oracle full-text search is implemented differently, so MTK cannot migrate objects using it; ASM, table compression, and external tables are unsupported / cannot-be-directly-equivalent domains; after multi-profile migration, profiles must be manually assigned to users.</li>
+<li>At the edge: the official suggested alternatives (compressed file systems, staging tables + EDB\*Loader) are workarounds, not semantic equivalents — compression ratios, load paths, and ops models all change. In a &quot;90% automated migration&quot; project, the remaining 10% is usually full-text search, external-table integration, and compression strategies — the parts most deeply coupled to surrounding systems, and the parts effort estimates most often miss.</li>
+<li>Selection implication: the first step of migration assessment is pulling the &quot;unsupported object list&quot; for manual estimation, not looking at the &quot;support percentage&quot; first; workaround performance and ops semantics need revalidation.</li>
+<li>Source: EDB official Migration Toolkit v55 docs (reviewed 2026-09-28) — official docs.</li>
+</ul>
+<p><strong>Deep Dive 3 (Migration &amp; ecosystem): LiveCompare&#x27;s hash-comparison mechanics and blind spots</strong></p>
+<ul>
+<li>Mechanism: LiveCompare defaults to <code>comparison_algorithm = block_hash</code>: fetched data blocks are hashed at block level first (a hash of hashes, like a two-level Merkle tree); a block hit skips the whole block, a miss falls back to <code>row_hash</code> to locate differing rows; cross Oracle/PG comparison uses a &quot;common hash&quot; — each row rendered as text (PG side fits timestamp / numeric / bytea into Oracle-style representation) then MD5&#x27;d. There&#x27;s also a <code>--conflicts</code> mode comparing only primary-key rows touched by PGD/BDR conflict logs.</li>
+<li>At the edge: hash comparison&#x27;s speed advantage rests on &quot;consistent representation&quot; — BLOB/CLOB/NCLOB default to comparing only the first 2000 characters; an Oracle-side whole-row text representation exceeding 4000 characters triggers ORA-01489 and aborts that table&#x27;s comparison; Oracle 10g can only use the slowest <code>full_row</code>. More importantly: LiveCompare verifies &quot;are data rows consistent,&quot; not constraint semantics, sequence current values, privileges, or profile bindings — it complements Deep Dives 1–2, it doesn&#x27;t replace them.</li>
+<li>Selection implication: when writing LiveCompare into migration acceptance criteria, also define &quot;hash algorithm + excluded columns (e.g., ROWID / ORA_ROWSCN) + precision tolerance + manual check items (constraints/sequences/privileges),&quot; or the acceptance report will give you false confidence.</li>
+<li>Source: EDB official LiveCompare docs (settings page and 2.0 release notes, reviewed 2026-09-28) — official docs; long-term use requires a subscription (official migration tooling docs).</li>
+</ul>
+<p><strong>Deep Dive 4 (Storage &amp; transactions): Long transactions freeze VACUUM — one report query can bloat the whole database</strong></p>
+<ul>
+<li>Mechanism: EPAS inherits PostgreSQL MVCC: UPDATE/DELETE produce dead tuples reclaimed by VACUUM; any transaction holding an old snapshot (long queries, idle-in-transaction connections, prepared transactions) raises the whole database&#x27;s xmin horizon, so autovacuum can&#x27;t reclaim dead tuples for <strong>the entire database</strong>. Exhausting the 32-bit transaction ID space triggers wraparound protection, and the cluster enters a write-refusing emergency state.</li>
+<li>At the edge: an 8-hour report transaction on the primary doesn&#x27;t show up as &quot;slow report&quot; — it shows up as whole-database table bloat, index bloat, and steadily rising disk usage, while autovacuum looks busy but reclaims nothing. The firefight is an <code>idle_in_transaction_session_timeout</code> circuit breaker + finding and handling the offender (check <code>pg_stat_activity.backend_xmin</code>), not adding disk. <code>max_slot_wal_keep_size</code> (PG13+) is the analogous safety valve for replication slots, but <strong>unset by default means infinite retention</strong>.</li>
+<li>Selection implication: this is a &quot;mechanism tax&quot; no commercial edition exempts you from. Selection must confirm the team has PostgreSQL ops fundamentals (autovacuum tuning, long-transaction governance, datfrozenxid inspection) rather than assuming &quot;the commercial edition handles it automatically&quot;; report workloads always go to replicas.</li>
+<li>Source: PostgreSQL community consensus (multiple production ops write-ups, collected 2026-09-28); EPAS doesn&#x27;t change this mechanism (EDB claims no changes; PGE docs only mention peripheral optimizations like WAL pacing).</li>
+</ul>
+<p><strong>Deep Dive 5 (Connections &amp; concurrency): One connection, one backend process — connection storms exhaust CPU/memory first</strong></p>
+<ul>
+<li>Mechanism: PostgreSQL (including EPAS) maps each client connection to one backend OS process with real memory overhead; <code>max_connections</code> is a hard ceiling, and beyond it new connections get <code>FATAL: too many connections</code>.</li>
+<li>At the edge: the multiplicative effect of microservice instances × per-instance connection pools, or serverless bursts, can push connections to the ceiling in the dead of night at low business load — the symptom is &quot;apps can&#x27;t connect,&quot; while the database itself is lightly loaded. The fix is pooling like PgBouncer (transaction mode), with pool sizes derived backwards from the database&#x27;s actual budget rather than forwards from app instance counts.</li>
+<li>Selection implication: EPAS&#x27;s commercial nature doesn&#x27;t change the process model; any &quot;high-concurrency access&quot; POC must include connection topology (direct / PgBouncer / app pools) as a mandatory test item.</li>
+<li>Source: PostgreSQL community consensus (collected 2026-09-28).</li>
+</ul>
+<p><strong>Deep Dive 6 (Replication &amp; DR): EFM automatic failover ≠ automatically eliminating the data-loss window; idle replication slots can fill the primary&#x27;s disk</strong></p>
+<ul>
+<li>Mechanism: EFM manages streaming-replication primary/standby + automatic failover. Under async replication, tail transactions not yet received by the standby are inevitably lost when the primary dies (RPO&gt;0); under sync replication, writes block when the only sync standby is unavailable (sacrificing availability for zero loss). On the other side: the primary&#x27;s WAL retention promise for replication slots is unbounded — if a standby goes offline and its slot isn&#x27;t dropped, the primary&#x27;s pg_wal piles up without limit until the disk fills and the primary refuses writes.</li>
+<li>At the edge: the most common &quot;double kill&quot; is: standby hardware failure → slot goes idle → nobody gets alerted → days later the primary&#x27;s disk fills → primary stops accepting writes. This isn&#x27;t an EFM bug; it&#x27;s the combination of &quot;slot retention semantics + missing monitoring.&quot; <code>max_slot_wal_keep_size</code> should be standard, at the cost that an over-limit slot becomes <code>lost</code> and the standby must be rebuilt — trading &quot;a rebuildable standby&quot; for &quot;a primary that never dies.&quot;</li>
+<li>Selection implication: HA design reviews must answer four things together: RPO choice (sync/async/quorum), split-brain protection (STONITH/arbitration), old-primary fencing, and client reconnect; replication-slot monitoring (idle <code>pg_replication_slots</code> + lag bytes) belongs on the go-live checklist.</li>
+<li>Source: EFM official migration tooling docs (reviewed 2026-09-28) — official docs; replication-slot mechanics are PostgreSQL community consensus.</li>
+</ul>
+<p><strong>Deep Dive 7 (Ops &amp; upgrades): Major-version upgrades aren&#x27;t patches; commercial enhancements become upgrade dependencies</strong></p>
+<ul>
+<li>Mechanism: PostgreSQL major versions have incompatible data-file formats; upgrade paths are <code>pg_upgrade</code> (<code>--link</code> hard links, minutes of downtime), logical-replication cutover, or dump/restore; statistics aren&#x27;t carried over post-upgrade so <code>ANALYZE</code> is mandatory, and each extension&#x27;s version compatibility must be confirmed.</li>
+<li>At the edge: PGE 18.2.0&#x27;s release notes recorded a password_profiles feature breaking pg_upgrade — a commercial-enhancement bug can jam the entire upgrade window, and such issues can&#x27;t be found in community PG upgrade manuals; you can only wait for the vendor fix. Also, the BART backup tool is no longer officially supported on PG/EPAS 14+ and must move to Barman or pgBackRest (EPAS 18 release notes, official docs) — backup-toolchain migration is part of upgrade planning.</li>
+<li>Selection implication: write &quot;major-version upgrade rehearsal&quot; into the first year&#x27;s ops plan; before upgrading, check both halves of the EPAS release notes item by item (&quot;upstream merges + EDB enhancement changes&quot;); if backups still use BART, switch before upgrading to PG14+.</li>
+<li>Source: EDB official EPAS 18 release notes, PGE 18.2 release notes (reviewed 2026-09-28) — official docs; pg_upgrade mechanics are community consensus.</li>
+</ul>
+<p><strong>Deep Dive 8 (Consistency &amp; multi-master): PGD&#x27;s conflict management is no substitute for strongly consistent transactions</strong></p>
+<ul>
+<li>Mechanism: PGD (formerly BDR) is a logical-replication-based multi-master solution; official claims include conflict management, data-loss protection, throughput 5× native logical replication, and up to five-nines availability — <strong>all EDB official statements</strong>. Its default semantics are async / eventual convergence: when two nodes concurrently modify the same business key, conflict rules decide — there are no cross-node strongly consistent transactions.</li>
+<li>At the edge: third-party analysis (druce/dbengines, 2026-06-04, high confidence) notes that even the vendor&#x27;s own Jepsen-framework testing once found rare update-conflict data divergence. Conflict-handling strategy, replication-set partitioning, and whether &quot;last write wins&quot; is acceptable are all application-and-data-model design questions — they need answers before adopting PGD, not after going live.</li>
+<li>Selection implication: if the target architecture uses PGD, the Oracle migration POC must include it (EDB&#x27;s official migration guide recommends the same), since application and database design may need adjustment; treat the official &quot;five nines / 5× throughput&quot; as marketing claims pending POC validation.</li>
+<li>Source: EDB official migration tooling docs (reviewed 2026-09-28) — official docs; druce/dbengines third-party analysis (2026-06-04) — third-party assessment, pending further verification.</li>
+</ul>
+<p><strong>Deep Dive 9 (Licensing &amp; cost): uniCore/Server subscription metering boundaries in elastic and HA scenarios</strong></p>
+<ul>
+<li>Mechanism: EDB&#x27;s current subscription agreement: software rights are term-limited, non-transferable subscriptions; the unit of measure (UOM) is <code>uniCore</code> (physical cores or vCores/vCPUs allocated to VMs) or <code>Server</code>, per the order form; commercial software rights exist only while subscription fees are current (reviewed 2026-09-28).</li>
+<li>At the edge: the real cost risk isn&#x27;t the unit price (which isn&#x27;t public anyway) but the metering boundaries — do HA standbys, DR nodes, read replicas, and test environments count? Are containers metered by request or limit? Do temporarily scaled-up vCPUs during peak events bill at peak or monthly? How are &quot;vCores allocated to VMs&quot; defined under Kubernetes? If these aren&#x27;t nailed down in the quote/UOM terms, a three-year TCO model is built on sand. Also note: long-term use of EFM, PGD, MTK enhanced capabilities, enhanced connectors, and LiveCompare <strong>all require an EDB database subscription</strong> — &quot;bought the database&quot; and &quot;can use the full toolchain&quot; are two different things.</li>
+<li>Selection implication: during the quoting phase, turn &quot;replicas/DR/testing/entitlement boundaries/overage scaling&quot; into a written question list and require the vendor to answer at the order level; &quot;cheaper than Oracle&quot; is only a relative positioning, never convert it into a percentage without evidence.</li>
+<li>Source: EDB official subscription agreement (reviewed 2026-09-28) — official docs; pricing materials from 2005–2015 are outdated and <strong>must not be cited as current prices</strong>.</li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="用户最买账的 5 点" data-en="What users love most">用户最买账的 5 点</span></h2>
+<div class="lang-block lang-zh">
+<blockquote>
+<p>写法要求：好的也要有深度。每条 = 为什么是真的 + 边缘与限度。</p>
+</blockquote>
+<ol>
+<li><strong>Oracle 迁移的代码重写量真实下降</strong><ul>
+<li>为什么是真的：SPL 对 PL/SQL 包/过程/触发器的兼容 + Oracle 数据类型/字典视图 + MTK schema 迁移 + LiveCompare 数据校验 + Replication Server CDC 兜底，构成完整迁移流水线。多条用户评价（PeerSpot/TrustRadius）证实&quot;大部分 Oracle 包无需修改&quot;。</li>
+<li>边缘与限度：省的是&quot;初始重写&quot;，不是&quot;总工作量&quot;——深水区一、二的语义缺口（分区唯一性、全文检索、ASM/压缩/外部表）会把工作量后移到测试与联调阶段；且迁得越深（SPL、OCL、Oracle 字典视图用得越多），未来迁回社区 PG 的成本越高，&quot;逃离 Oracle&quot;可能变成&quot;迁入 EDB&quot;。</li>
+<li>来源：PeerSpot EPAS 用户评价（cost-saving vs Oracle）、TrustRadius 用户证言（2026-09-28 采集）；EDB 官方迁移工具文档。observed_version：EPAS 16/18（2026-09）。</li>
+</ul></li>
+<li><strong>PostgreSQL 生态复用，上手曲线平缓</strong><ul>
+<li>为什么是真的：内核是 PG，驱动、ORM、pgAdmin（官方支持 EPAS 14–18，pgAdmin 4 v9.18 release notes）、SQL 语法、运维知识全部复用；PG DBA 的现有技能直接可用。</li>
+<li>边缘与限度：复用的是&quot;社区 PG 生态&quot;，EDB 专有层（SPL 调试、EPAS 特有系统视图、商业工具链）的知识要另学；社区 PG 的新扩展/新版本在 EPAS 上的可用性取决于 EDB 的认证节奏，不是上游发布即用。绿地项目若根本用不上 Oracle 兼容，等于为冗余能力付费。</li>
+<li>来源：pgAdmin 官方 release notes（v9.18）；社区共识。observed_version：EPAS 14–18 / pgAdmin 4 v9.18（2026-09）。</li>
+</ul></li>
+<li><strong>单一商业支持责任主体，半夜有人接电话</strong><ul>
+<li>为什么是真的：补丁、安全更新、故障排查有明确的商业责任方；用户评价中&quot;support 好&quot;是高频词；对金融/政企的合规与审计，&quot;有厂商背书&quot;本身就是采购要件。</li>
+<li>边缘与限度：支持解决的是&quot;已知问题有人修&quot;，不替代架构能力——长事务致膨胀、复制槽打满磁盘、PGD 冲突设计这类&quot;机制税&quot;，支持只能教你还，不能替你免；且支持质量与订阅等级、区域团队强相关，合同里要明确 SLA。</li>
+<li>来源：PeerSpot/TrustRadius 用户评价（2026-09-28 采集）。observed_version：EPAS 全版本（用户评价周期 2024–2026）。</li>
+</ul></li>
+<li><strong>内核级 TDE，合规场景的硬通货</strong><ul>
+<li>为什么是真的：社区 PG 长期没有原生静态加密；EDB 把 TDE 做进内核（数据文件 + WAL + 临时文件），对应用透明，且有 CloudNativePG operator 与外部 KMS 的对接路径——这是部分 regulated 行业选型的决定性因素。</li>
+<li>边缘与限度：TDE 只解决&quot;盘丢了数据不泄露&quot;，不解决传输中/内存中/备份链密钥管理；initdb 时决定、事后难改；备份工具要调参（pgBackRest 关校验和检查）；有 CPU/内存开销，大吞吐场景要实测。</li>
+<li>来源：EDB 官方 TDE 文档（CloudNativePG/CNPG operator、Cloud Service 安全页，2026-09-28 查阅）。observed_version：EPAS/PGE 15+。</li>
+</ul></li>
+<li><strong>迁移-校验-高可用-监控工具链相对完整</strong><ul>
+<li>为什么是真的：MTK（迁移）+ LiveCompare（校验）+ Replication Server（CDC/回退）+ EFM（自动切换）+ PEM（监控管理）由同一厂商提供，Oracle 迁移项目不用跨厂商拼装，尤其适合&quot;缺 PG 资深 DBA&quot;的传统企业团队。</li>
+<li>边缘与限度：完整的前提是&quot;全家桶都在订阅内&quot;——LiveCompare、Replication Server 长期使用，EFM、增强连接器全部要求 EDB 数据库订阅；用户反馈默认监控能力仍不足、希望增强（PeerSpot）；工具链越完整，退出成本越高。</li>
+<li>来源：EDB 官方迁移工具说明；PeerSpot 用户评价（2026-09-28 采集）。observed_version：EPAS 16/18（2026-09）。</li>
+</ul></li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<blockquote>
+<p>Writing rule: strengths need depth too. Each item = why it&#x27;s true + edges and limits.</p>
+</blockquote>
+<ol>
+<li><strong>Genuinely less code rewriting for Oracle migration</strong><ul>
+<li>Why it&#x27;s true: SPL compatibility for PL/SQL packages/procedures/triggers + Oracle data types/dictionary views + MTK schema migration + LiveCompare data validation + Replication Server CDC as a safety net form a complete migration pipeline. Multiple user reviews (PeerSpot/TrustRadius) confirm &quot;most Oracle packages needed no changes.&quot;</li>
+<li>Edges and limits: what you save is &quot;initial rewriting,&quot; not &quot;total effort&quot; — the semantic gaps in Deep Dives 1–2 (partition uniqueness, full-text search, ASM/compression/external tables) push work into the testing and integration phase; and the deeper you go (the more SPL, OCL, and Oracle dictionary views you use), the higher the cost of migrating back to community PG — &quot;escaping Oracle&quot; can become &quot;moving into EDB.&quot;</li>
+<li>Source: PeerSpot EPAS user reviews (cost-saving vs Oracle), TrustRadius testimonials (collected 2026-09-28); EDB official migration tooling docs. observed_version: EPAS 16/18 (2026-09).</li>
+</ul></li>
+<li><strong>PostgreSQL ecosystem reuse, gentle learning curve</strong><ul>
+<li>Why it&#x27;s true: the kernel is PG — drivers, ORMs, pgAdmin (officially supports EPAS 14–18, pgAdmin 4 v9.18 release notes), SQL syntax, and ops knowledge all carry over; existing PG DBA skills apply directly.</li>
+<li>Edges and limits: what&#x27;s reused is the &quot;community PG ecosystem&quot;; the EDB-specific layer (SPL debugging, EPAS-specific system views, the commercial toolchain) must be learned separately; availability of new community PG extensions/versions on EPAS follows EDB&#x27;s certification cadence, not upstream release day. Greenfield projects with no Oracle compatibility needs pay for redundant capability.</li>
+<li>Source: pgAdmin official release notes (v9.18); community consensus. observed_version: EPAS 14–18 / pgAdmin 4 v9.18 (2026-09).</li>
+</ul></li>
+<li><strong>A single commercial party accountable — someone answers the phone at 3 AM</strong><ul>
+<li>Why it&#x27;s true: patches, security updates, and incident troubleshooting have a clearly accountable commercial party; &quot;good support&quot; is a high-frequency phrase in user reviews; for finance / 政企 (government and SOE) compliance and audits, &quot;vendor backing&quot; is itself a procurement requirement.</li>
+<li>Edges and limits: support solves &quot;known issues get fixed by someone&quot; — it doesn&#x27;t replace architectural capability. Mechanism taxes like long-transaction bloat, replication slots filling disks, and PGD conflict design can only be taught by support, not waived; and support quality correlates strongly with subscription tier and regional team — spell out the SLA in the contract.</li>
+<li>Source: PeerSpot/TrustRadius user reviews (collected 2026-09-28). observed_version: all EPAS versions (review period 2024–2026).</li>
+</ul></li>
+<li><strong>Kernel-level TDE, hard currency for compliance scenarios</strong><ul>
+<li>Why it&#x27;s true: community PG has long lacked native encryption at rest; EDB built TDE into the kernel (data files + WAL + temp files), transparent to applications, with a CloudNativePG operator path to external KMS — a deciding factor for some regulated-industry selections.</li>
+<li>Edges and limits: TDE only solves &quot;lost disks don&#x27;t leak data,&quot; not in-transit / in-memory / backup-chain key management; it&#x27;s an initdb-time decision, hard to change later; backup tooling needs parameter tuning (pgBackRest checksum-check disabling); it has CPU/memory overhead — measure under high-throughput workloads.</li>
+<li>Source: EDB official TDE docs (CloudNativePG/CNPG operator, Cloud Service security pages, reviewed 2026-09-28). observed_version: EPAS/PGE 15+.</li>
+</ul></li>
+<li><strong>Relatively complete migrate-validate-HA-monitor toolchain</strong><ul>
+<li>Why it&#x27;s true: MTK (migration) + LiveCompare (validation) + Replication Server (CDC/rollback) + EFM (auto-failover) + PEM (monitoring/management) come from one vendor, so Oracle migration projects don&#x27;t assemble across vendors — especially good for traditional enterprise teams short on senior PG DBAs.</li>
+<li>Edges and limits: &quot;complete&quot; assumes the whole family is inside the subscription — long-term use of LiveCompare, Replication Server, EFM, and enhanced connectors all require an EDB database subscription; users report default monitoring is still insufficient and want more (PeerSpot); the more complete the toolchain, the higher the exit cost.</li>
+<li>Source: EDB official migration tooling docs; PeerSpot user reviews (collected 2026-09-28). observed_version: EPAS 16/18 (2026-09).</li>
+</ul></li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="吐槽清单" data-en="Complaints">吐槽清单</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>分类</th><th>吐槽</th><th>影响版本</th><th>状态</th><th>来源</th></tr></thead>
+<tbody>
+<tr><td>兼容坑</td><td>Oracle 兼容存在难发现的语义差异（分区唯一性不跨层级、全文检索实现不同等），&quot;能跑&quot;不等于&quot;语义等价&quot;</td><td>EPAS 18</td><td>open</td><td>EDB 官方文档（分区限制页、MTK 文档），2026-09-28</td></tr>
+<tr><td>兼容坑</td><td>MTK 无法迁移全文检索对象、ASM、表压缩、外部表；多 profile 需手工重绑；workaround 非语义等价</td><td>全版本</td><td>open</td><td>EDB 官方 MTK v55 文档，2026-09-28</td></tr>
+<tr><td>生态坑</td><td>Oracle 兼容用得越深（SPL/OCL/字典视图），迁回社区 PG 的逆迁移成本越高——新的锁定</td><td>全版本</td><td>open</td><td>第三方分析 druce/dbengines（2026-06-04）；社区共识</td></tr>
+<tr><td>运维坑</td><td>大版本升级仍有 PG 固有停机/验证成本；且商业增强本身可成升级 blocker（PGE 18.2.0 password_profiles 致 pg_upgrade 失败）</td><td>PGE 18.2.0（个案）</td><td>open（待核对 release notes 确认修复版本）</td><td>PGE 18.2 release notes，2026-09-28</td></tr>
+<tr><td>运维坑</td><td>BART 在 PG/EPAS 14+ 不再受支持，老备份链必须迁 Barman/pgBackRest</td><td>PG/EPAS 14+</td><td>open（官方已给出迁移建议）</td><td>EPAS 18 release notes，2026-09-28</td></tr>
+<tr><td>运维坑</td><td>复制槽闲置打满主库磁盘、长事务致全库膨胀、连接风暴——PG 固有机制税，商业版不消除</td><td>全版本</td><td>open（机制性，需运维手段应对）</td><td>社区共识，2026-09-28</td></tr>
+<tr><td>授权坑</td><td>无公开统一标价，需询价；uniCore/Server 在副本、DR、测试、弹性扩容场景的计量边界必须在订单中核对</td><td>全版本</td><td>open</td><td>EDB 官方订阅协议，2026-09-28</td></tr>
+<tr><td>授权坑</td><td>EFM / PGD / MTK 增强能力 / 增强连接器 / LiveCompare 长期使用全部要求 EDB 数据库订阅，&quot;买库&quot;≠&quot;能用全套&quot;</td><td>全版本</td><td>open</td><td>EDB 官方迁移工具说明，2026-09-28</td></tr>
+<tr><td>成本坑</td><td>无 Oracle 包袱的绿地项目，为用不上的兼容层和商业套件付费；初创/SaaS 测试场景用户明确反馈不划算</td><td>全版本</td><td>open</td><td>PeerSpot 用户评价（DBtune 视角），2026-09-28</td></tr>
+<tr><td>性能坑</td><td>用户反馈大規模负载性能、文件系统与内存管理、JSONB 查询、多租户与容器支持有待加强</td><td>近期版本</td><td>open</td><td>PeerSpot&quot;Room for Improvement&quot;，2026-09-28</td></tr>
+<tr><td>生态坑</td><td>产品线命名与组件矩阵复杂（EDB Postgres AI / EPAS / PGE / PGD / Cloud Service / Hybrid Management），选型与采购易错配</td><td>全版本</td><td>open</td><td>第三方分析；社区反馈&quot;PPAS quite complex，上手有学习成本&quot;（TrustRadius）</td></tr>
+<tr><td>生态坑</td><td>PGD 多主默认最终一致，冲突语义需应用配合；官方&quot;五个 9 / 5 倍吞吐&quot;为营销口径，需按真实冲突负载 POC</td><td>PGD</td><td>open</td><td>EDB 官方口径 + druce/dbengines 第三方分析（2026-06-04）</td></tr>
+<tr><td>运维坑</td><td>用户反馈默认监控不足、文档分散不集中、安全特性落后于竞品</td><td>近期版本</td><td>open</td><td>PeerSpot 用户评价，2026-09-28</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Category</th><th>Complaint</th><th>Affected versions</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>Compatibility</td><td>Oracle compatibility has hard-to-spot semantic differences (partition uniqueness doesn&#x27;t span hierarchy, full-text search behaves differently, etc.) — &quot;it runs&quot; ≠ &quot;semantically equivalent&quot;</td><td>EPAS 18</td><td>open</td><td>EDB official docs (partitioning limitations page, MTK docs), 2026-09-28</td></tr>
+<tr><td>Compatibility</td><td>MTK can&#x27;t migrate full-text-search objects, ASM, table compression, external tables; multi-profile needs manual rebinding; workarounds aren&#x27;t semantically equivalent</td><td>All versions</td><td>open</td><td>EDB official Migration Toolkit v55 docs, 2026-09-28</td></tr>
+<tr><td>Ecosystem</td><td>The deeper the Oracle compatibility goes (SPL/OCL/dictionary views), the higher the reverse-migration cost back to community PG — a new lock-in</td><td>All versions</td><td>open</td><td>Third-party analysis druce/dbengines (2026-06-04); community consensus</td></tr>
+<tr><td>Ops</td><td>Major-version upgrades still carry inherent PG downtime/validation cost; and commercial enhancements can themselves block upgrades (PGE 18.2.0 password_profiles broke pg_upgrade)</td><td>PGE 18.2.0 (individual case)</td><td>open (confirm fixed version against release notes)</td><td>PGE 18.2 release notes, 2026-09-28</td></tr>
+<tr><td>Ops</td><td>BART no longer supported on PG/EPAS 14+; legacy backup chains must move to Barman/pgBackRest</td><td>PG/EPAS 14+</td><td>open (official migration guidance available)</td><td>EPAS 18 release notes, 2026-09-28</td></tr>
+<tr><td>Ops</td><td>Idle replication slots filling the primary&#x27;s disk, long transactions bloating the whole database, connection storms — inherent PG mechanism taxes the commercial edition doesn&#x27;t eliminate</td><td>All versions</td><td>open (mechanistic; needs ops measures)</td><td>Community consensus, 2026-09-28</td></tr>
+<tr><td>Licensing</td><td>No public unified list price; quote-based; uniCore/Server metering boundaries across replicas, DR, testing, and elastic scaling must be confirmed in the order</td><td>All versions</td><td>open</td><td>EDB official subscription agreement, 2026-09-28</td></tr>
+<tr><td>Licensing</td><td>Long-term use of EFM / PGD / MTK enhanced capabilities / enhanced connectors / LiveCompare all require an EDB database subscription — &quot;bought the DB&quot; ≠ &quot;can use the full suite&quot;</td><td>All versions</td><td>open</td><td>EDB official migration tooling docs, 2026-09-28</td></tr>
+<tr><td>Cost</td><td>Greenfield projects with no Oracle baggage pay for an unused compatibility layer and commercial suite; startup/SaaS test-scenario users explicitly report it isn&#x27;t worth it</td><td>All versions</td><td>open</td><td>PeerSpot user reviews (DBtune perspective), 2026-09-28</td></tr>
+<tr><td>Performance</td><td>Users report large-load performance, filesystem and memory management, JSONB queries, multi-tenancy and container support need improvement</td><td>Recent versions</td><td>open</td><td>PeerSpot &quot;Room for Improvement&quot;, 2026-09-28</td></tr>
+<tr><td>Ecosystem</td><td>Complex product-line naming and component matrix (EDB Postgres AI / EPAS / PGE / PGD / Cloud Service / Hybrid Management) — easy to mismatch in selection and procurement</td><td>All versions</td><td>open</td><td>Third-party analysis; community feedback &quot;PPAS quite complex, learning curve to get started&quot; (TrustRadius)</td></tr>
+<tr><td>Ecosystem</td><td>PGD multi-master defaults to eventual consistency; conflict semantics need application cooperation; official &quot;five nines / 5× throughput&quot; is marketing — POC under real conflict load</td><td>PGD</td><td>open</td><td>EDB official docs + druce/dbengines third-party analysis (2026-06-04)</td></tr>
+<tr><td>Ops</td><td>Users report insufficient default monitoring, scattered docs, security features lagging competitors</td><td>Recent versions</td><td>open</td><td>PeerSpot user reviews, 2026-09-28</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="判决" data-en="Verdict">判决</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li><strong>一句话定位</strong>：EDB Postgres Advanced Server 是把 PostgreSQL 内核、Oracle 迁移兼容层和商业支持/HA/安全工具打包成一套企业平台的发行版；它的价值不在于替代社区 PostgreSQL，而在于降低大型 Oracle 迁移与受监管企业标准化 Postgres 的组织风险。</li>
+<li><strong>适合谁</strong>：<ul>
+<li>背着沉重 Oracle 技术债（大量 PL/SQL 包、存储过程）的大型企业迁移项目，且管理层愿意为&quot;迁移成功率&quot;而非&quot;绝对最低成本&quot;付费；</li>
+<li>金融 / 政企等受监管行业，需要商业支持责任主体 + 内核级 TDE + 审计合规的 Postgres 标准化；</li>
+<li>需要同一厂商覆盖&quot;主备自动切换 → 跨地域多主&quot;、且要在本地/多雲/受监管环境用同一套商业栈的混合云团队；</li>
+<li>缺资深 PG DBA、希望用商业工具链（MTK/LiveCompare/EFM/PEM）降低运维门槛的传统企业 IT。</li>
+</ul></li>
+<li><strong>不适合谁</strong>：<ul>
+<li>无 Oracle 包袱的绿地项目——社区 PostgreSQL 免费且等价，EDB 的兼容层是纯 overhead；</li>
+<li>深度云原生、接受云厂商托管 PG（RDS / Aurora / AlloyDB）的团队——自管 EDB 的运维责任重得多；</li>
+<li>预算敏感的初创/SaaS（用户已反馈不划算）、想&quot;装完不管&quot;且无 DBA 投入的团队；</li>
+<li>需要极致定制 PG 内核或完全无商业锁定的纯开源技术路线的团队。</li>
+</ul></li>
+<li><strong>迁移成本</strong>：<ul>
+<li><strong>from_oracle</strong>：中低→中。轻度 PL/SQL 可接近&quot;少改即跑&quot;；重度依赖（分区语义、全文检索、ASM/压缩/外部表、高级包）逐项 POC 后，真实成本常落在&quot;中等&quot;，且测试联调阶段会追回一部分工作量。</li>
+<li><strong>from_postgres</strong>：低。协议/生态/运维知识复用；但若启用 EPAS Oracle 兼容对象与商业工具链，会产生新的迁出成本，决策时要把&quot;迁入成本&quot;和&quot;迁出成本&quot;一起算。</li>
+<li><strong>from_mysql</strong>：中高。EDB 迁移工具链支持 MySQL 作为源，但无 MySQL 协议兼容，应用层改造为主；MySQL → PG 本就是一次方言迁移，EDB 的 Oracle 兼容对此帮助有限。</li>
+</ul></li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li><strong>One-line positioning</strong>: EDB Postgres Advanced Server is a distribution bundling the PostgreSQL kernel, an Oracle-migration compatibility layer, and commercial support/HA/security tooling into one enterprise platform; its value isn&#x27;t in replacing community PostgreSQL, but in reducing organizational risk for large Oracle migrations and regulated-enterprise Postgres standardization.</li>
+<li><strong>Good for</strong>:<ul>
+<li>Large enterprise migration projects carrying heavy Oracle technical debt (lots of PL/SQL packages and stored procedures), where management will pay for &quot;migration success rate&quot; rather than &quot;absolute lowest cost&quot;;</li>
+<li>Regulated industries (finance / 政企 government &amp; SOEs) needing an accountable commercial support party + kernel-level TDE + audit-compliant Postgres standardization;</li>
+<li>Hybrid-cloud teams needing one vendor to cover &quot;auto-failover → cross-region multi-master&quot; with the same commercial stack across on-prem / multi-cloud / regulated environments;</li>
+<li>Traditional enterprise IT short on senior PG DBAs, wanting the commercial toolchain (MTK/LiveCompare/EFM/PEM) to lower the ops bar.</li>
+</ul></li>
+<li><strong>Not for</strong>:<ul>
+<li>Greenfield projects with no Oracle baggage — community PostgreSQL is free and equivalent; EDB&#x27;s compatibility layer is pure overhead;</li>
+<li>Deeply cloud-native teams comfortable with cloud-managed PG (RDS / Aurora / AlloyDB) — self-managed EDB carries far more ops responsibility;</li>
+<li>Budget-sensitive startups/SaaS (users already report it isn&#x27;t worth it), and teams wanting &quot;install and forget&quot; with no DBA investment;</li>
+<li>Teams needing extreme PG kernel customization or a purely open-source, zero-commercial-lock-in technology path.</li>
+</ul></li>
+<li><strong>Migration cost</strong>:<ul>
+<li><strong>from_oracle</strong>: low-medium → medium. Light PL/SQL can be close to &quot;run with minimal changes&quot;; heavy dependencies (partition semantics, full-text search, ASM/compression/external tables, advanced packages) usually land at &quot;medium&quot; after item-by-item POCs, with part of the effort reclaimed in the testing/integration phase.</li>
+<li><strong>from_postgres</strong>: low. Protocol/ecosystem/ops knowledge carries over; but enabling EPAS Oracle-compatible objects and the commercial toolchain creates new exit costs — count &quot;cost of moving in&quot; and &quot;cost of moving out&quot; together.</li>
+<li><strong>from_mysql</strong>: medium-high. EDB&#x27;s migration toolchain supports MySQL as a source, but there&#x27;s no MySQL protocol compatibility — application-layer rework dominates; MySQL → PG is a dialect migration anyway, and EDB&#x27;s Oracle compatibility helps little here.</li>
+</ul></li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="来源与待验证清单" data-en="Sources & to-be-verified">来源与待验证清单</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li>版本信息：EDB 官方 EPAS release notes（18.1 2025-11-25 → 18.6 2026-08-13；BART 14+ 退役；上游点版本合并说明）——https://www.enterprisedb.com/docs/epas/latest/epas_rel_notes/（2026-09-28 查阅）</li>
+<li>Oracle 兼容能力矩阵：EPAS 16 官方文档 Oracle 兼容开发者指南——https://www.enterprisedb.com/docs/epas/16/fundamentals/epas_fundamentals/epas_compat_ora_dev_guide/（2026-09-28 查阅）</li>
+<li>Oracle 兼容分区限制：EPAS 18 官方文档——https://www.enterprisedb.com/docs/epas/latest/reference/oracle_compatibility_reference/04_partitioning_commands_compatible_with_oracle_databases/limitations/（2026-09-28 查阅）</li>
+<li>PGE 定位与内核增强：EDB 官方 PGE 14/16 文档——https://www.EnterpriseDB.com/docs/pge/16/（2026-09-28 查阅）</li>
+<li>迁移工具链（MTK / LiveCompare / Replication Server / EFM / 增强连接器）与订阅要求：EDB 官方 advocacy 文档——https://github.com/enterprisedb/docs/blob/HEAD/advocacy_docs/migrating/oracle/edb_migration_tools.mdx（2026-09-28 查阅）</li>
+<li>MTK 功能边界：Migration Toolkit v55 官方文档——https://www.enterprisedb.com/docs/migration_toolkit/latest/04_functionality_overview/（2026-09-28 查阅）</li>
+<li>LiveCompare 比较机制：官方 settings 文档——https://www.enterprisedb.com/docs/livecompare/2/settings/；2.0 release notes（2026-09-28 查阅）</li>
+<li>TDE 能力与密钥管理：EDB 官方 CloudNativePG TDE 文档、Cloud Service 安全页；pgBackRest 官方文档对 EDB TDE 的备份参数要求——https://github.com/enterprisedb/docs/blob/HEAD/advocacy_docs/supported-open-source/pgbackrest/04-recommended_settings.mdx（2026-09-28 查阅）</li>
+<li>订阅授权口径：EDB Subscription, Support and Services Agreement——https://www.enterprisedb.com/enterprisedb-subscription-support-and-services-agreement-10（2026-09-28 查阅）</li>
+<li>第三方独立档案：druce/dbengines <code>engines/edb-postgres.md</code>（2026-06-04，高置信度；EPAS/PGE 关系、PGD 最终一致与 Jepsen 发现的分歧判断）——https://github.com/druce/dbengines/blob/HEAD/engines/edb-postgres.md</li>
+<li>用户口碑：PeerSpot EPAS reviews（成本、监控、JSONB、文档、定价反馈）——https://www.peerspot.com/products/edb-postgres-advanced-server-reviews；TrustRadius 对比页（&quot;PPAS quite complex&quot; 学习成本证言）（2026-09-28 查阅）</li>
+<li>EDB 对 PG18 上游贡献：DBTA 2025-09-29 报道（OAuth、优化器、extension_control_path；厂商新闻稿口径）</li>
+<li>EDB 2025–2026 平台动态：WarehousePG（Greenplum fork，Apache 2.0，DBTA 2025-12-23）——属 EDB PG AI 平台事项，不计入 EPAS 单机内核能力</li>
+<li>云竞争边界：EDB 官方 Aurora 对比白皮书（SLA 数字为厂商营销口径）；AlloyDB 第三方报道转述 Google 官方口径（2026-09-28 查阅）</li>
+<li>PG 固有机制（MVCC/复制槽/连接模型/pg_upgrade）：PostgreSQL 社区共识，多份生产运维实测总结交叉印证（2026-09-28 采集）</li>
+<li>下次评审建议：跟踪 EPAS 18.7+ release notes（上游 PG 18.x 合并与 EDB 增强变更）、PGD 冲突语义的独立实测、中文社区实践帖的规模化采集；EDB 订阅协议条款变更需重新核对计量边界。</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li>Version info: EDB official EPAS release notes (18.1 2025-11-25 → 18.6 2026-08-13; BART retirement on 14+; upstream point-release merge notes) — https://www.enterprisedb.com/docs/epas/latest/epas_rel_notes/ (reviewed 2026-09-28)</li>
+<li>Oracle compatibility matrix: EPAS 16 official docs, Oracle compatibility developer guide — https://www.enterprisedb.com/docs/epas/16/fundamentals/epas_fundamentals/epas_compat_ora_dev_guide/ (reviewed 2026-09-28)</li>
+<li>Oracle compatibility partitioning limitations: EPAS 18 official docs — https://www.enterprisedb.com/docs/epas/latest/reference/oracle_compatibility_reference/04_partitioning_commands_compatible_with_oracle_databases/limitations/ (reviewed 2026-09-28)</li>
+<li>PGE positioning and kernel enhancements: EDB official PGE 14/16 docs — https://www.EnterpriseDB.com/docs/pge/16/ (reviewed 2026-09-28)</li>
+<li>Migration toolchain (MTK / LiveCompare / Replication Server / EFM / enhanced connectors) and subscription requirements: EDB official advocacy docs — https://github.com/enterprisedb/docs/blob/HEAD/advocacy_docs/migrating/oracle/edb_migration_tools.mdx (reviewed 2026-09-28)</li>
+<li>MTK functional boundaries: Migration Toolkit v55 official docs — https://www.enterprisedb.com/docs/migration_toolkit/latest/04_functionality_overview/ (reviewed 2026-09-28)</li>
+<li>LiveCompare comparison mechanics: official settings docs — https://www.enterprisedb.com/docs/livecompare/2/settings/; 2.0 release notes (reviewed 2026-09-28)</li>
+<li>TDE capability and key management: EDB official CloudNativePG TDE docs, Cloud Service security pages; pgBackRest official docs&#x27; backup parameter requirements for EDB TDE — https://github.com/enterprisedb/docs/blob/HEAD/advocacy_docs/supported-open-source/pgbackrest/04-recommended_settings.mdx (reviewed 2026-09-28)</li>
+<li>Subscription licensing terms: EDB Subscription, Support and Services Agreement — https://www.enterprisedb.com/enterprisedb-subscription-support-and-services-agreement-10 (reviewed 2026-09-28)</li>
+<li>Independent third-party profile: druce/dbengines <code>engines/edb-postgres.md</code> (2026-06-04, high confidence; EPAS/PGE relationship, PGD eventual consistency and the Jepsen-found divergence assessment) — https://github.com/druce/dbengines/blob/HEAD/engines/edb-postgres.md</li>
+<li>User reputation: PeerSpot EPAS reviews (cost, monitoring, JSONB, docs, pricing feedback) — https://www.peerspot.com/products/edb-postgres-advanced-server-reviews; TrustRadius comparison page (&quot;PPAS quite complex&quot; learning-curve testimony) (reviewed 2026-09-28)</li>
+<li>EDB&#x27;s PG18 upstream contributions: DBTA 2025-09-29 report (OAuth, optimizer, extension_control_path; vendor press-release statement)</li>
+<li>EDB 2025–2026 platform news: WarehousePG (Greenplum fork, Apache 2.0, DBTA 2025-12-23) — an EDB PG AI platform item, not counted as EPAS single-node kernel capability</li>
+<li>Cloud competition boundary: EDB official Aurora comparison whitepaper (SLA figures are vendor marketing statements); AlloyDB third-party reporting relaying Google&#x27;s official statement (reviewed 2026-09-28)</li>
+<li>Inherent PG mechanics (MVCC/replication slots/connection model/pg_upgrade): PostgreSQL community consensus, cross-validated by multiple production ops write-ups (collected 2026-09-28)</li>
+<li>Next review suggestions: track EPAS 18.7+ release notes (upstream PG 18.x merges and EDB enhancement changes), independent testing of PGD conflict semantics, scaled collection of Chinese community practice posts; re-verify metering boundaries if the EDB subscription agreement changes.</li>
+</ul>
+</div>
+</section>
+</main>
+<footer class="footer">
+  <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
+</footer>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
