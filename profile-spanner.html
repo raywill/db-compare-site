@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Google Spanner - DB 选型参考</title>
+<link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">&#9672;</span> DB <span data-zh="选型参考" data-en="Compare">选型参考</span></a>
+    <nav class="mainnav">
+<a href="index.html" class="active" data-zh="首页" data-en="Home">首页</a>
+<a href="compare.html" class="" data-zh="维度对比" data-en="Compare">维度对比</a>
+<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
+<a href="advisor.html" class="" data-zh="AI选型" data-en="AI Selection">AI选型</a>
+    </nav>
+    <div class="cmp-tray">
+      <button id="cmp-tray-btn" type="button" class="tray-btn" aria-expanded="false" aria-haspopup="true"><span data-zh="对比" data-en="Compare">对比</span> <b class="tray-count"><i id="cmp-count">0</i>/4</b></button>
+      <div id="cmp-panel" class="tray-panel" hidden>
+        <div class="tray-sec"><span data-zh="已选" data-en="Selected">已选</span></div>
+        <div id="cmp-selected" class="tray-selected"></div>
+        <div class="tray-sec"><span data-zh="全部产品（最多选 4 款）" data-en="All products (up to 4)">全部产品（最多选 4 款）</span></div>
+        <div id="cmp-list" class="tray-list"></div>
+        <div class="tray-actions"><button id="cmp-clear" type="button" class="tray-clear"><span data-zh="清空选择" data-en="Clear selection">清空选择</span></button></div>
+      </div>
+    </div>
+    <button id="lang-toggle" class="lang-btn" type="button" aria-label="switch language">EN</button>
+  </div>
+</header>
+<main class="page">
+<div class="profile-hero">
+  <a class="back" href="index.html"><span data-zh="← 返回首页" data-en="← Back to home">← 返回首页</span></a>
+  <h1>Google Spanner</h1>
+  <div class="meta-row"><span class="cat cat-oltp" data-zh="关系型 OLTP" data-en="Relational OLTP">关系型 OLTP</span> <span class="tag">#全球分布式</span> <span class="tag">#外部一致性</span> <span class="tag">#TrueTime</span> <span class="tag">#水平扩展</span> <span class="tag">#全托管</span> <span class="tag">#专有许可</span> <span class="tag">#HTAP延伸</span> <span class="tag">#多模型</span></div>
+  <p class="oneliner"><div class="lang-block lang-zh">
+<p>Google Cloud 的全球分布式关系型数据库，用 TrueTime（GPS + 原子钟授时）把&quot;跨洲线性一致性&quot;做成工程现实——它是极少数把 external consistency（严格可串行化）做到全球 OLTP 规模的系统，代价是 GCP 锁定、高起步门槛和&quot;建模即分片&quot;的设计纪律。</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<p>Google Cloud&#x27;s globally distributed relational database, which uses TrueTime (GPS + atomic-clock timekeeping) to make &quot;cross-continent linear consistency&quot; an engineering reality — it is one of the very few systems to bring external consistency (strict serializability) to global OLTP scale, at the cost of GCP lock-in, a high entry floor, and the design discipline of &quot;modeling is sharding&quot;.</p>
+</div></p>
+  <div class="ai-dive-row" data-product="Google Spanner">
+    <span class="ai-dive-label" data-zh="用 AI 深挖这款：" data-en="Deep-dive with AI:">用 AI 深挖这款：</span>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('chatgpt', this)">ChatGPT <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('grok', this)">Grok <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('claude', this)">Claude <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn addcmp-btn" data-addcmp="spanner"><span class="addcmp-label">＋ 对比</span></button>
+  </div>
+  <div class="legend"><span class="legend-label" data-zh="证据等级：" data-en="Evidence levels: ">证据等级：</span><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></div>
+</div>
+<section class="doc-section">
+<h2><span data-zh="基本信息" data-en="Basics">基本信息</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>项</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td>厂商</td><td>Google Cloud</td></tr>
+<tr><td>国家</td><td>美国</td></tr>
+<tr><td>起源</td><td>内部生产 ~2012（支撑 AdWords / Google Play 等）；OSDI 2012 论文《Spanner: Google&#x27;s Globally-Distributed Database》；云服务 GA 2017-02<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></td></tr>
+<tr><td>许可证</td><td>专有（闭源）。核心产品是 GCP 托管服务；2025 年新增 <strong>Spanner Omni</strong>（可下载、客户自运维的容器化版本，仍为专有许可，非开源）</td></tr>
+<tr><td>托管服务</td><td>Cloud Spanner（GCP 托管）；Spanner Omni（自托管：on-prem / Kubernetes / AWS / Azure / 边缘）</td></tr>
+<tr><td>主类型</td><td>关系型（原生全球分布式）</td></tr>
+<tr><td>兼具类型</td><td>HTAP 延伸（Data Boost、列存引擎预览中）、图（Spanner Graph / GQL）、向量检索（ScaNN）、全文检索、多模型</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Field</th><th>Detail</th></tr></thead>
+<tbody>
+<tr><td>Vendor</td><td>Google Cloud</td></tr>
+<tr><td>Country</td><td>United States</td></tr>
+<tr><td>Origin</td><td>Internal production ~2012 (powered AdWords / Google Play etc.); OSDI 2012 paper &quot;Spanner: Google&#x27;s Globally-Distributed Database&quot;; cloud service GA 2017-02 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></td></tr>
+<tr><td>License</td><td>Proprietary (closed source). The core product is a GCP managed service; <strong>Spanner Omni</strong> was added in 2025 (downloadable, customer-operated containerized edition, still proprietary license, not open source)</td></tr>
+<tr><td>Managed service</td><td>Cloud Spanner (GCP managed); Spanner Omni (self-hosted: on-prem / Kubernetes / AWS / Azure / edge)</td></tr>
+<tr><td>Primary type</td><td>Relational (natively globally distributed)</td></tr>
+<tr><td>Secondary types</td><td>HTAP extensions (Data Boost, columnar engine in preview), graph (Spanner Graph / GQL), vector search (ScaNN), full-text search, multi-model</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section"><h2><span data-zh="硬维度（14 项）" data-en="Hard dimensions (14)">硬维度（14 项）</span></h2>
+<div class="lang-block lang-zh">
+<div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-yes">有全量落盘数据默认由 Google</span></h3><div class="dim-body"><p>有 全量落盘数据默认由 Google 管理的密钥加密（Google default encryption），无需用户配置；可选用 <strong>CMEK</strong>（Cloud KMS 客户管理密钥，支持手动创建与 Autokey、外部密钥管理 EKM），备份同样加密。启用 CMEK 对性能与 SLA&quot;无影响&quot;（官方口径）。密钥可轮换、禁用、销毁；KMS API 操作可进审计日志。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有GCP 服务间默认 TLS</span></h3><div class="dim-body"><p>有 GCP 服务间默认 TLS；客户端库走 gRPC + TLS；PGAdapter 支持 SSL 连接。查证为&quot;默认启用&quot;，无&quot;明文模式&quot;可配项。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> 审计 <span class="verdict v-yes">有Cloud Audit Logs：</span></h3><div class="dim-body"><p>有 Cloud Audit Logs：Admin Activity 日志默认开启（免费、400 天保留）；Data Access 日志（数据读/写）需显式开启、计费；System Event 日志默认开启；CMEK 密钥使用可审计。不是数据库内核级&quot;谁查了哪行&quot;的细粒度 SQL 审计，而是 GCP 平台级审计模型。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> 认证与权限 <span class="verdict v-yes">有IAM 角色模型</span></h3><div class="dim-body"><p>有 IAM 角色模型（<code>roles/spanner.viewer</code> / <code>databaseReader</code> / <code>databaseUser</code> / <code>databaseAdmin</code>，可细到实例/库级）；<strong>细粒度访问控制</strong>（fine-grained access control）支持表/列/行级授权（GA）；PG 方言库支持 database roles。无数据库内建密码用户体系（PGAdapter 走 PG 协议时仅支持 password 认证方式，但身份仍映射到 GCP 凭证）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> 备份恢复 <span class="verdict v-yes">有按需备份 + 备份计划</span></h3><div class="dim-body"><p>有 按需备份 + <strong>备份计划</strong>（可自动每日全备、7 天保留默认；仅计划备份支持增量）；备份最长保留 <strong>1 年</strong>；<strong>PITR</strong>：版本保留期（默认 1 小时，可配到 <strong>7 天</strong>），可恢复到微秒精度任意时间点，可整库恢复或 <code>CREATE DATABASE... AS OF</code> 另建库；支持跨区域拷贝备份；导入导出（CSV/Avro）。恢复走 backup pointer，首字节快<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> 大版本升级 <span class="verdict v-no">无用户侧停机、无维护窗口</span></h3><div class="dim-body"><p>不适用/有 引擎全托管，Google 负责打补丁与升级，<strong>无用户侧停机、无维护窗口</strong>；实例版本（Standard/Enterprise/Enterprise Plus）可在线升降级（约 10 分钟、零停机、零数据迁移）；实例可在 regional/dual-region/multi-region 配置间在线迁移（迁移期间按两端计费）。用户真正的&quot;升级&quot;负担在 schema/DDL 演进，大多为在线非阻塞（加列、加索引后台回填）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> 可观测性 <span class="verdict v-yes">有Cloud Monitoring</span></h3><div class="dim-body"><p>有 Cloud Monitoring 指标、Key Visualizer（键范围热力图，定位热点）、<strong>SPANNER_SYS</strong> 内省表（查询统计、锁统计、事务统计的 SQL 接口）、Query Insights、EXPLAIN/EXPLAIN ANALYZE、查询计划可视化（Spanner Studio）、客户端侧指标（AFE/GFE 连接/延迟，Java/Go）。迁移案例（Glance）证实 Key Visualizer + SPANNER_SYS 是热点排查主力工具。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> 连接模型 <span class="verdict v-yes">有无传统连接池烦恼：客户端库维护 s</span></h3><div class="dim-body"><p>有 无传统连接池烦恼：客户端库维护 <strong>session 池 + gRPC 通道池</strong>（默认各语言 Min 100 / Max 400 sessions，Node.js 例外）；新一代 <strong>multiplexed session</strong>（单会话承载任意并发事务，免清理、免 keep-alive）；PGAdapter 用单 multiplexed session 对外呈现 PG 协议。注意：session 泄漏（事务未提交/回滚）仍是真实坑，官方有专门排障博客。建议&quot;一般不要改默认池大小&quot;。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> 事务与隔离级别 <span class="verdict v-yes">有默认 可串行化 + 外部一致性</span></h3><div class="dim-body"><p>有 默认 <strong>可串行化 + 外部一致性</strong>（= 严格可串行化，业界最强）；只读事务无锁、MVCC 快照执行；2024–2025 新增 <strong>Repeatable Read</strong>（快照隔离实现，有写偏风险）以降低高争用下中止率；支持强读 / 精确 stale 读 / 有界 stale 读。官方限额：单 commit <strong>80,000 mutations（含索引）</strong>、commit 大小 <strong>100 MiB</strong>；2026-09 官方博客宣布 DML 的 80K 上限从&quot;事务级&quot;放宽到&quot;单条 DML 语句级&quot;（新鲜变化，状态 open）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> 复制与一致性 <span class="verdict v-yes">有每分片（split）Paxos 同</span></h3><div class="dim-body"><p>有 每分片（split）<strong>Paxos</strong> 同步复制；leader 写、并行发给投票副本、quorum 确认即提交；故障自动 leader 重选，无脑裂；副本类型：读写 / 只读 / witness。CAP 下选 <strong>CP</strong>（少数派分区丢 quorum 即拒写）；PACELC 为 <strong>PC/EC</strong>——正常运行时也为一致性支付跨区延迟。可调一致性有限：只有强读 vs stale 读、隔离级别两档，没有 Dynamo 式 R/W quorum 旋钮。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> 扩展方式 <span class="verdict v-no">无手动 reshard</span></h3><div class="dim-body"><p>有 纯横向、在线。容量单位：node 或更细的 <strong>processing unit（1000 PU = 1 node，最小 100 PU）</strong>；数据按主键 range 自动切分为 splits，按负载/大小自动再平衡，<strong>无手动 reshard</strong>；支持托管自动扩缩（Autoscaler，可设 CPU 目标 &lt;65%，支持非对称只读区扩缩）。纵向调参基本不存在——你买的是抽象算力，不是 CPU/内存。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> 兼容性 <span class="verdict v-partial">部分支持两种 SQL 方言：GoogleS</span></h3><div class="dim-body"><p>部分支持 两种 SQL 方言：<strong>GoogleSQL</strong> 与 <strong>PostgreSQL 方言</strong>（PG 子集 + Spanner 扩展如交错表）；<strong>PGAdapter</strong>（PG 线协议代理，psql 仅支持少数 meta 命令）；JDBC；官方客户端库（Java/Go/Python/Node/C# 等）；<strong>Change Streams</strong>（CDC，可接 Kafka/BigQuery/PubSub）；dbt 适配器、Dataflow 连接器、BigQuery 联邦查询。2025-08 官方发布 <strong>80+ MySQL 函数 UDF 包</strong>（开源 DDL 脚本）降低 MySQL 迁移改造成本。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> 许可证与商业模式 <span class="verdict v-no">不支持 Data Boost</span></h3><div class="dim-body"><p>专有 闭源，无开源内核；托管版三档版本：<strong>Standard / Enterprise / Enterprise Plus</strong>（2024–2026 年版本体系重构，老教程价格已过时）；<strong>Spanner Omni</strong> 为可下载自托管版本（专有许可，商用条款不明，需联系 Google，待验证）。计费模型（只描述模型，不引标价）：① 计算按 node-hour / PU-hour 持续计费（实例存在即计费，与 QPS 无关）；② 存储按 GB-month（SSD/HDD 分档，含多副本）；③ 跨区复制按数据量计费；④ 备份存储另计；⑤ 多区域按每副本算力计费。90 天免费试用实例（10 GiB 存储，Standard 功能 + Graph；<strong>不支持 Data Boost</strong>）；本地 emulator 免费开发。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> 中文资料丰富度 <span class="verdict v-yes">有简/繁中文版</span></h3><div class="dim-body"><p>中等 官方文档有简/繁中文版；但中文社区实践帖、故障案例、中文书籍远少于 MySQL/PG/OceanBase/TiDB；英文资料为主。国内选型团队学习曲线陡在&quot;键设计 + 成本建模&quot;，而非语言。</p></div></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-yes">supported</span></h3><div class="dim-body"><p>supported All data at rest is encrypted by default with Google-managed keys (Google default encryption), no user configuration needed; optional <strong>CMEK</strong> (Cloud KMS customer-managed keys, supporting manual creation and Autokey, external key management EKM); backups are encrypted as well. Enabling CMEK has &quot;no impact&quot; on performance and SLA <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. Keys can be rotated, disabled, destroyed; KMS API operations go into audit logs.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / transport encryption <span class="verdict v-yes">supported</span></h3><div class="dim-body"><p>supported GCP services use TLS by default; client libraries use gRPC + TLS; PGAdapter supports SSL connections. Confirmed as &quot;enabled by default&quot;, with no &quot;plaintext mode&quot; option to configure.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> Auditing <span class="verdict v-yes">supported</span></h3><div class="dim-body"><p>supported Cloud Audit Logs: Admin Activity logs on by default (free, 400-day retention); Data Access logs (data reads/writes) must be explicitly enabled and are billed; System Event logs on by default; CMEK key usage is auditable. This is a GCP platform-level audit model, not a database-kernel-level &quot;who queried which row&quot; fine-grained SQL audit.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> Authentication &amp; authorization <span class="verdict v-yes">supported</span></h3><div class="dim-body"><p>supported IAM role model (<code>roles/spanner.viewer</code> / <code>databaseReader</code> / <code>databaseUser</code> / <code>databaseAdmin</code>, down to instance/database granularity); <strong>fine-grained access control</strong> supporting table/column/row-level authorization (GA); database roles supported for PostgreSQL-dialect databases. No database-built-in password user system (when PGAdapter speaks the PG protocol it only supports password authentication, but identity still maps to GCP credentials).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> Backup &amp; recovery <span class="verdict v-yes">supported</span></h3><div class="dim-body"><p>supported On-demand backups + <strong>backup schedules</strong> (can do automatic daily full backups, 7-day retention by default; only scheduled backups support incremental); backups retainable up to <strong>1 year</strong>; <strong>PITR</strong>: version retention window (default 1 hour, configurable up to <strong>7 days</strong>), restore to any microsecond-precision point in time, restore the whole database or <code>CREATE DATABASE... AS OF</code> to create a new database; cross-region backup copies; import/export (CSV/Avro). Recovery goes through a backup pointer, first byte fast <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> Major-version upgrades <span class="verdict v-yes">supported</span></h3><div class="dim-body"><p>N/A / supported The engine is fully managed, Google handles patching and upgrades, <strong>no user-side downtime, no maintenance windows</strong>; instance editions (Standard/Enterprise/Enterprise Plus) can be upgraded/downgraded online (~10 minutes, zero downtime, zero data migration); instances can migrate online between regional/dual-region/multi-region configurations (billed on both sides during migration). Users&#x27; real &quot;upgrade&quot; burden is schema/DDL evolution, mostly online and non-blocking (add column, add index with background backfill).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> Observability <span class="verdict v-yes">supported</span></h3><div class="dim-body"><p>supported Cloud Monitoring metrics, Key Visualizer (key-range heatmaps to locate hotspots), <strong>SPANNER_SYS</strong> introspection tables (SQL interface to query statistics, lock statistics, transaction statistics), Query Insights, EXPLAIN/EXPLAIN ANALYZE, query plan visualization (Spanner Studio), client-side metrics (AFE/GFE connections/latency, Java/Go). A migration case study (Glance) confirms Key Visualizer + SPANNER_SYS are the main hotspot-troubleshooting tools.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> Connection model <span class="verdict v-yes">supported</span></h3><div class="dim-body"><p>supported No traditional connection-pooling headaches: client libraries maintain <strong>session pools + gRPC channel pools</strong> (defaults of Min 100 / Max 400 sessions per language, Node.js excepted); new-generation <strong>multiplexed session</strong> (a single session carries arbitrarily many concurrent transactions, no cleanup, no keep-alive); PGAdapter presents the PG protocol using a single multiplexed session. Note: session leaks (transactions never committed/rolled back) are still a real pitfall, with a dedicated troubleshooting blog from the vendor. Recommended: &quot;generally don&#x27;t change default pool sizes.&quot;</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> Transactions &amp; isolation levels <span class="verdict v-yes">supported</span></h3><div class="dim-body"><p>supported Default <strong>serializable + external consistency</strong> (= strict serializability, the industry&#x27;s strongest); read-only transactions are lock-free and execute against MVCC snapshots; in 2024–2025 <strong>Repeatable Read</strong> was added (a snapshot-isolation implementation, with write-skew risk) to reduce abort rates under high contention; supports strong reads / exact stale reads / bounded stale reads. Official limits: per commit <strong>80,000 mutations (including indexes)</strong>, commit size <strong>100 MiB</strong>; a 2026-09 official blog announced the 80K DML limit is being relaxed from &quot;per-transaction&quot; to &quot;per-DML-statement&quot; (recent change, status open).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> Replication &amp; consistency <span class="verdict v-yes">supported</span></h3><div class="dim-body"><p>supported Per-shard (split) <strong>Paxos</strong> synchronous replication; leader writes, parallel sends to voting replicas, commit on quorum confirmation; automatic leader re-election on failure, no split-brain; replica types: read-write / read-only / witness. Chooses <strong>CP</strong> under CAP (a minority partition that loses quorum refuses writes); PACELC is <strong>PC/EC</strong> — it pays cross-region latency for consistency even during normal operation. Tunable consistency is limited: only strong reads vs. stale reads, and two isolation levels — no Dynamo-style R/W quorum knobs.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> Scaling <span class="verdict v-no">no manual resharding</span></h3><div class="dim-body"><p>supported Purely horizontal, online. Capacity units: node or the finer-grained <strong>processing unit (1000 PU = 1 node, minimum 100 PU)</strong>; data auto-partitioned into splits by primary-key range, auto-rebalanced by load/size, <strong>no manual resharding</strong>; managed autoscaling supported (Autoscaler, can set CPU target &lt;65%, supports asymmetric read-only region scaling). Vertical tuning basically doesn&#x27;t exist — you buy abstract compute, not CPUs/memory.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> Compatibility <span class="verdict v-neutral">partially supporte</span></h3><div class="dim-body"><p>partially supported Two SQL dialects: <strong>GoogleSQL</strong> and the <strong>PostgreSQL dialect</strong> (a PG subset + Spanner extensions like interleaved tables); <strong>PGAdapter</strong> (PG wire-protocol proxy, psql supports only a handful of meta commands); JDBC; official client libraries (Java/Go/Python/Node/C# etc.); <strong>Change Streams</strong> (CDC, can feed Kafka/BigQuery/PubSub); dbt adapters, Dataflow connectors, BigQuery federated queries. In 2025-08 the vendor released an <strong>80+ MySQL function UDF package</strong> (open-source DDL scripts) to lower MySQL migration costs.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> License &amp; business model <span class="verdict v-neutral">proprietary Closed</span></h3><div class="dim-body"><p>proprietary Closed source, no open-source kernel; managed edition in three tiers: <strong>Standard / Enterprise / Enterprise Plus</strong> (edition system restructured 2024–2026, old tutorials&#x27; pricing is outdated); <strong>Spanner Omni</strong> is a downloadable self-hosted edition (proprietary license, commercial terms unclear, contact Google, to-be-verified). Billing model (model only, no prices cited): ① compute billed continuously per node-hour / PU-hour (billed as long as the instance exists, regardless of QPS); ② storage per GB-month (SSD/HDD tiers, includes replicas); ③ cross-region replication billed by data volume; ④ backup storage billed separately; ⑤ multi-region billed per compute unit per replica. 90-day free trial instance (10 GiB storage, Standard features + Graph; <strong>Data Boost not supported</strong>); local emulator free for development.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> Chinese-language resources <span class="verdict v-neutral">medium Official do</span></h3><div class="dim-body"><p>medium Official docs available in Simplified/Traditional Chinese; but Chinese community practice posts, failure cases, and Chinese books are far fewer than for MySQL/PG/OceanBase/TiDB; English resources dominate. For domestic selection teams the steep learning curve is in &quot;key design + cost modeling,&quot; not language.</p></div></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="杀手特性" data-en="Killer features">杀手特性</span></h2>
+<div class="lang-block lang-zh">
+<ol>
+<li><strong>TrueTime + 外部一致性：把&quot;全球线性化&quot;做成产品</strong></li>
+</ol>
+<p>它是什么：每个数据中心 GPS + 原子钟，TrueTime API 返回的不是时间点而是<strong>区间</strong> <code>[earliest, latest]</code>；事务提交时取 <code>commit_ts = TT.now().latest</code>，然后 <strong>commit-wait</strong>（等到 <code>TT.now().earliest &gt; commit_ts</code> 才释放锁、回 ACK），保证任何后开始的事务拿到更大的时间戳——全球任意两节点的因果序与实时序一致。 为什么是真本事：不靠单点授时中心、不靠中心化协调器，CockroachDB 的 HLC 方案在同样问题上只能做到可串行化而保不住跨键线性化（Jepsen 2017 确认其 causal-reverse 为 by-design）。Spanner 是极少数在论文之外、生产了 10 年以上的实现。 边缘真相：① 每次提交固定支付不确定性窗口（通常个位数 ms，且常被 Paxos quorum RTT 掩盖——官方口径）；② TrueTime 是 Google 内建能力，<strong>你无法在别处复现</strong>，选了 Spanner 就等于把正确性赌在 Google 的时钟基建上；③ 若时钟不确定性超界，Spanner 选择<strong>阻塞而非冒险</strong>——这是保正确性的设计，但意味着极端时钟故障时写停摆。 证据：OSDI 2012 论文；Google Cloud 官方博客《Strict Serializability and External Consistency in Spanner》；2025 ACM SIGMOD Systems Award（厂商口径荣誉）。</p>
+<ol>
+<li><strong>无感水平扩展：自动分片、自动再平衡</strong></li>
+</ol>
+<p>它是什么：数据按主键 range 切分为 splits，负载/大小变化时自动分裂与迁移，无手动 reshard；加 node/PU 在线完成。 为什么是真本事：从单库 MySQL 长大到跨区多写，传统路线要经历&quot;分库分表 + 应用层路由 + 一致性自理&quot;的重构；Spanner 把这条路走完了且对外只暴露&quot;加算力&quot;。 边缘真相：① 扩展的是<strong>算力配额</strong>，热点键的单 split 吞吐天花板不会因加节点而消失——加 10 个节点也救不了一个热点主键（见深水区二）；② 扩容按 node-hour 计费，缩容不及时就是烧钱；③ 自动再平衡的 split 迁移在后台吃 IO/网络，极端时可被观测到（Key Visualizer 可见）。</p>
+<ol>
+<li><strong>交错表（Interleaved Tables）：物理共置的父子关系</strong></li>
+</ol>
+<p>它是什么：子表行与父表行按主键前缀物理存储在一起，<code>INTERLEAVE IN PARENT... ON DELETE CASCADE</code>；父+子的点查/join 是本地操作。 为什么是真本事：这是&quot;分布式 join 很贵&quot;问题的结构性解法——把访问模式编码进物理布局，90%+ 访问走父键的场景下，跨表读的延迟和成本都下来。 边缘真相：① <strong>交错关系建表时确定，事后不可更改</strong>——建模错了要重建表迁数据；② 父子基数 1:N 且 N 极大（&gt;10K 级）或子行独立高频更新时，交错反而制造热点/锁争用；③ <code>ON DELETE CASCADE</code> 对金融类数据是危险默认（删父带走一切），社区迁移指南明确建议金融表用 <code>ON DELETE NO ACTION</code>。 证据：官方 schema 设计文档；多份社区迁移技能指南一致建议。</p>
+<ol>
+<li><strong>双重 SQL 方言 + 多模型一库</strong></li>
+</ol>
+<p>它是什么：同一引擎同时讲 GoogleSQL 和 PostgreSQL 方言；之上叠加 Spanner Graph（GQL/openCypher）、ScaNN 向量检索（单索引 100 亿+向量，厂商口径）、全文检索、JSON/ARRAY/STRUCT 类型、Change Streams。 为什么是真本事：OLTP 主库顺手做图遍历、向量召回、CDC 下游，不用为每个模型再搭一套库——2026 年 Google 把它包装成&quot;Agentic Data Cloud&quot;底座，方向是对的。 边缘真相：① PG 方言是&quot;子集 + 扩展&quot;，不是真 PG（见深水区五）；② 图/向量/列存都是<strong>外挂能力</strong>，重度场景（大规模 OLAP、专业图分析）仍建议联邦到 BigQuery/专用引擎——官方自己也把重分析定位为&quot;联邦&quot;，不是&quot;原生&quot;。</p>
+<ol>
+<li><strong>Spanner Omni：GCP 之外的逃生舱</strong></li>
+</ol>
+<p>它是什么：2025 年发布的<strong>可下载容器化 Spanner</strong>，跑在 VM/Linux 容器/Kubernetes，可部署在 on-prem、AWS、Azure、边缘；支持与 GCP 托管版组成主备（热冷 failover）、多主权 jurisdiction 部署。 为什么是真本事：它部分回答了 Spanner 头号结构性批评——&quot;只能跑在 Google Cloud&quot;。对受监管行业（数据主权、灾备合规）是实质性解绑。 边缘真相：① 仍是<strong>专有许可</strong>，不是开源，商用条款/价格不明（需联系销售，待验证）；② TrueTime 在 GCP 之外如何保证授时精度，官方细节未完全公开——全球强一致的魔法在自有机房里打几折，待验证；③ 自运维后，&quot;零运维&quot;这个最大卖点就没了。</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<ol>
+<li><strong>TrueTime + external consistency: making &quot;global linearizability&quot; a product</strong></li>
+</ol>
+<p>What it is: Every datacenter has GPS + atomic clocks; the TrueTime API returns not a point in time but an <strong>interval</strong> <code>[earliest, latest]</code>; on commit the transaction takes <code>commit_ts = TT.now().latest</code>, then <strong>commit-wait</strong> (locks are released and the ACK returned only after <code>TT.now().earliest &gt; commit_ts</code>), guaranteeing that any transaction that starts later gets a larger timestamp — causal order and real-time order agree across any two nodes on the planet. Why it&#x27;s a real capability: No single timekeeping center, no centralized coordinator; CockroachDB&#x27;s HLC approach to the same problem achieves only serializability and cannot preserve cross-key linearizability (Jepsen 2017 confirmed its causal-reverse as by-design). Spanner is one of the very few implementations beyond a paper that has been in production for 10+ years. Edge truth: ① every commit pays a fixed uncertainty window (usually single-digit ms, often masked by Paxos quorum RTT — official docs); ② TrueTime is a built-in Google capability, <strong>you cannot reproduce it elsewhere</strong> — choosing Spanner means betting correctness on Google&#x27;s clock infrastructure; ③ if clock uncertainty exceeds bounds, Spanner chooses to <strong>block rather than risk</strong> — the correctness-first design, but it means writes stall under extreme clock failure. Evidence: OSDI 2012 paper; Google Cloud official blog &quot;Strict Serializability and External Consistency in Spanner&quot;; 2025 ACM SIGMOD Systems Award (vendor-claimed honor).</p>
+<ol>
+<li><strong>Transparent horizontal scaling: automatic sharding and rebalancing</strong></li>
+</ol>
+<p>What it is: Data is partitioned into splits by primary-key range, automatically split and migrated as load/size changes, with no manual resharding; adding nodes/PU completes online. Why it&#x27;s a real capability: Growing from a single MySQL to multi-region multi-write traditionally means &quot;application-level sharding + routing + DIY consistency&quot; refactoring; Spanner walked that whole road and exposes only &quot;add compute&quot;. Edge truth: ① what scales is the <strong>compute quota</strong> — the per-split throughput ceiling of a hot key won&#x27;t disappear by adding nodes — adding 10 nodes won&#x27;t save a single hot primary key (see deep-dive II); ② scaling is billed per node-hour, and scaling down late is burning money; ③ automatic rebalancing&#x27;s split migration eats IO/network in the background and can be observed in extreme cases (visible in Key Visualizer).</p>
+<ol>
+<li><strong>Interleaved tables: physically co-located parent-child relationships</strong></li>
+</ol>
+<p>What it is: Child rows are physically stored together with parent rows by primary-key prefix, <code>INTERLEAVE IN PARENT... ON DELETE CASCADE</code>; point lookups/joins of parent + child are local operations. Why it&#x27;s a real capability: This is a structural answer to &quot;distributed joins are expensive&quot; — encode the access pattern into the physical layout, and for workloads where 90%+ of access goes through the parent key, cross-table read latency and cost both come down. Edge truth: ① the <strong>interleave relationship is fixed at table-creation time and cannot be changed afterwards</strong> — model it wrong and you&#x27;re rebuilding tables and migrating data; ② when the parent-child fan-out is 1:N with very large N (&gt;10K) or child rows are updated independently at high frequency, interleaving turns locality into a hotspot/lock-contention factory; ③ <code>ON DELETE CASCADE</code> is a dangerous default for financial data (deleting the parent takes everything), and community migration guides explicitly recommend <code>ON DELETE NO ACTION</code> for financial tables. Evidence: Official schema design docs; multiple community migration skill guides agree.</p>
+<ol>
+<li><strong>Dual SQL dialects + multi-model in one engine</strong></li>
+</ol>
+<p>What it is: The same engine speaks both GoogleSQL and the PostgreSQL dialect; layered on top: Spanner Graph (GQL/openCypher), ScaNN vector search (10 billion+ vectors per single index, vendor claim), full-text search, JSON/ARRAY/STRUCT types, Change Streams. Why it&#x27;s a real capability: The OLTP primary database can also do graph traversals, vector recall, and CDC downstream without standing up another database per model — in 2026 Google packaged it as the &quot;Agentic Data Cloud&quot; foundation, and the direction is sound. Edge truth: ① the PG dialect is a &quot;subset + extensions&quot;, not real PG (see deep-dive V); ② graph/vector/columnar are <strong>bolt-on capabilities</strong> — heavy workloads (large-scale OLAP, professional graph analytics) are still better federated to BigQuery/specialized engines — the vendor itself positions heavy analytics as &quot;federation&quot;, not &quot;native&quot;.</p>
+<ol>
+<li><strong>Spanner Omni: an escape hatch outside GCP</strong></li>
+</ol>
+<p>What it is: The 2025 release of <strong>downloadable containerized Spanner</strong>, running on VMs/Linux containers/Kubernetes, deployable on-prem, AWS, Azure, edge; supports forming primary/standby (hot-cold failover) pairs with the GCP managed edition and multi-sovereignty jurisdiction deployments. Why it&#x27;s a real capability: It partially answers Spanner&#x27;s #1 structural criticism — &quot;it only runs on Google Cloud&quot;. For regulated industries (data sovereignty, disaster-recovery compliance) it is a substantive decoupling. Edge truth: ① still <strong>proprietary license</strong>, not open source, with unclear commercial terms/pricing (contact sales, to-be-verified); ② how TrueTime guarantees timekeeping precision outside GCP is not fully disclosed in official details — how much of the global-strong-consistency magic survives in your own datacenter is to-be-verified; ③ once you self-operate, the biggest selling point — &quot;zero operations&quot; — disappears.</p>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="深水区" data-en="Deep dives">深水区</span></h2>
+<div class="lang-block lang-zh">
+<p><strong>深水区一：TrueTime 与外部一致性——正确性的基石，也是单点信任</strong>（domain：事务与时间）</p>
+<ul>
+<li>机制：GPS + 原子钟的 TrueTime 区间授时；提交走 Paxos quorum + commit-wait；只读事务取安全时间戳、无锁、可由任意已 apply 到该时间戳的副本服务。</li>
+<li>推到边缘：① 跨区写延迟 = 洲际 RTT + commit-wait，亚毫秒 OLTP 别想；② 时钟不确定性超界时<strong>写阻塞</strong>（保正确弃可用，CP 写进基因）；③ 读-写事务的高争用场景下可串行化导致 abort 率上升——官方为此新增了 Repeatable Read（快照隔离，有写偏风险）做泄压阀，等于承认&quot;最强隔离&quot;在热点下有税。</li>
+<li>选型含义：需要全球多写 + 线性一致（金融账本、库存、监管系统）时它是极少数答案；但&quot;全球强一致&quot;的代价是写延迟下限由物理距离决定，选型前必须用真实跨区拓扑压测，而不是看单区数字。</li>
+</ul>
+<p><strong>深水区二：交错表与主键设计——建模即分片，错了没有后悔药</strong>（domain：数据建模）</p>
+<ul>
+<li>机制：range 按主键分区为 splits；交错表父子物理共置；单调递增键（自增 ID、时间戳）把所有新写打到同一个 split 末尾。</li>
+<li>推到边缘：① 单调键热点是<strong>最大 gotcha</strong>：吞吐被单个 split 封顶，加节点无效——HN 有用户为此在前面搭了&quot;动态加内存的 write-through 缓存&quot;，每月多出可观的额外成本（社区案例口径），最后发现读多写少场景下&quot;PG + 缓存&quot;更便宜；② 交错关系不可事后修改，N&gt;10K 的父子扇出或子行独立更新会把局部性优势变成锁争用；③ 官方限额硬约束：单 commit 8 万 mutations、commit 100 MiB（2026-09 起 DML 的 8 万上限放宽到单语句级），大事务/ETL 必须用 Partitioned DML 或拆批——这是从 MySQL 迁过来最容易踩的坑。</li>
+<li>选型含义：POC 必须用<strong>真实主键分布 + 真实事务模型</strong>压测；主键设计是 day-1 架构决策，不是 DBA 后期调优项。UUID v4 / bit-reversed / 哈希打散三选一，没有银弹。</li>
+</ul>
+<p><strong>深水区三：stale read 与延迟权衡——一致性是有旋钮的，但只有两档</strong>（domain：一致性/性能）</p>
+<ul>
+<li>机制：强读走 leader、线性一致；stale 读（精确时间戳/有界过期）可由任意副本无锁服务；只读事务复用同一时间戳；MVCC 版本保留默认 1 小时、最长 7 天（超长保留增加存储成本）。</li>
+<li>推到边缘：① 跨区强读的延迟 = 到 leader 区的 RTT，全球读多写少场景下，不加 stale 读等于为不需要的强一致付延迟税；② 版本保留拉长到 7 天做 PITR，代价是旧版本存储膨胀——保留期是<strong>按库配置、按存储计费</strong>的；③ stale 读的&quot;过期界&quot;由应用自己定，定错了就是业务 bug，不是数据库 bug——这个责任边界官方文档不会替你划。</li>
+<li>选型含义：读写比、地域分布决定了你要不要开 stale 读；7 天 PITR 是逻辑误删的救命绳，但别把它当备份策略的全部（另有最长 1 年备份）。</li>
+</ul>
+<p><strong>深水区四：成本模型与起步门槛——为&quot;存在&quot;付费，不为&quot;使用&quot;付费</strong>（domain：成本）</p>
+<ul>
+<li>机制：计算按 node-hour/PU-hour <strong>持续计费</strong>（实例存在即走表，与 QPS 无关）；存储按 GB-month（含多副本）；跨区复制按量计费；多区域按每副本算力计费；三档版本 Standard/Enterprise/Enterprise Plus 功能与单价不同。</li>
+<li>推到边缘：① 小规模/低负载场景下，Spanner 的&quot;地板价&quot;显著高于 Cloud SQL（社区反复验证的共识；Google 自己也承认&quot;expensive&quot;印象源于早期 3 节点起步，granular 实例 + 90 天试用是补救）；② 账单三大黑洞：<strong>闲置算力</strong>（忘了缩容）、<strong>多区域每副本计费</strong>（全球部署成本乘数）、<strong>长 PITR 保留 + 备份留存</strong>（存储膨胀）；③ 按&quot;存在&quot;计费意味着流量低谷期也在烧钱——Autoscaler 是必选项，不是可选项。</li>
+<li>选型含义：做 TCO 时要把&quot;3 年持续算力 + 跨区复制 + 备份&quot;一起算；和 Aurora DSQL（按请求计费、可缩零）是两种哲学：Spanner 奖励<strong>稳定高基线</strong>负载，惩罚<strong>小而波动</strong>的负载。</li>
+</ul>
+<p><strong>深水区五：PostgreSQL interface 的兼容边界——&quot;能连&quot;不等于&quot;能迁&quot;</strong>（domain：兼容/迁移）</p>
+<ul>
+<li>机制：PG 方言是&quot;PG 语法子集 + Spanner 扩展&quot;；PGAdapter 提供 PG 线协议代理。</li>
+<li>推到边缘（官方文档<strong>查证为无</strong>，非&quot;未找到证据&quot;）：PG 方言不支持 triggers、SERIAL、SAVEPOINT、事务性 DDL、partial index、extensions、FDW、用户自定义类型/函数/操作符；存储过程整体不支持（仅 CALL 调用内置示例过程）；psql 仅支持 <code>\d \dt \dn \di \l</code> 几个 meta 命令；PGAdapter 仅支持 password 认证、COPY 仅 STDIN/STDOUT BINARY。JDBC/客户端库是正路，PG 生态工具链是&quot;部分可用&quot;。</li>
+<li>选型含义：从 PG 迁过来的收益主要是&quot;应用层少改 SQL 方言&quot;，但触发器/存储过程/扩展重度用户等于重写；别把&quot;PG 兼容&quot;理解成&quot;把 PG dump 倒进去就能跑&quot;——schema 重设计（交错、键打散）才是大头。</li>
+</ul>
+<p><strong>深水区六：与 AlloyDB 的定位三角——Google 自己画的线</strong>（domain：定位与选型）</p>
+<ul>
+<li>机制：Google Cloud 官方三件套：Cloud SQL = 标准开源托管（最便宜、lift-and-shift）；AlloyDB = PG only，高性能 HTAP（主实例纵向写扩展天花板，跨区异步）；Spanner = 无限水平写扩展 + 全球强一致 + 99.999% SLA<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>推到边缘：① 单区 PG 负载上 Spanner：为用不上的全球一致付了数倍账单和建模改造成本，性能感知为零——这是最常见的&quot;选错工具&quot;；② 需要超大单库/无限写扩展/全球多写时，AlloyDB 的主实例写天花板和异步跨区是硬伤，Spanner 是唯一答案；③ MySQL/SQL Server 团队：AlloyDB 是 PG only，Spanner 有 MySQL 函数包但内核仍是 Spanner，两边都没有&quot;零改造&quot;选项。</li>
+<li>选型含义：三选一先看<strong>写扩展需求</strong>和<strong>一致性需求</strong>，再看<strong>方言锁定</strong>；AlloyDB 和 Spanner 不是竞品，是 Google 按&quot;规模/一致性&quot;切分的两档答案。</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<p><strong>Deep-dive I: TrueTime and external consistency — the foundation of correctness, and a single point of trust</strong> (domain: transactions &amp; time)</p>
+<ul>
+<li>Mechanism: GPS + atomic-clock TrueTime interval timekeeping; commits go through Paxos quorum + commit-wait; read-only transactions take a safe timestamp, lock-free, servable by any replica that has applied up to that timestamp.</li>
+<li>At the edge: ① cross-region write latency = intercontinental RTT + commit-wait — sub-millisecond OLTP is out of the question; ② when clock uncertainty exceeds bounds, <strong>writes block</strong> (correctness over availability, CP is in the genes); ③ under high contention in read-write transactions, serializability drives abort rates up — the vendor added Repeatable Read (snapshot isolation, with write-skew risk) as a pressure valve, effectively admitting &quot;the strongest isolation&quot; is taxed by hotspots.</li>
+<li>Implication: When you need global multi-write + linear consistency (financial ledgers, inventory, regulated systems), it is one of the very few answers; but the cost of &quot;global strong consistency&quot; is a write-latency floor set by physics — test with real cross-region topology before selection, not with single-region numbers.</li>
+</ul>
+<p><strong>Deep-dive II: Interleaved tables and primary-key design — modeling is sharding, and there&#x27;s no undo button</strong> (domain: data modeling)</p>
+<ul>
+<li>Mechanism: Ranges are partitioned into splits by primary key; interleaved tables co-locate parents and children physically; monotonically increasing keys (auto-increment IDs, timestamps) send all new writes to the tail of a single split.</li>
+<li>At the edge: ① monotonic-key hotspots are the <strong>biggest gotcha</strong>: throughput is capped by a single split, adding nodes does nothing — one HN user built a &quot;dynamically memory-scaled write-through cache&quot; in front for this, spending tens of thousands of dollars extra per month, and eventually found &quot;PG + cache&quot; cheaper for read-heavy workloads; ② interleave relationships cannot be changed after creation; a parent-child fan-out of N&gt;10K or independently-updated child rows turns the locality advantage into lock contention; ③ hard official limits: 80,000 mutations per commit, 100 MiB commit size (the 80K DML limit is relaxed to per-statement starting 2026-09) — large transactions/ETL must use Partitioned DML or batching, the easiest pitfall for teams coming from MySQL.</li>
+<li>Implication: POCs must stress-test with <strong>real primary-key distributions + real transaction models</strong>; primary-key design is a day-1 architecture decision, not a DBA tuning item later. UUID v4 / bit-reversed / hash scatter — pick one, there is no silver bullet.</li>
+</ul>
+<p><strong>Deep-dive III: Stale reads and the latency trade-off — consistency has a knob, but only two detents</strong> (domain: consistency/performance)</p>
+<ul>
+<li>Mechanism: Strong reads go to the leader, linearly consistent; stale reads (exact timestamp / bounded staleness) are lock-free and servable by any replica; read-only transactions reuse the same timestamp; MVCC version retention defaults to 1 hour, up to 7 days (long retention adds storage cost).</li>
+<li>At the edge: ① cross-region strong-read latency = RTT to the leader region — in global read-heavy/write-light workloads, skipping stale reads means paying a latency tax for strong consistency you don&#x27;t need; ② stretching version retention to 7 days for PITR comes at the cost of old-version storage bloat — the retention period is <strong>configured per database, billed per storage</strong>; ③ the &quot;staleness bound&quot; of stale reads is set by your application itself — set it wrong and it&#x27;s a business bug, not a database bug — and the official docs won&#x27;t draw that responsibility boundary for you.</li>
+<li>Implication: Read/write ratio and geographic distribution decide whether you turn on stale reads; 7-day PITR is a lifeline for logical mishaps, but don&#x27;t treat it as your whole backup strategy (there are also backups retainable up to 1 year).</li>
+</ul>
+<p><strong>Deep-dive IV: Cost model and entry floor — paying for &quot;existing&quot;, not for &quot;using&quot;</strong> (domain: cost)</p>
+<ul>
+<li>Mechanism: Compute billed continuously per node-hour/PU-hour <strong>(billed as long as the instance exists, regardless of QPS)</strong>; storage per GB-month (includes replicas); cross-region replication billed by volume; multi-region billed per compute unit per replica; the three editions Standard/Enterprise/Enterprise Plus have different features and unit prices.</li>
+<li>At the edge: ① in small/low-load scenarios, Spanner&#x27;s &quot;floor price&quot; is notably higher than Cloud SQL (repeatedly confirmed by community consensus; Google itself admits the &quot;expensive&quot; impression came from the early 3-node starting point, with granular instances + 90-day trials as the remedy); ② the three big bill black holes: <strong>idle compute</strong> (forgot to scale down), <strong>multi-region per-replica compute billing</strong> (global deployment cost multiplier), <strong>long PITR retention + backup retention</strong> (storage bloat); ③ &quot;pay for existing&quot; means you&#x27;re burning money in traffic valleys too — Autoscaler is mandatory, not optional.</li>
+<li>Implication: For TCO, add up &quot;3 years of continuous compute + cross-region replication + backups&quot;; Aurora DSQL (per-request billing, scale-to-zero) is the opposite philosophy: Spanner rewards <strong>stable high baselines</strong> and punishes <strong>small, spiky</strong> workloads.</li>
+</ul>
+<p><strong>Deep-dive V: PostgreSQL interface compatibility boundaries — &quot;can connect&quot; ≠ &quot;can migrate&quot;</strong> (domain: compatibility/migration)</p>
+<ul>
+<li>Mechanism: The PG dialect is &quot;PG syntax subset + Spanner extensions&quot;; PGAdapter provides a PG wire-protocol proxy.</li>
+<li>At the edge (confirmed absent in official docs, not &quot;no evidence found&quot;): the PG dialect does not support triggers, SERIAL, SAVEPOINT, transactional DDL, partial indexes, extensions, FDW, user-defined types/functions/operators; stored procedures are not supported at all (only CALL of built-in sample procedures); psql supports only a handful of meta commands (<code>\d \dt \dn \di \l</code>); PGAdapter supports only password authentication and COPY is limited to STDIN/STDOUT BINARY. JDBC/client libraries are the right path; PG ecosystem toolchains are &quot;partially usable&quot;.</li>
+<li>Implication: The main benefit of migrating from PG is &quot;less SQL-dialect friction at the application layer&quot;, but heavy users of triggers/stored procedures/extensions are effectively rewriting; don&#x27;t interpret &quot;PG compatible&quot; as &quot;you can load a PG dump and run&quot; — schema redesign (interleaving, key scattering) is the bulk of the work.</li>
+</ul>
+<p><strong>Deep-dive VI: The positioning triangle with AlloyDB — the line Google drew itself</strong> (domain: positioning &amp; selection)</p>
+<ul>
+<li>Mechanism: Google Cloud&#x27;s official trio: Cloud SQL = standard open-source managed (cheapest, lift-and-shift); AlloyDB = PG only, high-performance HTAP (write scaling ceiling on the primary instance, cross-region async); Spanner = unlimited horizontal write scaling + global strong consistency + 99.999% SLA <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>At the edge: ① single-region PG workloads on Spanner: paying multiples of the bill and modeling rework for global consistency you don&#x27;t use, with zero perceived performance gain — the most common &quot;wrong tool&quot;; ② when you need a huge single database / unlimited write scaling / global multi-write, AlloyDB&#x27;s primary-instance write ceiling and async cross-region are hard limits, and Spanner is the only answer; ③ MySQL/SQL Server teams: AlloyDB is PG only, Spanner has a MySQL function package but the kernel is still Spanner — neither side offers a &quot;zero-change&quot; option.</li>
+<li>Implication: For the three-way choice, look at <strong>write-scaling needs</strong> and <strong>consistency needs</strong> first, then <strong>dialect lock-in</strong>; AlloyDB and Spanner are not competitors, they are two tiers Google split by &quot;scale/consistency&quot;.</li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="用户最买账的 5 点" data-en="What users love most">用户最买账的 5 点</span></h2>
+<div class="lang-block lang-zh">
+<ol>
+<li><strong>近零运维的全托管</strong></li>
+<li>为什么是真的：引擎补丁/升级零停机、无维护窗口；备份计划默认开启（每日全备、7 天保留可配）；扩缩容在线；版本升降级约 10 分钟零停机。DBA 的工作从&quot;运维&quot;变成&quot;建模 + 成本管理&quot;。</li>
+<li>边缘与限度：零运维的前提是你接受&quot;黑盒&quot;——split 迁移、compaction、GC 全是 Google 的，出了诡异延迟你只能看 Key Visualizer 干瞪眼（社区有&quot;docs 不写 gotcha&quot;的抱怨）；Spanner Omni 自运维后这个优点直接作废。</li>
+<li>出处：官方文档；社区迁移案例（Glance）2023；社区共识，采集 2026-09。</li>
+<li><strong>全球多写 + 外部一致性，真的有人跑出来</strong></li>
+<li>为什么是真的：TrueTime + Paxos 不是论文概念，Google 内部 2012 年起生产验证（AdWords/Play），外部客户金融/零售/游戏多有全球部署；99.999% 多区域 SLA（官方口径）。</li>
+<li>边缘与限度：SLA 是&quot;厂商口径&quot;，且只保&quot;可用性&quot;不保&quot;你的延迟&quot;；跨区写的延迟下限由物理定死，SLA 赔不了你的 P99。</li>
+<li>出处：官方文档；OSDI 2012 论文；2025 SIGMOD Systems Award<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li><strong>可观测性是第一梯队</strong></li>
+<li>为什么是真的：Key Visualizer 热力图 + SPANNER_SYS 的 SQL 化内省（查 top SQL、锁、事务统计不用学新工具）+ Spanner Studio 查询计划可视化，热点定位效率在托管库里算顶级。</li>
+<li>边缘与限度：强在&quot;看&quot;，弱在&quot;改&quot;——看到热点后，解法还是改主键/加节点，没有在线重分片旋钮给你拧。</li>
+<li>出处：官方文档；Glance 迁移案例<span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
+<li><strong>PITR + 备份体系完整</strong></li>
+<li>为什么是真的：版本保留最长 7 天、微秒精度时间点恢复、整库或另建库恢复、备份最长 1 年、跨区拷贝、backup pointer 快速首字节。逻辑误删/坏发布回滚有标准答案。</li>
+<li>边缘与限度：7 天窗口是硬上限，超了只能靠备份；小粒度恢复（几行）仍是手动活，RTO 取决于人工脚本——官方白皮书自己也承认。</li>
+<li>出处：官方灾难恢复文档；Spanner 数据保护白皮书。</li>
+<li><strong>弹性与成本工具在补齐</strong></li>
+<li>为什么是真的：granular 实例（100 PU 起）、托管 Autoscaler（含非对称只读区）、Data Boost（分析负载隔离到独立算力，不影响 OLTP）、列存引擎预览中（官方口径分析扫描加速 up to 200x）。&quot;贵&quot;的地板在逐年降低。</li>
+<li>边缘与限度：Data Boost 免费试用实例不支持；列存引擎仍在 Preview；Autoscaler 配不好会在业务高峰期扩容滞后——弹性不是&quot;不用管&quot;，是&quot;换一种方式管&quot;。</li>
+<li>出处：官方 release notes（2025-06/08）；官方定价页。</li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<ol>
+<li><strong>Near-zero-ops full management</strong></li>
+<li>Why it&#x27;s true: Zero-downtime engine patches/upgrades with no maintenance windows; backup schedules on by default (daily full backups, configurable 7-day retention); online scaling; edition up/down ~10 minutes with zero downtime. DBA work changes from &quot;operations&quot; to &quot;modeling + cost management&quot;.</li>
+<li>Edge and limits: Zero ops assumes you accept the &quot;black box&quot; — split migration, compaction, GC are all Google&#x27;s; when weird latency strikes you can only stare at Key Visualizer (community has &quot;docs don&#x27;t cover gotchas&quot; complaints); this advantage disappears entirely once you self-operate Spanner Omni.</li>
+<li>Source: Official docs; community migration case (Glance) 2023; community consensus, collected 2026-09.</li>
+<li><strong>Global multi-write + external consistency, actually run in production</strong></li>
+<li>Why it&#x27;s true: TrueTime + Paxos are not paper concepts — Google has run them in production internally since 2012 (AdWords/Play), and external customers in finance/retail/gaming have global deployments; 99.999% multi-region SLA <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Edge and limits: The SLA is a &quot;vendor claim&quot; and only covers &quot;availability&quot;, not &quot;your latency&quot;; the cross-region write latency floor is set by physics, and no SLA pays for your P99.</li>
+<li>Source: Official docs; OSDI 2012 paper; 2025 SIGMOD Systems Award <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li><strong>First-tier observability</strong></li>
+<li>Why it&#x27;s true: Key Visualizer heatmaps + SPANNER_SYS SQL-ified introspection (check top SQL, locks, transaction stats without learning new tools) + Spanner Studio query-plan visualization — hotspot localization efficiency is top-tier among managed databases.</li>
+<li>Edge and limits: Strong at &quot;seeing&quot;, weak at &quot;fixing&quot; — once you see a hotspot, the fix is still changing keys / adding nodes; there&#x27;s no online re-sharding knob to turn.</li>
+<li>Source: Official docs; Glance migration case <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>.</li>
+<li><strong>Complete PITR + backup system</strong></li>
+<li>Why it&#x27;s true: Up to 7 days version retention, microsecond-precision point-in-time recovery, whole-database or create-new-database recovery, backups retainable up to 1 year, cross-region copies, backup-pointer fast first byte. Logical mishaps/bad releases have a standard answer for rollback.</li>
+<li>Edge and limits: The 7-day window is a hard cap; beyond that only backups help; small-grain recovery (a few rows) is still manual work, and RTO depends on human scripts — the official whitepaper admits this itself.</li>
+<li>Source: Official disaster-recovery docs; Spanner data-protection whitepaper.</li>
+<li><strong>Elasticity and cost tooling catching up</strong></li>
+<li>Why it&#x27;s true: granular instances (starting at 100 PU), managed Autoscaler (including asymmetric read-only regions), Data Boost (analysis workloads isolated to separate compute, not affecting OLTP), columnar engine in preview (vendor-claimed up to 200x analytics scan acceleration). The &quot;expensive&quot; floor keeps dropping year by year.</li>
+<li>Edge and limits: Data Boost is not supported on free trial instances; the columnar engine is still in Preview; a badly configured Autoscaler lags in scaling during traffic peaks — elasticity is not &quot;set and forget&quot;, it&#x27;s &quot;a different kind of management&quot;.</li>
+<li>Source: Official release notes (2025-06/08); official pricing page.</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="吐槽清单" data-en="Complaints">吐槽清单</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>分类</th><th>吐槽</th><th>影响版本</th><th>状态</th></tr></thead>
+<tbody>
+<tr><td>成本坑</td><td>起步门槛高：按&quot;存在&quot;计费，小规模/低负载场景地板价显著高于 Cloud SQL；&quot;expensive&quot; 是社区第一印象</td><td>全版本</td><td>partially-fixed（granular 100 PU、90 天试用、emulator 逐年补救，但哲学未变）</td></tr>
+<tr><td>成本坑</td><td>多区域按每副本算力计费，全球部署成本乘数效应明显；闲置算力持续走表</td><td>全版本</td><td>open（靠 Autoscaler + 右 size 缓解）</td></tr>
+<tr><td>性能坑</td><td>单调递增主键造成单 split 写热点，加节点无效；最大 gotcha，day-1 设计约束</td><td>全版本</td><td>open（文档明确警示，属设计约束）</td></tr>
+<tr><td>性能坑</td><td>OLAP/宽表扫描弱：行存 OLTP 内核，报表查询可达数十秒级（社区 vendor 帖实测口径，需交叉验证）</td><td>全版本</td><td>partially-fixed（Data Boost、列存引擎 Preview 中）</td></tr>
+<tr><td>性能坑</td><td>跨区写延迟 = 洲际 RTT + commit-wait，延迟敏感型全球写场景吃力</td><td>全版本</td><td>open（物理定律，by-design）</td></tr>
+<tr><td>兼容坑</td><td>PG 方言缺 triggers/SERIAL/SAVEPOINT/事务 DDL/partial index/扩展/自定义类型函数；存储过程整体不支持</td><td>全版本</td><td>open（官方文档查证为无）</td></tr>
+<tr><td>兼容坑</td><td>PGAdapter 残缺：psql meta 命令仅 5 个、COPY 受限、仅 password 认证</td><td>全版本</td><td>open</td></tr>
+<tr><td>运维坑</td><td>官方文档 gotcha 覆盖不全，性能陷阱靠社区踩坑口口相传（HN 高赞抱怨）</td><td>全版本</td><td>open</td></tr>
+<tr><td>运维坑</td><td>session 泄漏（事务未提交/回滚）导致应用阻塞，需应用层纪律</td><td>全版本</td><td>partially-fixed（multiplexed session 简化了模型）</td></tr>
+<tr><td>迁移坑</td><td>交错关系建表时确定、事后不可改；键设计错了=重建表迁数据</td><td>全版本</td><td>open（设计约束）</td></tr>
+<tr><td>授权坑</td><td>闭源专有，GCP 锁定；Spanner Omni 商用条款不明，TrueTime 在 GCP 外精度待验证</td><td>全版本</td><td>partially-fixed（Omni 2025 发布，细节待验证）</td></tr>
+<tr><td>生态坑</td><td>实践社区小于 PG/MySQL；中文资料中等偏下，招人/排障依赖英文</td><td>全版本</td><td>open</td></tr>
+<tr><td>一致性</td><td>CP 选择：少数派分区丢 quorum 即拒写；厂商以&quot;Google 私有网络分区极罕见&quot;辩护，属运营论证非 CAP 豁免</td><td>全版本</td><td>open（by-design）</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Category</th><th>Gripe</th><th>Affected versions</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Cost</td><td>High entry floor: &quot;pay for existing&quot; billing, floor price notably higher than Cloud SQL in small/low-load scenarios; &quot;expensive&quot; is the community&#x27;s first impression</td><td>All versions</td><td>partially-fixed (granular 100 PU, 90-day trial, emulator improve the remedy year by year, but the philosophy is unchanged)</td></tr>
+<tr><td>Cost</td><td>Multi-region billed per compute unit per replica, global deployment cost multiplier effect is obvious; idle compute keeps billing</td><td>All versions</td><td>open (mitigated with Autoscaler + right-sizing)</td></tr>
+<tr><td>Performance</td><td>Monotonically increasing primary keys create single-split write hotspots, adding nodes does nothing; the biggest gotcha, a day-1 design constraint</td><td>All versions</td><td>open (clearly warned in docs, a design constraint)</td></tr>
+<tr><td>Performance</td><td>Weak OLAP/wide-table scans: row-store OLTP kernel, reporting queries can reach tens of seconds (community vendor-post measured figures, need cross-verification)</td><td>All versions</td><td>partially-fixed (Data Boost, columnar engine in Preview)</td></tr>
+<tr><td>Performance</td><td>Cross-region write latency = intercontinental RTT + commit-wait, painful for latency-sensitive global write scenarios</td><td>All versions</td><td>open (physics, by-design)</td></tr>
+<tr><td>Compatibility</td><td>PG dialect lacks triggers/SERIAL/SAVEPOINT/transactional DDL/partial indexes/extensions/custom types and functions; stored procedures not supported at all</td><td>All versions</td><td>open (confirmed absent in official docs)</td></tr>
+<tr><td>Compatibility</td><td>PGAdapter is incomplete: only 5 psql meta commands, restricted COPY, password-only authentication</td><td>All versions</td><td>open</td></tr>
+<tr><td>Ops</td><td>Official docs don&#x27;t cover gotchas well; performance pitfalls spread by community word of mouth (highly-upvoted HN complaint)</td><td>All versions</td><td>open</td></tr>
+<tr><td>Ops</td><td>Session leaks (transactions never committed/rolled back) block applications, requiring application-layer discipline</td><td>All versions</td><td>partially-fixed (multiplexed session simplified the model)</td></tr>
+<tr><td>Migration</td><td>Interleave relationships fixed at table-creation time, cannot be changed later; wrong key design = rebuild tables and migrate data</td><td>All versions</td><td>open (design constraint)</td></tr>
+<tr><td>Licensing</td><td>Closed-source proprietary, GCP lock-in; Spanner Omni commercial terms unclear, TrueTime precision outside GCP to-be-verified</td><td>All versions</td><td>partially-fixed (Omni released 2025, details to-be-verified)</td></tr>
+<tr><td>Ecosystem</td><td>Practice community smaller than PG/MySQL; Chinese resources medium-low, hiring/troubleshooting relies on English</td><td>All versions</td><td>open</td></tr>
+<tr><td>Consistency</td><td>CP choice: minority partition losing quorum refuses writes; vendor defends with &quot;Google private-network partitions are extremely rare&quot;, an operational argument not a CAP exemption</td><td>All versions</td><td>open (by-design)</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="判决" data-en="Verdict">判决</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li><strong>一句话定位</strong>：为&quot;全球多写 + 线性一致 + 零运维&quot;付费的分布式 OLTP 终点之一；不需要这三样时，它是最贵的错误答案。</li>
+<li><strong>适合谁</strong>：</li>
+<li>跨区多写的全球 OLTP（金融账本、库存、计费），且正确性要求压倒一切</li>
+<li>单库 MySQL/PG 已到扩展天花板、又无法接受最终一致性的团队</li>
+<li>愿意 All-in GCP、要&quot;写完代码就不用管数据库&quot;的团队</li>
+<li>受监管行业需要&quot;托管主 + 自运维备&quot;双活/主权部署（Spanner Omni 路线，待验证细节）</li>
+<li><strong>不适合谁</strong>：</li>
+<li>单区中小规模应用（成本地板 + 建模改造成本双杀，Cloud SQL/AlloyDB 更合适）</li>
+<li>分析/扫描密集型负载（走 BigQuery 联邦，别硬上）</li>
+<li>延迟极度敏感、吃不下跨区提交等待的场景</li>
+<li>需要可移植、厌恶厂商锁定的团队（Omni 缓解但未根除）</li>
+<li>重度依赖 PG 触发器/存储过程/扩展，或 MySQL 偏门特性的存量系统</li>
+<li><strong>迁移成本</strong>：</li>
+<li>MySQL → 中：80+ MySQL 函数 UDF 包降低 SQL 改造成本，但主键打散 + 交错建模是必修课；自增 ID 依赖必须重构</li>
+<li>PostgreSQL → 中高：PG 方言 + PGAdapter 降低方言摩擦，但 triggers/SERIAL/扩展/存储过程缺失意味着逻辑层重写；dump 直倒不可行</li>
+<li>Oracle → 高：无 Oracle 兼容层，PL/SQL 生态零对应，只能应用层重写 + 数据迁移</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li><strong>One-liner</strong>: One of the endpoints of distributed OLTP that you pay for &quot;global multi-write + linear consistency + zero ops&quot;; when you don&#x27;t need those three, it&#x27;s the most expensive wrong answer.</li>
+<li><strong>Best for</strong>:</li>
+<li>Global OLTP with cross-region multi-write (financial ledgers, inventory, billing), where correctness requirements outweigh everything</li>
+<li>Teams whose single MySQL/PG has hit its scaling ceiling and cannot accept eventual consistency</li>
+<li>Teams willing to go all-in on GCP and &quot;never touch the database again after shipping code&quot;</li>
+<li>Regulated industries needing &quot;managed primary + self-operated standby&quot; dual-active/sovereign deployments (Spanner Omni route, details to-be-verified)</li>
+<li><strong>Not for</strong>:</li>
+<li>Small/medium single-region applications (cost floor + modeling rework double hit, Cloud SQL/AlloyDB fit better)</li>
+<li>Analytics/scan-heavy workloads (federate to BigQuery, don&#x27;t force it)</li>
+<li>Scenarios with extreme latency sensitivity that cannot afford cross-region commit wait</li>
+<li>Teams needing portability and averse to vendor lock-in (Omni mitigates but doesn&#x27;t eliminate)</li>
+<li>Existing systems heavily dependent on PG triggers/stored procedures/extensions, or MySQL niche features</li>
+<li><strong>Migration cost</strong>:</li>
+<li>MySQL → Medium: the 80+ MySQL function UDF package lowers SQL rework cost, but primary-key scattering + interleaved modeling are mandatory courses; auto-increment ID dependencies must be refactored</li>
+<li>PostgreSQL → Medium-high: PG dialect + PGAdapter lower dialect friction, but missing triggers/SERIAL/extensions/stored procedures mean logic-layer rewrites; direct dump loading is not feasible</li>
+<li>Oracle → High: no Oracle compatibility layer, zero correspondence for the PL/SQL ecosystem; application-layer rewrite + data migration only</li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="来源与待验证清单" data-en="Sources & to-be-verified">来源与待验证清单</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li>架构与一致性：OSDI 2012 Spanner 论文；Google Cloud 博客《Strict Serializability and External Consistency in Spanner》；官方 TrueTime/外部一致性文档</li>
+<li>复制与限额：官方 replication 文档；官方 quotas 文档（80,000 mutations/commit、100 MiB commit）；2026-09 官方博客《Spanner removes DML mutation limits》</li>
+<li>安全：官方 CMEK 文档；Cloud Audit Logs 机制（GCP 通用文档）；fine-grained access control 发布博客</li>
+<li>备份/PITR：官方《Disaster recovery overview》《Recover data using PITR》；Spanner 数据保护白皮书</li>
+<li>建模：官方《Schema design best practices》《Schemas overview》；社区迁移技能指南（多份一致）</li>
+<li>PG 兼容边界：官方《The PostgreSQL language in Spanner》（2026-02-03 更新，明确列出不支持项）；官方 procedural language 文档（明确不支持存储过程）；PGAdapter FAQ（GitHub）</li>
+<li>成本与版本：官方定价页（90 天试用、Standard/Enterprise/Enterprise Plus、计费模型）；官方 editions 文档；第三方 2026 年对比分析（价格数字未采用）</li>
+<li>Spanner Omni：Google Cloud 官方博客《Introducing Spanner Omni》（2025）；2026-08 社区实测帖（待验证细节）</li>
+<li>AlloyDB 定位三角：本项目 alloydb.md 深水区三（Google 官方三件套对比）</li>
+<li>第三方综述：druce/dbengines google-cloud-spanner.md（2026-06-04 研究，high confidence；其中 Jepsen 缺失、per-node 吞吐等标注⚠️未验证项，本档案未采纳其未验证数字）</li>
+<li>吐槽采集：Hacker News 相关讨论（2023–2025）；社区迁移/成本分析帖；dev.to 成本拆解</li>
+<li>下次评审：跟踪列存引擎 GA、Spanner Omni 商用条款/授时细节、DML 限额放宽的文档落地、Enterprise Plus 功能矩阵变化</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li>Architecture &amp; consistency: OSDI 2012 Spanner paper; Google Cloud blog &quot;Strict Serializability and External Consistency in Spanner&quot;; official TrueTime/external-consistency docs</li>
+<li>Replication &amp; limits: official replication docs; official quotas docs (80,000 mutations/commit, 100 MiB commit); 2026-09 official blog &quot;Spanner removes DML mutation limits&quot;</li>
+<li>Security: official CMEK docs; Cloud Audit Logs mechanism (GCP general docs); fine-grained access control release blog</li>
+<li>Backup/PITR: official &quot;Disaster recovery overview&quot; and &quot;Recover data using PITR&quot;; Spanner data-protection whitepaper</li>
+<li>Modeling: official &quot;Schema design best practices&quot; and &quot;Schemas overview&quot;; community migration skill guides (multiple, consistent)</li>
+<li>PG compatibility boundaries: official &quot;The PostgreSQL language in Spanner&quot; (updated 2026-02-03, lists unsupported items explicitly); official procedural language docs (explicitly no stored procedures); PGAdapter FAQ (GitHub)</li>
+<li>Cost &amp; editions: official pricing page (90-day trial, Standard/Enterprise/Enterprise Plus, billing model); official editions docs; third-party 2026 comparison analysis (price figures not adopted)</li>
+<li>Spanner Omni: Google Cloud official blog &quot;Introducing Spanner Omni&quot; (2025); 2026-08 community hands-on post (details to-be-verified)</li>
+<li>AlloyDB positioning triangle: this project&#x27;s alloydb.md deep-dive III (Google official trio comparison)</li>
+<li>Third-party review: druce/dbengines google-cloud-spanner.md (2026-06-04 research, high confidence; Jepsen absence, per-node throughput etc. marked as ⚠️ unverified items — this profile did not adopt its unverified figures)</li>
+<li>Gripe collection: Hacker News discussions (2023–2025); community migration/cost analysis posts; dev.to cost breakdowns</li>
+<li>Next review: track columnar engine GA, Spanner Omni commercial terms/timekeeping details, documentation landing of the DML limit relaxation, Enterprise Plus feature-matrix changes</li>
+</ul>
+</div>
+</section>
+</main>
+<footer class="footer">
+  <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
+</footer>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
