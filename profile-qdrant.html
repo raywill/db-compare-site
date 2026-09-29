@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Qdrant - DB 选型参考</title>
+<link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">&#9672;</span> DB <span data-zh="选型参考" data-en="Compare">选型参考</span></a>
+    <nav class="mainnav">
+<a href="index.html" class="active" data-zh="首页" data-en="Home">首页</a>
+<a href="compare.html" class="" data-zh="维度对比" data-en="Compare">维度对比</a>
+<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
+<a href="advisor.html" class="" data-zh="AI选型" data-en="AI Selection">AI选型</a>
+    </nav>
+    <div class="cmp-tray">
+      <button id="cmp-tray-btn" type="button" class="tray-btn" aria-expanded="false" aria-haspopup="true"><span data-zh="对比" data-en="Compare">对比</span> <b class="tray-count"><i id="cmp-count">0</i>/4</b></button>
+      <div id="cmp-panel" class="tray-panel" hidden>
+        <div class="tray-sec"><span data-zh="已选" data-en="Selected">已选</span></div>
+        <div id="cmp-selected" class="tray-selected"></div>
+        <div class="tray-sec"><span data-zh="全部产品（最多选 4 款）" data-en="All products (up to 4)">全部产品（最多选 4 款）</span></div>
+        <div id="cmp-list" class="tray-list"></div>
+        <div class="tray-actions"><button id="cmp-clear" type="button" class="tray-clear"><span data-zh="清空选择" data-en="Clear selection">清空选择</span></button></div>
+      </div>
+    </div>
+    <button id="lang-toggle" class="lang-btn" type="button" aria-label="switch language">EN</button>
+  </div>
+</header>
+<main class="page">
+<div class="profile-hero">
+  <a class="back" href="index.html"><span data-zh="← 返回首页" data-en="← Back to home">← 返回首页</span></a>
+  <h1>Qdrant</h1>
+  <div class="meta-row"><span class="cat cat-aidb" data-zh="AI 数据库" data-en="AI databases">AI 数据库</span> <span class="tag">#向量数据库</span> <span class="tag">#ANN</span> <span class="tag">#HNSW</span> <span class="tag">#混合检索</span> <span class="tag">#稀疏向量</span> <span class="tag">#多租户</span> <span class="tag">#Rust</span> <span class="tag">#分布式</span> <span class="tag">#开源</span> <span class="tag">#RAG基础设施</span></div>
+  <p class="oneliner"><div class="lang-block lang-zh">
+<p>Qdrant Solutions（柏林）用 Rust 写的开源向量数据库——为 AI 应用（RAG、语义检索、推荐、智能体记忆）提供&quot;带丰富元数据过滤的低延迟近似最近邻搜索&quot;：核心卖点是 filterable HNSW、多向量/稀疏向量与服务端混合检索融合、可调的量化压缩矩阵，以及 payload 驱动的多租户模型；但它是一个**检索层的派生索引**，不是事实主库——没有多记录 ACID 事务、没有连续 PITR，分布式一致性是&quot;元数据走 Raft 强一致、点数据可调确认&quot;的两层模型，选型时必须按这个心智使用它。</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<p>An open-source vector database written in Rust by Qdrant Solutions (Berlin) — built for AI applications (RAG, semantic search, recommendations, agent memory) that need &quot;low-latency approximate nearest-neighbor search with rich metadata filtering&quot;: its core strengths are filterable HNSW, multi-vector/sparse vectors with server-side hybrid retrieval fusion, a tunable quantization matrix, and a payload-driven multitenancy model; but it is a **derived index at the retrieval layer**, not a system of record — no multi-record ACID transactions, no continuous PITR, and a two-tier distributed consistency model (&quot;Raft for metadata, tunable acknowledgements for point data&quot;) that you must internalize to use it correctly.</p>
+</div></p>
+  <div class="ai-dive-row" data-product="Qdrant">
+    <span class="ai-dive-label" data-zh="用 AI 深挖这款：" data-en="Deep-dive with AI:">用 AI 深挖这款：</span>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('chatgpt', this)">ChatGPT <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('grok', this)">Grok <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('claude', this)">Claude <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn addcmp-btn" data-addcmp="qdrant"><span class="addcmp-label">＋ 对比</span></button>
+  </div>
+  <div class="legend"><span class="legend-label" data-zh="证据等级：" data-en="Evidence levels: ">证据等级：</span><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></div>
+</div>
+<section class="doc-section">
+<h2><span data-zh="基本信息" data-en="Basics">基本信息</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>项</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td>厂商</td><td>Qdrant Solutions GmbH（2021 年 10 月创立于柏林，创始人 Andre Zayarni、Andrey Vasnetsov）</td></tr>
+<tr><td>国家</td><td>德国（欧盟公司；官方口径 SOC2 / GDPR 合规）</td></tr>
+<tr><td>起源</td><td>2021 年立项的开源神经搜索/向量检索引擎，Rust 实现；2023-04 种子轮 $7.5M、2024-01 A 轮 €28M（Spark Capital 领投）；社区整理的 2026-03 B 轮 $50M（AVP 领投）<strong>待官方交叉验证</strong></td></tr>
+<tr><td>许可证</td><td>Apache 2.0（开源内核；Qdrant Cloud 为商业托管服务，另有 Hybrid Cloud 可部署在客户自有环境）</td></tr>
+<tr><td>商业版说明</td><td>无独立&quot;企业版内核&quot;；商业化 = Qdrant Cloud 全托管（按 CPU/内存/磁盘资源用量计费，不按查询次数）+ Hybrid Cloud；Marketplace（AWS/GCP/Azure）仅为账单渠道，默认仍跑在 Qdrant 基础设施上</td></tr>
+<tr><td>托管服务</td><td>Qdrant Cloud（全托管，有免费层）；Qdrant Edge（社区整理称 2026-03 进入 beta，待官方复核）</td></tr>
+<tr><td>主类型</td><td>向量数据库（AI 检索层）</td></tr>
+<tr><td>兼具类型</td><td>稀疏检索（sparse vectors / BM25 风格）、混合检索（dense+sparse+RRF/DBSF 服务端融合）、多向量（ColBERT late interaction）、带过滤的 ANN 搜索引擎</td></tr>
+<tr><td>官网 / 仓库</td><td>https://qdrant.tech · https://github.com/qdrant/qdrant</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Item</th><th>Content</th></tr></thead>
+<tbody>
+<tr><td>Vendor</td><td>Qdrant Solutions GmbH (founded October 2021 in Berlin by Andre Zayarni and Andrey Vasnetsov)</td></tr>
+<tr><td>Country</td><td>Germany (EU company; SOC2 / GDPR compliance per vendor claims)</td></tr>
+<tr><td>Origin</td><td>Open-source neural search / vector retrieval engine started in 2021, written in Rust; $7.5M seed round (2023-04), €28M Series A led by Spark Capital (2024-01); community-compiled reports of a $50M Series B led by AVP (2026-03) <strong>pending official cross-verification</strong></td></tr>
+<tr><td>License</td><td>Apache 2.0 (open-source core; Qdrant Cloud is the commercial managed service; Hybrid Cloud deploys into the customer&#x27;s own environment)</td></tr>
+<tr><td>Commercial notes</td><td>No separate &quot;enterprise kernel&quot;; commercialization = Qdrant Cloud fully managed (billed on CPU/memory/disk resource usage, not per query) + Hybrid Cloud; Marketplace (AWS/GCP/Azure) is only a billing channel — clusters still run on Qdrant infrastructure by default</td></tr>
+<tr><td>Managed service</td><td>Qdrant Cloud (fully managed, with a free tier); Qdrant Edge (community reports say beta as of 2026-03, pending official verification)</td></tr>
+<tr><td>Primary type</td><td>Vector database (AI retrieval layer)</td></tr>
+<tr><td>Also serves as</td><td>Sparse retrieval (sparse vectors / BM25-style), hybrid retrieval (dense+sparse+RRF/DBSF server-side fusion), multi-vector (ColBERT late interaction), filtered ANN search engine</td></tr>
+<tr><td>Website / repo</td><td>https://qdrant.tech · https://github.com/qdrant/qdrant</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section"><h2><span data-zh="硬维度（14 项）" data-en="Hard dimensions (14)">硬维度（14 项）</span></h2>
+<div class="lang-block lang-zh">
+<div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-no">查证为无</span></h3><div class="dim-body"><p><strong>查证为无</strong>——官方安全文档的安全能力清单为 TLS、API key、JWT RBAC、审计日志，未提供落盘文件/快照的透明加密配置；开源内核无 TDE 证据，静态数据保护依赖操作系统或云盘卷级加密。Qdrant Cloud 官方文档称其集群使用加密存储磁盘（托管基础设施层能力，不等于数据库内核 TDE）。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（查证为无）+ 官方口径（Cloud）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——v1.2.0 起支持；REST 与 gRPC 共用 <code>service.enable_tls</code> 开关，集群内部 P2P 另有 <code>cluster.p2p.enable_tls</code> 可独立开启；默认连接不加密，生产必须显式开启。REST 证书支持运行时定期刷新（gRPC 是否同样支持以官方文档原文为准，本轮未核实）。证据：官方安全文档。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> 审计 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——v1.17.0 起内建审计日志：JSON 文件、默认关闭、记录需要认证/授权的 API 操作，可按小时/天轮转并设置保留文件数；v1.18 新增跨节点审计日志查询 API 与请求 tracing ID；Qdrant Cloud 付费集群可用（日志下载端点 v1.17.1+）。注意：<code>trust_forwarded_headers</code> 只应在可信代理之后开启，否则客户端可伪造审计记录中的源 IP。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> 认证与权限 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——静态 admin API key、只读 API key；v1.9.0 起支持基于 JWT 的细粒度 RBAC，可限制到 collection 级别的 read / read-write / manage；OSS 需配置 <code>api_key</code> 并启用 <code>jwt_rbac</code>，Cloud 默认支持细粒度 API key；JWT 采用 HS256，API key 轮换会使已签发 token 失效。<strong>未找到</strong>内建 LDAP/OIDC 用户目录的证据，通常需外部身份层签发 JWT。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> 备份恢复 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——collection snapshot 与 full snapshot API 完整：创建、列出、下载、上传、恢复（<code>snapshots/upload</code>、<code>snapshots/recover</code>，支持 URL 直恢复、checksum 校验与 snapshot 优先级参数）；单机可在启动时经 CLI <code>--snapshot</code> 恢复（官方明确不适用于多节点部署与 Cloud）；分片级恢复要求分片配置（shard_number 等）严格一致。<strong>不提供</strong>数据库原生连续 PITR：快照是时点备份，RPO 缺口通常要从事实主库重放并重新 embedding 补齐。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> + 社区 restore runbook 实测。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> 大版本升级 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——官方建议按 minor 逐级升级（如 1.13→1.14→1.15），Cloud 可在控制台选择版本升级；但跨版本存在内部格式与协议变化：v1.16 涉及 RocksDB→Gridstore 存储转换、v1.17 gRPC 向量字段响应格式变化、v1.18 起启用认证后内部 gRPC 端点同样要求 API key/JWT、RocksDB 在 v1.18 被彻底移除（以上社区整理口径，<strong>待官方 release notes 复核</strong>）；原地升级缺乏官方回滚保证，自建集群无停机滚动升级的充分证据。证据：官方发布文章（1.14/1.15）+ 社区整理（待复核）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> 可观测性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——Prometheus <code>/metrics</code>（v1.17 起含 REST/gRPC 响应指标，v1.18 支持 <code>?per_collection=true</code> 增加 collection 标签）、cluster-wide telemetry API、segment optimization monitoring、v1.18 按组件拆分的集合 RAM/磁盘/page cache 用量；<code>/healthz</code> <code>/readyz</code> <code>/livez</code> 健康检查；Web UI / Dashboard 可查看集合与资源状态。证据：官方发布文章（v1.17/v1.18）+ 官方文档。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> 连接模型 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——HTTP REST（默认 6333）与 gRPC（默认 6334）双协议；无状态 API，没有数据库 session/连接事务模型；客户端复用 HTTP 连接，gRPC 在批量操作上更快（社区实测口径）。证据：官方文档 + 社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> 事务与隔离级别 <span class="verdict v-neutral">不适用</span></h3><div class="dim-body"><p><strong>不适用</strong>——无 SQL 隔离级别与多记录跨点 ACID 事务；官方明确不以强事务保证为目标。点级写入有自身的 WAL/version 语义（同 ID upsert 为原子覆盖），跨点一致性通过复制因子与 write consistency 参数调节，见&quot;复制与一致性&quot;。证据：官方分布式文档。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> 复制与一致性 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——两层模型：集群拓扑与 collection 结构元数据走 Raft 强一致；point 数据（upsert/search/delete）<strong>不走</strong> Raft 共识，走可配置的 replication factor、write consistency factor 与 weak/medium/strong ordering。默认倾向低延迟/可用性；集群选主或过渡状态下 collection 结构更新可能被拒绝。注意：这里的&quot;strong ordering&quot;不等于 SQL 的 serializable 事务。证据：官方分布式文档。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> 扩展方式 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——collection 由一个或多个 shard 组成；自动分片使用一致性哈希，v1.7.0 起支持 user-defined sharding / shard key；副本用于提升读吞吐。扩容需要 shard 移动、复制或 resharding，消耗磁盘与网络并带来查询 fan-out，&quot;加节点&quot;不等于&quot;立即线性加速&quot;。证据：官方文档 + 社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> 兼容性 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——REST（OpenAPI v3）+ gRPC 双协议，官方/主流客户端覆盖 Python、JavaScript/TypeScript、Rust、Go、Java/.NET 等生态；与 LangChain、LlamaIndex 等 AI 框架集成；官方与社区提供从 Pinecone/Weaviate 等迁移的指南与实践（细节待复核）。<strong>不兼容</strong> SQL 数据库 wire protocol（无 PostgreSQL/MySQL 协议、无 SQL/ORM）。证据：官方文档 + 社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> 许可证与商业模式 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——OSS 内核 Apache 2.0，可完全自建；Qdrant Cloud 商业托管按 CPU/内存/磁盘资源用量按月计费（不按查询次数收费），支持信用卡或经 AWS/GCP/Azure Marketplace 结算；Hybrid Cloud 可把控制面/数据面放到客户自有环境。证据：官方 Cloud 计费文档。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> 中文资料丰富度 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——有零散中文博客（CSDN/掘金）、中文教程仓库与框架集成文章；但权威深水区材料、版本升级细节、故障复盘主要为英文，官方文档仅英文。证据：<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</p></div></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-no">No evidence found</span></h3><div class="dim-body"><p><strong>No evidence found</strong> — the official security docs list TLS, API keys, JWT RBAC, and audit logging, with no transparent encryption for on-disk files/snapshots; the open-source core has no TDE evidence, so at-rest protection depends on OS- or cloud-disk volume encryption. Qdrant Cloud docs state its clusters use encrypted storage disks (a managed-infrastructure capability, not database-kernel TDE). Evidence: official docs (verified absent) + vendor claims (Cloud).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / transport encryption <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — since v1.2.0; REST and gRPC share the <code>service.enable_tls</code> switch, while intra-cluster P2P has its own <code>cluster.p2p.enable_tls</code>; connections are unencrypted by default and must be explicitly enabled in production. REST certificates support periodic runtime refresh (whether gRPC does the same is per the official docs&#x27; exact wording — not verified this round). Evidence: official security docs.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> Auditing <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — built-in audit logging since v1.17.0: JSON files, disabled by default, recording API operations that require authentication/authorization, with hourly/daily rotation and configurable file retention; v1.18 added a cross-node audit-log query API and request tracing IDs; available on paid Qdrant Cloud clusters (log download endpoint since v1.17.1). Note: <code>trust_forwarded_headers</code> should only be enabled behind a trusted proxy, otherwise clients can spoof the source IP in audit records. Evidence: official docs.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> Authentication &amp; authorization <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — static admin API key, read-only API key; fine-grained JWT-based RBAC since v1.9.0, restrictable to per-collection read / read-write / manage; OSS requires configuring <code>api_key</code> and enabling <code>jwt_rbac</code>, Cloud supports fine-grained API keys by default; JWT uses HS256, and rotating the API key invalidates issued tokens. <strong>No evidence found</strong> of a built-in LDAP/OIDC user directory — JWTs are normally issued by an external identity layer. Evidence: official docs.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> Backup &amp; recovery <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — full collection-snapshot and full-snapshot APIs: create, list, download, upload, recover (<code>snapshots/upload</code>, <code>snapshots/recover</code>, with direct-from-URL recovery, checksum verification, and snapshot-priority parameters); single-node clusters can recover at startup via the CLI <code>--snapshot</code> flag (officially not applicable to multi-node deployments or Cloud); shard-level recovery requires strictly matching shard configuration. <strong>No</strong> native continuous PITR: snapshots are point-in-time backups, and the RPO gap usually has to be replayed from the system of record and re-embedded. Evidence: official docs + community restore runbooks (field-tested).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> Major-version upgrades <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — official guidance is to upgrade one minor version at a time (e.g. 1.13→1.14→1.15); Cloud allows version selection in the console. But cross-version internal format/protocol changes exist: v1.16 storage conversion (RocksDB→Gridstore), v1.17 gRPC vector-field response format change, v1.18 requiring API key/JWT on internal gRPC endpoints once auth is enabled, and RocksDB fully removed in v1.18 (all community-compiled, <strong>pending official release-notes verification</strong>); no official rollback guarantees for in-place upgrades, and insufficient evidence for zero-downtime rolling upgrades on self-hosted clusters. Evidence: official release posts (1.14/1.15) + community compilations (pending verification).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> Observability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — Prometheus <code>/metrics</code> (REST/gRPC response metrics since v1.17; v1.18 supports <code>?per_collection=true</code> adding collection labels), cluster-wide telemetry API, segment optimization monitoring, per-component collection RAM/disk/page-cache breakdown in v1.18; <code>/healthz</code> <code>/readyz</code> <code>/livez</code> health checks; Web UI / Dashboard for collection and resource status. Evidence: official release posts (v1.17/v1.18) + official docs.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> Connection model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — HTTP REST (default 6333) and gRPC (default 6334); stateless APIs with no database session/connection-transaction model; clients reuse HTTP connections, gRPC is faster for bulk operations (community-measured). Evidence: official docs + community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> Transactions &amp; isolation levels <span class="verdict v-neutral">N/A — no SQL isola</span></h3><div class="dim-body"><p><strong>N/A</strong> — no SQL isolation levels and no multi-record cross-point ACID transactions; officially not designed around strong transactional guarantees. Point-level writes have their own WAL/version semantics (same-ID upsert is an atomic overwrite); cross-point consistency is tuned via replication factor and write-consistency parameters — see &quot;Replication &amp; consistency&quot;. Evidence: official distributed docs.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> Replication &amp; consistency <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — two-tier model: cluster topology and collection-structure metadata go through Raft with strong consistency; point data (upsert/search/delete) does <strong>not</strong> go through Raft consensus, using configurable replication factor, write consistency factor, and weak/medium/strong ordering instead. Defaults favor low latency/availability; collection-structure updates can be rejected during leader elections or transitional states. Note: &quot;strong ordering&quot; here is not SQL serializable. Evidence: official distributed docs.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> Scaling <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — a collection consists of one or more shards; automatic sharding uses consistent hashing, user-defined sharding / shard keys since v1.7.0; replicas scale read throughput. Scaling out requires shard moves, replication, or resharding, consuming disk and network and adding query fan-out — &quot;adding nodes&quot; is not &quot;instant linear speedup&quot;. Evidence: official docs + community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> Compatibility <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — REST (OpenAPI v3) + gRPC; official/mainstream clients cover Python, JavaScript/TypeScript, Rust, Go, Java/.NET; integrations with AI frameworks like LangChain and LlamaIndex; official and community migration guides from Pinecone/Weaviate and others (details pending verification). <strong>Not</strong> wire-compatible with SQL databases (no PostgreSQL/MySQL protocol, no SQL/ORM). Evidence: official docs + community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> License &amp; business model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — OSS core under Apache 2.0, fully self-hostable; Qdrant Cloud managed service billed monthly on CPU/memory/disk resource usage (not per query), payable by credit card or via AWS/GCP/Azure Marketplace; Hybrid Cloud places the control/data plane in the customer&#x27;s own environment. Evidence: official Cloud pricing docs.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> Chinese-language resources <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — scattered Chinese blogs (CSDN/Juejin), Chinese tutorial repos, and framework-integration articles exist; but authoritative deep-dive material, version-upgrade details, and incident retrospectives are mostly English, and official docs are English-only. Evidence: community consensus.</p></div></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="杀手特性" data-en="Killer features">杀手特性</span></h2>
+<div class="lang-block lang-zh">
+<ol>
+<li><strong>Filterable HNSW + payload 查询规划器：过滤不是&quot;后处理&quot;</strong> 真本事：HNSW 图与 payload 字段索引协同工作，查询规划器按过滤基数估算自动选择 full scan / payload index / filterable HNSW 路径；<code>is_tenant=True</code> 的 tenant 索引配合 <code>payload_m</code> 支持 10 万+租户共用单 collection 的严格隔离，超大租户还可晋升为独立分片——这是 RAG 多租户场景（按 tenant_id/ACL 过滤）最被看重的原生能力。 边缘真相：过滤字段没建索引时，行为依版本与 strict mode 而异——可能退化为全扫描拖慢查询，也可能直接被拒绝；索引建得太多则吃掉内存、CPU 与构建时间；过滤选择性极端时 recall/latency 会抖动，生产必须用真实过滤分布做召回回归。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（indexing/filtering）+ 官方行业页（10 万+租户为厂商口径）。</li>
+<li><strong>多向量类型与服务端混合检索：dense + sparse + multi-vector 一次查完</strong> 真本事：dense、sparse（BM25 风格）、multi-vector（ColBERT late interaction）、named vectors 可共存于同一 point；Query API 的 prefetch + server-side fusion（RRF/DBSF，v1.17+ 支持加权 RRF）把多路召回与结果融合下沉到服务端，一次请求完成&quot;语义+关键词+重排&quot;，减少客户端多次往返。 边缘真相：它的&quot;BM25&quot;是用 sparse vectors 实现的关键词检索，不是原生全文检索引擎（第三方对比口径）；多路融合的权重、各路 ef/阈值没有银弹，要在真实查询上调参实测；named vectors 每个向量独立一份 HNSW，内存线性叠加，多 embedding 模型共存时成本要逐项核算。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> + 第三方对比<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li><strong>量化矩阵 + rescoring：内存/召回/延迟的三轴旋钮</strong> 真本事：scalar（约 4x）、binary（约 32x）、product（约 64x）、v1.18 新增 TurboQuant（约 32x），量化保留原始向量用于 oversampling + rescoring，先用压缩向量粗排再用原向量精排；向量、payload、HNSW 图可分别配置 on-disk/mmap，冷热数据分层存放。 边缘真相：压缩倍数是&quot;量化副本相对原向量&quot;的厂商口径，总存储还包含原向量、HNSW 图、payload 与元数据，账不能只按倍数算；高压缩（PQ/binary）对召回的损伤与查询分布强相关，社区单机实测显示不同量化方案的常驻 RAM 差异显著且 P99 存在波动——上线前必须固定数据集测 Recall@k。证据：官方量化文档（倍数为厂商口径）+ 社区实测。</li>
+<li><strong>Rust 单体二进制 + 双协议 API：单机体验第一梯队</strong> 真本事：单二进制/Docker 即跑，无外部依赖；REST（OpenAPI v3）+ gRPC 双协议，6 语言官方客户端；单节点可承载千万级向量（第三方对比口径 10–50M，属社区共识、需实测验证），POC 当天就能跑起来。 边缘真相：单机简单不等于分布式简单——Raft 元数据、shard 移动、一致性调参、滚动升级是另一套运维体系；社区有并发写入场景下内存持续上涨的 issue（512Mi 内存限制下反复 OOM 被 K8s 驱逐），默认全内存模型下&quot;规模上来先加内存&quot;是最常见的第一课。证据：官方文档 + 社区共识 + GitHub issue（社区实测口径）。</li>
+<li><strong>Apache 2.0 开源 + 多部署形态：不被锁定的选择权</strong> 真本事：内核全开源可自建，Qdrant Cloud 全托管、Hybrid Cloud 进客户自有环境、Marketplace 账单渠道，欧盟公司 + SOC2/GDPR<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>对数据主权敏感团队友好。 边缘真相：自建免费的是软件，生产成本在调优、监控、备份与升级的人力上；Cloud 按资源用量计费，大规模向量场景下内存账单是主要成本项，量化与 on-disk 策略直接决定月账单。证据：官方口径 + 官方 Cloud 计费文档。</li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<ol>
+<li><strong>Filterable HNSW + payload query planner: filtering is not &quot;post-processing&quot;</strong> The real deal: the HNSW graph works together with payload field indexes, and the query planner estimates filter cardinality to pick between full scan / payload index / filterable HNSW paths; tenant indexes (<code>is_tenant=True</code>) with <code>payload_m</code> support strict isolation for 100k+ tenants sharing one collection, with oversized tenants promotable to dedicated shards — the most valued native capability for RAG multitenancy (per-tenant/ACL filtering). Edge truth: unindexed filter fields behave differently by version and strict mode — they may degrade to full scans that drag queries down, or be rejected outright; too many indexes eat memory, CPU, and build time; extreme filter selectivity makes recall/latency jittery, so production needs recall regression tests on real filter distributions. Evidence: official docs (indexing/filtering) + official industry page (100k+ tenants per vendor claims).</li>
+<li><strong>Multi-vector types with server-side hybrid retrieval: dense + sparse + multi-vector in one query</strong> The real deal: dense, sparse (BM25-style), multi-vector (ColBERT late interaction), and named vectors can coexist on one point; the Query API&#x27;s prefetch + server-side fusion (RRF/DBSF, weighted RRF since v1.17) pushes multi-path retrieval and result fusion into the server — &quot;semantic + keyword + rerank&quot; in a single request, fewer client round trips. Edge truth: its &quot;BM25&quot; is keyword retrieval implemented with sparse vectors, not a native full-text engine (third-party comparison); fusion weights and per-path ef/thresholds have no silver bullet and need tuning on real queries; each named vector carries its own HNSW, so memory stacks linearly — cost out every embedding model you co-host. Evidence: official docs + third-party comparisons <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li><strong>Quantization matrix + rescoring: a three-axis dial for memory/recall/latency</strong> The real deal: scalar (~4x), binary (~32x), product (~64x), and v1.18&#x27;s TurboQuant (~32x); quantization keeps original vectors for oversampling + rescoring — coarse ranking on compressed vectors, precise reranking on originals; vectors, payloads, and the HNSW graph can each be placed on-disk/mmap independently for hot/cold tiering. Edge truth: compression ratios are vendor-quoted &quot;quantized copy vs. original vector&quot; figures; total storage still includes originals, the HNSW graph, payloads, and metadata — don&#x27;t budget on the ratio alone; high compression (PQ/binary) recall damage depends strongly on query distribution, and community single-node measurements show multi-fold resident-RAM differences with visible P99 variance — measure Recall@k on a fixed dataset before going live. Evidence: official quantization docs (ratios are vendor claims) + community measurements.</li>
+<li><strong>Rust single binary + dual-protocol API: best-in-class single-node experience</strong> The real deal: one binary / Docker image, no external dependencies; REST (OpenAPI v3) + gRPC, official clients in 6 languages; a single node handles tens of millions of vectors (third-party comparison cites 10–50M — community consensus, verify by testing), so a POC runs the same day. Edge truth: single-node simplicity is not distributed simplicity — Raft metadata, shard moves, consistency tuning, and rolling upgrades are a separate ops discipline; community issues show memory growing unboundedly under concurrent writes (repeated OOM kills under a 512Mi limit); with the default all-in-memory model, &quot;add RAM as you scale&quot; is everyone&#x27;s first lesson. Evidence: official docs + community consensus + GitHub issues (community-measured).</li>
+<li><strong>Apache 2.0 open source + flexible deployment: the right not to be locked in</strong> The real deal: fully self-hostable open core, Qdrant Cloud fully managed, Hybrid Cloud inside your own environment, Marketplace billing through existing cloud accounts; EU company + SOC2/GDPR (vendor claims) helps data-sovereignty-sensitive teams. Edge truth: self-hosting saves license money and spends ops headcount (tuning, backups, upgrades, and the deep dives below); Cloud bills on resource usage, where memory dominates at scale — saving money fundamentally means &quot;getting quantization and on-disk strategy right&quot;. Evidence: vendor claims + official Cloud pricing docs.</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="深水区" data-en="Deep dives">深水区</span></h2>
+<div class="lang-block lang-zh">
+<p><strong>深水区一：向量索引与量化——HNSW 参数、量化与 rescoring 的三角债</strong></p>
+<ul>
+<li>领域：向量索引 / 存储引擎</li>
+<li>机制：核心 ANN 索引是自研 HNSW，<code>m</code>、<code>ef_construct</code> 控制图密度与构建成本，查询时 <code>ef</code> 控制候选集大小；量化（scalar/binary/product/TurboQuant）把向量压缩后常驻内存或 mmap，查询时先用压缩向量粗排、再用保留的原向量 rescoring 精排。</li>
+<li>推到边缘：<code>m</code>/<code>ef_construct</code> 开大→内存与构建时间膨胀，写入吞吐下降；开小→召回率掉，查询 <code>ef</code> 要开大补回来，延迟上升——三者是联动的，没有&quot;只调一个&quot;的免费午餐。量化开到 binary/PQ 级别后，rescoring 的 oversampling 倍数直接决定&quot;省下来的内存&quot;和&quot;丢掉的召回&quot;之间的结算点；社区单机实测显示不同量化组合的常驻 RAM 差异可达数倍且 P99 波动明显。更隐蔽的是 embedding 模型版本：一旦换模型，全部向量要重算重建索引，量化配置也要重做——&quot;模型升级&quot;在向量库里是全量重建事件。</li>
+<li>选型含义：POC 必须固定数据集、真实查询分布、目标 Recall@k 三者联调，给出&quot;内存-GB/ P99-延迟/召回率&quot;的帕累托前沿，而不是单点数字；把 embedding 模型版本纳入变更管理，模型升级按&quot;重建索引&quot;排期。</li>
+<li>来源：官方量化文档（压缩倍数为厂商口径）；社区实测（单机量化内存/召回/延迟对比，环境限定）；社区共识（模型版本变更=重建）。</li>
+</ul>
+<p><strong>深水区二：Payload 过滤与查询规划器——filterable HNSW 的选择性陷阱</strong></p>
+<ul>
+<li>领域：过滤检索 / 查询规划</li>
+<li>机制：payload 字段可建索引（keyword、integer、float、bool、geo、datetime 等，类似文档库的字段索引）；查询规划器用 payload 索引估算过滤基数，在 full scan、payload index、filterable HNSW 之间选路；tenant 索引（<code>is_tenant=True</code>）+ <code>payload_m</code> 为租户建独立子图。</li>
+<li>推到边缘：过滤选择性极低（如 tenant 只有几十个点）时走索引是浪费，走 HNSW 大图又可能漏检——规划器选错路径，延迟与召回同时恶化。高基数 ACL 过滤（如&quot;用户可见的 50 万文档 ID 列表&quot;）会让过滤条件本身成为查询主体，ANN 退化为&quot;带向量重排的过滤扫描&quot;。未建索引的过滤字段在 strict mode 下可能直接被拒绝——&quot;能跑通的查询&quot;和&quot;生产允许的查询&quot;是两个集合。payload 索引建得越多，写入路径的索引维护成本越高，segment 优化器的工作量也越大（见深水区五）。</li>
+<li>选型含义：过滤字段索引是 schema 设计的第一优先级，上线后补索引等于重建；POC 必须用真实过滤条件（含最高基数的 ACL/tenant 过滤）压测 recall 与 P99；多租户场景在&quot;单 collection + tenant 过滤&quot;与&quot;按租户分 collection&quot;之间做显式取舍（前者省运维、后者隔离更彻底）。</li>
+<li>来源：官方文档（manage-data/indexing，查询规划器路径选择）；社区性能优化指南（filtered search 慢为最常见 SA 投诉）；社区共识。</li>
+</ul>
+<p><strong>深水区三：分布式一致性——Raft 只管元数据，点数据是另一套账本</strong></p>
+<ul>
+<li>领域：复制与一致性</li>
+<li>机制：Raft 只维护集群拓扑与 collection 结构等元数据；point 的 upsert/search/delete 不走 Raft 共识，走&quot;复制因子 + write consistency factor + weak/medium/strong ordering&quot;的可调确认模型；官方明确不以强事务保证为目标。</li>
+<li>推到边缘：默认配置倾向低延迟/可用性——写成功返回不等于所有副本可见，读到旧版本是模型允许的行为，不是 bug。把&quot;strong ordering&quot;当成 SQL serializable 用，会在&quot;写后读自己的点&quot;这类场景翻车。collection 结构操作（建集合、改分片）要多数节点同意，集群选主或过渡状态下会被拒绝——&quot;元数据强一致&quot;的代价是结构变更在故障期间不可用。脑裂恢复后，点数据的副本分歧靠 snapshot/replica 修复机制收敛，应用层要接受&quot;最终一致&quot;的语义。</li>
+<li>选型含义：需要&quot;写入立即可见&quot;的业务（如向量刚写入就要被搜到）必须显式调高 write consistency 并实测延迟代价；把 Qdrant 当&quot;搜索引擎&quot;用这套模型很合适，当&quot;主数据库&quot;用会处处踩坑；混沌演练要覆盖&quot;杀节点+写+读&quot;三连，看可见性窗口是否符合业务容忍度。</li>
+<li>来源：官方分布式部署文档；社区共识。</li>
+</ul>
+<p><strong>深水区四：磁盘模式——mmap 与 page cache 的&quot;伪内存&quot;真相</strong></p>
+<ul>
+<li>领域：存储引擎 / 资源模型</li>
+<li>机制：向量、payload、HNSW 图可分别配置 on-disk，经 mmap 由操作系统 page cache 服务；热数据驻留 page cache 时接近内存体验。</li>
+<li>推到边缘：工作集超过 RAM 后，HNSW 图遍历的随机访问会产生大量 page fault，P99 直接被磁盘随机 IOPS 支配——&quot;on-disk HNSW&quot;不是 DiskANN，图遍历本身不为磁盘随机读优化。page cache 是&quot;尽力而为&quot;的共享资源，会被同机其他进程、备份任务挤占，延迟毛刺的来源在 Qdrant 进程之外。社区优化指南把&quot;第二次跑同样查询明显变快&quot;列为内存压力的诊断信号——第一次冷查询的延迟才是真实下限。SSD/NVMe 选型直接决定 on-disk 模式的天花板，SATA 盘上跑大 on-disk 图等于慢性自杀。</li>
+<li>选型含义：容量规划按&quot;热工作集 vs RAM&quot;做，不按&quot;总数据量 vs 磁盘&quot;做；POC 必须测冷启动（清空 page cache 后）的 P99；on-disk 策略要和量化一起算账——&quot;量化后常驻内存&quot;常常比&quot;原向量 on-disk&quot;更便宜更快。</li>
+<li>来源：官方资源优化文章（mmap/page cache 机制）；社区性能优化指南（诊断方法）；社区共识。</li>
+</ul>
+<p><strong>深水区五：Segment 优化器与写入路径——后台合并是隐藏的室友</strong></p>
+<ul>
+<li>领域：存储引擎 / 写入路径</li>
+<li>机制：写入先经 WAL 落盘再进 segment；小 segment 在后台被优化器合并为大 segment，达到 <code>indexing_threshold</code> 后才构建 HNSW，<code>memmap_threshold</code> 后转磁盘；<code>default_segment_number</code>、<code>max_segment_size</code> 等控制合并目标形态。</li>
+<li>推到边缘：持续 upsert 下优化器可能长期积压——collection 变黄、查询抖动、内存上涨三连；社区有&quot;55 个 segment + 全内存&quot;导致 4GB 容器 30–60 秒 OOM 重启 38 次的案例。删除是软删除，空间与旧向量要等优化器合并才真正回收，&quot;删了数据内存不降&quot;的困惑根因常在这里。segment 太多→查询 fan-out 放大延迟；segment 太少→单 segment 构建 HNSW 时间过长、写入放大。v1.16 起 RocksDB 被自研 Gridstore 替换（v1.18 彻底移除），存储引擎正处换代期，跨版本升级必须演练（见吐槽清单）。</li>
+<li>选型含义：写入密集型业务必须监控 segment 数量、优化器积压与集合颜色（green/yellow/red），并把 WAL/segment 相关阈值纳入容量规划；删除密集型业务要实测空间回收行为；升级前先读该版本的存储引擎变更。</li>
+<li>来源：官方文档（optimizer/WAL 配置项）；社区优化案例（OOM 实测）；社区整理（RocksDB→Gridstore，待官方复核）。</li>
+</ul>
+<p><strong>深水区六：Snapshot 与&quot;Qdrant 不是主数据源&quot;——RPO 的现实</strong></p>
+<ul>
+<li>领域：备份恢复 / 数据架构</li>
+<li>机制：collection snapshot / full snapshot 是时点备份，可经 API 创建、下载、上传、URL 恢复（含 checksum 校验与优先级参数）；单机启动时 CLI <code>--snapshot</code> 恢复仅限单节点；分片级恢复要求分片配置严格一致。</li>
+<li>推到边缘：快照之间没有 WAL/增量日志可以追——两次快照之间的写入，快照里没有，原生没有连续 PITR。社区生产 runbook 的标准答案是双路径：Path A 从快照恢复（RPO=快照间隔，常为 24h），Path B 从事实主库（Postgres 等）重放并重新 embedding（RPO 可到分钟级，但 100 万行重嵌要 30–60 分钟）。恢复是&quot;原地替换 collection&quot;，误操作恢复等于删数据。快照恢复不校验 embedding 模型版本——用旧快照恢复到新模型版本的集群，查出来的是&quot;能跑但语义已漂移&quot;的索引。</li>
+<li>选型含义：Qdrant 必须被设计为可重建的派生索引——原文、内容哈希、embedding 模型版本必须保存在事实主库/对象存储；备份策略 = 快照（快速回滚）+ 主库重放链路（RPO 兜底），且重放链路要定期演练；把&quot;从主库全量重建&quot;写进灾难恢复手册，而不是只测快照恢复。</li>
+<li>来源：官方文档（snapshots，单机 CLI 恢复限制）；社区 restore runbook 实测（双路径 RPO）；社区共识。</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<p><strong>Deep dive 1: Vector indexing &amp; quantization — the HNSW/quantization/rescoring triangle</strong></p>
+<ul>
+<li>Domain: vector indexing / storage engine</li>
+<li>Mechanism: the core ANN index is a custom HNSW; <code>m</code> and <code>ef_construct</code> control graph density and build cost, query-time <code>ef</code> controls candidate-set size; quantization (scalar/binary/product/TurboQuant) keeps compressed vectors resident (RAM or mmap), ranking coarsely on them and rescoring precisely on retained originals.</li>
+<li>At the edge: raising <code>m</code>/<code>ef_construct</code> inflates memory and build time and drags write throughput; lowering them drops recall, forcing query <code>ef</code> up and latency with it — the three move together, there is no free single-knob tune. At binary/PQ compression levels, the rescoring oversampling factor directly sets the settlement point between &quot;memory saved&quot; and &quot;recall lost&quot;; community single-node measurements show multi-fold resident-RAM differences across quantization combos with clear P99 variance. More insidious: the embedding model version — switching models means recomputing every vector and rebuilding every index, with quantization configs redone — a &quot;model upgrade&quot; is a full-rebuild event in a vector DB.</li>
+<li>Implication: POCs must co-tune fixed dataset + real query distribution + target Recall@k and publish the memory-GB / P99-latency / recall Pareto frontier, not a single number; put embedding model versions under change management and schedule model upgrades as index rebuilds.</li>
+<li>Sources: official quantization docs (ratios are vendor claims); community measurements (single-node quantization memory/recall/latency, environment-bounded); community consensus (model version change = rebuild).</li>
+</ul>
+<p><strong>Deep dive 2: Payload filtering &amp; the query planner — the selectivity trap of filterable HNSW</strong></p>
+<ul>
+<li>Domain: filtered retrieval / query planning</li>
+<li>Mechanism: payload fields can be indexed (keyword, integer, float, bool, geo, datetime — like a document store&#x27;s field indexes); the planner estimates filter cardinality from payload indexes and routes between full scan, payload index, and filterable HNSW; tenant indexes (<code>is_tenant=True</code>) + <code>payload_m</code> build per-tenant subgraphs.</li>
+<li>At the edge: with extremely low-selectivity filters (a tenant with only dozens of points), the index path is wasteful while the big-graph HNSW path can miss — a wrong planner choice degrades latency and recall together. High-cardinality ACL filters (e.g. &quot;the 500k document IDs this user may see&quot;) make the filter itself the dominant cost, degrading ANN into &quot;filtered scan with vector reranking&quot;. Unindexed filter fields may be rejected outright under strict mode — &quot;queries that run in dev&quot; and &quot;queries allowed in prod&quot; are two different sets. More payload indexes also raise write-path index maintenance and the segment optimizer&#x27;s workload (see deep dive 5).</li>
+<li>Implication: payload index design is the first priority of schema design — adding indexes later means rebuilding; POCs must stress real filters (including the highest-cardinality ACL/tenant filters) for recall and P99; multitenancy needs an explicit tradeoff between &quot;one collection + tenant filter&quot; (less ops) and &quot;per-tenant collections&quot; (stronger isolation).</li>
+<li>Sources: official docs (manage-data/indexing, planner path selection); community performance guides (slow filtered search is the most common SA complaint); community consensus.</li>
+</ul>
+<p><strong>Deep dive 3: Distributed consistency — Raft governs metadata only; point data keeps a separate ledger</strong></p>
+<ul>
+<li>Domain: replication &amp; consistency</li>
+<li>Mechanism: Raft maintains only cluster topology and collection-structure metadata; point upserts/searches/deletes bypass Raft consensus, using tunable replication factor + write consistency factor + weak/medium/strong ordering; officially not designed around strong transactional guarantees.</li>
+<li>At the edge: defaults favor low latency/availability — a returned write does not mean all replicas can see it; reading a stale version is model-allowed behavior, not a bug. Treating &quot;strong ordering&quot; as SQL serializable will burn you in &quot;read-my-own-point-after-write&quot; scenarios. Collection-structure operations (create collection, change sharding) need a node majority and get rejected during leader elections or transitional states — the price of strongly consistent metadata is that structural changes are unavailable during failures. After a split-brain heals, point replica divergence converges via snapshot/replica repair; the application must accept eventually-consistent semantics.</li>
+<li>Implication: workloads needing &quot;immediately visible writes&quot; (a vector must be searchable the moment it&#x27;s written) must explicitly raise write consistency and measure the latency cost; this model is excellent used as a &quot;search engine&quot;, treacherous used as a &quot;primary database&quot;; chaos drills should cover &quot;kill node + write + read&quot; and check whether the visibility window fits business tolerance.</li>
+<li>Sources: official distributed-deployment docs; community consensus.</li>
+</ul>
+<p><strong>Deep dive 4: On-disk mode — the &quot;fake memory&quot; truth of mmap and page cache</strong></p>
+<ul>
+<li>Domain: storage engine / resource model</li>
+<li>Mechanism: vectors, payloads, and the HNSW graph can each be placed on-disk, served via mmap through the OS page cache; hot data resident in page cache feels close to in-memory.</li>
+<li>At the edge: once the working set exceeds RAM, random HNSW graph traversal generates heavy page faults and P99 becomes hostage to disk random IOPS — &quot;on-disk HNSW&quot; is not DiskANN; graph traversal is not optimized for random disk reads. Page cache is best-effort shared memory, evictable by co-located processes and backup jobs — latency spike sources live outside the Qdrant process. Community guides list &quot;the second run of the same query is much faster&quot; as a memory-pressure diagnostic — the first cold query&#x27;s latency is the true floor. SSD/NVMe choice directly sets the on-disk ceiling; big on-disk graphs on SATA are slow suicide.</li>
+<li>Implication: capacity-plan on &quot;hot working set vs. RAM&quot;, not &quot;total data vs. disk&quot;; POCs must measure cold-start P99 (page cache dropped); price on-disk strategy together with quantization — &quot;quantized and resident&quot; is often cheaper and faster than &quot;original vectors on disk&quot;.</li>
+<li>Sources: official resource-optimization articles (mmap/page-cache mechanics); community performance guides (diagnostics); community consensus.</li>
+</ul>
+<p><strong>Deep dive 5: The segment optimizer &amp; write path — the hidden roommate doing background merges</strong></p>
+<ul>
+<li>Domain: storage engine / write path</li>
+<li>Mechanism: writes go through the WAL to disk, then into segments; small segments are merged into large ones by a background optimizer; HNSW is built after <code>indexing_threshold</code>, disk transition after <code>memmap_threshold</code>; <code>default_segment_number</code>, <code>max_segment_size</code>, etc. shape the merge targets.</li>
+<li>At the edge: under sustained upserts the optimizer can backlog indefinitely — yellow collections, query jitter, and memory growth arrive together; one community case shows 55 segments + all-in-memory causing a 4GB container to OOM-restart 38 times every 30–60 seconds. Deletes are soft deletes — space and old vectors are only truly reclaimed when the optimizer merges, which is why &quot;memory doesn&#x27;t drop after deletes&quot; confuses people. Too many segments amplify query fan-out latency; too few make single-segment HNSW builds slow and write amplification worse. Since v1.16 RocksDB is being replaced by the in-house Gridstore (fully removed in v1.18) — the storage engine is mid-generation-change, so cross-version upgrades need rehearsal (see complaints).</li>
+<li>Implication: write-heavy workloads must monitor segment counts, optimizer backlog, and collection health (green/yellow/red), and include WAL/segment thresholds in capacity planning; delete-heavy workloads should verify space-reclamation behavior; read each version&#x27;s storage-engine changes before upgrading.</li>
+<li>Sources: official docs (optimizer/WAL configuration); community optimization cases (OOM field reports); community compilations (RocksDB→Gridstore, pending official verification).</li>
+</ul>
+<p><strong>Deep dive 6: Snapshots &amp; &quot;Qdrant is not your system of record&quot; — the RPO reality</strong></p>
+<ul>
+<li>Domain: backup/recovery / data architecture</li>
+<li>Mechanism: collection snapshots / full snapshots are point-in-time backups creatable, downloadable, uploadable, and recoverable via API (with checksum verification and priority parameters); single-node CLI <code>--snapshot</code> recovery is single-node-only; shard-level recovery demands strictly matching shard configuration.</li>
+<li>At the edge: there is no WAL/incremental log to replay between snapshots — writes between two snapshots exist in neither, and there is no native continuous PITR. The standard community production answer is two paths: Path A, restore from snapshot (RPO = snapshot interval, often 24h); Path B, replay from the system of record (Postgres etc.) and re-embed (RPO down to minutes, but re-embedding 1M rows takes ~30–60 min). Recovery replaces the collection in place — a mistaken recovery deletes data. Snapshot restore doesn&#x27;t validate embedding model versions — restoring an old snapshot into a cluster on a new model version yields an index that runs but has semantically drifted.</li>
+<li>Implication: Qdrant must be designed as a rebuildable derived index — source text, content hashes, and embedding model versions live in the system of record / object storage; backup strategy = snapshots (fast rollback) + a replay pipeline from the primary store (RPO backstop), rehearsed regularly; put &quot;full rebuild from the primary store&quot; in the DR handbook, not just snapshot recovery.</li>
+<li>Sources: official docs (snapshots; single-node CLI recovery limits); community restore runbooks, field-tested (dual-path RPO); community consensus.</li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="用户最买账的 5 点" data-en="What users love most">用户最买账的 5 点</span></h2>
+<div class="lang-block lang-zh">
+<ol>
+<li><strong>单机/Docker 上手极快，&quot;当天就能跑通 RAG 链路&quot;</strong><ul>
+<li>为什么是真的：单二进制、无外部依赖，<code>docker run</code> 起服务后 REST/gRPC 即用；collection→point→payload→带过滤搜索的 API 心智负担小，Python 客户端几十行代码跑通 ingestion+检索闭环。</li>
+<li>边缘与限度：快的是单机 POC，不是生产——分布式、安全加固（TLS/API key/JWT）、备份、监控、可观测告警每一项都要补课；社区 OOM 类 issue 证明&quot;跑起来&quot;和&quot;稳住&quot;之间隔着容量规划。以及单机 demo 的延迟数字不能外推到分布式。</li>
+<li>来源：官方文档（快速开始）；社区共识。观察版本：v1.18.x。</li>
+</ul></li>
+<li><strong>Payload 过滤是真强项，RAG 的权限/租户过滤刚需被原生满足</strong><ul>
+<li>为什么是真的：keyword/integer/float/bool/geo/datetime 多类型索引 + 查询规划器自动选路 + tenant 索引的严格多租户隔离，一次查询同时完成&quot;向量近邻+元数据过滤+租户隔离&quot;，不用在应用层做后过滤（后过滤会破坏 ANN 的召回保证）。</li>
+<li>边缘与限度：见深水区二——过滤字段索引是 schema 设计前置工作，事后补等于重建；极端选择性与高基数 ACL 仍是抖动源；strict mode 下未索引过滤可能被拒，开发期&quot;能跑&quot;的查询不等于生产&quot;允许&quot;的查询。</li>
+<li>来源：官方文档（filtering/indexing）；社区多租户实践。观察版本：v1.18.x。</li>
+</ul></li>
+<li><strong>内存/召回/延迟的调节手段是向量库里最丰富的之一</strong><ul>
+<li>为什么是真的：HNSW 参数、4 种量化、rescoring、on-disk/mmap 分层、per-collection 资源视图（v1.18），&quot;把 10 亿向量塞进有限内存&quot;有完整的工具箱；社区有 scalar/PQ/binary 的实测内存对比可抄作业。</li>
+<li>边缘与限度：旋钮多=调参空间大，生产调优需要&quot;数据集+查询分布+Recall@k&quot;三联的基准 harness，否则就是玄学；厂商口径的压缩倍数不能直接当容量规划依据；embedding 模型一升级全部重来。</li>
+<li>来源：官方量化文档；社区实测。观察版本：v1.18.x。</li>
+</ul></li>
+<li><strong>开源与部署形态灵活，&quot;不被云厂商锁定&quot;</strong><ul>
+<li>为什么是真的：Apache 2.0 内核可完全自建，Cloud 全托管、Hybrid Cloud 进自有环境、Marketplace 走已有云账单；欧盟公司+SOC2/GDPR<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>对数据主权敏感团队是加分项。</li>
+<li>边缘与限度：自建省的是 license 钱，花的是运维人力（调优/备份/升级/深水区五和六）；Cloud 按资源用量计费，大规模下内存是账单大头，省钱的本质是&quot;把量化与 on-disk 调好&quot;。</li>
+<li>来源：官方口径；官方 Cloud 计费文档。观察版本：v1.18.x。</li>
+</ul></li>
+<li><strong>安全与可观测在 v1.17–v1.18 被快速补齐</strong><ul>
+<li>为什么是真的：v1.17 补上内建审计日志与 cluster-wide telemetry、segment optimization monitoring；v1.18 补上审计日志查询 API、tracing ID、per-collection API metrics、按组件拆分的内存/磁盘/page cache 视图——两代版本把企业级&quot;看得见、查得到&quot;补上了。</li>
+<li>边缘与限度：审计默认关闭，不开等于没有；per-collection metrics 开高基数标签有 Prometheus 负载代价；page-cache 命中率、优化器积压这类&quot;向量库特有&quot;的黄金指标仍要自己建告警，Dashboard 不会替你值班。</li>
+<li>来源：官方 v1.17/v1.18 发布文章。观察版本：v1.17/v1.18。</li>
+</ul></li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<ol>
+<li><strong>Single-node/Docker onboarding is blazing fast — &quot;RAG pipeline running the same day&quot;</strong><ul>
+<li>Why it&#x27;s true: single binary, zero external dependencies; REST/gRPC live right after <code>docker run</code>; the collection→point→payload→filtered-search API has a small conceptual surface, and the Python client closes the ingest+retrieve loop in dozens of lines.</li>
+<li>Edges &amp; limits: what&#x27;s fast is the single-node POC, not production — distributed deployment, security hardening (TLS/API keys/JWT), backups, monitoring, and alerting each need their own work; community OOM issues prove &quot;running&quot; and &quot;stable&quot; are separated by capacity planning. And single-node demo latency numbers don&#x27;t extrapolate to distributed setups.</li>
+<li>Source: official docs (quickstart); community consensus. Observed version: v1.18.x.</li>
+</ul></li>
+<li><strong>Payload filtering is a genuine strength — RAG&#x27;s permission/tenant filtering needs are natively met</strong><ul>
+<li>Why it&#x27;s true: multi-type indexes (keyword/integer/float/bool/geo/datetime) + planner auto-routing + strictly isolated tenant indexes let one query do &quot;vector nearest-neighbor + metadata filter + tenant isolation&quot; without application-side post-filtering (which breaks ANN recall guarantees).</li>
+<li>Edges &amp; limits: see deep dive 2 — filter-field indexing is upfront schema work; adding it later means rebuilding; extreme selectivity and high-cardinality ACLs remain jitter sources; under strict mode unindexed filters may be rejected, so dev-runnable queries aren&#x27;t necessarily prod-allowed queries.</li>
+<li>Source: official docs (filtering/indexing); community multitenancy practice. Observed version: v1.18.x.</li>
+</ul></li>
+<li><strong>One of the richest memory/recall/latency tuning toolboxes among vector DBs</strong><ul>
+<li>Why it&#x27;s true: HNSW parameters, 4 quantization schemes, rescoring, on-disk/mmap tiering, per-collection resource views (v1.18) — a complete toolbox for &quot;fitting a billion vectors into finite memory&quot;; community-published scalar/PQ/binary memory comparisons are there to copy.</li>
+<li>Edges &amp; limits: many dials = large tuning space; production tuning needs a &quot;dataset + query distribution + Recall@k&quot; benchmark harness or it&#x27;s guesswork; vendor-quoted compression ratios can&#x27;t be used directly for capacity planning; an embedding model upgrade resets everything.</li>
+<li>Source: official quantization docs; community measurements. Observed version: v1.18.x.</li>
+</ul></li>
+<li><strong>Open source with flexible deployment — &quot;no cloud-vendor lock-in&quot;</strong><ul>
+<li>Why it&#x27;s true: Apache 2.0 core is fully self-hostable; Cloud fully managed, Hybrid Cloud inside your own environment, Marketplace billing through existing cloud accounts; EU company + SOC2/GDPR (vendor claims) scores points with data-sovereignty-sensitive teams.</li>
+<li>Edges &amp; limits: self-hosting saves license money and spends ops headcount (tuning/backups/upgrades plus deep dives 5 and 6); Cloud bills on resource usage where memory dominates at scale — saving money fundamentally means getting quantization and on-disk strategy right.</li>
+<li>Source: vendor claims; official Cloud pricing docs. Observed version: v1.18.x.</li>
+</ul></li>
+<li><strong>Security &amp; observability caught up fast in v1.17–v1.18</strong><ul>
+<li>Why it&#x27;s true: v1.17 added built-in audit logging, cluster-wide telemetry, and segment optimization monitoring; v1.18 added the audit-log query API, tracing IDs, per-collection API metrics, and per-component memory/disk/page-cache views — two releases filled the enterprise &quot;see it, trace it&quot; gap.</li>
+<li>Edges &amp; limits: audit is off by default — unconfigured means nonexistent; high-cardinality per-collection metric labels cost Prometheus load; vector-DB-specific golden signals (page-cache hit rate, optimizer backlog) still need your own alerts — the dashboard won&#x27;t take the pager for you.</li>
+<li>Source: official v1.17/v1.18 release posts. Observed version: v1.17/v1.18.</li>
+</ul></li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="吐槽清单" data-en="Complaints">吐槽清单</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>分类</th><th>吐槽</th><th>影响版本</th><th>状态</th></tr></thead>
+<tbody>
+<tr><td>安全坑</td><td>默认不开启 TLS 与 API key，裸奔端口直接暴露在公网（历史上多次出现未授权访问的真实事故）</td><td>全版本</td><td>open</td></tr>
+<tr><td>安全坑</td><td>v1.17 之前无内建审计日志；v1.17+ 默认仍关闭且日志量增长快；<code>trust_forwarded_headers</code> 误开会让客户端伪造审计 IP</td><td>&lt;v1.17 / v1.17+</td><td>partially-fixed（v1.17 起有审计；默认关闭与日志量仍是现实）</td></tr>
+<tr><td>安全坑</td><td>OSS 内核静态加密（TDE）查证为无，落盘文件与快照明文存储，只能依赖卷级/云盘加密</td><td>全版本</td><td>open</td></tr>
+<tr><td>安全坑</td><td>社区整理的 2026-09 安全通告称 v1.18.2 修复 REST 认证白名单绕过与恶意 snapshot 堆读取漏洞</td><td>v1.18.x</td><td>partially-fixed（待官方 release notes 复核准确修复版本）</td></tr>
+<tr><td>一致性坑</td><td>Raft 只管元数据，point 数据默认弱一致；&quot;strong ordering&quot;常被误读为事务强一致，写后读旧版本是模型允许行为</td><td>全版本</td><td>open（文档行为，非 bug）</td></tr>
+<tr><td>事务坑</td><td>无多记录 ACID，不适合做事实主库；同 ID upsert 原子覆盖的语义与关系型&quot;更新&quot;心智不同，业务补偿逻辑要自己写</td><td>全版本</td><td>open（架构固有）</td></tr>
+<tr><td>性能坑</td><td>默认全内存模型，规模上来后 OOM 是最常见的 issue 类型；on-disk/mmap 下工作集超 RAM 后 P99 被 page fault/磁盘 IOPS 支配</td><td>全版本</td><td>open</td></tr>
+<tr><td>性能坑</td><td>payload 索引建太多→内存/构建开销上升；过滤字段无索引时依 strict mode 可能退化为扫描或直接被拒绝</td><td>全版本</td><td>open</td></tr>
+<tr><td>运维坑</td><td>升级要逐 minor；v1.16 存储引擎切换（RocksDB→Gridstore）、v1.17 gRPC 响应格式变化、v1.18 认证收紧内部 gRPC，跨版本直跳有风险，原地回滚无官方保证</td><td>v1.16–v1.18</td><td>open</td></tr>
+<tr><td>运维坑</td><td>快照≠连续 PITR；恢复原地替换 collection；RPO 缺口要回事实主库重放+重新 embedding，大规模重建是小时级</td><td>全版本</td><td>open（架构固有）</td></tr>
+<tr><td>运维坑</td><td>参数面大（HNSW m/ef、量化、optimizer 阈值、shard key），生产调优门槛高；优化器积压时集合变黄、查询抖动</td><td>全版本</td><td>open</td></tr>
+<tr><td>生态坑</td><td>中文深度资料少，深水区材料、版本升级细节、故障复盘主要为英文</td><td>全版本</td><td>open</td></tr>
+<tr><td>生态坑</td><td>无 SQL/ORM 生态；已有 PostgreSQL 且向量规模不大的团队引入它是&quot;多一个组件&quot;，pgvector 可能是更便宜的选择</td><td>全版本</td><td>open（架构固有）</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Category</th><th>Complaint</th><th>Affected versions</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Security</td><td>TLS and API keys are off by default — exposed ports on the public internet have caused real unauthorized-access incidents</td><td>All versions</td><td>open</td></tr>
+<tr><td>Security</td><td>No built-in audit logging before v1.17; still off by default in v1.17+ with fast-growing log volume; misconfigured <code>trust_forwarded_headers</code> lets clients spoof audit IPs</td><td>&lt;v1.17 / v1.17+</td><td>partially-fixed (audit exists since v1.17; default-off and log volume remain realities)</td></tr>
+<tr><td>Security</td><td>No TDE in the OSS core (verified absent) — on-disk files and snapshots are plaintext, only volume/cloud-disk encryption to rely on</td><td>All versions</td><td>open</td></tr>
+<tr><td>Security</td><td>Community-compiled 2026-09 security notes claim v1.18.2 fixed a REST auth allowlist bypass and a malicious-snapshot heap-read vulnerability</td><td>v1.18.x</td><td>partially-fixed (exact fix versions pending official release-notes verification)</td></tr>
+<tr><td>Consistency</td><td>Raft covers metadata only; point data is weakly consistent by default; &quot;strong ordering&quot; is routinely misread as transactional strong consistency — reading your own write&#x27;s stale version is model-allowed</td><td>All versions</td><td>open (documented behavior, not a bug)</td></tr>
+<tr><td>Transactions</td><td>No multi-record ACID — unsuitable as a system of record; same-ID upsert atomic-overwrite semantics differ from relational &quot;update&quot; intuition, so compensation logic is yours to write</td><td>All versions</td><td>open (architectural)</td></tr>
+<tr><td>Performance</td><td>Default all-in-memory model makes OOM the most common issue category as data grows; once the working set exceeds RAM under on-disk/mmap, P99 is governed by page faults and disk IOPS</td><td>All versions</td><td>open</td></tr>
+<tr><td>Performance</td><td>Too many payload indexes inflate memory/build cost; unindexed filter fields may degrade to scans or be rejected depending on strict mode</td><td>All versions</td><td>open</td></tr>
+<tr><td>Ops</td><td>Upgrades must go minor-by-minor; v1.16 storage-engine switch (RocksDB→Gridstore), v1.17 gRPC response-format change, v1.18 auth tightening on internal gRPC — skipping versions is risky, with no official in-place rollback</td><td>v1.16–v1.18</td><td>open</td></tr>
+<tr><td>Ops</td><td>Snapshots ≠ continuous PITR; recovery replaces the collection in place; the RPO gap needs replay from the system of record + re-embedding, and large rebuilds take hours</td><td>All versions</td><td>open (architectural)</td></tr>
+<tr><td>Ops</td><td>Large parameter surface (HNSW m/ef, quantization, optimizer thresholds, shard keys) makes production tuning expert work; optimizer backlog turns collections yellow and queries jittery</td><td>All versions</td><td>open</td></tr>
+<tr><td>Ecosystem</td><td>Thin Chinese-language deep material — deep dives, upgrade details, and incident retrospectives are mostly English</td><td>All versions</td><td>open</td></tr>
+<tr><td>Ecosystem</td><td>No SQL/ORM ecosystem; for teams already on PostgreSQL with modest vector scale, it&#x27;s &quot;one more component&quot; — pgvector may be the cheaper choice</td><td>All versions</td><td>open (architectural)</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="判决" data-en="Verdict">判决</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li><strong>一句话定位</strong>：AI 检索层的专用派生索引——把&quot;低延迟 ANN + 强过滤 + 混合检索&quot;做到开源第一梯队，代价是你必须接受&quot;无事务、无连续 PITR、两层一致性&quot;，并把它当可重建的索引而不是事实主库来运维。</li>
+<li><strong>适合谁</strong>：<ul>
+<li>RAG/语义检索/推荐/智能体记忆场景，需要毫秒级 ANN 且过滤条件复杂（租户隔离、ACL、时间/地域范围）的团队；</li>
+<li>多租户 SaaS，需要 10 万+租户共用集群且严格隔离、或大租户晋升独立分片的平台；</li>
+<li>需要 dense+sparse 混合检索（关键词+语义）且希望服务端一次融合的搜索团队；</li>
+<li>接受&quot;向量库是派生索引&quot;、愿意维护&quot;事实主库→embedding→Qdrant&quot;重建链路的团队；</li>
+<li>数据主权敏感、需要自建或 Hybrid Cloud、不想被单一云厂商锁定的团队。</li>
+</ul></li>
+<li><strong>不适合谁</strong>：<ul>
+<li>需要 SQL JOIN、跨记录 ACID、把向量库当唯一事实源的团队；</li>
+<li>需要严格连续 PITR、审计级数据不可丢的合规场景（快照 RPO 缺口是原生短板）；</li>
+<li>已有 PostgreSQL 且向量规模不大（百万级以内）、过滤简单——pgvector 复用现有事务/权限/备份体系通常更便宜；</li>
+<li>要求数据库内核级 TDE 而不能接受卷级加密的团队；</li>
+<li>团队无专职运维又想&quot;装完不管&quot;——单机简单，分布式与生产调优并不简单。</li>
+</ul></li>
+<li><strong>迁移成本</strong>：<ul>
+<li>pgvector / Elasticsearch → 中：向量导出导入只是开始，filter 语义、距离度量、ID 类型、embedding 模型版本、双写、召回回归测试、索引重建都要重做；从 ES 迁还要重建&quot;全文检索→sparse 向量&quot;的检索心智。</li>
+<li>Pinecone / Weaviate / Milvus → 中：官方与社区有迁移指南（细节待复核），但 query DSL、混合检索实现方式、租户模型差异仍需逐项适配；Weaviate 的 GraphQL/内置向量化在 Qdrant 侧没有对等物。</li>
+<li>核心原则：embedding 与原文必须保留在事实主库/对象存储，Qdrant 视为可重建派生索引；迁移演练必须包含&quot;从主库全量重建&quot;的灾难路径，而不只是&quot;导向量&quot;。</li>
+</ul></li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li><strong>One-liner</strong>: A purpose-built derived index for the AI retrieval layer — top-tier open source for &quot;low-latency ANN + strong filtering + hybrid retrieval&quot;, at the price of accepting &quot;no transactions, no continuous PITR, two-tier consistency&quot; and operating it as a rebuildable index, never the system of record.</li>
+<li><strong>Good fit for</strong>:<ul>
+<li>RAG / semantic search / recommendations / agent-memory workloads needing millisecond ANN with complex filters (tenant isolation, ACLs, time/geo ranges);</li>
+<li>Multi-tenant SaaS needing 100k+ tenants on shared infrastructure with strict isolation, or dedicated shards for large tenants;</li>
+<li>Search teams needing dense+sparse hybrid retrieval (keyword + semantic) fused server-side in one request;</li>
+<li>Teams accepting &quot;the vector DB is a derived index&quot; and willing to maintain the &quot;system of record → embedding → Qdrant&quot; rebuild pipeline;</li>
+<li>Data-sovereignty-sensitive teams needing self-hosting or Hybrid Cloud without single-cloud-vendor lock-in.</li>
+</ul></li>
+<li><strong>Poor fit for</strong>:<ul>
+<li>Workloads needing SQL JOINs, cross-record ACID, or the vector DB as the sole system of record;</li>
+<li>Strict continuous-PITR / audit-grade no-data-loss compliance scenarios (the snapshot RPO gap is a native weakness);</li>
+<li>Teams already on PostgreSQL with modest vector scale (sub-million) and simple filters — pgvector reuses existing transactions/permissions/backup at lower cost;</li>
+<li>Teams requiring database-kernel TDE who can&#x27;t accept volume-level encryption;</li>
+<li>Teams with no dedicated ops wanting &quot;install and forget&quot; — single-node is easy, distributed production tuning is not.</li>
+</ul></li>
+<li><strong>Migration cost</strong>:<ul>
+<li>pgvector / Elasticsearch → medium: vector export/import is just the start — filter semantics, distance metrics, ID types, embedding model versions, dual writes, recall regression tests, and index rebuilds all need redoing; migrating from ES also means rebuilding the &quot;full-text → sparse vector&quot; retrieval mindset.</li>
+<li>Pinecone / Weaviate / Milvus → medium: official and community migration guides exist (details pending verification), but query DSL, hybrid-retrieval implementations, and tenancy-model differences still need case-by-case adaptation; Weaviate&#x27;s GraphQL/built-in vectorization have no Qdrant equivalent.</li>
+<li>Core principle: embeddings and source text must stay in the system of record / object storage with Qdrant treated as a rebuildable derived index; migration rehearsals must include the &quot;full rebuild from the primary store&quot; disaster path, not just &quot;import vectors&quot;.</li>
+</ul></li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="来源与待验证清单" data-en="Sources & to-be-verified">来源与待验证清单</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li>版本基线：第三方版本追踪（v1.18.3，2026-07-17，待官方 release 页复核）；官方 v1.18 发布文章（TurboQuant、named vectors 增删、内存监控、审计查询 API、tracing ID、per-collection metrics）；官方 v1.17 发布资料（审计日志、cluster-wide telemetry、segment optimization monitoring）</li>
+<li>安全：官方安全文档（TLS、API key、JWT RBAC、审计）；官方 Cloud 集群配置页（审计日志、加密存储磁盘）；v1.18.2 安全修复为社区整理口径，待官方 release notes 复核</li>
+<li>分布式与一致性：官方分布式部署文档（Raft 元数据、point 写入 ordering、replication factor）</li>
+<li>索引与存储：官方量化文档（scalar/binary/product/TurboQuant 压缩倍数为厂商口径）；官方 manage-data/indexing（payload 索引、查询规划器、tenant 索引）；官方资源优化文章（mmap/page cache/on-disk）；社区性能优化指南（filtered search 慢、内存诊断）；社区单机量化实测（环境限定，P99 波动）</li>
+<li>备份恢复：官方 snapshots 文档（upload/recover、单机 CLI 恢复限制、shard 级恢复）；社区 restore runbook 实测（快照+主库重放双路径 RPO）</li>
+<li>升级：官方 1.14/1.15 发布文章（逐 minor 升级建议）；社区整理（v1.16 RocksDB→Gridstore、v1.17 gRPC 变化、v1.18 认证收紧，待官方复核）</li>
+<li>公司与商业：FYB（2021-10 柏林创立、创始人、A 轮 €28M）；TechCrunch（种子轮 $7.5M）；社区整理的 B 轮 $50M（2026-03，AVP 领投，待官方复核）；官方 Cloud 计费文档（资源用量计费、Marketplace 账单）</li>
+<li>中文资料：社区共识（CSDN/掘金/GitHub 中文教程存在，深度材料以英文为主）</li>
+<li>下次评审：复核官方 release 页确认 v1.18.3 与安全修复版本；跟踪 Gridstore 完全替代 RocksDB 后的升级路径；复核 B 轮融资与 Qdrant Edge GA 进展；跟踪官方中文文档进展</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li>Version baseline: third-party version tracker (v1.18.3, 2026-07-17, pending official releases-page verification); official v1.18 release post (TurboQuant, named-vector add/remove, memory monitoring, audit query API, tracing IDs, per-collection metrics); official v1.17 release materials (audit logging, cluster-wide telemetry, segment optimization monitoring)</li>
+<li>Security: official security docs (TLS, API keys, JWT RBAC, audit); official Cloud cluster-config page (audit logs, encrypted storage disks); v1.18.2 security fixes are community-compiled, pending official release-notes verification</li>
+<li>Distributed &amp; consistency: official distributed-deployment docs (Raft metadata, point-write ordering, replication factor)</li>
+<li>Indexing &amp; storage: official quantization docs (scalar/binary/product/TurboQuant ratios are vendor claims); official manage-data/indexing (payload indexes, query planner, tenant indexes); official resource-optimization articles (mmap/page cache/on-disk); community performance guides (slow filtered search, memory diagnostics); community single-node quantization measurements (environment-bounded, P99 variance)</li>
+<li>Backup &amp; recovery: official snapshots docs (upload/recover, single-node CLI recovery limits, shard-level recovery); community restore runbooks, field-tested (snapshot + primary-replay dual-path RPO)</li>
+<li>Upgrades: official 1.14/1.15 release posts (minor-by-minor guidance); community compilations (v1.16 RocksDB→Gridstore, v1.17 gRPC changes, v1.18 auth tightening — pending official verification)</li>
+<li>Company &amp; business: FYB (founded Oct 2021 in Berlin, founders, €28M Series A); TechCrunch ($7.5M seed); community-compiled $50M Series B (2026-03, AVP-led, pending official verification); official Cloud pricing docs (resource-usage billing, Marketplace billing)</li>
+<li>Chinese resources: community consensus (CSDN/Juejin/GitHub Chinese tutorials exist; depth material is English-first)</li>
+<li>Next review: verify v1.18.3 and security fix versions against the official releases page; track the post-Gridstore upgrade path after RocksDB&#x27;s full removal; verify Series B and Qdrant Edge GA; track official Chinese-docs progress</li>
+</ul>
+</div>
+</section>
+</main>
+<footer class="footer">
+  <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
+</footer>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
