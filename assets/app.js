@@ -171,6 +171,41 @@ if (lab) lab.textContent = on
 }
 }
 
+/* 加入对比：飞入托盘动画（电商加购风格），落袋后才真正选中 */
+var _flying = {};
+function flyToTray(fromEl, done) {
+var trayBtn = document.getElementById('cmp-tray-btn');
+if (!trayBtn || !fromEl || window.matchMedia('(prefers-reduced-motion: reduce)').matches) { done(); return;}
+var r1 = fromEl.getBoundingClientRect(), r2 = trayBtn.getBoundingClientRect();
+var x0 = r1.left + r1.width / 2, y0 = r1.top + r1.height / 2;
+var x1 = r2.left + r2.width / 2, y1 = r2.top + r2.height / 2;
+var dot = document.createElement('div');
+dot.className = 'fly-dot';
+dot.style.transform = 'translate(' + x0 + 'px,' + y0 + 'px) translate(-50%,-50%)';
+document.body.appendChild(dot);
+var dur = 620, t0 = null;
+function frame(ts) {
+if (!t0) t0 = ts;
+var t = Math.min(1, (ts - t0) / dur);
+var x = x0 + (x1 - x0) * t;
+var y = y0 + (y1 - y0) * t - Math.sin(t * Math.PI) * 110;
+var s = 1 - .55 * t;
+dot.style.transform = 'translate(' + x + 'px,' + y + 'px) translate(-50%,-50%) scale(' + s + ')';
+dot.style.opacity = String(1 - .25 * t);
+if (t < 1) requestAnimationFrame(frame);
+else { dot.remove(); popTray(); done();}
+}
+requestAnimationFrame(frame);
+}
+function popTray() {
+var b = document.getElementById('cmp-tray-btn');
+if (!b) return;
+b.classList.remove('tray-pop');
+void b.offsetWidth;
+b.classList.add('tray-pop');
+setTimeout(function () { b.classList.remove('tray-pop');}, 500);
+}
+
 /* 对比页：有选择时只显示已选产品行，并禁用领域筛选 */
 var cmpDomain = 'all';
 function applyCompareFilter() {
@@ -380,8 +415,17 @@ var t = ev.target;
 if (!t ||!t.closest) return;
 var add = t.closest('[data-addcmp]');
 if (add) {
-if (toggleSelect(add.getAttribute('data-addcmp')) === 'full') {
+var _slug = add.getAttribute('data-addcmp');
+var _sel = getSelection();
+if (_sel.indexOf(_slug) < 0 && _sel.length >= MAX_SEL) {
 flashCopy(add, getLang() === 'zh'? '最多选 4 款': 'Up to 4');
+} else if (_sel.indexOf(_slug) < 0) {
+if (!_flying[_slug]) {
+_flying[_slug] = true;
+flyToTray(add, function () { _flying[_slug] = false; toggleSelect(_slug);});
+}
+} else {
+toggleSelect(_slug);
 }
 return;
 }
