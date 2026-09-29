@@ -4,6 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>DB 选型参考 - AI选型</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg"/>
 <link rel="stylesheet" href="assets/style.css"/>
 </head>
 <body>
@@ -108,7 +109,7 @@
 </div>
 
 </div><h2 id="grp-oltp"><span data-zh="通用选型" data-en="General">通用选型</span></h2>
-<p class="grp-intro"><span data-zh="覆盖 OLTP 与通用场景的选型：多候选库全面对比、去 O 迁移、读扩展架构、KV 与文档库、单库深挖。" data-en="Covers OLTP and general scenarios: head-to-head comparison of candidates, migrating off Oracle, read-scaling architecture, KV/document selection, and single-database deep dives.">覆盖 OLTP 与通用场景的选型：多候选库全面对比、去 O 迁移、读扩展架构、KV 与文档库、单库深挖。</span></p>
+<p class="grp-intro"><span data-zh="覆盖 OLTP 与通用场景的选型：多候选库全面对比、去 O 迁移、读扩展架构、KV 与文档库。" data-en="Covers OLTP and general scenarios: head-to-head comparison of candidates, migrating off Oracle, read-scaling architecture, KV/document selection, and single-database deep dives.">覆盖 OLTP 与通用场景的选型：多候选库全面对比、去 O 迁移、读扩展架构、KV 与文档库。</span></p>
 <div class="prompt-card" data-cand="multi" data-hint-zh="（填 2-4 个，如 PostgreSQL、TiDB、PolarDB）" data-hint-en="(2-4, e.g. PostgreSQL, TiDB, PolarDB)">
   <h3><span data-zh="通用选型对比" data-en="General comparison">通用选型对比</span></h3>
   <p class="prompt-use"><span data-zh="适用：第一次选型，或在 2-4 个候选库之间做一次全面对比。" data-en="Use when: selecting for the first time, or comparing 2-4 candidates head to head.">适用：第一次选型，或在 2-4 个候选库之间做一次全面对比。</span></p>
@@ -127,7 +128,7 @@
 【候选数据库】{{CANDIDATES}}
 
 【输出要求】
-1. 按这 22 个维度逐项对比：静态加密、传输加密、审计、认证与权限、备份恢复、可观测性、连接模型、事务与隔离级别、复制与一致性、扩展方式、兼容性、许可证与商业模式、中文资料丰富度、性能与延迟特征、合规与认证、成熟度与社区生态、标杆用户、生态工具链、云托管与 Serverless、数据接入与摄入、外部数据访问、CDC 与下游同步。
+1. 按这 46 个维度逐项对比：静态加密 / TDE、TLS / 传输加密、审计、认证与权限、备份恢复、可观测性、连接模型、事务与隔离级别、复制与一致性、扩展方式、兼容性、许可证与商业模式、中文资料丰富度、性能与延迟特征、合规与认证、成熟度与社区生态、标杆用户、生态工具链、云托管与 Serverless、数据接入与摄入、外部数据访问、CDC 与下游同步、TTL 与数据生命周期管理、在线 DDL 与 Schema 演进、多租户与资源隔离、跨地域多活、高可用架构与 RTO/RPO、行级安全与数据脱敏、JSON 与半结构化能力、全文检索能力、存储效率与压缩、开源协议与厂商锁定风险、查询优化器与计划稳定性、参数调优与自治能力、静默数据损坏防护、存储过程/触发器/过程语言、约束与数据完整性、分析 SQL 完备性、被遗忘权与数据擦除、数据血缘与目录集成、存算分离 vs 存算一体、多模能力、FinOps 成本可观测性、驱动与多语言生态、物化视图、支持跨云。
 2. 每个关键结论标注证据等级：官方文档、厂商口径、社区实测、社区共识、待验证。严格区分"查证为无"和"未找到证据"，不要把没查到的写成不支持。
 3. 每款候选库给出：最适合的场景、最可能踩的三个坑（从机制层面解释，并说明在什么负载或故障下会触发）。
 4. 不做综合总分、不排名，只给带条件的判断，格式为"如果……那么……"。
@@ -148,7 +149,7 @@
 【Candidate databases】{{CANDIDATES}}
 
 【Output requirements】
-1. Compare dimension by dimension across these 22 dimensions: encryption at rest, encryption in transit, auditing, authentication and authorization, backup and recovery, observability, connection model, transactions and isolation levels, replication and consistency, scaling approach, compatibility, license and business model, Chinese-language resources, performance & latency, compliance & certifications, maturity & community, notable adopters, ecosystem tooling, managed & serverless, data ingestion, external data access, cdc & downstream.
+1. Compare dimension by dimension across these 46 dimensions: data-at-rest encryption / TDE, TLS / transport encryption, auditing, authentication & authorization, backup & recovery, observability, connection model, transactions & isolation levels, replication & consistency, scaling, compatibility, license & business model, Chinese-language resources, performance & latency, compliance & certifications, maturity & community, notable adopters, ecosystem tooling, managed & serverless, data ingestion, external data access, CDC & downstream, TTL & data lifecycle, online DDL & schema evolution, multi-tenancy & resource isolation, cross-region active-active, HA & RTO/RPO, row-level security & masking, JSON & semi-structured, full-text search, storage efficiency & compression, OSS license & lock-in risk, optimizer & plan stability, tuning & autonomy, silent corruption protection, stored procedures & triggers, constraints & integrity, analytical SQL, right to erasure, data lineage & catalog, storage-compute architecture, multi-model, FinOps & cost observability, drivers & clients, materialized views, multi-cloud support.
 2. Tag each key claim with an evidence level: official docs, vendor claim, community-tested, community consensus, to-be-verified. Strictly distinguish "verified absent" from "no evidence found"; never present something you could not find as unsupported.
 3. For each candidate: the scenarios it fits best, and the three most likely production pitfalls, explained at the mechanism level, including the load or failure conditions that trigger them.
 4. No aggregate total score and no ranking. Give only conditional verdicts in "if ..., then ..." form.
