@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>YugabyteDB - DB 选型参考</title>
+<link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">&#9672;</span> DB <span data-zh="选型参考" data-en="Compare">选型参考</span></a>
+    <nav class="mainnav">
+<a href="index.html" class="active" data-zh="首页" data-en="Home">首页</a>
+<a href="compare.html" class="" data-zh="维度对比" data-en="Compare">维度对比</a>
+<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
+<a href="advisor.html" class="" data-zh="AI选型" data-en="AI Selection">AI选型</a>
+    </nav>
+    <div class="cmp-tray">
+      <button id="cmp-tray-btn" type="button" class="tray-btn" aria-expanded="false" aria-haspopup="true"><span data-zh="对比" data-en="Compare">对比</span> <b class="tray-count"><i id="cmp-count">0</i>/4</b></button>
+      <div id="cmp-panel" class="tray-panel" hidden>
+        <div class="tray-sec"><span data-zh="已选" data-en="Selected">已选</span></div>
+        <div id="cmp-selected" class="tray-selected"></div>
+        <div class="tray-sec"><span data-zh="全部产品（最多选 4 款）" data-en="All products (up to 4)">全部产品（最多选 4 款）</span></div>
+        <div id="cmp-list" class="tray-list"></div>
+        <div class="tray-actions"><button id="cmp-clear" type="button" class="tray-clear"><span data-zh="清空选择" data-en="Clear selection">清空选择</span></button></div>
+      </div>
+    </div>
+    <button id="lang-toggle" class="lang-btn" type="button" aria-label="switch language">EN</button>
+  </div>
+</header>
+<main class="page">
+<div class="profile-hero">
+  <a class="back" href="index.html"><span data-zh="← 返回首页" data-en="← Back to home">← 返回首页</span></a>
+  <h1>YugabyteDB</h1>
+  <div class="meta-row"><span class="cat cat-oltp" data-zh="关系型 OLTP" data-en="Relational OLTP">关系型 OLTP</span> <span class="tag">#分布式</span> <span class="tag">#PostgreSQL兼容</span> <span class="tag">#多地域</span> <span class="tag">#强一致</span> <span class="tag">#Raft</span> <span class="tag">#Apache2</span> <span class="tag">#NewSQL</span> <span class="tag">#水平扩展</span></div>
+  <p class="oneliner"><div class="lang-block lang-zh">
+<p>美国 Yugabyte 公司的分布式 SQL 数据库：把 PostgreSQL 的查询层（C 代码）直接搬到自研的 DocDB 分布式存储（per-tablet Raft + RocksDB）之上，&quot;PG 方言、水平扩展、多地域&quot;是它的三张牌；2019 年起核心 100% Apache 2.0，与 2026 年源码转私有的 CockroachDB 形成许可证上的硬分水岭。</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<p>A distributed SQL database from US-based Yugabyte, Inc.: it lifts PostgreSQL&#x27;s query layer (the C code) directly onto a self-developed distributed DocDB storage layer (per-tablet Raft + RocksDB). &quot;PG dialect, horizontal scale-out, and multi-region&quot; are its three calling cards; since 2019 its core has been 100% Apache 2.0, forming a hard licensing watershed against CockroachDB, which took its new source private in 2026.</p>
+</div></p>
+  <div class="ai-dive-row" data-product="YugabyteDB">
+    <span class="ai-dive-label" data-zh="用 AI 深挖这款：" data-en="Deep-dive with AI:">用 AI 深挖这款：</span>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('chatgpt', this)">ChatGPT <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('grok', this)">Grok <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('claude', this)">Claude <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn addcmp-btn" data-addcmp="yugabytedb"><span class="addcmp-label">＋ 对比</span></button>
+  </div>
+  <div class="legend"><span class="legend-label" data-zh="证据等级：" data-en="Evidence levels: ">证据等级：</span><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></div>
+</div>
+<section class="doc-section">
+<h2><span data-zh="基本信息" data-en="Basics">基本信息</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>项</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td>厂商</td><td>Yugabyte, Inc.（2016 年 2 月创立，总部美国加州 Sunnyvale）</td></tr>
+<tr><td>国家</td><td>美国</td></tr>
+<tr><td>首次发布</td><td>2016（1.0 GA 确切版本待验证）</td></tr>
+<tr><td>许可证</td><td><strong>核心数据库 100% Apache 2.0</strong>（2019-07-16 官方博客宣布，原企业版功能全部并入开源）；YugabyteDB Anywhere（运维管控面）为 Polyform Free Trial（source-available，非 OSI 开源）</td></tr>
+<tr><td>托管服务</td><td>YugabyteDB Aeon（2024-06-24 由 &quot;YugabyteDB Managed&quot; 更名而来；分 Sandbox 免费层与 Dedicated 按 vCPU/存储计费）</td></tr>
+<tr><td>主类型</td><td>分布式关系型（Distributed SQL）</td></tr>
+<tr><td>兼具类型</td><td>YCQL（Cassandra 兼容 API）、MongoDB API（2025-07 新增，multi-modal 方向）、向量检索（pgvector EA）</td></tr>
+<tr><td>一致性模型</td><td>CP 强一致（官方口径）</td></tr>
+<tr><td>复制协议</td><td>per-tablet Raft + Hybrid Logical Clock（HLC）+ MVCC</td></tr>
+<tr><td>版本命名</td><td>2024.1 起主线改用日历年版本（2024.x / 2025.x / 2026.x），STS（短期支持）/ LTS（长期支持）双轨制；下个 LTS v2026.2 计划 2026 年底发布<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Item</th><th>Content</th></tr></thead>
+<tbody>
+<tr><td>Vendor</td><td>Yugabyte, Inc. (founded February 2016, HQ in Sunnyvale, California, USA)</td></tr>
+<tr><td>Country</td><td>USA</td></tr>
+<tr><td>First release</td><td>2016 (exact version of the 1.0 GA — to-be-verified)</td></tr>
+<tr><td>License</td><td><strong>Core database 100% Apache 2.0</strong> (announced on the official blog 2019-07-16; all former enterprise features merged into open source); YugabyteDB Anywhere (operations control plane) is Polyform Free Trial (source-available, not OSI open source)</td></tr>
+<tr><td>Managed service</td><td>YugabyteDB Aeon (renamed from &quot;YugabyteDB Managed&quot; on 2024-06-24; has a free Sandbox tier and a Dedicated tier billed by vCPU/storage)</td></tr>
+<tr><td>Primary type</td><td>Distributed relational (Distributed SQL)</td></tr>
+<tr><td>Secondary types</td><td>YCQL (Cassandra-compatible API), MongoDB API (added 2025-07, multi-modal direction), vector search (pgvector EA)</td></tr>
+<tr><td>Consistency model</td><td>CP, strongly consistent <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></td></tr>
+<tr><td>Replication protocol</td><td>Per-tablet Raft + Hybrid Logical Clock (HLC) + MVCC</td></tr>
+<tr><td>Version naming</td><td>Since 2024.1, the mainline uses calendar-year versions (2024.x / 2025.x / 2026.x) with a dual STS (short-term support) / LTS (long-term support) track; next LTS v2026.2 is planned for end of 2026 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section"><h2><span data-zh="硬维度（14 项）" data-en="Hard dimensions (14)">硬维度（14 项）</span></h2>
+<div class="lang-block lang-zh">
+<div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。信封加密——每文件唯一 DEK 加密数据，universe key 加密 DEK；OSS 自建版用 <code>openssl rand</code> 生成密钥经 <code>yb-admin</code> 启用，密钥只驻内存不落盘，新 flush/compaction 生效、老数据后台逐步重写加密；Anywhere 增加主密钥层（CMK），支持 AWS KMS / GCP KMS / Azure Key Vault / HashiCorp Vault，支持密钥轮换。YSQL 与 YCQL 无差异（加密在 DocDB 存储层）。<strong>WAL 是否独立加密官方文档未明确——待验证</strong>。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。分 Node-to-Node TLS 与 Client-to-Node TLS（YSQL/YCQL）；<strong>默认关闭</strong>，开启/关闭需全节点重启（有短暂停机）；Anywhere 支持自签 CA / 上传 CA / Vault PKI / K8s cert-manager，到期前 30 天告警、可轮换。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> 审计 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。YSQL 用 pgaudit v1.7（<code>CREATE EXTENSION pgaudit</code> 预置，YBA v2025.2 起支持审计日志集中导出 GA）；YCQL 有原生审计（<code>--ycql_enable_audit_log</code>，v2.4+，分类 QUERY/DML/DDL/DCL/AUTH/PREPARE/ERROR/OTHER）；慢查询 <code>pg_stat_statements</code> 预置默认启用 + <code>log_min_duration_statement</code>。（pgaudit 首次引入的精确版本号待验证）</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> 认证与权限 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（官方文档 + 社区共识）。YSQL 复用 PG role-based 模型（<code>CREATE ROLE / GRANT / REVOKE</code>），<code>ysql_hba_conf_csv</code> 配 hba；认证：password（md5）、SCRAM-SHA-256（v2.5+）、LDAP（v2.4+）、客户端证书；<strong>单节点默认安装认证关闭，需 <code>ysql_enable_auth=true</code> 显式开启（易踩坑）</strong>；YCQL 用 Cassandra 风格角色权限，v2026.1 新增 OIDC/JWT（YSQL 侧 OIDC 未找到证据——待验证）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> 备份恢复 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。底层 <code>yb-admin create_snapshot</code>（可表级快照）+ <code>restore_snapshot</code>（官方称低级命令，多数用户应走 UI）；Anywhere 调度备份：全量 + 增量（v2.16+）、PITR（v2.18+，按数据库/keyspace 设保留窗口）；恢复粒度为数据库/keyspace 级；<strong>恢复速度无官方性能口径——查证为无</strong>；xCluster 注意：升级前必须禁用 PITR，升级后 PITR 无法回滚到升级前时间点；K8s Operator 下 PITR 暂不支持执行恢复（官方 skills 注明 limitation）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> 大版本升级 <span class="verdict v-yes">有（滚动升级，不停服），有限制</span></h3><div class="dim-body"><p><strong>有（滚动升级，不停服），有限制</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。标准流程逐节点重启（先 master 后 tserver），RF≥3 应用无感知；路径限制：只能升到目标系列最新 minor；同 YSQL 大版本内可跨版本一次升到位（如 2.x→2024.x 均为 PG 11），但 PG 大版本变更（2024.2/PG11 → 2025.1/PG15）需走专用 YSQL major upgrade 流程；preview↔stable 不互升；回退 v2024.1+ 为 GA（仅 finalize 之前有效，finalize 后只能迁移数据）；v2025.2.6.0 当时不可直升 2026.1（需等 2026.1.2.0）——具体路径务必查目标版本 release notes。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> 可观测性 <span class="verdict v-yes">有（官方工具链完整）</span></h3><div class="dim-body"><p><strong>有（官方工具链完整）</strong>（官方文档 + 社区实测）。Anywhere UI（指标/告警/慢查询/Live Queries）；Master UI <code>:7000</code>、TServer <code>:9000</code>（另有 YSQL <code>:13000</code>、YCQL <code>:12000</code>）均暴露 <code>/prometheus-metrics</code>，YBA 内置 Prometheus + Grafana；SQL 层 <code>pg_stat_statements</code> 默认启用、官方开源 <code>ybtop</code>（ASH/top SQL 可视化）、<code>yb_stats</code> 及 <code>pg_stat_*</code> 视图；Perf Advisor（Aeon tech preview → 2026.1 演进）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> 连接模型 <span class="verdict v-yes">有（继承 PG 模型 + 官方方案）</span></h3><div class="dim-body"><p><strong>有（继承 PG 模型 + 官方方案）</strong>（官方文档 + 社区共识）。YSQL 沿用 PG&quot;每连接一后端进程&quot;（厂商博客自述），但连接可分散到所有节点，单节点压力低于单机 PG；<strong>Smart Drivers</strong>（JDBC/Go/Node/Python 等，官方维护的 PG 驱动分叉，Apache 2.0）：感知拓扑，多 host URL + <code>load_balance=true</code> 自动打散连接、跳过故障节点、<code>topology_keys</code> 就近路由；<strong>YSQL Connection Manager</strong>（内置服务端连接池，基于 Odyssey，监听 5433）：数千客户端连接多路复用到少量后端连接，支持 <code>SET</code>/临时表/预编译，2026.1 官方明确称&quot;无需外部 PgBouncer&quot;；默认支持 1 万客户端连接（社区经验口径约每 vCPU 10–15 后端连接，官方硬上限未找到——待验证）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> 事务与隔离级别 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。YSQL 支持 <code>SERIALIZABLE</code>、<code>REPEATABLE READ</code>（映射为 Snapshot 隔离，<strong>不是缺失</strong>）、<code>READ COMMITTED</code>（v2025.2 起新集群默认真启用；旧版本需 flag 否则回退为 Snapshot）；分布式事务：写先以 provisional records（意向记录）落各参与 tablet，协调者把提交时间戳写入去中心化事务状态表后再转为正式 MVCC 版本（Percolator 风格，非经典 2PC）；死锁：fail-on-conflict / wait-on-conflict + 后台分布式死锁检测自动中止（<strong>不是 wait-die</strong>）；单行/单 shard 事务走优化路径（不写事务状态表，一次网络往返完成 Raft 提交）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> 复制与一致性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。每 tablet 独立 Raft 组，写经 leader 复制到多数派后确认；HLC（物理时钟微秒 + 逻辑计数器）生成时间戳，MVCC 多版本存储；单 tablet 读走 leader 可达线性一致（leader lease 防脑裂），读默认强一致、可调 follower 读；跨分片事务按 HLC 快照时间戳读，提供 Snapshot/Serializable 全局一致性。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> 扩展方式 <span class="verdict v-yes">有（在线）</span></h3><div class="dim-body"><p><strong>有（在线）</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。加节点：在线不停服（官方 FAQ 口径），tablet 由负载均衡器自动迁移均衡；缩容：在线（YBA Remove Node / <code>yb-admin</code> decommission），数据迁出后节点退出；tablet 自动分裂：2.18 起默认开启，达尺寸阈值自动在线分裂（低阶段默认 128MiB 起三阶段递增），也可手动 <code>split_tablet</code> 或建表 <code>SPLIT INTO</code>；扩容时后台迁移副本+重选 leader，无停服但有额外 IO/网络与短暂热点。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> 兼容性 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。YSQL：v2025.1 起 PG 分叉从 11.2 rebase 到 <strong>PG 15</strong>（v2025.2 LTS / v2026.x 沿用；官方称目标约每六个月跟进一个 PG 大版本——厂商口径）；扩展：pg_trgm、pgcrypto 预置，pg_cron、pg_partman、HypoPG、pgaudit、Orafce、pgvector（EA）、DocumentDB（MongoDB 协议，TP）等；<strong>PostGIS：查证为无</strong>（官方已明确移除支持，历史 1.x/2.x 曾可手动安装）；YCQL：兼容 CQL v3.4，部分支持（不支持多数表级属性，但强一致、原生 JSONB、分布式事务、全局二级索引）；驱动/ORM：官方 smart drivers（JDBC/pgx/psycopg/Node/Npgsql/C#/Rust/Ruby，集群感知负载均衡），Hibernate/Django/SQLAlchemy 有官方适配文档。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> 许可证与商业模式 <span class="verdict v-yes">有（开源核心 + 商业运维层）</span></h3><div class="dim-body"><p><strong>有（开源核心 + 商业运维层）</strong>（官方文档 + 仓库 LICENSE.md）。核心数据库 100% Apache 2.0、无功能阉割（自 2019-07 起数据库层面无企业专有功能——查证）；差异仅在运维层：Anywhere 自管平台需商业许可（Polyform Free Trial，32 天评估）；托管 Aeon：Sandbox 免费（单节点最多 2 vCPU）、Dedicated 按 vCPU/存储 pay-as-you-go 或订阅（具体单价以官网 pricing 页为准）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> 中文资料丰富度 <span class="verdict v-partial">部分支持（弱）</span></h3><div class="dim-body"><p><strong>部分支持（弱）</strong>。官方中文文档：<strong>查证为无</strong>（docs.yugabyte.com 仅英文）；中文社区/博客：<strong>未找到活跃证据</strong>——仅零散中文博客/CSDN 对比文章与个人中文笔记，无成规模中文社区或官方中文社群。</p></div></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. Envelope encryption — a unique DEK per file encrypts the data, and a universe key encrypts the DEKs. The OSS self-hosted build generates keys with <code>openssl rand</code> and enables them via <code>yb-admin</code>; keys live only in memory and are never written to disk; new flush/compaction runs take effect, and old data is re-encrypted by background rewrites. Anywhere adds a master-key layer (CMK) supporting AWS KMS / GCP KMS / Azure Key Vault / HashiCorp Vault, with key rotation supported. No difference between YSQL and YCQL (encryption sits in the DocDB storage layer). <strong>Whether WAL files are independently covered is not stated in the official docs — to-be-verified</strong>.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / transport encryption <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. Split into Node-to-Node TLS and Client-to-Node TLS (YSQL/YCQL); <strong>off by default</strong> — enabling/disabling requires a full-cluster restart (with brief downtime). Anywhere supports self-signed CA / uploaded CA / Vault PKI / K8s cert-manager, alerts 30 days before expiry, and rotation.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> Auditing <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. YSQL uses pgaudit v1.7 (bundled <code>CREATE EXTENSION pgaudit</code>; centralized export of audit logs supported in YBA v2025.2 GA); YCQL has native auditing (<code>--ycql_enable_audit_log</code>, v2.4+, categories QUERY/DML/DDL/DCL/AUTH/PREPARE/ERROR/OTHER); slow-query <code>pg_stat_statements</code> is bundled and on by default + <code>log_min_duration_statement</code>. (Exact version that first introduced pgaudit — to-be-verified.)</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> Authentication &amp; authorization <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes</strong> (official docs + community consensus). YSQL reuses the PG role-based model (<code>CREATE ROLE / GRANT / REVOKE</code>), hba configured via <code>ysql_hba_conf_csv</code>; authentication: password (md5), SCRAM-SHA-256 (v2.5+), LDAP (v2.4+), client certificates; <strong>a default single-node install ships with authentication disabled — you must explicitly set <code>ysql_enable_auth=true</code> (easy footgun)</strong>; YCQL uses Cassandra-style role permissions, and v2026.1 added OIDC/JWT (no evidence found for OIDC on the YSQL side — to-be-verified).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> Backup &amp; recovery <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. Under the hood <code>yb-admin create_snapshot</code> (table-level snapshots possible) + <code>restore_snapshot</code> (described by the vendor as a low-level command; most users should go through the UI); Anywhere scheduled backups: full + incremental (v2.16+), PITR (v2.18+, retention window per database/keyspace); restore granularity is at database/keyspace level; <strong>no official performance claim for restore speed — confirmed absent</strong>; xCluster note: PITR must be disabled before upgrades, and after an upgrade PITR cannot roll back to a pre-upgrade point; on the K8s Operator, PITR cannot currently execute a restore (noted as a limitation in the official skills).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> Major-version upgrades <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes (rolling upgrade, no downtime), with restrictions</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. Standard procedure is a rolling restart (masters first, then tservers); with RF≥3 this is transparent to the application. Path restrictions: you can only upgrade to the latest minor of the target series; within the same YSQL major version you can jump directly in one go (e.g., 2.x→2024.x are all PG 11), but a PG major-version change (2024.2/PG11 → 2025.1/PG15) requires the dedicated YSQL major-upgrade flow; preview↔stable cannot upgrade into each other; rollback is GA since v2024.1 (only valid before finalize — after finalize, only data migration); v2025.2.6.0 could not upgrade directly to 2026.1 at the time (had to wait for 2026.1.2.0) — always check the target version&#x27;s release notes for the exact path.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> Observability <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes (complete official toolchain)</strong> (official docs + community-tested). Anywhere UI (metrics/alerts/slow queries/Live Queries); Master UI <code>:7000</code>, TServer <code>:9000</code> (plus YSQL <code>:13000</code>, YCQL <code>:12000</code>) all expose <code>/prometheus-metrics</code>, and YBA ships built-in Prometheus + Grafana; SQL layer: <code>pg_stat_statements</code> on by default, officially open-sourced <code>ybtop</code> (ASH/top-SQL visualization), <code>yb_stats</code> and <code>pg_stat_*</code> views; Perf Advisor (Aeon tech preview → evolving in 2026.1).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> Connection model <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes (inherits the PG model + official solutions)</strong> (official docs + community consensus). YSQL keeps PG&#x27;s &quot;one backend process per connection&quot; (vendor blog&#x27;s own words), but connections can fan out across all nodes, so per-node pressure is lower than standalone PG; <strong>Smart Drivers</strong> (JDBC/Go/Node/Python etc., officially maintained PG driver forks, Apache 2.0): topology-aware, multi-host URLs + <code>load_balance=true</code> spread connections automatically, skip failed nodes, and <code>topology_keys</code> routes to the nearest region; <strong>YSQL Connection Manager</strong> (built-in server-side pooler based on Odyssey, listens on 5433): multiplexes thousands of client connections onto a few backend connections, supports <code>SET</code>/temp tables/prepared statements; the vendor explicitly stated in 2026.1 that &quot;no external PgBouncer is needed&quot;. Supports 10,000 client connections by default (community rule of thumb ~10–15 backend connections per vCPU; official hard limit not found — to-be-verified).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> Transactions &amp; isolation levels <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. YSQL supports <code>SERIALIZABLE</code>, <code>REPEATABLE READ</code> (mapped to Snapshot isolation, <strong>not missing</strong>), and <code>READ COMMITTED</code> (genuinely enabled by default on new clusters since v2025.2; older versions need a flag, otherwise it falls back to Snapshot); distributed transactions: writes first land as provisional records on each participating tablet, the coordinator writes the commit timestamp into a decentralized transaction-status table, then they become real MVCC versions (Percolator-style, not classic 2PC); deadlocks: fail-on-conflict / wait-on-conflict + background distributed deadlock detection that aborts automatically (<strong>not</strong> wait-die); single-row / single-shard transactions take a fast path (no transaction-status-table write, one network round trip completes the Raft commit).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> Replication &amp; consistency <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. Each tablet is an independent Raft group; writes are acknowledged after the leader replicates to a quorum; HLC (physical-clock microseconds + logical counter) generates timestamps; MVCC multi-version storage; single-tablet reads go to the leader for linearizability (leader leases guard against split-brain); reads are strongly consistent by default, follower reads are tunable; cross-shard transactions read at HLC snapshot timestamps, providing global Snapshot/Serializable consistency.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> Scaling <span class="verdict v-neutral">Yes (online)</span></h3><div class="dim-body"><p><strong>Yes (online)</strong> (official docs / community consensus). Adding nodes: online, no downtime (official FAQ claim); tablets are auto-migrated and rebalanced by a load balancer; removing nodes: online (YBA Remove Node / <code>yb-admin</code> decommission), the node leaves after its data drains; tablet auto-splitting: on by default since 2.18, automatically splits online when a size threshold is reached (three escalating stages starting at 128MiB), also manual <code>split_tablet</code> or <code>SPLIT INTO</code> at table creation; expansion moves replicas and re-elects leaders in the background — no downtime, but extra IO/network and brief hotspots.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> Compatibility <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. YSQL: since v2025.1 the PG fork was rebased from 11.2 to <strong>PG 15</strong> (v2025.2 LTS / v2026.x carry on; the vendor says it targets roughly one PG major version every six months — vendor claim); extensions: pg_trgm, pgcrypto bundled; pg_cron, pg_partman, HypoPG, pgaudit, Orafce, pgvector (EA), DocumentDB (MongoDB protocol, TP), etc.; <strong>PostGIS: confirmed absent</strong> (the vendor has explicitly removed support; it was manually installable in 1.x/2.x historically); YCQL: compatible with CQL v3.4, partial support (most table-level properties unsupported, but with strong consistency, native JSONB, distributed transactions, global secondary indexes); drivers/ORMs: official smart drivers (JDBC/pgx/psycopg/Node/Npgsql/C#/Rust/Ruby with cluster-aware load balancing), and official adaptation docs for Hibernate/Django/SQLAlchemy.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> License &amp; business model <span class="verdict v-neutral">Open source (core)</span></h3><div class="dim-body"><p><strong>Open source (core) + commercial (operations layer)</strong> (official docs + repo LICENSE.md). Core database 100% Apache 2.0 with no feature crippling (confirmed: no enterprise-only features at the database level since 2019-07); the difference is only in the operations layer: the Anywhere self-managed platform needs a commercial license (Polyform Free Trial, 32-day evaluation); managed Aeon: Sandbox is free (single node, up to 2 vCPU), Dedicated is pay-as-you-go or subscription by vCPU/storage (exact unit pricing — see the official pricing page).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> Chinese-language resources <span class="verdict v-neutral">Weak</span></h3><div class="dim-body"><p><strong>Weak</strong>. Official Chinese docs: <strong>confirmed absent</strong> (docs.yugabyte.com is English-only); Chinese community/blogs: <strong>no evidence found of an active one</strong> — only scattered Chinese blog posts/CSDN comparison articles and personal Chinese notes; no scaled Chinese community or official Chinese user group.</p></div></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="杀手特性" data-en="Killer features">杀手特性</span></h2>
+<div class="lang-block lang-zh">
+<ol>
+<li><strong>真正的分布式 PostgreSQL：复用 PG 查询层 C 代码</strong> 真本事：YSQL 不是&quot;线协议兼容&quot;，而是把 PG 的解析器/优化器/执行器代码直接拿来用，psql、JDBC、多数 ORM 和迁移工具零改造接入，PG DBA 的既有知识（执行计划、pg_stat、调优方法论）大部分可迁移。这是它相对 CockroachDB（自研 Go SQL 层、仅协议兼容）最硬的差异：兼容的&quot;质地&quot;不同。 边缘真相：同一份查询层不等于同一份语义——存储引擎换了，边缘处处是分叉（见深水区四：事务内 DDL、advisory locks、可延迟约束、exclusion 约束、序列行为）。&quot;PG 语法能跑&quot;和&quot;PG 行为一致&quot;是两回事，迁移测试必须按 YSQL 自己的缺口清单重做，不能因为&quot;都是 PG 方言&quot;就借用 PG 的测试结论。</li>
+<li><strong>多地域数据放置的灵活性（geo-partitioning + follower reads + xCluster）</strong> 真本事：单集群横跨 AZ/region/云做 Raft 同步复制；geo-partitioning 用表空间把表/分区 pin 到指定地域实现&quot;写本地化&quot;；follower reads 让只读走本地副本；xCluster 做双活/容灾的单向异步复制。强一致跨地域这档里完成度最高的选择之一。 边缘真相：同步跨地域写逃不掉光速税（每次提交付一次跨洋 RTT）；leader 放错 region 延迟直接翻倍；xCluster 计划外故障切换是手动流程（停应用→pause 复制→PITR 恢复→切连接），RTO 取决于应用切流速度而非数据库；3 地域 × RF 的资源账单很实在。只配了数据库侧高可用、没配应用侧切流，等于只做了一半。</li>
+<li><strong>Apache 2.0 核心、无功能阉割（许可证分水岭）</strong> 真本事：2019 年 7 月起核心数据库 100% Apache 2.0，备份、加密、读副本、CDC 等原企业功能全部并入开源，数据库层面无商业版专有功能。在 2026 年 CockroachDB 新版本源码转私有的背景下，这是两者当前最硬的分水岭：一个走向更开放，一个走向更封闭。 边缘真相：许可证翻转过不止一次（2019 年前是 CE/EE 双版本），长期主义者对&quot;下次再变&quot;的焦虑是合理的；管控面 Anywhere 是 Polyform（非 OSI 开源），&quot;全栈开源&quot;不成立；Jepsen 正确性测试是厂商付费的<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。选型时按法务口径核实，不要用一方的宣传材料论证另一方。</li>
+<li><strong>Smart Drivers + 内置 Connection Manager（给 PG 连接模型的分布式解法）</strong> 真本事：官方 smart driver 从集群元数据读拓扑，连接直打各 tserver，<code>load_balance=true</code> + <code>topology_keys</code> 实现免外部 LB、AZ 就近路由、故障时客户端侧重试；YSQL Connection Manager（基于 Odyssey，:5433）把数千客户端连接多路复用到少量后端连接，官方 2026.1 明确称&quot;无需外部 PgBouncer&quot;。这是对&quot;PG 每连接一进程&quot;模型在分布式下被放大的系统性回答。 边缘真相：只在官方 smart driver 生态内生效，普通 PG 驱动/连接池无此能力；社区实战挖出坑：Node 驱动拓扑缓存是类级静态量、换连接池不重置会继承过期拓扑，连接池需手动预热才能铺满全节点，非对等 VPC 下驱动会先探测不可达节点引入延迟。用第三方驱动就等于放弃了这项红利。</li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<ol>
+<li><strong>A genuinely distributed PostgreSQL: reuses the PG query-layer C code</strong> What it really is: YSQL isn&#x27;t &quot;wire-protocol compatible&quot; — it directly reuses PostgreSQL&#x27;s parser/optimizer/executor code, so psql, JDBC, most ORMs, and migration tools connect with zero changes, and PG DBAs&#x27; existing knowledge (execution plans, pg_stat, tuning methodology) largely transfers. This is its hardest differentiator vs. CockroachDB (self-built Go SQL layer, protocol-compatible only): the &quot;texture&quot; of compatibility is different. Edge truth: the same query layer is not the same semantics — the storage engine changed, and forks lurk at every edge (see deep-dive 4: DDL inside transactions, advisory locks, deferrable constraints, exclusion constraints, sequence behavior). &quot;&#x27;PG syntax runs&#x27; and &#x27;PG behaves the same&#x27; are two different things; migration testing must be redone against YSQL&#x27;s own gap list rather than borrowing PG&#x27;s test conclusions just because &#x27;both are PG dialects&#x27;.&quot;</li>
+<li><strong>Flexible multi-region data placement (geo-partitioning + follower reads + xCluster)</strong> What it really is: a single cluster spans AZs/regions/clouds with Raft synchronous replication; geo-partitioning pins tables/partitions to designated regions via tablespaces for &quot;write localization&quot;; follower reads let reads be served from local replicas; xCluster provides one-way async replication for active-active/DR. Among strongly consistent cross-region options, this is one of the most complete. Edge truth: synchronous cross-region writes can&#x27;t escape the speed-of-light tax (one transoceanic RTT per commit); placing the leader in the wrong region doubles latency; unplanned xCluster failover is a manual process (stop the app → pause replication → PITR restore → switch connections), and RTO depends on application traffic-switching speed, not the database; the bill for 3 regions × RF is very real. If you only did HA on the database side without traffic switching on the app side, you only did half the job.</li>
+<li><strong>Apache 2.0 core with no feature crippling (the licensing watershed)</strong> What it really is: since July 2019 the core database has been 100% Apache 2.0, with former enterprise features (backup, encryption, read replicas, CDC) all merged into open source — no enterprise-only features at the database level. Against the backdrop of CockroachDB taking new versions private in 2026, this is currently the hardest watershed between the two: one is moving more open, the other more closed. Edge truth: the license has flipped more than once (dual CE/EE versions before 2019), so long-term thinkers&#x27; anxiety about &quot;what if it changes again&quot; is reasonable; the Anywhere control plane is Polyform (not OSI open source), so &quot;full-stack open source&quot; doesn&#x27;t hold; the Jepsen correctness test was vendor-paid <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>. Verify per legal counsel; don&#x27;t use one vendor&#x27;s marketing to argue about the other.</li>
+<li><strong>Smart Drivers + built-in Connection Manager (a distributed answer to PG&#x27;s connection model)</strong> What it really is: the official smart driver reads the topology from cluster metadata and connects clients directly to each tserver; <code>load_balance=true</code> + <code>topology_keys</code> give no-external-LB, AZ-local routing, and client-side retry on failure; the YSQL Connection Manager (Odyssey-based, on :5433) multiplexes thousands of client connections onto a few backend connections, and the vendor explicitly stated in 2026.1 that &quot;no external PgBouncer is needed.&quot; This is a systematic answer to &quot;one process per PG connection&quot; amplified by distribution. Edge truth: it only works within the official smart-driver ecosystem — plain PG drivers/poolers get none of this; community field experience has dug up pitfalls: the Node driver&#x27;s topology cache is a class-level static shared across the process — switching pools without resetting inherits a stale topology; pools must be manually warmed up to spread across all nodes; on non-peered VPCs the driver first probes unreachable nodes, adding latency. Using third-party drivers means forfeiting this benefit.</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="深水区" data-en="Deep dives">深水区</span></h2>
+<div class="lang-block lang-zh">
+<p><strong>深水区一（存储引擎）：DocDB——每 tablet 一个 RocksDB，tablet 数量是先到的天花板</strong></p>
+<ul>
+<li>机制：每个 tablet 对应独立 RocksDB 实例（LSM-tree）；YSQL 的每个 tablet 实际是两个 RocksDB——regular 存已提交数据、intents 存事务 provisional 记录；tablet 分裂经 Raft 日志 split record 触发，split apply 后旧 tablet 拒绝一切新读写、新 tablet 重新选主才 RUNNING；HLC 时间戳，<code>--max_clock_skew_usec</code> 默认 500000（500ms），官方建议设为预期最大时钟偏差 2 倍；MVCC 历史保留 <code>timestamp_history_retention_interval_sec</code> 默认 15 分钟。</li>
+<li>推到边缘：SST 堆积到上限 → DocDB 直接限流写入（可观测指标 <code>majority_sst_files_rejections</code>、<code>rocksdb_stall_micros</code>、<code>intentsdb_rocksdb_stall_micros</code>），写入密集 + IO 吃紧时先到的是这个天花板不是 CPU；tablet 数：官方部署清单给出 8 GiB 节点约 530 个 tablet 副本的经验上限，表多、索引多、RF 高的集群先吃掉内存和管理预算；某节点时钟偏差超 max_clock_skew → <strong>直接 crash 保正确性</strong>，NTP 配错不是变慢是丢节点；读落在&quot;不确定窗口&quot;内报 40001 read-restart 要求重试；长查询/长事务跑过保留期 → <code>snapshot_too_old</code>（SQLSTATE 72000），不可重试，重开事务拿新快照是唯一出路；开 PITR 或 CDC before-image 会抬高保留期，lagging 的 CDC stream 让磁盘用量随保留数据线性增长——CDC 消费端的 lag 直接转化为源端磁盘账单。</li>
+<li>选型含义：写入型业务必须给 compaction 留磁盘/IO headroom 并监控 stall 指标；NTP 与时钟偏差监控是必选项；报表类长查询要么调大保留期（拿磁盘换）要么在应用层处理 snapshot_too_old；tablet 数量要前置规划（YugabyteDB tablet 只按大小分裂、不自动合并，数量只增不减）。</li>
+<li>来源：官方设计文档（tablet 分裂）、官方部署清单（tablet 上限/时钟配置）、第三方监控文档（stall 指标，社区实测）、官方博客（时钟偏差/保留期，厂商口径）</li>
+</ul>
+<p><strong>深水区二（事务与时间）：分布式事务的税——provisional records、read restart、重试脚手架</strong></p>
+<ul>
+<li>机制：多 tablet 写先以 provisional records 落各参与 tablet，协调者把提交时间戳写入去中心化事务状态表后再转为正式 MVCC 版本（Percolator 风格）；冲突处理是 fail-on-conflict / wait-on-conflict + 后台分布式死锁检测；单行/单 shard 事务走优化路径（不写事务状态表）。</li>
+<li>推到边缘：每次写要等 Raft quorum，单机 PG 亚毫秒写在 YB 上变毫秒级是架构固有（官方 FAQ 承认 trade-off；社区实测三表各插 1 行的 DO 块 465ms，Read Committed 下 801ms）；读多 tablet 要等读时间戳在各 tablet 变安全；时钟 skew 接近阈值即触发读重试，NTP 没配好直接表现为毛刺；Serializable 下冲突即 40001，应用必须写重试循环——重试脚手架两边（YB/CRDB）都要写，只是默认隔离级别不同（YSQL 默认 Read Committed）。</li>
+<li>选型含义：写延迟敏感（亚毫秒）场景直接出局；应用层必须实现幂等重试；POC 必须用真实事务模型压测，单表点查 benchmark 会严重低估分布式事务成本。</li>
+<li>来源：官方架构文档（distributed-txns / concurrency-control / single-row-transactions）、官方 FAQ、社区实测（dev.to）</li>
+</ul>
+<p><strong>深水区三（SQL 层）：YSQL vs YCQL 双 API——数据孤岛与投入倾斜</strong></p>
+<ul>
+<li>机制：YSQL 复用 PG 查询层（v2025.1 起 rebase 到 PG 15），线协议兼容；YCQL 兼容 Cassandra CQL v3.4；<strong>两套 API 数据面完全隔离</strong>，一边写入另一边不可见（官方连 YSQL 经 FDW 读 YCQL 都只列在 roadmap issue #830）。</li>
+<li>推到边缘：官方未宣布废弃 YCQL（未找到 deprecation 表态——待验证），但投入倾斜信号是实的：gRPC CDC 不支持 YCQL 表（issue #11320）；新集群默认内存配置为 YSQL 优化；2025 年 7 月官方新增的是 MongoDB API（与 YSQL/YCQL 并列 &quot;multi-modal&quot;）；官方 FAQ 给 YCQL 的定位很窄：不需要 FK/JOIN、要亚毫秒单行延迟、要 TTL、要接 Spark/KSQL。<strong>一套集群跑两套 API = 两套监控、两套调优参数、数据孤岛，运维代价是乘法不是加法。</strong></li>
+<li>选型含义：新用户默认选 YSQL；只有存量 Cassandra 迁移且命中官方列出的四个场景时才考虑 YCQL；把 YCQL 当新写主力前先掂量它的功能投入曲线。</li>
+<li>来源：官方 FAQ（compatibility）、官方 CDC 文档、官方部署清单、BusinessWire 通稿（MongoDB API，厂商口径）</li>
+</ul>
+<p><strong>深水区四（兼容/迁移）：PG 兼容缺口清单——&quot;语法能跑&quot;≠&quot;语义一致&quot;（版本截至 2026-09-29）</strong></p>
+<ul>
+<li>外键：支持，但<strong>引用分区表的外键不支持</strong>；<strong>可延迟 UNIQUE 不支持</strong>（issue #1709），可延迟 FK 支持。</li>
+<li>DDL 事务性：默认 DDL 非事务——<code>BEGIN; CREATE TABLE; ROLLBACK;</code> 后表依然存在（issue #1404）；事务性 DDL 是 early-access flag（v2025.2），且与 CDC 互斥；普通 <code>CREATE INDEX</code> 在线构建，<strong>不能放显式事务块里</strong>（issue #6240）。</li>
+<li>Advisory locks：2025.1 之前直接报错，2025.1 起支持（需 preview flag），2025.2 废弃静默报错 flag——2025.1 之前版本迁移必改应用。</li>
+<li>LISTEN/NOTIFY：early-access，默认关闭；官方 voyager 评估工具列为不支持。</li>
+<li>触发器/存储过程：官方称支持，但分区表 AFTER UPDATE 触发器曾不正确；<strong>exclusion 约束不支持</strong>（issue #3944），官方 workaround 是&quot;用触发器模拟&quot;——语义从约束降级为尽力而为。</li>
+<li>序列：强制最小 cache 100，序列存在分布式系统表，节点增减/重连都会产生 gap——要无间隙编号别用序列。</li>
+<li>其他硬缺口：系统列 <code>xmin/xmax/ctid</code>、大对象 lo、<code>PREPARE TRANSACTION</code>（两阶段提交）、表继承 <code>INHERITS</code>、GIN 多列索引均不支持；已修复可关闭：UNLOGGED 表（2024.2+/2025.1+）、GENERATED ALWAYS 列（2.25/2025.1+）、分区表后加主键（2024.1+）。</li>
+<li>选型含义：迁移前用 yb-voyager 的 assess-migration 跑缺口扫描，重点审计可延迟约束、exclusion 约束、事务内 DDL、advisory locks、LISTEN/NOTIFY 五处——它们在 PG 里常用，在 YSQL 里要么报错要么静默语义变化。v2025.1（PG15 rebase）是兼容分水岭，低于此版本的兼容吐槽很多已部分修复。</li>
+<li>来源：官方 voyager known-issues（postgresql.md）、官方迁移文档、GitHub issues（#1404/#1709/#3944/#6240/#830/#11320）、第三方兼容实测（pg-boss）</li>
+</ul>
+<p><strong>深水区五（复制与容灾）：多地域——光速税、leader 放置、手动 failover</strong></p>
+<ul>
+<li>机制：geo-partitioning 用表空间 + placement block 把表/分区 pin 到指定地域；follower reads 要求只读事务 + <code>yb_read_from_followers=on</code>，代价是 <code>yb_follower_read_staleness_ms</code>（默认 30000ms）有界过期，设太小（&lt;2×Raft 心跳）读被弹回 leader；read replicas 做远端只读；xCluster 是两 universe 间单向异步复制——计划内切换 RPO=0（等目标追平），计划外 RPO 非零且<strong>步骤手动</strong>：停应用→pause 双向复制→PITR 恢复到最新一致点→切连接；v2025.2.1 起 xCluster DDL 自动复制 GA，但故障切换本身仍手动。</li>
+<li>推到边缘：同步跨地域写逃不掉物理延迟（第三方对比：US→EU 50–100ms，US→亚洲 100–200ms，待验证）；tablet leader 若全在 preferred region，该 region 挂掉 → 所有 tablet 瞬间无 leader，约 3 秒重选，但<strong>应用流量切换（LB/连接串）得自己做</strong>；follower reads 本质是&quot;用 30 秒过期换本地延迟&quot;，报表能忍、交易不能忍，混用要在会话级显式开关。</li>
+<li>选型含义：写多跨地域 → 接受延迟或改 geo-partitioning 让写本地化；读多 → follower reads/read replicas 是正解；DR 演练必须覆盖&quot;xCluster 切过去再切回来&quot;的完整手动流程 + 应用连接切换，RTO 取决于应用切流速度而非数据库。</li>
+<li>来源：官方 tserver 配置文档、官方 DR 设计文档、官方 Aeon DR 文档、第三方对比（sesamefs，社区共识）</li>
+</ul>
+<p><strong>深水区六（成本/授权）：许可证演变——从双版本到 100% 开源，与 CockroachDB 的分叉</strong></p>
+<ul>
+<li>机制：2016–2019.7 双版本（CE 开源 + EE 商业闭源功能）→ 2019-07-16 官方博客宣布 100% 开源（v1.3 起分布式备份、加密、读副本、CDC 等并入 Apache 2.0）→ 至今核心（<code>src/yb/</code> + <code>src/postgres/</code> + 客户端库）Apache 2.0，<strong>数据库层面无企业专有功能</strong>；管控面 Anywhere（<code>managed/</code> 目录）Polyform Free Trial。</li>
+<li>推到边缘：对照 CockroachDB：Apache 2.0（2017–2019）→ BSL（2019–2024）→ Software License（2024–今）→ <strong>2026 年新版本转私有仓库开发</strong>。许可证是两者当前最硬的分水岭：一个走向更开放，一个走向更封闭。&quot;自托管可移植&quot;≠&quot;自主可控&quot;——CRDB 2026 后新版本无源码可看、无社区核心 PR，线上遇到内核级 bug 选项只剩等官方修/买支持；YB 这边&quot;会不会再变&quot;是合理的长期焦虑（毕竟翻转过），法务口径要各自核实，不要用一方的宣传材料论证另一方。</li>
+<li>来源：Yugabyte 官方博客（2019 换证 / 2025 博客）、仓库 LICENSE.md（独立核实，未引用 CRDB 方资料）；CRDB 侧：本档案库 cockroachdb.md（2024 licensing update、2026 source-code-protection 官方博客）</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<p><strong>Deep-dive 1 (storage engine): DocDB — one RocksDB per tablet; tablet count is the ceiling that arrives first</strong></p>
+<ul>
+<li>Mechanism: each tablet maps to an independent RocksDB instance (LSM-tree); each YSQL tablet is actually two RocksDBs — regular for committed data, intents for transaction provisional records; tablet splits are triggered via a Raft-log split record; after split-apply, the old tablet rejects all new reads/writes, and the new tablet only becomes RUNNING after electing a new leader; HLC timestamps; <code>--max_clock_skew_usec</code> defaults to 500000 (500ms), and the vendor recommends setting it to 2× your expected max clock skew; MVCC history retention <code>timestamp_history_retention_interval_sec</code> defaults to 15 minutes.</li>
+<li>Pushed to the edge: when SST files pile up to the limit → DocDB throttles writes directly (observable metrics: <code>majority_sst_files_rejections</code>, <code>rocksdb_stall_micros</code>, <code>intentsdb_rocksdb_stall_micros</code>) — for write-heavy workloads with tight IO, this ceiling arrives before CPU does; tablet count: the official deployment checklist gives an empirical ceiling of ~530 tablet replicas per 8 GiB node — clusters with many tables/indexes/high RF eat memory and management budget first; if any node&#x27;s clock skew exceeds max_clock_skew → <strong>it crashes directly to protect correctness</strong> — a misconfigured NTP doesn&#x27;t slow you down, it drops nodes; reads landing inside the &quot;uncertainty window&quot; get a 40001 read-restart and must retry; long queries/transactions running past the retention period → <code>snapshot_too_old</code> (SQLSTATE 72000), which is not retryable — opening a new transaction for a fresh snapshot is the only way out; enabling PITR or CDC before-image raises the retention period, and a lagging CDC stream makes disk usage grow linearly with retained data — consumer lag on the CDC side converts directly into a source-side disk bill.</li>
+<li>What it means for selection: write-heavy workloads must leave disk/IO headroom for compaction and monitor stall metrics; NTP and clock-skew monitoring are mandatory; reporting-style long queries should either raise the retention period (trading disk for it) or handle snapshot_too_old at the application layer; tablet counts need upfront planning (YugabyteDB tablets only split by size and never auto-merge — the count only grows).</li>
+<li>Sources: official design docs (tablet splitting), official deployment checklist (tablet ceiling/clock config), third-party monitoring docs (stall metrics, community-tested), official blog (clock skew/retention, vendor claim)</li>
+</ul>
+<p><strong>Deep-dive 2 (transactions &amp; time): the tax of distributed transactions — provisional records, read restarts, retry scaffolding</strong></p>
+<ul>
+<li>Mechanism: multi-tablet writes first land as provisional records on each participating tablet; the coordinator writes the commit timestamp into a decentralized transaction-status table, then they become real MVCC versions (Percolator-style); conflict handling is fail-on-conflict / wait-on-conflict + background distributed deadlock detection; single-row/single-shard transactions take the fast path (no transaction-status-table write).</li>
+<li>Pushed to the edge: every write waits for a Raft quorum — standalone PG&#x27;s sub-millisecond writes becoming millisecond-level on YB is inherent to the architecture (the official FAQ acknowledges the trade-off; community tests measured 465ms for a DO block inserting one row into each of three tables, 801ms under Read Committed); multi-tablet reads must wait for the read timestamp to become safe on every tablet; clock skew near the threshold triggers read retries — a misconfigured NTP shows up directly as jitter; under Serializable, conflicts surface as 40001 and the application must write a retry loop — retry scaffolding is needed on both sides (YB/CRDB); only the default isolation level differs (YSQL defaults to Read Committed).</li>
+<li>What it means for selection: sub-millisecond write-latency-sensitive workloads are out; the application layer must implement idempotent retries; POCs must be load-tested with the real transaction model — single-table point-lookup benchmarks will severely understate distributed-transaction cost.</li>
+<li>Sources: official architecture docs (distributed-txns / concurrency-control / single-row-transactions), official FAQ, community tests (dev.to)</li>
+</ul>
+<p><strong>Deep-dive 3 (SQL layer): YSQL vs YCQL dual APIs — data islands and tilted investment</strong></p>
+<ul>
+<li>Mechanism: YSQL reuses the PG query layer (rebased to PG 15 since v2025.1), wire-protocol compatible; YCQL is compatible with Cassandra CQL v3.4; <strong>the two APIs are completely isolated at the data plane</strong> — writes on one side are invisible to the other (even reading YCQL from YSQL via FDW only exists as roadmap issue #830).</li>
+<li>Pushed to the edge: the vendor has not announced a YCQL deprecation (no deprecation statement found — to-be-verified), but the tilted-investment signals are real: gRPC CDC doesn&#x27;t support YCQL tables (issue #11320); new clusters&#x27; default memory configuration is optimized for YSQL; the new API the vendor added in July 2025 is MongoDB (positioned as &quot;multi-modal&quot; alongside YSQL/YCQL); the official FAQ positions YCQL narrowly: no FK/JOIN needed, sub-millisecond single-row latency, TTL, connecting Spark/KSQL. <strong>Running two APIs on one cluster = two sets of monitoring, two sets of tuning knobs, data islands — the ops cost is multiplicative, not additive.</strong></li>
+<li>What it means for selection: new users should default to YSQL; only consider YCQL for legacy Cassandra migrations that hit the four scenarios the vendor lists; weigh YCQL&#x27;s feature-investment trajectory before betting new workloads on it.</li>
+<li>Sources: official FAQ (compatibility), official CDC docs, official deployment checklist, BusinessWire press release (MongoDB API, vendor claim)</li>
+</ul>
+<p><strong>Deep-dive 4 (compatibility/migration): the PG compatibility gap list — &quot;syntax runs&quot; ≠ &quot;semantics match&quot; (as of 2026-09-29)</strong></p>
+<ul>
+<li>Foreign keys: supported, but <strong>foreign keys referencing partitioned tables are not supported</strong>; <strong>deferrable UNIQUE is not supported</strong> (issue #1709), deferrable FK is supported.</li>
+<li>DDL transactionality: DDL is non-transactional by default — after <code>BEGIN; CREATE TABLE; ROLLBACK;</code> the table still exists (issue #1404); transactional DDL is an early-access flag (v2025.2) and is mutually exclusive with CDC; a plain <code>CREATE INDEX</code> builds online and <strong>cannot be placed inside an explicit transaction block</strong> (issue #6240).</li>
+<li>Advisory locks: errored out directly before 2025.1; supported since 2025.1 (requires a preview flag); the silent-error flag was deprecated in 2025.2 — migrations on pre-2025.1 versions must change the application.</li>
+<li>LISTEN/NOTIFY: early-access, off by default; listed as unsupported by the official voyager assessment tool.</li>
+<li>Triggers/stored procedures: officially claimed supported, but AFTER UPDATE triggers on partitioned tables were once incorrect; <strong>exclusion constraints are not supported</strong> (issue #3944), and the official workaround is &quot;simulate them with triggers&quot; — semantics downgraded from a constraint to best-effort.</li>
+<li>Sequences: minimum cache of 100 enforced; sequences live in a distributed system table, and node add/remove/reconnect all produce gaps — don&#x27;t use sequences if you need gapless numbering.</li>
+<li>Other hard gaps: system columns <code>xmin/xmax/ctid</code>, large objects lo, <code>PREPARE TRANSACTION</code> (two-phase commit), table inheritance <code>INHERITS</code>, and multi-column GIN indexes are all unsupported; fixed and closable: UNLOGGED tables (2024.2+/2025.1+), GENERATED ALWAYS columns (2.25/2025.1+), adding a primary key to a partitioned table after creation (2024.1+).</li>
+<li>What it means for selection: before migrating, run the yb-voyager <code>assess-migration</code> gap scan, and audit five spots in particular — deferrable constraints, exclusion constraints, DDL inside transactions, advisory locks, LISTEN/NOTIFY — which are common in PG but either error or silently change semantics in YSQL. v2025.1 (the PG15 rebase) is the compatibility watershed; most compatibility complaints about earlier versions are already partially fixed.</li>
+<li>Sources: official voyager known-issues (postgresql.md), official migration docs, GitHub issues (#1404/#1709/#3944/#6240/#830/#11320), third-party compatibility tests (pg-boss)</li>
+</ul>
+<p><strong>Deep-dive 5 (replication &amp; DR): multi-region — the speed-of-light tax, leader placement, manual failover</strong></p>
+<ul>
+<li>Mechanism: geo-partitioning pins tables/partitions to designated regions via tablespaces + placement blocks; follower reads require read-only transactions + <code>yb_read_from_followers=on</code>, at the cost of bounded staleness <code>yb_follower_read_staleness_ms</code> (default 30000ms) — set it too small (&lt;2× the Raft heartbeat) and reads bounce back to the leader; read replicas serve remote read-only; xCluster is one-way async replication between two universes — planned switchover achieves RPO=0 (wait for the target to catch up), unplanned failover has non-zero RPO and <strong>manual steps</strong>: stop the app → pause two-way replication → PITR restore to the latest consistent point → switch connections; xCluster DDL auto-replication went GA in v2025.2.1, but failover itself remains manual.</li>
+<li>Pushed to the edge: synchronous cross-region writes can&#x27;t escape physics (third-party comparison: US→EU 50–100ms, US→Asia 100–200ms, to-be-verified); if all tablet leaders sit in the preferred region, that region&#x27;s failure leaves every tablet leaderless in an instant — re-election takes ~3 seconds, but <strong>application traffic switching (LB/connection strings) is on you</strong>; follower reads are fundamentally &quot;trade 30 seconds of staleness for local latency&quot; — fine for reports, intolerable for transactions, and must be toggled explicitly at session level when mixed.</li>
+<li>What it means for selection: write-heavy cross-region → accept the latency or use geo-partitioning to localize writes; read-heavy → follower reads/read replicas are the right answer; DR drills must cover the full manual flow of &quot;xCluster over and back&quot; plus application connection switching — RTO depends on application traffic-switching speed, not the database.</li>
+<li>Sources: official tserver config docs, official DR design docs, official Aeon DR docs, third-party comparison (sesamefs, community consensus)</li>
+</ul>
+<p><strong>Deep-dive 6 (cost/licensing): the license evolution — from dual versions to 100% open source, and the fork from CockroachDB</strong></p>
+<ul>
+<li>Mechanism: 2016–2019.7 dual versions (CE open source + EE commercial closed source) → official blog on 2019-07-16 announced 100% open source (distributed backup, encryption, read replicas, CDC merged into Apache 2.0 from v1.3) → to this day the core (<code>src/yb/</code> + <code>src/postgres/</code> + client libraries) is Apache 2.0, with <strong>no enterprise-only features at the database level</strong>; the Anywhere control plane (<code>managed/</code> directory) is Polyform Free Trial.</li>
+<li>Pushed to the edge: compare with CockroachDB: Apache 2.0 (2017–2019) → BSL (2019–2024) → Software License (2024–present) → <strong>new versions moved to a private repository in 2026</strong>. Licensing is currently the hardest watershed between the two: one moves more open, the other more closed. &quot;Self-hostable and portable&quot; ≠ &quot;independently controllable&quot; — after CRDB&#x27;s 2026 move there&#x27;s no source to read and no community core PRs for new versions; if a kernel-level bug hits production, your options are limited to waiting for the vendor to fix it or buying support; on the YB side, &quot;will it change again&quot; is a reasonable long-term anxiety (it has flipped before) — verify per legal counsel and don&#x27;t use one vendor&#x27;s marketing materials to argue about the other.</li>
+<li>What it means for selection: for teams sensitive to licensing (信创 xìnchuàng / financial compliance / long-term independent control), this is YB&#x27;s structural advantage over CRDB — but the advantage only holds as long as &quot;core 100% open source&quot; keeps holding; scrutinize versions and clauses in the contract, not the blog headlines.</li>
+<li>Sources: Yugabyte official blog (2019 license change / 2025 blog), repo LICENSE.md (independently verified, no CRDB-side materials cited); CRDB side: this profile repository&#x27;s cockroachdb.md (2024 licensing update, 2026 source-code-protection official blogs)</li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="用户最买账的 5 点" data-en="What users love most">用户最买账的 5 点</span></h2>
+<div class="lang-block lang-zh">
+<ol>
+<li><strong>PG 兼容带来的迁移顺滑度</strong><ul>
+<li>为什么是真的：YSQL 直接复用 PG 查询层 C 代码，线协议兼容，psql/JDBC/多数 ORM 无需改造即可连接，官方有 YugabyteDB Voyager 迁移工具；PG DBA Franck Pachot 实测推荐&quot;OLTP 且未来可能要 scale 时从 YB 起步&quot;，理由是兼容 PG 且可随时迁回 PG。</li>
+<li>边缘与限度：&quot;兼容&quot;≠&quot;就是 PG&quot;——表重写类 <code>ALTER TABLE ... ALTER COLUMN TYPE</code> 在 v2025.1 前直接报错（Ory Kratos 迁移曾因此失败），PG15 rebase 后补上但仍有 exclusions；官方维护着&quot;不支持的 PG 特性&quot;清单。</li>
+<li>来源：官方文档 + 社区实测。观察版本：v2025.1/v2025.2</li>
+</ul></li>
+<li><strong>水平扩展能力</strong><ul>
+<li>为什么是真的：tablet 可自动分裂、rebalancer 自动搬迁，加节点即扩容且官方称无需停机——&quot;原生分布式&quot;相对 PG 主从/Citus 系最被认可的点。</li>
+<li>边缘与限度：扩展的是容量与吞吐，不治单点延迟；tablet 膨胀有真实代价（8GiB 节点约 530 tablet 副本 + 65 PG 物理连接上限），过多放大 leader 均衡与元数据压力；3 节点 × 4vCPU 的生产下限被社区认为小规模场景&quot;杀鸡用牛刀&quot;。</li>
+<li>来源：官方文档 + 社区共识。观察版本：v2025.2</li>
+</ul></li>
+<li><strong>多地域 active-active / 同步复制</strong><ul>
+<li>为什么是真的：单集群横跨 AZ/region/云，Raft 同步复制保强一致，geo-partitioning 数据就近放置，xCluster 双向复制；第三方社区对比将其与 CRDB 并列&quot;强一致跨地域&quot;档。</li>
+<li>边缘与限度：写必须等 Raft quorum，跨地域写延迟受物理距离硬约束；leader 放错 region 延迟翻倍；3 地域 × RF 资源账单实在。厂商口径（Kroger 5000+ cores、延迟 &lt;10ms）待验证，不进入判决依据。</li>
+<li>来源：官方文档 + 第三方对比。观察版本：v2025.2</li>
+</ul></li>
+<li><strong>Smart Drivers（集群/拓扑感知驱动）</strong><ul>
+<li>为什么是真的：官方 smart driver 从集群元数据读拓扑直连各 tserver，<code>load_balance=true</code> + <code>topology_keys</code> 实现免外部 LB、AZ 就近路由、故障客户端侧重试，实测验证流量均匀打到各节点。</li>
+<li>边缘与限度：只在官方 smart driver 生态内生效；社区实战坑：Node 驱动拓扑缓存类级静态共享、换连接池不重置继承过期拓扑，连接池需手动预热，非对等 VPC 下先探测不可达节点引入延迟。</li>
+<li>来源：官方文档 + 社区实测。观察版本：v2025.2 / v2026.1</li>
+</ul></li>
+<li><strong>开源口碑（核心 Apache 2.0）</strong><ul>
+<li>为什么是真的：核心 100% Apache 2.0（2019 年 HN 反响积极），对比 CRDB（BSL→私有）、TiDB 商业版边界更彻底；通过 Jepsen 正确性测试。</li>
+<li>边缘与限度：许可证历史多次翻转，长期主义者担心&quot;下次再变&quot;；Anywhere 管控面是 Polyform 非 OSI 开源；Jepsen 是厂商付费测试<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>来源：HN 讨论（2019）、Jepsen 报告。观察版本：全版本</li>
+</ul></li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<ol>
+<li><strong>Migration smoothness from PG compatibility</strong><ul>
+<li>Why it&#x27;s real: YSQL directly reuses the PG query-layer C code and is wire-protocol compatible; psql/JDBC/most ORMs connect without changes, and the vendor ships the YugabyteDB Voyager migration tool; PG DBA Franck Pachot&#x27;s field tests recommend &quot;start with YB for OLTP if you may need to scale later,&quot; on the grounds that it&#x27;s PG-compatible and you can always move back to PG.</li>
+<li>Edge &amp; limits: &quot;compatible&quot; ≠ &quot;is PG&quot; — table-rewriting <code>ALTER TABLE ... ALTER COLUMN TYPE</code> errored outright before v2025.1 (this once broke an Ory Kratos migration); it was added after the PG15 rebase but exclusions remain; the vendor maintains a list of &quot;unsupported PG features.&quot;</li>
+<li>Sources: official docs + community-tested. Observed version: v2025.1/v2025.2</li>
+</ul></li>
+<li><strong>Horizontal scale-out</strong><ul>
+<li>Why it&#x27;s real: tablets can auto-split and the rebalancer moves them automatically — adding nodes scales out and the vendor says no downtime is needed; this is the most-recognized advantage of &quot;natively distributed&quot; over PG primary-replica/Citus-style setups.</li>
+<li>Edge &amp; limits: it scales capacity and throughput, not single-point latency; tablet bloat has real cost (~530 tablet replicas + a 65 physical-PG-connection ceiling per 8GiB node) — too many amplify leader-balancing and metadata pressure; the 3-node × 4vCPU production floor is seen by the community as overkill for small workloads.</li>
+<li>Sources: official docs + community consensus. Observed version: v2025.2</li>
+</ul></li>
+<li><strong>Multi-region active-active / synchronous replication</strong><ul>
+<li>Why it&#x27;s real: a single cluster spans AZs/regions/clouds with Raft synchronous replication preserving strong consistency; geo-partitioning places data near users; xCluster does two-way replication; third-party community comparisons place it alongside CRDB in the &quot;strongly consistent cross-region&quot; tier.</li>
+<li>Edge &amp; limits: writes must wait for a Raft quorum, and cross-region write latency is hard-bounded by physical distance; a misplaced leader doubles latency; the 3-region × RF resource bill is very real. Vendor claims (Kroger 5000+ cores, &lt;10ms latency) are to-be-verified and do not enter the verdict.</li>
+<li>Sources: official docs + third-party comparison. Observed version: v2025.2</li>
+</ul></li>
+<li><strong>Smart Drivers (cluster/topology-aware drivers)</strong><ul>
+<li>Why it&#x27;s real: the official smart driver reads topology from cluster metadata and connects clients straight to each tserver; <code>load_balance=true</code> + <code>topology_keys</code> deliver no-external-LB, AZ-local routing, and client-side retry on failure — field tests confirmed traffic spreads evenly across nodes.</li>
+<li>Edge &amp; limits: only works inside the official smart-driver ecosystem; community field pitfalls: the Node driver&#x27;s topology cache is statically shared at class level — switching pools without resetting inherits a stale topology; pools need manual warm-up; on non-peered VPCs the driver probes unreachable nodes first, adding latency.</li>
+<li>Sources: official docs + community-tested. Observed version: v2025.2 / v2026.1</li>
+</ul></li>
+<li><strong>Open-source reputation (100% Apache 2.0 core)</strong><ul>
+<li>Why it&#x27;s real: the core is 100% Apache 2.0 (the 2019 HN discussion was positive), more thorough than CRDB (BSL→private) and TiDB&#x27;s commercial-edition boundaries; it passed Jepsen correctness testing.</li>
+<li>Edge &amp; limits: the license has flipped multiple times in history, and long-term thinkers worry about &quot;what if it changes again&quot;; the Anywhere control plane is Polyform, not OSI open source; the Jepsen test was vendor-paid <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>Sources: HN discussion (2019), Jepsen report. Observed version: all versions</li>
+</ul></li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="吐槽清单" data-en="Complaints">吐槽清单</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>分类</th><th>吐槽</th><th>影响版本</th><th>状态</th></tr></thead>
+<tbody>
+<tr><td>性能坑</td><td>分布式事务延迟：写等 Raft quorum，单机 PG 亚毫秒写变毫秒级；三表各插 1 行 DO 块实测 465ms，Read Committed 下 801ms（架构固有，官方 FAQ 承认 trade-off）</td><td>v2.x（2.23 实测）</td><td>open</td></tr>
+<tr><td>性能坑</td><td>LSM 写放大 + compaction 毛刺：SST 堆积触发写节流；社区诊断抓到某节点 compaction pressure HIGH、P99 38ms</td><td>全版本</td><td>partially-fixed（持续优化中，状态待验证）</td></tr>
+<tr><td>性能坑</td><td>时钟 skew → read restarts/stalls：hybrid clock 偏差近阈值即读重试，NTP 没配好直接毛刺</td><td>全版本</td><td>open（by design）</td></tr>
+<tr><td>性能坑</td><td>第三方 sysbench 对比：混合读写 50 并发即瓶颈、延迟秒级</td><td>老版本（约 2.x 早期）</td><td>open，状态待验证（旧版本测试仅供参考）</td></tr>
+<tr><td>运维坑</td><td>yb-master + yb-tserver 双进程架构，RF3 最少 3 节点，生产下限 4vCPU/节点；小规模团队认为负担远超 PG+Patroni</td><td>全版本</td><td>open（by design）</td></tr>
+<tr><td>运维坑</td><td>tablet/leader 均衡：自动 rebalance 存在，但实战出现某节点 leader 数是另一节点 2.6 倍</td><td>v2025.2 实测</td><td>partially-fixed，状态待验证</td></tr>
+<tr><td>运维坑</td><td>ulimit/文件描述符耗尽致集群不稳；<code>Rewriting of YB table is not yet implemented</code> 是常见迁移 blocker</td><td>v2.x–v2025.x</td><td>open</td></tr>
+<tr><td>兼容坑</td><td><code>ALTER TABLE ... ALTER COLUMN TYPE</code>（表重写）缺口致 Ory Kratos/Hydra 迁移失败，issue 被关闭未解决</td><td>&lt; v2025.1</td><td>fixed-in-v2025.1（PG15 rebase 补上，但仍有 exclusions）</td></tr>
+<tr><td>兼容坑</td><td>YCQL 与 YSQL 数据不互通（各写各的，roadmap issue #830）</td><td>全版本</td><td>open</td></tr>
+<tr><td>兼容坑</td><td>不支持清单：LISTEN/NOTIFY、advisory locks（2025.1 前）、PREPARE TRANSACTION、事务内 DDL、GiST/BRIN 等，ORM/工具链踩坑</td><td>全版本</td><td>open（advisory locks fixed-in-v2025.1）</td></tr>
+<tr><td>授权坑</td><td>许可证历史多次变更（双版本→2019 Apache 化→企业功能曾商业授权→现 100% 开源），长期选型有不确定性焦虑</td><td>历史全版本</td><td>fixed-in-2019（核心 100% Apache 2.0；&quot;会不会再变&quot;属主观，待验证）</td></tr>
+<tr><td>授权坑</td><td>Anywhere 管控面为 Polyform Free Trial 非 OSI 开源；Aeon 托管版按 vCPU 分级商业定价（公开报价以官方为准，询价前不要按旧数字做预算）</td><td>v2024+</td><td>open（by design）</td></tr>
+<tr><td>生态坑</td><td>Ory 官方仅支持 PG/MySQL/CockroachDB，YugabyteDB 不在支持列表，Kratos/Hydra 用户需自担&quot;每次升级重验&quot;税</td><td>全版本</td><td>open</td></tr>
+<tr><td>生态坑</td><td>Smart driver 实战坑：拓扑缓存静态共享、连接池需预热、discovery 阶段可绕过连接超时配置</td><td>2026 年实战</td><td>open，状态待验证</td></tr>
+<tr><td>生态坑</td><td>监控集成：Prometheus 指标端点特殊（默认 <code>/metrics</code> 无数据），需按官方 receiver 方式对接</td><td>全版本</td><td>open</td></tr>
+<tr><td>成本坑</td><td>RF3 三副本：同样数据量 3 倍存储 + 3 节点起步计算资源；社区测算小规模 HA 场景资源约为 PG+Patroni 方案 4 倍</td><td>全版本</td><td>open（by design）</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Category</th><th>Complaint</th><th>Affected versions</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Perf pit</td><td>Distributed-transaction latency: writes wait for a Raft quorum; standalone PG&#x27;s sub-millisecond writes become millisecond-level; a community test measured 465ms for a DO block inserting one row into each of three tables, 801ms under Read Committed (inherent to the architecture; the official FAQ acknowledges the trade-off)</td><td>v2.x (tested on 2.23)</td><td>open</td></tr>
+<tr><td>Perf pit</td><td>LSM write amplification + compaction jitter: SST pile-up triggers write throttling; community diagnostics caught one node with compaction pressure HIGH and P99 at 38ms</td><td>all versions</td><td>partially-fixed (ongoing optimization; status to-be-verified)</td></tr>
+<tr><td>Perf pit</td><td>Clock skew → read restarts/stalls: hybrid-clock deviation near the threshold triggers read retries immediately; a misconfigured NTP shows up as jitter</td><td>all versions</td><td>open (by design)</td></tr>
+<tr><td>Perf pit</td><td>Third-party sysbench comparison: mixed read-write bottlenecked at 50 connections, latency in seconds</td><td>old versions (early ~2.x)</td><td>open, status to-be-verified (old-version test, reference only)</td></tr>
+<tr><td>Ops pit</td><td>yb-master + yb-tserver dual-process architecture, minimum 3 nodes for RF3, production floor of 4vCPU/node; small teams find the burden far heavier than PG+Patroni</td><td>all versions</td><td>open (by design)</td></tr>
+<tr><td>Ops pit</td><td>Tablet/leader balancing: auto-rebalance exists, but field cases show one node holding 2.6× the leaders of another</td><td>v2025.2 field test</td><td>partially-fixed, status to-be-verified</td></tr>
+<tr><td>Ops pit</td><td>ulimit/file-descriptor exhaustion destabilizes clusters; <code>Rewriting of YB table is not yet implemented</code> is a common migration blocker</td><td>v2.x–v2025.x</td><td>open</td></tr>
+<tr><td>Compat pit</td><td>The <code>ALTER TABLE ... ALTER COLUMN TYPE</code> (table-rewrite) gap broke Ory Kratos/Hydra migrations; the issue was closed unresolved</td><td>&lt; v2025.1</td><td>fixed-in-v2025.1 (added with the PG15 rebase, but exclusions remain)</td></tr>
+<tr><td>Compat pit</td><td>YCQL and YSQL data don&#x27;t interoperate (each writes its own, roadmap issue #830)</td><td>all versions</td><td>open</td></tr>
+<tr><td>Compat pit</td><td>Unsupported list: LISTEN/NOTIFY, advisory locks (pre-2025.1), PREPARE TRANSACTION, DDL inside transactions, GiST/BRIN, etc. — ORM/toolchain footguns</td><td>all versions</td><td>open (advisory locks fixed-in-v2025.1)</td></tr>
+<tr><td>Licensing pit</td><td>License history changed multiple times (dual versions → 2019 Apache-ization → formerly commercial enterprise features → now 100% open source); long-term selection carries uncertainty anxiety</td><td>all historical versions</td><td>fixed-in-2019 (core 100% Apache 2.0; &quot;will it change again&quot; is subjective — to-be-verified)</td></tr>
+<tr><td>Licensing pit</td><td>Anywhere control plane is Polyform Free Trial, not OSI open source; Aeon managed tier uses commercial per-vCPU pricing (old public quote of $1,080/month for 3 nodes is 2022 data — to-be-verified)</td><td>v2024+</td><td>open (by design)</td></tr>
+<tr><td>Ecosystem pit</td><td>Ory officially supports only PG/MySQL/CockroachDB; YugabyteDB isn&#x27;t on the support list, so Kratos/Hydra users bear a &quot;re-verify every upgrade&quot; tax</td><td>all versions</td><td>open</td></tr>
+<tr><td>Ecosystem pit</td><td>Smart-driver field pitfalls: statically shared topology cache, pools need warm-up, the discovery phase can bypass connection-timeout configs</td><td>2026 field experience</td><td>open, status to-be-verified</td></tr>
+<tr><td>Ecosystem pit</td><td>Monitoring integration: Prometheus metric endpoints are unusual (default <code>/metrics</code> returns nothing); must integrate per the official receiver approach</td><td>all versions</td><td>open</td></tr>
+<tr><td>Cost pit</td><td>RF3 triple replicas: 3× storage for the same data + a 3-node minimum compute footprint; community estimates put small HA scenarios at ~4× the resources of a PG+Patroni setup</td><td>all versions</td><td>open (by design)</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="判决" data-en="Verdict">判决</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li><strong>一句话定位</strong>：想&quot;用 PG 的方言写、按分布式的规模跑&quot;，且把许可证开放度看得很重的团队，YugabyteDB 是 NewSQL 里 PG 兼容质地最真的一家——但你要为分布式付的税（延迟、RF3 资源、运维复杂度）一分不会少。</li>
+<li><strong>适合谁</strong>：需要 PG 生态 + 水平写扩展的 OLTP（从 PG 起步、预留 scale-out）；多地域 active-active / 同城双活强一致场景；存量 Cassandra 迁 YCQL；对许可证敏感、要求核心 100% 开源无阉割的团队（对照 CRDB 2026 转私有）。</li>
+<li><strong>不适合谁</strong>：单地域小规模业务（RF3 资源下限 + 运维复杂度不划算，先用 PG+Patroni）；写延迟敏感到亚毫秒级的场景；重度依赖 PG 偏门特性（PostGIS、exclusion 约束、LISTEN/NOTIFY、advisory locks 老版本、PREPARE TRANSACTION）且不愿改应用；中文支持要求高、无专职 DBA 又想&quot;装完不管&quot;的团队。</li>
+<li><strong>迁移成本</strong>：PostgreSQL → 低-中（协议兼容 + yb-voyager assess-migration，但必须跑缺口扫描，长尾缺口逐项验证；v2025.1 之前版本兼容坑更多）；MySQL → 中（先过 PG 兼容层再谈）；Cassandra → 低（YCQL）；Oracle → 高（无 Oracle 兼容，走应用层改造）。</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li><strong>One-line positioning</strong>: For teams that want to &quot;write in PG dialect and run at distributed scale&quot; and care deeply about license openness, YugabyteDB is the most genuinely PG-compatible of the NewSQL crowd — but every cent of the distributed tax (latency, RF3 resources, ops complexity) still has to be paid.</li>
+<li><strong>Good for</strong>: OLTP needing the PG ecosystem + horizontal write scale (start on PG, keep scale-out in reserve); multi-region active-active / same-city dual-active strong-consistency scenarios; legacy Cassandra migrations to YCQL; teams sensitive to licensing that require a core that is 100% open source with no crippling (contrast with CRDB going private in 2026).</li>
+<li><strong>Not for</strong>: single-region small workloads (RF3 resource floor + ops complexity don&#x27;t pay off — start with PG+Patroni); scenarios where write latency is sensitive down to sub-milliseconds; teams deeply dependent on PG niche features (PostGIS, exclusion constraints, LISTEN/NOTIFY, old-version advisory locks, PREPARE TRANSACTION) that won&#x27;t change their application; teams with high Chinese-language-support needs, no dedicated DBA, and a &quot;install and forget&quot; expectation.</li>
+<li><strong>Migration cost</strong>: PostgreSQL → low-to-medium (protocol-compatible + yb-voyager assess-migration, but a gap scan is mandatory and long-tail gaps must be verified one by one; pre-v2025.1 versions have more compatibility pitfalls); MySQL → medium (first clear the PG compatibility layer, then talk); Cassandra → low (YCQL); Oracle → high (no Oracle compatibility — application-layer rework).</li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="来源与待验证清单" data-en="Sources & to-be-verified">来源与待验证清单</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li>版本信息：官方 releases 页（v2026.1.1.2 STS 2026-09-10；v2025.2 LTS；v2025.2.6.0→2026.1 升级限制）</li>
+<li>架构：官方架构文档（docdb-replication/raft、transactions/distributed-txns、concurrency-control、single-row-transactions、docdb-sharding/tablet-splitting）、官方设计文档（tablet 分裂、DR）</li>
+<li>安全：官方文档（encryption-at-rest、tls-encryption、audit-logging-ysql/ycql）</li>
+<li>备份/升级：官方文档（schedule-data-backups、PITR、upgrade-deployment 各版本）、官方 yugabytedb-skills</li>
+<li>兼容：官方 voyager known-issues（postgresql.md）、官方迁移文档、官方 FAQ（compatibility）</li>
+<li>许可证：官方博客（2019-07-16 换证）、仓库 LICENSE.md（独立核实）；CRDB 对照：本档案库 cockroachdb.md</li>
+<li>口碑：GitHub issues（#830/#1404/#1709/#3944/#6240/#11320、ory/kratos#715、ory/hydra#2156）、HN（2019 换证讨论）、dev.to 实测、社区对比（pidgeiot、sesamefs）、yb-doctor/base-14 监控文档</li>
+<li>下次评审：跟踪 v2026.2 LTS 发布（计划 2026 年底）、PG rebase 节奏、YCQL 投入方向</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li>Version info: official releases page (v2026.1.1.2 STS 2026-09-10; v2025.2 LTS; v2025.2.6.0→2026.1 upgrade restriction)</li>
+<li>Architecture: official architecture docs (docdb-replication/raft, transactions/distributed-txns, concurrency-control, single-row-transactions, docdb-sharding/tablet-splitting), official design docs (tablet splitting, DR)</li>
+<li>Security: official docs (encryption-at-rest, tls-encryption, audit-logging-ysql/ycql)</li>
+<li>Backup/upgrades: official docs (schedule-data-backups, PITR, upgrade-deployment per version), official yugabytedb-skills</li>
+<li>Compatibility: official voyager known-issues (postgresql.md), official migration docs, official FAQ (compatibility)</li>
+<li>Licensing: official blog (2019-07-16 license change), repo LICENSE.md (independently verified); CRDB comparison: this profile repository&#x27;s cockroachdb.md</li>
+<li>Reputation: GitHub issues (#830/#1404/#1709/#3944/#6240/#11320, ory/kratos#715, ory/hydra#2156), HN (2019 license-change discussion), dev.to field tests, community comparisons (pidgeiot, sesamefs), yb-doctor/base-14 monitoring docs</li>
+<li>Next review: track the v2026.2 LTS release (planned end of 2026), the PG rebase cadence, and YCQL investment direction</li>
+</ul>
+</div>
+</section>
+</main>
+<footer class="footer">
+  <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
+</footer>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
