@@ -192,11 +192,18 @@ if (notice) notice.hidden = true;
 }
 }
 
+/* PK 下拉框：中英文各一对，按当前语言取可见的那对 */
+function pkSelects() {
+var en = getLang() !== 'zh';
+return [document.getElementById(en? 'pk-a-en': 'pk-a'), document.getElementById(en? 'pk-b-en': 'pk-b')];
+}
+function pkNoteEl() {
+return document.getElementById(getLang() !== 'zh'? 'pk-note-en': 'pk-note');
+}
 /* AI 选型页 PK 区：选了 ≥2 款就用已选库，否则用下拉框 */
 function paintPkNote() {
-var note = document.getElementById('pk-note');
-var sa = document.getElementById('pk-a');
-var sb = document.getElementById('pk-b');
+var note = pkNoteEl();
+var _pp = pkSelects(), sa = _pp[0], sb = _pp[1];
 if (!note ||!sa ||!sb) return;
 var sel = getSelection(), lang = getLang();
 if (sel.length >= 2) {
@@ -406,8 +413,7 @@ var lang = getLang(), sel = getSelection(), tpl;
 if (sel.length >= 2) {
 tpl = pkPromptN(lang, selNames());
 } else {
-var sa = document.getElementById('pk-a');
-var sb = document.getElementById('pk-b');
+var _pp2 = pkSelects(), sa = _pp2[0], sb = _pp2[1];
 var an = sa? sa.value: '';
 var bn = sb? sb.value: '';
 if (!an ||!bn) {
