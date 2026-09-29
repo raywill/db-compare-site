@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>MongoDB - DB 选型参考</title>
+<link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">&#9672;</span> DB <span data-zh="选型参考" data-en="Compare">选型参考</span></a>
+    <nav class="mainnav">
+<a href="index.html" class="active" data-zh="首页" data-en="Home">首页</a>
+<a href="compare.html" class="" data-zh="维度对比" data-en="Compare">维度对比</a>
+<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
+<a href="advisor.html" class="" data-zh="AI选型" data-en="AI Selection">AI选型</a>
+    </nav>
+    <div class="cmp-tray">
+      <button id="cmp-tray-btn" type="button" class="tray-btn" aria-expanded="false" aria-haspopup="true"><span data-zh="对比" data-en="Compare">对比</span> <b class="tray-count"><i id="cmp-count">0</i>/4</b></button>
+      <div id="cmp-panel" class="tray-panel" hidden>
+        <div class="tray-sec"><span data-zh="已选" data-en="Selected">已选</span></div>
+        <div id="cmp-selected" class="tray-selected"></div>
+        <div class="tray-sec"><span data-zh="全部产品（最多选 4 款）" data-en="All products (up to 4)">全部产品（最多选 4 款）</span></div>
+        <div id="cmp-list" class="tray-list"></div>
+        <div class="tray-actions"><button id="cmp-clear" type="button" class="tray-clear"><span data-zh="清空选择" data-en="Clear selection">清空选择</span></button></div>
+      </div>
+    </div>
+    <button id="lang-toggle" class="lang-btn" type="button" aria-label="switch language">EN</button>
+  </div>
+</header>
+<main class="page">
+<div class="profile-hero">
+  <a class="back" href="index.html"><span data-zh="← 返回首页" data-en="← Back to home">← 返回首页</span></a>
+  <h1>MongoDB</h1>
+  <div class="meta-row"><span class="cat cat-kvdoc" data-zh="KV · 宽列 · 文档" data-en="KV · Wide-column · Document">KV · 宽列 · 文档</span> <span class="tag">#文档型</span> <span class="tag">#NoSQL</span> <span class="tag">#SSPL</span> <span class="tag">#分片</span> <span class="tag">#副本集</span> <span class="tag">#BSON</span> <span class="tag">#灵活Schema</span> <span class="tag">#WiredTiger</span> <span class="tag">#Atlas</span></div>
+  <p class="oneliner"><div class="lang-block lang-zh">
+<p>文档型数据库的事实标准：BSON 文档 + 灵活 Schema + 原生分片，把&quot;上线快&quot;做到了极致——但&quot;没有 Schema&quot;不等于&quot;不需要数据治理&quot;，SSPL 许可证意味着它早已不是传统意义上的开源数据库。</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<p>The de facto standard for document databases: BSON documents + flexible schema + native sharding, taking &quot;time-to-launch&quot; to the extreme — but &quot;no schema&quot; does not mean &quot;no data governance,&quot; and the SSPL license means it is long past being an open-source database in the traditional sense.</p>
+</div></p>
+  <div class="ai-dive-row" data-product="MongoDB">
+    <span class="ai-dive-label" data-zh="用 AI 深挖这款：" data-en="Deep-dive with AI:">用 AI 深挖这款：</span>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('chatgpt', this)">ChatGPT <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('grok', this)">Grok <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('claude', this)">Claude <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn addcmp-btn" data-addcmp="mongodb"><span class="addcmp-label">＋ 对比</span></button>
+  </div>
+  <div class="legend"><span class="legend-label" data-zh="证据等级：" data-en="Evidence levels: ">证据等级：</span><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></div>
+</div>
+<section class="doc-section">
+<h2><span data-zh="基本信息" data-en="Basics">基本信息</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>项</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td>厂商</td><td>MongoDB, Inc.（NASDAQ: MDB，原 10gen）</td></tr>
+<tr><td>国家</td><td>美国</td></tr>
+<tr><td>起源</td><td>2007 年创立，首版 2009 年发布；2018-10-16 起社区版从 AGPL 转为 SSPL</td></tr>
+<tr><td>许可证</td><td><strong>SSPL v1</strong>（社区版）；Enterprise Advanced 商业授权。SSPL 非 OSI 认可的开源许可证</td></tr>
+<tr><td>托管服务</td><td>MongoDB Atlas（全托管，M0 免费 / Flex / M10+ 专用集群）</td></tr>
+<tr><td>主类型</td><td>文档型（document）</td></tr>
+<tr><td>兼具类型</td><td>时序集合（5.0 起）、向量检索（Atlas Vector Search）、全文检索（Atlas Search）、流处理（Atlas Stream Processing）</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Item</th><th>Content</th></tr></thead>
+<tbody>
+<tr><td>Vendor</td><td>MongoDB, Inc. (NASDAQ: MDB, formerly 10gen)</td></tr>
+<tr><td>Country</td><td>United States</td></tr>
+<tr><td>Origin</td><td>Founded in 2007, first release in 2009; Community edition switched from AGPL to SSPL on 2018-10-16</td></tr>
+<tr><td>License</td><td><strong>SSPL v1</strong> (Community edition); Enterprise Advanced commercial license. SSPL is not an OSI-recognized open-source license</td></tr>
+<tr><td>Managed service</td><td>MongoDB Atlas (fully managed; M0 free tier / Flex / M10+ dedicated clusters)</td></tr>
+<tr><td>Primary type</td><td>Document</td></tr>
+<tr><td>Secondary types</td><td>Time series collections (since 5.0), vector search (Atlas Vector Search), full-text search (Atlas Search), stream processing (Atlas Stream Processing)</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section"><h2><span data-zh="硬维度（14 项）" data-en="Hard dimensions (14)">硬维度（14 项）</span></h2>
+<div class="lang-block lang-zh">
+<div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>。WiredTiger 引擎级静态加密（AES-256-GCM）为 <strong>Enterprise 版专属</strong>，社区版<strong>查证为无</strong>（不带 <code>--enableEncryption</code> 相关能力）；密钥管理支持 KMIP（企业版）与本地 keyfile；Atlas 托管默认落盘加密。客户端字段级加密 Queryable Encryption（7.0 起）是客户端侧能力，不分社区/企业（需 crypt_shared 库）。来源等级：官方文档</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。TLS/SSL 全链路支持（客户端↔mongos/mongod、副本集内部、备份传输）；自 3.6 起默认仅绑定 localhost，暴露公网需显式配置。来源等级：官方文档</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> 审计 <span class="verdict v-partial">部分支持（企业版专属）</span></h3><div class="dim-body"><p><strong>部分支持（企业版专属）</strong>。审计（auditLog）为 Enterprise Advanced 功能，社区版<strong>查证为无</strong>原生审计；社区用户只能靠应用层日志或代理层弥补。来源等级：官方文档</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> 认证与权限 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。SCRAM-SHA-256（默认）、x.509 证书、LDAP（企业版）、Kerberos（企业版）、OIDC（企业版，7.0+ 起能力逐步完善）；RBAC 角色模型（内置角色 + 自定义角色，库/集合级粒度）。来源等级：官方文档</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> 备份恢复 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。自建：<code>mongodump</code>/<code>mongorestore</code>（逻辑）、文件系统快照（物理，需 journaling + 锁或副本集一致性配合）、<code>mongoexport</code>；Atlas：连续备份 + PITR（时间点恢复）、按需快照。恢复速度取决于数据量与拓扑（分片集群恢复需逐分片协调，官方无统一 RTO 口径——<strong>厂商无口径，按自测</strong>）。来源等级：官方文档 + 社区共识</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> 大版本升级 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。升级必须逐个大版本走（6.0→7.0→8.0，不可跳版），先升二进制再升 <code>featureCompatibilityVersion</code>；FCV 未升前可在兼容的二进制版本间回退，FCV 升后回退路径受限。分片集群按&quot;配置服务器→分片→mongos&quot;顺序滚动，总体可在线，但升级窗口内有功能冻结期。来源等级：官方文档</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> 可观测性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。自建：<code>mongostat</code>/<code>mongotop</code>、Database Profiler（慢查询）、<code>db.currentOp()</code>、FTDC（诊断数据捕获）、官方 MongoDB Cloud Manager / Ops Manager（企业级监控自动化）；Atlas 内置监控、Performance Advisor、慢查询分析。来源等级：官方文档</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> 连接模型 <span class="verdict v-yes">有（驱动侧连接池）</span></h3><div class="dim-body"><p><strong>有（驱动侧连接池）</strong>。无服务端内置连接池中间件概念；各官方驱动自带连接池（<code>maxPoolSize</code> 默认 100 等驱动相关参数），长连接复用；官方建议应用层保持单例 MongoClient。超大规模连接场景靠横向加应用实例或第三方代理（如自研/Proxy），官方无 pgBouncer 式标配。来源等级：官方文档 + 社区共识</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> 事务与隔离级别 <span class="verdict v-yes">有（有限制）</span></h3><div class="dim-body"><p><strong>有（有限制）</strong>。多文档 ACID 事务：副本集 4.0 起、分片集群 4.2 起；隔离级别为快照隔离（snapshot）；<strong>默认 <code>transactionLifetimeLimitSeconds=60</code> 秒</strong>，超时自动 abort（可调，但调大增加冲突与缓存压力）。单文档写入天然原子。<strong>分片事务不支持某些操作</strong>（如跨分片的特定 DDL），以官方&quot;事务限制&quot;文档为准。来源等级：官方文档</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> 复制与一致性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。副本集主从复制（异步 oplog 拉取，非 Raft/Paxos 共识写，选举用 Raft-like 投票协议）；一致性可调：写关注 <code>w:1</code>（默认单机确认）/<code>w:majority</code>（5.0 起为默认写关注，仲裁节点等拓扑下有例外）/<code>w:all</code>，读关注 <code>local</code>/<code>majority</code>/<code>snapshot</code>/<code>linearizable</code>。强一致需显式 <code>w:majority</code> + <code>readConcern:majority</code> 组合，默认配置不提供线性一致。来源等级：官方文档</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> 扩展方式 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。纵向（加配置）与横向（分片集群：mongos 路由 + config servers + shards）兼具；分片扩容在线（加分片后 balancer 自动迁移 chunk），但见深水区一：分片键选错则&quot;扩了也白扩&quot;。来源等级：官方文档 + 社区共识</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> 兼容性 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>。协议层面：MongoDB wire protocol 为事实标准，被 FerretDB、Amazon DocumentDB、Azure Cosmos DB（Mongo API）等兼容实现反向兼容；但反过来 MongoDB 不兼容别家 SQL 协议。工具链：官方驱动覆盖主流语言（Apache 2.0）、Compass GUI、MongoDB Connector for BI（SQL 访问）、Mongoose（Node ODM）等生态成熟。<strong>SQL 兼容查证为无</strong>（非关系型）。来源等级：官方文档 + 社区共识</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> 许可证与商业模式 <span class="verdict v-neutral">SSPL v1（非 OSI 开源</span></h3><div class="dim-body"><p><strong>SSPL v1（非 OSI 开源）</strong>。见深水区六专述：2018-10-16 社区版从 AGPL 转 SSPL；SSPL 要求&quot;将本软件作为服务提供&quot;者必须开源整个服务栈（含管理、用户界面、备份、监控等），实质封堵第三方 DBaaS。普通企业自用（内部业务系统）不受影响。商业模式：Enterprise Advanced 订阅（企业版功能：静态加密、审计、LDAP/Kerberos、Ops Manager 等）+ Atlas 托管（按实例规格/存储/数据传输/备份计费，M0 免费、Flex 按量封顶、M10+ 专用集群按小时）。来源等级：官方 LICENSE 文件 + 官方博客 + 第三方分析</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> 中文资料丰富度 <span class="verdict v-yes">有中文版（部分章节翻译滞后）</span></h3><div class="dim-body"><p><strong>中等偏丰富</strong>。官方文档有中文版（部分章节翻译滞后）；中文社区（MongoDB 中文社区、CSDN/知乎实践帖）活跃度在 NoSQL 中居前，但深度运维/源码级中文资料少于英文。来源等级：编辑判断，待规模化采集验证</p></div></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-neutral">Partial support</span></h3><div class="dim-body"><p><strong>Partial support</strong>. WiredTiger engine-level data-at-rest encryption (AES-256-GCM) is <strong>Enterprise-edition only</strong>; the Community edition is <strong>(confirmed absent)</strong> for this capability (no <code>--enableEncryption</code>-style support); key management supports KMIP (Enterprise) and local keyfile; Atlas enables at-rest encryption by default. Client-side field-level encryption via Queryable Encryption (since 7.0) is a client-side capability not split by Community/Enterprise (requires the crypt_shared library). Evidence level: <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / transport encryption <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>. Full TLS/SSL support across the stack (client↔mongos/mongod, intra-replica-set, backup transport); since 3.6 it binds to localhost only by default, exposing it to the public internet requires explicit configuration. Evidence level: <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> Auditing <span class="verdict v-neutral">Partial support</span></h3><div class="dim-body"><p><strong>Partial support (Enterprise-only)</strong>. Auditing (auditLog) is an Enterprise Advanced feature; the Community edition has <strong>(confirmed absent)</strong> native auditing; Community users can only compensate with application-layer logs or a proxy layer. Evidence level: <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> Authentication &amp; authorization <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>. SCRAM-SHA-256 (default), x.509 certificates, LDAP (Enterprise), Kerberos (Enterprise), OIDC (Enterprise, capabilities progressively improved since 7.0+); RBAC role model (built-in roles + custom roles, database/collection-level granularity). Evidence level: <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> Backup &amp; recovery <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>. Self-hosted: <code>mongodump</code>/<code>mongorestore</code> (logical), filesystem snapshots (physical, requires journaling + locking or replica-set consistency coordination), <code>mongoexport</code>; Atlas: continuous backups + PITR (point-in-time recovery), on-demand snapshots. Recovery speed depends on data size and topology (restoring a sharded cluster requires per-shard coordination; there is no official RTO statement — <strong>no vendor position; judge from your own tests</strong>). Evidence level: <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> + <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> Major-version upgrades <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>. Upgrades must go major version by major version (6.0→7.0→8.0, no version skipping); upgrade binaries first, then raise <code>featureCompatibilityVersion</code>; before FCV is raised you can roll back between compatible binary versions, but after FCV is raised the rollback path is limited. Sharded clusters roll in the order &quot;config servers → shards → mongos&quot;; the overall process can be online, but there is a feature-freeze period during the upgrade window. Evidence level: <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> Observability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>. Self-hosted: <code>mongostat</code>/<code>mongotop</code>, Database Profiler (slow queries), <code>db.currentOp()</code>, FTDC (full-time diagnostic data capture), official MongoDB Cloud Manager / Ops Manager (enterprise-grade monitoring automation); Atlas has built-in monitoring, Performance Advisor, and slow-query analysis. Evidence level: <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> Connection model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported (driver-side connection pooling)</strong>. There is no server-side built-in connection-pool middleware concept; every official driver ships its own connection pool (<code>maxPoolSize</code> defaults to 100 and other driver-specific parameters), with long-lived connection reuse; the official recommendation is to keep a single MongoClient singleton at the application layer. Very large-scale connection scenarios rely on horizontal scaling of application instances or third-party proxies (self-built/proxy), and there is no official pgBouncer-style standard. Evidence level: <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> + <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> Transactions &amp; isolation levels <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported (with limitations)</strong>. Multi-document ACID transactions: replica sets since 4.0, sharded clusters since 4.2; the isolation level is snapshot isolation; <strong>default <code>transactionLifetimeLimitSeconds=60</code> seconds</strong>, timed-out transactions abort automatically (tunable, but raising it increases contention and cache pressure). Single-document writes are naturally atomic. <strong>Sharded transactions do not support certain operations</strong> (such as specific cross-shard DDL); defer to the official &quot;transaction limitations&quot; documentation. Evidence level: <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> Replication &amp; consistency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>. Replica-set primary/secondary replication (asynchronous oplog pulling, not Raft/Paxos consensus writes; elections use a Raft-like voting protocol); tunable consistency: write concern <code>w:1</code> (default single-node acknowledgment) / <code>w:majority</code> (the default write concern since 5.0, with exceptions for topologies such as arbiter nodes) / <code>w:all</code>, read concern <code>local</code> / <code>majority</code> / <code>snapshot</code> / <code>linearizable</code>. Strong consistency requires the explicit <code>w:majority</code> + <code>readConcern:majority</code> combination; the default configuration does not provide linearizability. Evidence level: <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> Scaling <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>. Vertical (bigger machines) and horizontal (sharded clusters: mongos routers + config servers + shards) both; shard scaling is online (the balancer automatically migrates chunks after adding shards) — but see deep-dive 1: if the shard key is chosen wrong, &quot;you scaled for nothing.&quot; Evidence level: <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> + <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> Compatibility <span class="verdict v-neutral">Partial support</span></h3><div class="dim-body"><p><strong>Partial support</strong>. Protocol level: the MongoDB wire protocol is the de facto standard, wire-protocol-compatible implementations such as FerretDB, Amazon DocumentDB, and Azure Cosmos DB (Mongo API) exist; but MongoDB itself is not compatible with other vendors&#x27; SQL protocols. Toolchain: official drivers cover mainstream languages (Apache 2.0), Compass GUI, MongoDB Connector for BI (SQL access), Mongoose (Node ODM), and a mature ecosystem. <strong>SQL compatibility is (confirmed absent)</strong> (it is not a relational database). Evidence level: <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> + <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> License &amp; business model <span class="verdict v-neutral">SSPL v1</span></h3><div class="dim-body"><p><strong>SSPL v1 (not OSI open source)</strong>. See deep-dive 6 for details: on 2018-10-16 the Community edition switched from AGPL to SSPL; SSPL requires anyone &quot;offering the software as a service&quot; to open-source their entire service stack (including management software, user interfaces, backup, monitoring, and everything else that makes the service possible), effectively blocking third-party DBaaS offerings. Ordinary enterprises using it in-house (internal business systems) are unaffected. Business model: Enterprise Advanced subscription (Enterprise features: data-at-rest encryption, auditing, LDAP/Kerberos, Ops Manager, etc.) + Atlas hosting (billed by instance size/storage/data transfer/backup; M0 free, Flex capped pay-as-you-go, M10+ dedicated clusters billed hourly). Evidence level: official LICENSE file + official blog + (third-party source) analysis</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> Chinese-language resources <span class="verdict v-neutral">Moderately rich</span></h3><div class="dim-body"><p><strong>Moderately rich</strong>. The official documentation has a Chinese version (some chapters lag in translation); Chinese community activity (MongoDB Chinese community, CSDN/Zhihu hands-on posts) ranks near the top among NoSQL databases, but in-depth operations/source-level Chinese material is thinner than in English. Evidence level: editor judgment, <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span> by scaled collection</p></div></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="杀手特性" data-en="Killer features">杀手特性</span></h2>
+<div class="lang-block lang-zh">
+<blockquote>
+<p>每个特性 = 它是什么 + 为什么是真本事 + 边缘真相。</p>
+</blockquote>
+<ol>
+<li><strong>BSON 文档模型 + 灵活 Schema</strong> 真本事：JSON 式文档天然贴合对象模型，嵌套数组/子文档一次读写搞定&quot;一对多&quot;，省掉 ORM 映射与 join；字段可增减，需求变更时不用先写 migration 脚本——这是 MongoDB 十几年&quot;开发效率&quot;口碑的根。 边缘真相：&quot;灵活&quot;是有账期的。无 Schema 约束意味着脏数据、字段类型漂移（同一字段一会是字符串一会是数字）在生产环境真实发生，治理成本从 DBA 转嫁给了应用层；5.x 起的 Schema Validation 是补救，但它是&quot;事后加的缰绳&quot;， adoption 率远低于宣传。见深水区五。</li>
+<li><strong>原生分片（auto-sharding）</strong> 真本事：分片集群是官方一等公民——mongos 路由、config server 元数据、balancer 自动迁移 chunk，应用对&quot;数据在哪&quot;无感知；从单机 ReplicaSet 到分片是官方升级路径，不是第三方中间件拼凑。 边缘真相：分片只解决&quot;数据量大&quot;，不解决&quot;分片键选错&quot;。单调递增键（ObjectId/时间戳）把写入钉死在一个 chunk 上，jumbo chunk（超大不可再分）会让 balancer 直接跳过它——集群越扩越不均。分片键是&quot;一选定终身&quot;的设计，选错的代价是重建集合。这是 MongoDB DBA 面试必考题，也是生产事故重灾区。见深水区一。</li>
+<li><strong>Change Streams（变更流）</strong> 真本事：基于 oplog 的官方 CDC：<code>db.collection.watch()</code> 订阅增删改，带 resume token 断点续传；是&quot;数据库→缓存/搜索/数仓&quot;实时同步的官方答案，不用再 tail oplog 写脏脚本。 边缘真相：resume token 只在 oplog 窗口内有效——token 太旧（消费端宕机太久）会直接报错，应用必须自己实现&quot;全量重扫&quot;兜底；分片集群的 change stream 要汇聚各分片事件，排序与延迟开销更大；它不是 Kafka，别指望它做消息队列的持久化语义。见深水区六。</li>
+<li><strong>聚合管道（Aggregation Framework）</strong> 真本事：<code>$match/$group/$lookup/$facet…</code> 一套声明式管道覆盖了大部分&quot;报表/分析&quot;需求，配合索引能跑出不错的 OLAP 能力；是 MongoDB 从&quot;KV 增强版&quot;进化为&quot;通用数据库&quot;的关键。 边缘真相：阻塞式 stage（<code>$group</code>/<code>$sort</code>）默认 100MB 内存上限，超了就报错（<code>allowDiskUse</code> 可转磁盘但那是正确性兜底不是性能方案）；<code>$lookup</code> 本质是&quot;对每条输入文档查一次外集合&quot;，无索引就是 N+1 全表扫描；跨分片聚合要 scatter-gather，分片键不对就是全集群广播。管道写起来爽，执行计划还是要看 explain。</li>
+<li><strong>Atlas 托管与生态完整度</strong> 真本事：Atlas 是完成度最高的 DBaaS 之一：全球多区域部署、连续备份/PITR、Performance Advisor、Atlas Search（Lucene）、Vector Search、私有终端；驱动/Compass/CLI/Connector for BI 全家桶让&quot;从开发到上线&quot; friction 极低。 边缘真相：Atlas 是&quot;省心税&quot;最贵的选项之一——专用集群按小时+存储+备份+数据传输多项计量，Search/Vector Search 另算；一旦 workload 上去，自建（或搬到云厂商兼容服务）的 TCO 对比会很难看。以及 Atlas 的网络出口/跨区流量是账单刺客，上线前必须做计费影子测试。</li>
+</ol><ul>
+<li><strong>Queryable Encryption（7.0+，9.0 增强）</strong>：客户端字段级加密，服务端只见密文；与 TDE（防&quot;偷硬盘&quot;）正交，防的是&quot;DBA/云厂商能看到明文&quot;。差异点：合规（隐私字段）场景的正规解；代价是可查询能力受限（支持的查询类型随版本扩展，9.0 起字符串前缀/后缀/子串查询 GA）与客户端依赖 crypt_shared 库。来源等级：官方文档 + 驱动 release notes（2026-07）</li>
+<li><strong>时序集合（5.0+）</strong>：列式桶存储优化的时序类型，写入/压缩/ttl 一体；差异点：IoT/监控场景不用手写 bucket 模式。来源等级：官方文档</li>
+<li><strong>Atlas Search / Vector Search</strong>：托管 Lucene 全文检索 + HNSW 向量索引，RAG 场景&quot;顺手&quot;可用；差异点：别当专用向量库——大规模 ANN 召回性能与生态深度待实测验证。来源等级：官方口径 + 待验证</li>
+<li><strong>Atlas Stream Processing</strong>：流处理（聚合管道跑在流上）；2026 年仍在演进，GA 状态与定价以官方为准，本档案不计入判决依据。来源等级：官方口径 + 待验证</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<blockquote>
+<p>Each feature = what it is + why it is real engineering + the edge truth.</p>
+</blockquote>
+<ol>
+<li><strong>BSON document model + flexible schema</strong> Why it&#x27;s real: JSON-style documents naturally fit object models — nested arrays/sub-documents handle &quot;one-to-many&quot; in a single read/write, eliminating ORM mapping and joins; fields can be added or removed, so changing requirements don&#x27;t start with a migration script — this is the root of MongoDB&#x27;s decade-plus &quot;developer productivity&quot; reputation. Edge truth: &quot;Flexibility&quot; is bought on credit. Without schema constraints, dirty data and field type drift (the same field being a string one moment and a number the next) genuinely happen in production, and the governance cost shifts from the DBA to the application layer; Schema Validation (since 5.x) is the remedy, but it is a &quot;rein added after the fact&quot; whose adoption rate is far below the marketing. See deep-dive 5.</li>
+<li><strong>Native sharding (auto-sharding)</strong> Why it&#x27;s real: Sharded clusters are a first-class citizen — mongos routing, config server metadata, the balancer automatically migrating chunks, and the application never needs to know where data lives; going from a single-node replica set to sharding is the official upgrade path, not a third-party middleware patchwork. Edge truth: Sharding solves &quot;too much data,&quot; not &quot;wrong shard key.&quot; A monotonically increasing key (ObjectId/timestamp) pins all writes onto one chunk; jumbo chunks (oversized and unsplittable) make the balancer skip them outright — the more you scale the cluster, the more skewed it gets. The shard key is a &quot;choose once, live with it&quot; design; choosing wrong means rebuilding the collection. This is the must-ask question in every MongoDB DBA interview and a leading cause of production incidents. See deep-dive 1.</li>
+<li><strong>Change Streams</strong> Why it&#x27;s real: Official CDC built on the oplog: <code>db.collection.watch()</code> subscribes to inserts/updates/deletes with resume tokens for resume-after-restart; it is the official answer for &quot;database → cache/search/data warehouse&quot; real-time sync — no more dirty scripts tailing the oplog. Edge truth: Resume tokens are only valid within the oplog window — a token that is too old (consumer down for too long) errors out, and the application must implement its own &quot;full rescan&quot; fallback; change streams on sharded clusters must merge events from all shards, with larger ordering and latency overhead; it is not Kafka — don&#x27;t expect message-queue persistence semantics. See deep-dive 6.</li>
+<li><strong>Aggregation Framework</strong> Why it&#x27;s real: <code>$match/$group/$lookup/$facet…</code> — one declarative pipeline covers most &quot;reporting/analytics&quot; needs and can deliver decent OLAP performance with the right indexes; it is the key to MongoDB&#x27;s evolution from &quot;KV-plus&quot; to &quot;general-purpose database.&quot; Edge truth: Blocking stages (<code>$group</code>/<code>$sort</code>) have a default 100MB memory cap — exceed it and the query errors out (<code>allowDiskUse</code> can spill to disk, but that is a correctness backstop, not a performance strategy); <code>$lookup</code> is essentially &quot;query the foreign collection once per input document&quot; — without indexes it is an N+1 full scan; cross-shard aggregation requires scatter-gather, and with the wrong shard key it is a cluster-wide broadcast. Pipelines are fun to write, but you still have to read the explain plan.</li>
+<li><strong>Atlas hosting and ecosystem completeness</strong> Why it&#x27;s real: Atlas is one of the most complete DBaaS offerings: global multi-region deployment, continuous backup/PITR, Performance Advisor, Atlas Search (Lucene), Vector Search, private endpoints; the driver/Compass/CLI/Connector-for-BI bundle makes the &quot;dev to production&quot; friction extremely low. Edge truth: Atlas is one of the most expensive &quot;peace-of-mind taxes&quot; — dedicated clusters are metered on hours + storage + backup + data transfer, with Search/Vector Search billed separately; once the workload grows, the TCO comparison against self-hosting (or moving to a cloud vendor&#x27;s compatible service) gets ugly. And Atlas network egress/cross-region traffic is a bill assassin — you must run a billing shadow test before launch.</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="深水区" data-en="Deep dives">深水区</span></h2>
+<div class="lang-block lang-zh">
+<p><strong>深水区一（扩展/分片）：chunk 迁移救得了容量，救不了分片键</strong></p>
+<ul>
+<li>机制：集合按分片键区间切成 chunk（6.0 起默认 128MB，之前 64MB），balancer 在分片间迁移 chunk 均衡数据；jumbo chunk 是&quot;超大且无法再分&quot;（无有效分割点，如低基数分片键）的 chunk，balancer 直接跳过。</li>
+<li>推到边缘：① 单调递增分片键（时间戳/ObjectId）→ 所有新写入落到最后一个 chunk → 单分片写热点，集群其余分片空闲，总吞吐封顶，加分片不解决问题；② 低基数分片键（如 <code>status</code> 只有几个值）→ chunk 无法分裂 → jumbo chunk 卡住 balancer，数据倾斜永久化；③ chunk 迁移本身吃 IO/网络，高峰期开 balancer 等于给飞行中的飞机换引擎。分片键一旦选定，修改=重建集合+重导数据。</li>
+<li>选型含义：分片不是&quot;以后再说&quot;的运维选项，是上线第一天就要定死的架构决策；POC 必须按真实 key 分布压测写入倾斜，不能只看均匀压测。</li>
+<li>来源：官方文档（Sharding / Balancer / Jumbo Chunks 章节）；社区运维共识</li>
+</ul>
+<p><strong>深水区二（复制/一致性）：选举、回滚与&quot;默认不强一致&quot;</strong></p>
+<ul>
+<li>机制：副本集主从复制走 oplog 异步拉取；主节点故障时剩余节点投票选举（多数派原则，约 10 秒级自动故障转移）；读/写关注分别控制 durability 与可见性。</li>
+<li>推到边缘：① <code>w:1</code>（单机确认）的写入在主节点宕机且未复制到从节点时可被<strong>回滚</strong>——回滚的数据写进 rollback 文件，需人工对账，应用永远无感知；② 默认读关注 <code>local</code> 可能读到随后被回滚的数据；③ 只有 <code>w:majority</code> + <code>readConcern:majority</code> 组合才能获得&quot;不丢已确认写入&quot;的保证，5.0 起默认写关注已是 majority（仲裁节点等拓扑有例外），但读关注默认仍是 <code>local</code>——&quot;默认配置&quot;≠&quot;强一致&quot;，这是 MongoDB 最常见的选型误读；④ PSA（主-从-仲裁）拓扑是耐久性陷阱：一个数据节点宕机后 majority 写即不可用（仲裁节点不存数据），省钱的代价是可用性。</li>
+<li>选型含义：凡涉及钱/状态机，显式指定 <code>w:majority</code> + <code>readConcern:majority</code>（或用事务），并做 kill -9 主节点的混沌测试验证 RPO；PSA 拓扑只适合开发测试。</li>
+<li>来源：官方文档（Replication / Write Concern / Read Concern / Rollback 章节）；社区 skill 实测总结</li>
+</ul>
+<p><strong>深水区三（事务）：60 秒生死线与快照隔离的税</strong></p>
+<ul>
+<li>机制：多文档事务基于 WiredTiger 快照隔离 + oplog 时间戳；默认 <code>transactionLifetimeLimitSeconds=60</code>，超时自动 abort；驱动 <code>withTransaction</code> 封装对 <code>TransientTransactionError</code> / <code>UnknownTransactionCommitResult</code> 的重试。</li>
+<li>推到边缘：① 60 秒是硬预算——事务里调一次外部 HTTP、做一次大聚合，超时 abort，前功尽弃；② 写冲突时事务 abort 抛给应用，重试是应用的税，且&quot;重试外部副作用&quot;（发短信、调支付）是应用自己的坑；③ 长事务 pin 住 WiredTiger 快照，阻塞历史版本清理，放大缓存压力（早期版本快照历史曾直接放在 WT cache 里，这是 60 秒限制的由来）；④ 分片事务限制更多（部分 DDL/操作不支持），且跨分片 2PC 开销显著高于单副本集事务；⑤ <code>updateMany</code>/<code>deleteMany</code> 不是 retryable write，事务外批量写遇主从切换可能部分执行。</li>
+<li>选型含义：事务只装&quot;短平快&quot;的多文档原子操作；长流程用 Saga/ outbox 模式拆；POC 必须测&quot;热点行并发事务的 abort 率&quot;，不能只测无冲突场景。</li>
+<li>来源：官方文档（Transactions / Production Considerations）；社区 skill（transaction-performance）</li>
+</ul>
+<p><strong>深水区四（存储引擎）：WiredTiger 的缓存淘汰与检查点</strong></p>
+<ul>
+<li>机制：WiredTiger 默认缓存为 max(50%×(RAM-1GB), 256MB)；缓存占用达 95% 触发应用线程参与的淘汰（eviction），80% 为后台淘汰目标；检查点默认 60 秒一次（或 journal 达 2GB），保证崩溃恢复点。</li>
+<li>推到边缘：① 工作集大于缓存时，应用线程被迫参与淘汰 → 延迟毛刺、p99 抖动，这是&quot;内存明明够、查询偶发慢&quot;的经典根因；② 大文档/大批量写入瞬间撑爆缓存，淘汰风暴直接拖慢全库；③ 检查点期间的 IO 毛刺与压缩（默认 snappy，可选 zstd/zlib）CPU 开销在写入密集型场景叠加；④ 频繁更新产生大量历史版本，长事务/长游标 pin 住它们，缓存被&quot;死版本&quot;占满——&quot;一个忘了关的游标拖慢整库&quot;真实存在。</li>
+<li>选型含义：内存配比按&quot;工作集+索引&quot;算，不按数据总量算；监控 <code>wiredTiger.cache</code> 的淘汰计数与检查点耗时，把它们写进容量规划基线。</li>
+<li>来源：官方文档（WiredTiger Storage Engine / Cache / Checkpoints）；社区运维共识</li>
+</ul>
+<p><strong>深水区五（数据治理）：灵活 Schema 的双刃剑</strong></p>
+<ul>
+<li>机制：集合无强制 Schema，文档可异构；5.0 起可用 <code>$jsonSchema</code> 做 Schema Validation（strict/moderate 级别），7.0+ 持续增强。</li>
+<li>推到边缘：① 同一字段类型漂移（string vs int vs null）在聚合/排序时产生诡异结果，且错误静默；② 嵌套层级失控、超大数组（16MB 文档上限是硬顶）往往在业务爆发时才暴露，修复=数据迁移；③ Validation 是&quot;事后缰绳&quot;——已有脏数据不会自动变干净，<code>moderate</code> 级别只拦新写入；④ 没有 DDL 评审流程的团队，三年后的集合是考古现场：字段含义靠口口相传。</li>
+<li>选型含义：&quot;无 Schema&quot;是开发期的效率，不是生产期的免死金牌；上线前定字段规范 + 开 Validation（至少 moderate），把治理成本前置，否则它会在最忙的时候连本带利收回。</li>
+<li>来源：官方文档（Schema Validation）；社区共识（类型漂移/16MB 上限为高频生产事故）</li>
+</ul>
+<p><strong>深水区六（许可证）：SSPL 的争议实质</strong></p>
+<ul>
+<li>机制：2018-10-16 起，4.0.0 及之后所有版本（含旧版本的新补丁）从 AGPL 转为 SSPL v1；SSPL 要求&quot;将本程序作为服务向第三方提供&quot;者，必须以 SSPL 开源<strong>整个服务</strong>的源码——包括管理软件、用户界面、API、自动化、监控、备份等全部&quot;使服务成为可能&quot;的软件。这比 AGPL（只要求开源修改过的程序本身+通过网络提供时的对应源码）的传染半径大得多。</li>
+<li>推到边缘：① <strong>对普通企业自用：无实质影响</strong>——内部业务系统使用 MongoDB 不触发 SSPL 的服务条款（MongoDB 官方 FAQ 明确）；② <strong>对云厂商/DBaaS：实质封堵</strong>——AWS、阿里云等无法再基于 SSPL 版本提供 MongoDB 托管服务而不开源整个云管栈，这正是 SSPL 的设计目标；③ <strong>对 Linux 发行版/开源生态：出局</strong>——Debian/Fedora/Red Hat 均不收录 SSPL 软件，OSI 拒绝承认其为开源，&quot;开源 MongoDB&quot;的叙事在 2018 年已经结束；④ 曾有 2024 年&quot;回归 AGPL&quot;的社区传言与讨论，但截至 2026-09-29，官方仓库 LICENSE 仍为 SSPL v1（AGPL 仅适用于 2018-10-16 之前的版本），<strong>以官方仓库为准</strong>。</li>
+<li>社区分叉现状：<strong>FerretDB</strong>（2021 年创立，v2.0 于 2025-03 GA，Apache 2.0）走&quot;MongoDB wire protocol 代理 + PostgreSQL（含微软开源的 DocumentDB 扩展，MIT）存储&quot;路线，CRUD/多数聚合可用，但 change streams/oplog 尾随等高级能力有缺口（约 90% 兼容口径，生产替换需逐项 POC）；<strong>Amazon DocumentDB / Azure Cosmos DB Mongo API</strong> 是云厂商自研的兼容实现（非 MongoDB 内核，兼容边界各自为政）；<strong>Percona Server for MongoDB</strong> 同样 SSPL（附带企业级功能免费开放），不解决许可证问题。</li>
+<li>选型含义：把 MongoDB 当&quot;商业软件&quot;评估：自用免费、托管花钱、二次分发/云服务受限；若组织政策要求 OSI 认可的开源许可证，MongoDB 直接出局，备选是 FerretDB（功能折中）或换赛道（PostgreSQL JSONB / DocumentDB 扩展路线）。</li>
+<li>来源：mongodb/mongo 官方仓库 LICENSE/README（SSPL v1）；SSPL 文本 v1；FerretDB 官方博客（v2.0 GA 2025-03）；第三方兼容性分析（dockit、brightcoding，2025-2026）；社区 issue 讨论（Falcone 迁移 epic，2026）</li>
+</ul>
+<p><strong>深水区七（运维/安全）：默认配置的坑与历史包袱</strong></p>
+<ul>
+<li>机制：3.6 起默认绑定 localhost；访问控制需手动启用（<code>--auth</code> / 配置文件 <code>security.authorization</code>）。</li>
+<li>推到边缘：① 历史上大量&quot;裸奔&quot; MongoDB（未开认证、绑 0.0.0.0）被勒索删库（2017 年大规模 MongoDB 勒索事件），&quot;默认安全&quot;是近年的补救，不是与生俱来的；② 社区版无静态加密、无审计——等保/合规要求下，社区版+自建=默认不合规，要么买企业版/Atlas，要么接受差距；③ 分片集群组件多（mongos/config/shard），版本升级、备份恢复、慢查询定位的复杂度是副本集的数倍，&quot;分片一时爽&quot;之后是长期的运维税。</li>
+<li>选型含义：安全基线检查（认证、TLS、bind_ip、审计）必须进上线 checklist；合规敏感行业直接按&quot;企业版或 Atlas&quot;的预算立项，不要先按社区版做预算再补窟窿。</li>
+<li>来源：官方文档（Security Checklist）；2017 年勒索事件公开报道（历史）；社区共识</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<p><strong>Deep-dive 1 (scaling/sharding): chunk migration saves capacity, not shard keys</strong></p>
+<ul>
+<li>Mechanism: A collection is split by shard-key ranges into chunks (128MB default since 6.0, 64MB before); the balancer migrates chunks between shards to balance data; a jumbo chunk is one that is &quot;oversized and unsplittable&quot; (no valid split point, e.g. a low-cardinality shard key), which the balancer skips outright.</li>
+<li>At the edge: ① A monotonically increasing shard key (timestamp/ObjectId) → all new writes land on the last chunk → a single-shard write hotspot, the rest of the cluster idle, total throughput capped — adding shards doesn&#x27;t help; ② A low-cardinality shard key (e.g. <code>status</code> with only a few values) → chunks can&#x27;t split → jumbo chunks permanently stall the balancer, data skew becomes permanent; ③ Chunk migration itself consumes IO/network — turning on the balancer at peak hours is like changing engines on a plane in flight. Once chosen, changing a shard key means rebuilding the collection + re-importing data.</li>
+<li>Selection implication: Sharding is not an ops option you defer to &quot;later&quot; — it is an architecture decision locked on day one; the POC must stress write skew against the real key distribution, not just uniform load.</li>
+<li>Sources: official docs (Sharding / Balancer / Jumbo Chunks chapters); community ops consensus</li>
+</ul>
+<p><strong>Deep-dive 2 (replication/consistency): elections, rollbacks, and &quot;not strongly consistent by default&quot;</strong></p>
+<ul>
+<li>Mechanism: Replica-set primary/secondary replication via asynchronous oplog pulling; when the primary fails, remaining nodes vote in an election (majority rule, automatic failover in roughly 10 seconds); read/write concern control durability and visibility respectively.</li>
+<li>At the edge: ① Writes with <code>w:1</code> (single-node acknowledgment) can be <strong>rolled back</strong> if the primary crashes before replicating to a secondary — rolled-back data is written to rollback files, requiring manual reconciliation, and the application never notices; ② The default read concern <code>local</code> can read data that is later rolled back; ③ Only the <code>w:majority</code> + <code>readConcern:majority</code> combination gives the &quot;no acknowledged write is lost&quot; guarantee — the default write concern has been majority since 5.0 (with exceptions for topologies like arbiter nodes), but the default read concern is still <code>local</code> — &quot;default configuration&quot; ≠ &quot;strong consistency,&quot; the most common MongoDB selection misread; ④ PSA (primary-secondary-arbiter) topology is a durability trap: after one data-bearing node fails, majority writes become unavailable (the arbiter stores no data) — the price of saving money is availability.</li>
+<li>Selection implication: For anything involving money/state machines, explicitly set <code>w:majority</code> + <code>readConcern:majority</code> (or use transactions), and validate RPO by kill -9-ing the primary in a chaos test; PSA topology is for dev/test only.</li>
+<li>Sources: official docs (Replication / Write Concern / Read Concern / Rollback chapters); community skill hands-on summaries</li>
+</ul>
+<p><strong>Deep-dive 3 (transactions): the 60-second deadline and the snapshot-isolation tax</strong></p>
+<ul>
+<li>Mechanism: Multi-document transactions are built on WiredTiger snapshot isolation + oplog timestamps; the default <code>transactionLifetimeLimitSeconds=60</code> aborts transactions automatically on timeout; the driver&#x27;s <code>withTransaction</code> wraps retries for <code>TransientTransactionError</code> / <code>UnknownTransactionCommitResult</code>.</li>
+<li>At the edge: ① 60 seconds is a hard budget — one external HTTP call inside a transaction, one big aggregation, and the abort wipes out all the work; ② On write conflicts the transaction aborts back to the application, and retrying is the application&#x27;s tax — and &quot;retrying external side effects&quot; (sending SMS, calling payments) is the application&#x27;s own pit; ③ Long transactions pin WiredTiger snapshots, blocking historical-version cleanup and amplifying cache pressure (in early versions snapshot history lived directly in the WT cache — the origin of the 60-second limit); ④ Sharded transactions have more restrictions (some DDL/operations unsupported) and cross-shard 2PC costs are significantly higher than single-replica-set transactions; ⑤ <code>updateMany</code>/<code>deleteMany</code> are not retryable writes — bulk writes outside transactions can partially execute on primary failover.</li>
+<li>Selection implication: Transactions are only for &quot;short and fast&quot; multi-document atomic operations; long flows should be broken up with Saga/outbox patterns; the POC must measure &quot;hot-row concurrent transaction abort rates,&quot; not just no-conflict scenarios.</li>
+<li>Sources: official docs (Transactions / Production Considerations); community skill (transaction-performance)</li>
+</ul>
+<p><strong>Deep-dive 4 (storage engine): WiredTiger cache eviction and checkpoints</strong></p>
+<ul>
+<li>Mechanism: WiredTiger&#x27;s default cache is max(50%×(RAM-1GB), 256MB); cache occupancy at 95% triggers application-thread-participating eviction, with 80% as the background eviction target; checkpoints run every 60 seconds by default (or when the journal reaches 2GB), guaranteeing crash-recovery points.</li>
+<li>At the edge: ① When the working set exceeds the cache, application threads are forced into eviction → latency spikes, p99 jitter — the classic root cause of &quot;plenty of memory, occasional slow queries&quot;; ② Big documents/bulk writes can instantly blow through the cache, and an eviction storm drags the whole database down; ③ Checkpoint IO spikes and compression (snappy by default, zstd/zlib optional) CPU costs stack up in write-heavy scenarios; ④ Frequent updates generate many historical versions; long transactions/long cursors pin them, and the cache fills with &quot;dead versions&quot; — &quot;one forgotten cursor slowing the whole database&quot; genuinely happens.</li>
+<li>Selection implication: Size memory for &quot;working set + indexes,&quot; not total data size; monitor <code>wiredTiger.cache</code> eviction counts and checkpoint latency, and write them into the capacity-planning baseline.</li>
+<li>Sources: official docs (WiredTiger Storage Engine / Cache / Checkpoints); community ops consensus</li>
+</ul>
+<p><strong>Deep-dive 5 (data governance): the double-edged sword of flexible schema</strong></p>
+<ul>
+<li>Mechanism: Collections have no enforced schema; documents can be heterogeneous; since 5.0, <code>$jsonSchema</code>-based Schema Validation is available (strict/moderate levels), continuously enhanced in 7.0+.</li>
+<li>At the edge: ① Same-field type drift (string vs int vs null) produces bizarre results in aggregations/sorts, and the errors are silent; ② Uncontrolled nesting depth and oversized arrays (the 16MB document limit is a hard ceiling) usually surface only when the business explodes, and fixing them means data migration; ③ Validation is a &quot;rein added after the fact&quot; — existing dirty data doesn&#x27;t clean itself up, and <code>moderate</code> level only blocks new writes; ④ In a team with no DDL review process, a three-year-old collection is an archaeology site: field meanings survive by word of mouth.</li>
+<li>Selection implication: &quot;Schema-less&quot; is development-phase efficiency, not a production-phase get-out-of-jail card; establish field conventions and enable Validation (at least moderate) before launch — front-load the governance cost, or it will collect principal plus interest at the busiest moment.</li>
+<li>Sources: official docs (Schema Validation); community consensus (type drift / the 16MB limit are high-frequency production incidents)</li>
+</ul>
+<p><strong>Deep-dive 6 (license): the substance of the SSPL controversy</strong></p>
+<ul>
+<li>Mechanism: Starting 2018-10-16, all versions 4.0.0 and later (including new patches of old versions) moved from AGPL to SSPL v1; SSPL requires anyone &quot;offering the Program as a service to third parties&quot; to open-source the <strong>entire service</strong> under SSPL — including management software, user interfaces, APIs, automation, monitoring, backup, and all other software that &quot;makes the service possible.&quot; Its viral radius is far larger than AGPL (which only requires open-sourcing the modified program itself plus corresponding source when offered over a network).</li>
+<li>At the edge: ① <strong>For ordinary enterprises using it in-house: no substantive impact</strong> — using MongoDB in internal business systems does not trigger the SSPL service terms (MongoDB&#x27;s official FAQ is explicit); ② <strong>For cloud vendors/DBaaS: effectively blocked</strong> — AWS, Alibaba Cloud, and others can no longer offer hosted MongoDB based on SSPL versions without open-sourcing their entire cloud management stack, which is precisely the design goal of SSPL; ③ <strong>For Linux distros/open-source ecosystem: out</strong> — Debian/Fedora/Red Hat all refuse to ship SSPL software, and OSI refuses to recognize it as open source; the &quot;open-source MongoDB&quot; narrative ended in 2018; ④ There were 2024 community rumors and discussions of a &quot;return to AGPL,&quot; but as of 2026-09-29, the official repository LICENSE is still SSPL v1 (AGPL applies only to versions before 2018-10-16) — <strong>defer to the official repository</strong>.</li>
+<li>Community forks: <strong>FerretDB</strong> (founded 2021, v2.0 GA in 2025-03, Apache 2.0) takes the &quot;MongoDB wire protocol proxy + PostgreSQL storage (including Microsoft&#x27;s open-sourced DocumentDB extension, MIT)&quot; route — CRUD/most aggregations work, but advanced capabilities like change streams / oplog tailing have gaps (~90% compatibility claim; production replacement requires item-by-item POC); <strong>Amazon DocumentDB / Azure Cosmos DB Mongo API</strong> are cloud-vendor-built compatible implementations (not the MongoDB kernel; compatibility boundaries vary by vendor); <strong>Percona Server for MongoDB</strong> is likewise SSPL (with enterprise-grade features free), which doesn&#x27;t solve the license problem.</li>
+<li>Selection implication: Evaluate MongoDB as &quot;commercial software&quot;: free for in-house use, paid for hosting, restricted for redistribution/cloud services; if organizational policy requires an OSI-recognized open-source license, MongoDB is out — alternatives are FerretDB (with feature trade-offs) or a different track (PostgreSQL JSONB / the DocumentDB extension route).</li>
+<li>Sources: mongodb/mongo official repo LICENSE/README (SSPL v1); SSPL text v1; FerretDB official blog (v2.0 GA 2025-03); third-party compatibility analyses (dockit, brightcoding, 2025-2026); community issue discussions (Falcone migration epic, 2026)</li>
+</ul>
+<p><strong>Deep-dive 7 (ops/security): default-configuration pitfalls and historical baggage</strong></p>
+<ul>
+<li>Mechanism: Since 3.6 it binds to localhost by default; access control must be enabled manually (<code>--auth</code> / config-file <code>security.authorization</code>).</li>
+<li>At the edge: ① Historically, huge numbers of &quot;naked&quot; MongoDB instances (no auth, bound to 0.0.0.0) were ransomware-wiped (the large-scale 2017 MongoDB ransomware incident) — &quot;secure by default&quot; is a recent remediation, not an original trait; ② The Community edition has no data-at-rest encryption and no auditing — under 等保 (classified protection / MLPS) or compliance requirements, Community + self-hosted = non-compliant by default; you either buy Enterprise/Atlas or accept the gap; ③ Sharded clusters have many components (mongos/config/shard), and version upgrades, backup/recovery, and slow-query triage are multiples more complex than replica sets — &quot;sharding is fun for a day&quot; is followed by a long-term ops tax.</li>
+<li>Selection implication: Security baseline checks (auth, TLS, bind_ip, auditing) must go into the launch checklist; compliance-sensitive industries should budget directly for &quot;Enterprise or Atlas&quot; — don&#x27;t budget for Community first and patch the gap later.</li>
+<li>Sources: official docs (Security Checklist); public reporting on the 2017 ransomware incident (historical); community consensus</li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="用户最买账的 5 点" data-en="What users love most">用户最买账的 5 点</span></h2>
+<div class="lang-block lang-zh">
+<ol>
+<li><strong>开发效率：从想法到上线最快的一条路</strong> 为什么是真的：文档模型贴合对象，Schema 随需求长，驱动/Compass/Mongoose 全家桶让 CRUD 几分钟跑通；初创团队&quot;第一版用 Mongo&quot;是行业级共识。 边缘与限度：效率是借来的——Schema 治理、类型漂移、16MB 上限的债在业务起量后到期；原型阶段的快乐不能外推到三年的 TCO。 来源：社区共识（高频评价）；观察版本：全版本</li>
+<li><strong>横向扩展是官方一等公民</strong> 为什么是真的：原生分片、balancer 自动均衡，应用无感知；是从&quot;单机扛不住&quot;到&quot;加机器就行&quot;的官方升级路径。 边缘与限度：见深水区一——分片键选错则扩了白扩；分片集群的运维复杂度（升级/备份/慢查询）是副本集数倍；大多数业务其实用不满分片，为用不上的扩展性付运维税是常见误用。 来源：官方文档 + 社区共识。观察版本：全版本</li>
+<li><strong>生态与人才：文档库的事实标准</strong> 为什么是真的：驱动覆盖所有主流语言（Apache 2.0）、Compass、BI Connector、Atlas 全家桶；招人/找方案/搜报错都有现成答案——生态厚度是选型中最被低估的资产。 边缘与限度：生态强的是&quot;官方 MongoDB&quot;，FerretDB/DocumentDB 等兼容实现的生态（工具链行为一致性）要打折；SSPL 之后社区贡献者流失，内核演进基本是单一厂商驱动。 来源：官方文档 + 社区共识。观察版本：全版本</li>
+<li><strong>Change Streams 让实时同步变简单</strong> 为什么是真的：官方 CDC，resume token 断点续传，对接 Kafka/搜索/数仓有标准姿势；替代了历史上各种 tail oplog 的脏脚本。 边缘与限度：见深水区三之六——oplog 窗口外的 token 失效需全量重扫兜底；分片集群延迟更大；别当消息队列用。 来源：官方文档（Change Streams）。观察版本：3.6+</li>
+<li><strong>Atlas：DBaaS 完成度的标杆</strong> 为什么是真的：全球部署、连续备份/PITR、Performance Advisor、Search/Vector Search 一站式；&quot;不想养 DBA&quot;团队的最省心选项。 边缘与限度：省心税贵——多项计量（实例/存储/备份/传输/Search 另算），workload 上去后 TCO 需与自建/云厂商兼容服务对比；网络出口与跨区流量是账单刺客，POC 必须跑计费影子测试。 来源：官方 Atlas 文档 + 社区账单讨论。观察版本：v8.x 时期 Atlas（M0/Flex/M10+ 三档）</li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<ol>
+<li><strong>Developer productivity: the fastest road from idea to launch</strong> Why it&#x27;s true: The document model fits objects, the schema grows with requirements, and the driver/Compass/Mongoose bundle gets CRUD running in minutes; &quot;first version on Mongo&quot; is an industry-wide consensus for startups. Edge and limits: The efficiency is borrowed — schema governance, type drift, and the 16MB limit come due once the business scales; the joy of the prototype phase can&#x27;t be extrapolated to three-year TCO. Source: <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> (high-frequency praise); observed versions: all</li>
+<li><strong>Horizontal scaling is a first-class citizen</strong> Why it&#x27;s true: Native sharding, automatic balancer rebalancing, the application unaware of it; it is the official upgrade path from &quot;one machine can&#x27;t keep up&quot; to &quot;just add machines.&quot; Edge and limits: See deep-dive 1 — the wrong shard key means you scaled for nothing; sharded-cluster ops complexity (upgrades/backups/slow queries) is multiples of replica sets; most businesses never fill up sharding, and paying the ops tax for scalability you&#x27;ll never use is a common misstep. Source: <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> + <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>. Observed versions: all</li>
+<li><strong>Ecosystem and talent: the de facto standard for document databases</strong> Why it&#x27;s true: Drivers cover every mainstream language (Apache 2.0), Compass, the BI Connector, the Atlas bundle; hiring/finding solutions/searching error messages all have ready answers — ecosystem depth is the most underrated asset in selection. Edge and limits: The strong ecosystem is &quot;official MongoDB&quot;; the ecosystems of compatible implementations like FerretDB/DocumentDB (toolchain behavioral consistency) deserve a discount; after SSPL, community contributors drifted away, and kernel evolution is now essentially single-vendor driven. Source: <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> + <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>. Observed versions: all</li>
+<li><strong>Change Streams make real-time sync simple</strong> Why it&#x27;s true: Official CDC with resume tokens for resume-after-restart, with standard patterns for Kafka/search/data warehouses; it replaced the historical dirty scripts tailing the oplog. Edge and limits: See deep-dive 3/6 — tokens outside the oplog window expire and require a full-rescan fallback; sharded clusters have higher latency; don&#x27;t use it as a message queue. Source: <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> (Change Streams). Observed versions: 3.6+</li>
+<li><strong>Atlas: the benchmark for DBaaS completeness</strong> Why it&#x27;s true: Global deployment, continuous backup/PITR, Performance Advisor, Search/Vector Search in one stop; the most worry-free option for teams that &quot;don&#x27;t want to hire a DBA.&quot; Edge and limits: The peace-of-mind tax is steep — multiple meters (instance/storage/backup/transfer/Search billed separately); once the workload grows, TCO must be compared against self-hosting/cloud-vendor compatible services; network egress and cross-region traffic are bill assassins — the POC must run a billing shadow test. Source: official Atlas docs + community billing discussions. Observed versions: Atlas in the v8.x era (M0/Flex/M10+ tiers)</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="吐槽清单" data-en="Complaints">吐槽清单</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>分类</th><th>吐槽</th><th>影响版本</th><th>状态</th></tr></thead>
+<tbody>
+<tr><td>性能坑</td><td>单调递增分片键导致单分片写热点，加分片不解决；jumbo chunk 卡住 balancer</td><td>全版本</td><td>open（设计约束，靠建模规避）</td></tr>
+<tr><td>性能坑</td><td>工作集超 WiredTiger 缓存时应用线程参与淘汰，p99 毛刺；大批量写入引发淘汰风暴</td><td>全版本</td><td>open（容量规划规避）</td></tr>
+<tr><td>性能坑</td><td>聚合阻塞 stage 100MB 内存上限，<code>$lookup</code> 无索引即 N+1 扫描；跨分片聚合 scatter-gather</td><td>全版本</td><td>open（建模+索引规避）</td></tr>
+<tr><td>性能坑</td><td>多文档事务 60 秒默认生死线，写冲突 abort 抛给应用；长事务 pin 快照放大缓存压力</td><td>4.0+</td><td>open（可调参，代价自负）</td></tr>
+<tr><td>运维坑</td><td><code>w:1</code> 写入在主从切换时可被回滚，rollback 文件需人工对账；默认读关注 <code>local</code> 可读到脏数据</td><td>全版本</td><td>open（显式 majority 组合规避）</td></tr>
+<tr><td>运维坑</td><td>PSA（主-从-仲裁）拓扑省钱但一个数据节点宕机即 majority 写不可用</td><td>全版本</td><td>open（拓扑选型规避）</td></tr>
+<tr><td>运维坑</td><td>大版本必须逐版升级（不可跳版），FCV 机制下回退路径受限；分片集群升级顺序要求严格</td><td>全版本</td><td>open</td></tr>
+<tr><td>运维坑</td><td>历史裸奔实例被勒索删库的包袱；社区版无静态加密、无审计，合规默认不达标</td><td>全版本</td><td>partially-fixed（3.6+ 默认绑 localhost；加密/审计仍是企业版墙内）</td></tr>
+<tr><td>兼容坑</td><td>非关系型，无 SQL 协议；16MB 文档硬上限，超大数组/深嵌套设计后期爆雷</td><td>全版本</td><td>open（设计约束）</td></tr>
+<tr><td>兼容坑</td><td>兼容实现（DocumentDB/Cosmos/FerretDB）各自为政，change streams/事务等高级能力边界不一，迁移需逐项 POC</td><td>全版本</td><td>open</td></tr>
+<tr><td>授权坑</td><td>SSPL 非 OSI 开源，云厂商/DBaaS 被实质封堵；发行版下架；&quot;开源&quot;叙事 2018 年已结束</td><td>4.0+</td><td>open</td></tr>
+<tr><td>授权坑</td><td>静态加密、审计、LDAP/Kerberos/OIDC、Ops Manager 均为企业版/Atlas 墙内，社区版是&quot;功能残血版&quot;</td><td>全版本</td><td>open</td></tr>
+<tr><td>成本坑</td><td>Atlas 多项计量（实例/存储/备份/传输/Search 另算），workload 上去后账单难预测</td><td>全版本</td><td>open</td></tr>
+<tr><td>生态坑</td><td>灵活 Schema 的治理成本转嫁应用层；类型漂移、脏数据在生产环境静默发生</td><td>全版本</td><td>partially-fixed（5.0+ Schema Validation 可选，但 adoption 有限）</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Category</th><th>Complaint</th><th>Affected versions</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Performance</td><td>Monotonically increasing shard keys cause single-shard write hotspots; adding shards doesn&#x27;t help; jumbo chunks stall the balancer</td><td>All</td><td>open (design constraint, mitigated by data modeling)</td></tr>
+<tr><td>Performance</td><td>When the working set exceeds the WiredTiger cache, application threads participate in eviction → p99 spikes; bulk writes trigger eviction storms</td><td>All</td><td>open (mitigated by capacity planning)</td></tr>
+<tr><td>Performance</td><td>Aggregation blocking stages have a 100MB memory cap; <code>$lookup</code> without indexes is an N+1 scan; cross-shard aggregation is scatter-gather</td><td>All</td><td>open (mitigated by modeling + indexes)</td></tr>
+<tr><td>Performance</td><td>Multi-document transactions have a 60-second default deadline; write-conflict aborts surface to the application; long transactions pin snapshots and amplify cache pressure</td><td>4.0+</td><td>open (tunable, at your own cost)</td></tr>
+<tr><td>Ops</td><td><code>w:1</code> writes can be rolled back on primary failover, requiring manual reconciliation of rollback files; default read concern <code>local</code> can read dirty data</td><td>All</td><td>open (mitigated by explicit majority combinations)</td></tr>
+<tr><td>Ops</td><td>PSA (primary-secondary-arbiter) topology saves money but majority writes become unavailable after one data-bearing node fails</td><td>All</td><td>open (mitigated by topology choice)</td></tr>
+<tr><td>Ops</td><td>Major versions must be upgraded one at a time (no skipping); the FCV mechanism limits rollback paths; sharded-cluster upgrade ordering is strict</td><td>All</td><td>open</td></tr>
+<tr><td>Ops</td><td>Historical baggage of ransomware-wiped naked instances; the Community edition has no data-at-rest encryption and no auditing, so it is non-compliant by default</td><td>All</td><td>partially-fixed (3.6+ binds to localhost by default; encryption/auditing remain behind the Enterprise wall)</td></tr>
+<tr><td>Compatibility</td><td>Not relational, no SQL protocol; the 16MB document hard limit means oversized arrays/deep nesting blow up late in a design&#x27;s life</td><td>All</td><td>open (design constraint)</td></tr>
+<tr><td>Compatibility</td><td>Compatible implementations (DocumentDB/Cosmos/FerretDB) each go their own way; advanced capabilities like change streams/transactions have different boundaries — migration requires item-by-item POC</td><td>All</td><td>open</td></tr>
+<tr><td>Licensing</td><td>SSPL is not OSI open source; cloud vendors/DBaaS are effectively blocked; distros delisted it; the &quot;open source&quot; narrative ended in 2018</td><td>4.0+</td><td>open</td></tr>
+<tr><td>Licensing</td><td>Data-at-rest encryption, auditing, LDAP/Kerberos/OIDC, and Ops Manager are all behind the Enterprise/Atlas wall; the Community edition is a &quot;feature-crippled edition&quot;</td><td>All</td><td>open</td></tr>
+<tr><td>Cost</td><td>Atlas&#x27;s multiple meters (instance/storage/backup/transfer/Search billed separately) make bills hard to predict once the workload grows</td><td>All</td><td>open</td></tr>
+<tr><td>Ecosystem</td><td>Flexible schema shifts governance costs to the application layer; type drift and dirty data silently occur in production</td><td>All</td><td>partially-fixed (5.0+ Schema Validation is optional, but adoption is limited)</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="判决" data-en="Verdict">判决</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li><strong>一句话定位</strong>：文档型场景&quot;开发效率&quot;的最优解，原生分片让它能从小跑到大；但它是用 SSPL 商业软件的心态来选型的——自用免费、合规与高级功能花钱、&quot;无 Schema&quot;的债迟早要还。</li>
+<li><strong>适合谁</strong>：<ul>
+<li>产品迭代快、数据模型多变的内容/社交/电商/SaaS 业务（文档模型红利最大）</li>
+<li>读写模型以&quot;聚合文档整体读写&quot;为主、关联查询少的系统</li>
+<li>数据量持续增长、希望用官方分片永远不做&quot;分库分表&quot;的团队</li>
+<li>需要 Change Streams 做实时同步（缓存/搜索/数仓）的架构</li>
+<li>愿意为 Atlas 付省心税、不想养 Mongo DBA 的团队</li>
+</ul></li>
+<li><strong>不适合谁</strong>：<ul>
+<li>强事务、复杂多表 join 为核心的账务/ERP 类系统（关系型更合适）</li>
+<li>组织政策要求 OSI 认可开源许可证（SSPL 直接出局）</li>
+<li>合规要求静态加密+审计但预算只够社区版自建（默认不达标）</li>
+<li>团队无数据治理纪律、指望&quot;无 Schema&quot;等于&quot;不用设计&quot;的（债会到期）</li>
+<li>超大规模写入且分片键天然单调（如纯时间序列）又不愿做分片键设计的（时序集合或专用时序库更合适）</li>
+</ul></li>
+<li><strong>迁移成本</strong>：<ul>
+<li>MySQL/PostgreSQL → 中高：数据建模范式完全不同（反范式化、嵌入 vs 引用），不是&quot;换驱动&quot;能解决的；事务语义、join 习惯都要重写；建议按&quot;重构数据模型&quot;立项</li>
+<li>从 DocumentDB/Cosmos/FerretDB 迁回官方 → 低-中：wire 协议兼容，但 change streams/事务/高级聚合的边界差异需逐项验证</li>
+<li>从 MongoDB 迁出（到 PG JSONB/DocumentDB 扩展）→ 中：BSON 类型细节、聚合语义、驱动行为需逐项对齐</li>
+</ul></li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li><strong>One-liner</strong>: The best answer for &quot;developer productivity&quot; in document scenarios; native sharding lets it grow from small to large — but evaluate it with a commercial-software mindset: free for in-house use, paid for compliance and advanced features, and the &quot;no schema&quot; debt comes due sooner or later.</li>
+<li><strong>Best for</strong>:<ul>
+<li>Content/social/e-commerce/SaaS businesses with fast product iteration and changing data models (where the document-model dividend is largest)</li>
+<li>Systems whose read/write patterns are dominated by &quot;read/write whole aggregate documents,&quot; with few relational queries</li>
+<li>Teams with continuously growing data that want official sharding and never want to &quot;shard the database by hand&quot; again</li>
+<li>Architectures needing Change Streams for real-time sync (cache/search/data warehouse)</li>
+<li>Teams willing to pay the Atlas peace-of-mind tax and not hire a MongoDB DBA</li>
+</ul></li>
+<li><strong>Not for</strong>:<ul>
+<li>Billing/ERP-style systems built on strong transactions and complex multi-table joins (a relational database fits better)</li>
+<li>Organizations whose policy requires an OSI-recognized open-source license (SSPL rules it out directly)</li>
+<li>Compliance requirements for data-at-rest encryption + auditing on a Community-only self-hosted budget (non-compliant by default)</li>
+<li>Teams with no data-governance discipline that expect &quot;no schema&quot; to mean &quot;no design&quot; (the debt will come due)</li>
+<li>Very-high-scale writes with naturally monotonic shard keys (pure time series) unwilling to design shard keys (time-series collections or dedicated time-series databases fit better)</li>
+</ul></li>
+<li><strong>Migration costs</strong>:<ul>
+<li>MySQL/PostgreSQL → Medium-high: the data-modeling paradigm is completely different (denormalization, embedding vs referencing) — not solvable by &quot;switching drivers&quot;; transaction semantics and join habits must be rewritten; budget it as a &quot;data-model rebuild&quot; project</li>
+<li>From DocumentDB/Cosmos/FerretDB back to official → Low-medium: wire-protocol compatible, but the boundary differences in change streams/transactions/advanced aggregation need item-by-item verification</li>
+<li>Out of MongoDB (to PG JSONB / the DocumentDB extension) → Medium: BSON type details, aggregation semantics, and driver behaviors need item-by-item alignment</li>
+</ul></li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="来源与待验证清单" data-en="Sources & to-be-verified">来源与待验证清单</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li>版本与发布：官方文档安装页（9.0 在 Atlas 灰度中，&quot;production ready&quot;措辞，Community/Enterprise GA 待定）；第三方镜像跟踪（8.0.32 / 7.0.43 为 2026-09-14 时点最新补丁线）；驱动 release notes（node-mongodb-native v7.5.0，2026-07-07，QE 字符串查询在 9.0 GA）</li>
+<li>许可证：mongodb/mongo 官方仓库 README/LICENSE（SSPL v1，2018-10-16 起；此前版本 AGPL）；SSPL v1 文本</li>
+<li>事务/一致性：官方文档（Transactions、Write Concern、Read Concern、Rollback）；社区 skill 实测总结（transaction-performance、mongodb skill，2026）</li>
+<li>存储/分片：官方文档（WiredTiger、Sharding、Balancer、Jumbo Chunks、Change Streams、Schema Validation、Queryable Encryption）</li>
+<li>安全：官方文档（Security Checklist、Authentication、Auditing、企业版功能矩阵）；2017 年勒索事件公开报道（历史）</li>
+<li>兼容与分叉：FerretDB 官方博客（v2.0 GA 2025-03）；第三方分析（dockit 兼容性分析、brightcoding 2025-09）；社区迁移 epic（Falcone→FerretDB v2+DocumentDB，2026）；微软 DocumentDB 扩展（MIT，Linux 基金会治理口径，第三方报道）</li>
+<li>Atlas 与计费：官方 Atlas 文档（M0/Flex/M10+ 三档；Flex 2025-02 GA 取代 Serverless/M2/M5）；社区 tier 选择总结（2026）</li>
+<li>吐槽采集：社区 skill（red flags / limits 章节，多源 2026）；本轮 LLM 采集，待流水线规模化验证</li>
+<li><strong>下次评审必查</strong>：9.0 Community/Enterprise GA 状态与 release notes；Queryable Encryption 在 9.0 的完整查询类型矩阵；Atlas 2026 现价与 Flex 限额；企业版/社区版功能矩阵在 8.x/9.0 的变化；SSPL 政策有无变动（以官方仓库 LICENSE 为准）</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li>Versions and releases: official docs install page (9.0 gray-scaling on Atlas, &quot;production ready&quot; wording; Community/Enterprise GA pending); third-party image tracking (8.0.32 / 7.0.43 are the latest patch lines as of 2026-09-14); driver release notes (node-mongodb-native v7.5.0, 2026-07-07, QE string queries GA in 9.0)</li>
+<li>License: mongodb/mongo official repo README/LICENSE (SSPL v1, since 2018-10-16; earlier versions AGPL); SSPL v1 text</li>
+<li>Transactions/consistency: official docs (Transactions, Write Concern, Read Concern, Rollback); community skill hands-on summaries (transaction-performance, mongodb skill, 2026)</li>
+<li>Storage/sharding: official docs (WiredTiger, Sharding, Balancer, Jumbo Chunks, Change Streams, Schema Validation, Queryable Encryption)</li>
+<li>Security: official docs (Security Checklist, Authentication, Auditing, Enterprise feature matrix); public reporting on the 2017 ransomware incident (historical)</li>
+<li>Compatibility and forks: FerretDB official blog (v2.0 GA 2025-03); third-party analyses (dockit compatibility analysis, brightcoding 2025-09); community migration epic (Falcone→FerretDB v2+DocumentDB, 2026); Microsoft DocumentDB extension (MIT, Linux Foundation governance position, third-party reporting)</li>
+<li>Atlas and billing: official Atlas docs (M0/Flex/M10+ tiers; Flex GA in 2025-02 replacing Serverless/M2/M5); community tier-selection summaries (2026)</li>
+<li>Complaint collection: community skills (red flags / limits chapters, multi-source 2026); this round of LLM collection, <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span> by scaled pipeline</li>
+<li><strong>Must-check next review</strong>: 9.0 Community/Enterprise GA status and release notes; the complete Queryable Encryption query-type matrix in 9.0; Atlas 2026 current pricing and Flex limits; Enterprise/Community feature-matrix changes in 8.x/9.0; any SSPL policy changes (official repo LICENSE as authority)</li>
+</ul>
+</div>
+</section>
+</main>
+<footer class="footer">
+  <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
+</footer>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
