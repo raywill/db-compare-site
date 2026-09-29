@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Redis / Valkey - DB 选型参考</title>
+<link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">&#9672;</span> DB <span data-zh="选型参考" data-en="Compare">选型参考</span></a>
+    <nav class="mainnav">
+<a href="index.html" class="active" data-zh="首页" data-en="Home">首页</a>
+<a href="compare.html" class="" data-zh="维度对比" data-en="Compare">维度对比</a>
+<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
+<a href="advisor.html" class="" data-zh="AI选型" data-en="AI Selection">AI选型</a>
+    </nav>
+    <div class="cmp-tray">
+      <button id="cmp-tray-btn" type="button" class="tray-btn" aria-expanded="false" aria-haspopup="true"><span data-zh="对比" data-en="Compare">对比</span> <b class="tray-count"><i id="cmp-count">0</i>/4</b></button>
+      <div id="cmp-panel" class="tray-panel" hidden>
+        <div class="tray-sec"><span data-zh="已选" data-en="Selected">已选</span></div>
+        <div id="cmp-selected" class="tray-selected"></div>
+        <div class="tray-sec"><span data-zh="全部产品（最多选 4 款）" data-en="All products (up to 4)">全部产品（最多选 4 款）</span></div>
+        <div id="cmp-list" class="tray-list"></div>
+        <div class="tray-actions"><button id="cmp-clear" type="button" class="tray-clear"><span data-zh="清空选择" data-en="Clear selection">清空选择</span></button></div>
+      </div>
+    </div>
+    <button id="lang-toggle" class="lang-btn" type="button" aria-label="switch language">EN</button>
+  </div>
+</header>
+<main class="page">
+<div class="profile-hero">
+  <a class="back" href="index.html"><span data-zh="← 返回首页" data-en="← Back to home">← 返回首页</span></a>
+  <h1>Redis / Valkey</h1>
+  <div class="meta-row"><span class="cat cat-kvdoc" data-zh="KV · 宽列 · 文档" data-en="KV · Wide-column · Document">KV · 宽列 · 文档</span> <span class="tag">#KV</span> <span class="tag">#内存数据库</span> <span class="tag">#缓存</span> <span class="tag">#单线程</span> <span class="tag">#RESP协议</span> <span class="tag">#BSD</span> <span class="tag">#Valkey</span> <span class="tag">#许可证风波</span> <span class="tag">#向量检索</span></div>
+  <p class="oneliner"><div class="lang-block lang-zh">
+<p>内存数据结构存储的事实标准：用&quot;全内存 + 单线程事件循环 + 丰富数据结构&quot;换取亚毫秒延迟；2024 年许可证风波后分裂为 Redis（Redis Inc.，三许可）与 Valkey（Linux 基金会，BSD）两条线，协议兼容但新特性渐行渐远。</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<p>The de facto standard for in-memory data structure stores: trading &quot;all-in-memory + single-threaded event loop + rich data structures&quot; for sub-millisecond latency; after the 2024 licensing upheaval it split into two lines — Redis (Redis Inc., triple-licensed) and Valkey (Linux Foundation, BSD) — protocol-compatible but with new features drifting apart.</p>
+</div></p>
+  <div class="ai-dive-row" data-product="Redis / Valkey">
+    <span class="ai-dive-label" data-zh="用 AI 深挖这款：" data-en="Deep-dive with AI:">用 AI 深挖这款：</span>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('chatgpt', this)">ChatGPT <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('grok', this)">Grok <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('claude', this)">Claude <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn addcmp-btn" data-addcmp="redis-valkey"><span class="addcmp-label">＋ 对比</span></button>
+  </div>
+  <div class="legend"><span class="legend-label" data-zh="证据等级：" data-en="Evidence levels: ">证据等级：</span><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></div>
+</div>
+<section class="doc-section">
+<h2><span data-zh="基本信息" data-en="Basics">基本信息</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>项</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td>厂商</td><td>Redis：Redis Inc.（美国）；Valkey：Linux 基金会（中立托管）</td></tr>
+<tr><td>国家</td><td>美国（两条线均为美国主导）</td></tr>
+<tr><td>起源</td><td>Redis 2009 年由 Salvatore Sanfilippo（antirez）创建；Valkey 2024-03-28 由 Linux 基金会从 Redis 7.2.4 fork，发起支持方：AWS、Google Cloud、Oracle、Ericsson、Snap</td></tr>
+<tr><td>许可证</td><td><strong>Redis</strong>：≤7.2 为 BSD-3-Clause；7.4–7.8 为 RSALv2/SSPLv1 双许可（2024-03-20 宣布）；8.0+ 为 RSALv2/SSPLv1/AGPLv3 三许可（2025-05-01 宣布，&quot;重回开源&quot;）；<strong>Valkey</strong>：全程 BSD-3-Clause（endoflife.date 维护的版本-许可对照表，2026-09 查阅）</td></tr>
+<tr><td>托管服务</td><td>Redis：Redis Cloud；Valkey：AWS ElastiCache（默认/主推）、Google Cloud Memorystore、OCI Cache、Aiven、Upstash 等（第三方口径，2026 年中）</td></tr>
+<tr><td>主类型</td><td>KV（内存数据结构存储）</td></tr>
+<tr><td>兼具类型</td><td>缓存、消息队列（Stream）、会话存储、向量检索（Redis 8 原生 Vector Sets / Valkey 走 valkey-search 模块）、时序（Redis 8 内置）</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Item</th><th>Details</th></tr></thead>
+<tbody>
+<tr><td>Vendor</td><td>Redis: Redis Inc. (USA); Valkey: Linux Foundation (neutral stewardship)</td></tr>
+<tr><td>Country</td><td>USA (both lines are US-led)</td></tr>
+<tr><td>Origin</td><td>Redis created in 2009 by Salvatore Sanfilippo (antirez); Valkey forked from Redis 7.2.4 by the Linux Foundation on 2024-03-28, with founding supporters: AWS, Google Cloud, Oracle, Ericsson, Snap</td></tr>
+<tr><td>License</td><td><strong>Redis</strong>: ≤7.2 under BSD-3-Clause; 7.4–7.8 under RSALv2/SSPLv1 dual license (announced 2024-03-20); 8.0+ under RSALv2/SSPLv1/AGPLv3 triple license (announced 2025-05-01, &quot;returning to open source&quot;); <strong>Valkey</strong>: BSD-3-Clause throughout (version-to-license mapping maintained by endoflife.date, consulted 2026-09)</td></tr>
+<tr><td>Managed services</td><td>Redis: Redis Cloud; Valkey: AWS ElastiCache (default / recommended), Google Cloud Memorystore, OCI Cache, Aiven, Upstash, etc. (third-party statement, mid-2026)</td></tr>
+<tr><td>Primary type</td><td>KV (in-memory data structure store)</td></tr>
+<tr><td>Also usable as</td><td>Cache, message queue (Streams), session store, vector search (native Vector Sets in Redis 8 / via the valkey-search module in Valkey), time series (built into Redis 8)</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section"><h2><span data-zh="硬维度（14 项）" data-en="Hard dimensions (14)">硬维度（14 项）</span></h2>
+<div class="lang-block lang-zh">
+<div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-no">查证为无</span></h3><div class="dim-body"><p><strong>查证为无</strong><span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。无内置 TDE；云托管由云厂商提供盘级加密<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。TLS 支持；Valkey 8.1 宣称 I/O 线程卸载后 TLS 建连接速率提升约 300%（Linux 基金会新闻稿口径，厂商口径）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> 审计 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。ACL 用户权限（Redis 6+）、SLOWLOG 慢查询；Valkey 8.1 新增 COMMANDLOG（全量命令历史）；无传统意义上的细粒度审计日志能力（查证为无）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> 认证与权限 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。AUTH / ACL（Redis 6+）；Valkey 第二发行版支持 LDAP（ODBMS 对 Madelyn Olson 访谈，2025-06）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> 备份恢复 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。RDB 快照备份；云托管自动备份/时间点恢复；自建恢复 = 重启加载 RDB（GB 级分钟级，TB 级慎重）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> 大版本升级 <span class="verdict v-yes">有（有限制）</span></h3><div class="dim-body"><p><strong>有（有限制）</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。小版本原地升级一般平滑；跨大版本注意 RDB 版本兼容与模块；7.2→7.4+ 升级同时是许可证变更（法务层面）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> 可观测性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。INFO / SLOWLOG / <code>redis-cli --latency</code> / MONITOR；Valkey 8.0+ per-slot 统计（<code>CLUSTER SLOT-STATS</code>）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> 连接模型 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。单连接多路复用（一个连接可发 pipeline）；连接数暴涨时内存与文件描述符开销上升，云上注意连接数计费。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> 事务与隔离级别 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。单机：MULTI/EXEC 事务块 + Lua 脚本原子执行（单命令原子、事务块顺序执行，无隔离级别概念）；Cluster：跨 slot 的多 key 操作直接报错，<strong>无分布式事务（查证为无）</strong>。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> 复制与一致性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。单机强一致；主从异步复制（默认，最终一致）；Sentinel 做故障转移仲裁；Cluster 用 gossip 协议，跨分片无分布式事务。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> 扩展方式 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。纵向扩展为主（加内存/换大机型），单机性能天花板由单线程决定；横向靠 Redis Cluster（16384 slots）或客户端分片。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> 兼容性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。RESP2/RESP3 协议；Redis ↔ Valkey 在 7.2 基线前命令/行为一致，此后新特性互不覆盖；全语言客户端（Jedis/Lettuce/ioredis/redis-py/go-redis 等）对两者通用。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> 许可证与商业模式 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（官方公告/第三方口径）。Redis 2024-03 转 RSALv2/SSPLv1，2025-05 起三许可（AGPLv3 可选其一）；Valkey 为 Linux 基金会 BSD-3 fork。商业模式：自建免费；云托管按内存/规格计费——内存成本主导一切，ElastiCache for Valkey 约比 Redis OSS 便宜 20%（Upstash 2026-06 定价对比博客，第三方口径）；TB 级全内存是&quot;用钱换延迟&quot;。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> 中文资料丰富度 <span class="verdict v-yes">有中文社区翻译</span></h3><div class="dim-body"><p><strong>丰富</strong><span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。官方文档有中文社区翻译；CSDN/掘金/知乎大量实战帖。</p>
+<p><strong>补充维度（非固定题库，供选型参考）</strong></p>
+<ul>
+<li><strong>存储引擎</strong>：纯内存 + 可选持久化（RDB 快照 / AOF 日志，7.0+ 为多文件 AOF manifest）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li><strong>部署形态</strong>：自建（单机 / Sentinel / Cluster）、容器、云托管；云厂商托管产品线已分化（部分转 Valkey）<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li><strong>运维复杂度</strong>：单机低（&quot;装完基本不用管&quot;是口碑来源）；Sentinel 中；Cluster 中高（slot 迁移、客户端路由）<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-neutral">confirmed absent</span></h3><div class="dim-body"><p><strong>confirmed absent</strong> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>. No built-in TDE; cloud-managed offerings get disk-level encryption from the cloud provider <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / transport encryption <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. TLS supported; Valkey 8.1 claims TLS connection establishment rate improved ~300% after offloading to I/O threads (Linux Foundation press release statement, vendor claim).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> Auditing <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (official docs / community consensus). ACL users and permissions (Redis 6+), SLOWLOG slow-query log; Valkey 8.1 adds COMMANDLOG (full command history); no fine-grained audit-logging capability in the traditional sense (confirmed absent).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> Authentication &amp; authorization <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. AUTH / ACL (Redis 6+); Valkey supports LDAP from its second release (ODBMS interview with Madelyn Olson, 2025-06).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> Backup &amp; recovery <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. RDB snapshot backups; automated backup / point-in-time recovery on managed services; self-hosted restore = restart and load RDB (minutes for GB-scale, think twice at TB-scale).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> Major-version upgrades <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported (with limitations)</strong> (official docs / community consensus). In-place minor upgrades are usually smooth; mind RDB version compatibility and modules across major versions; upgrading 7.2 → 7.4+ is also a license change (a legal-level event).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> Observability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. INFO / SLOWLOG / <code>redis-cli --latency</code> / MONITOR; Valkey 8.0+ per-slot statistics (<code>CLUSTER SLOT-STATS</code>).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> Connection model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (official docs / community consensus). Single connection multiplexed (one connection can send pipelines); when connection counts explode, memory and file-descriptor overhead rises — watch per-connection billing in the cloud.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> Transactions &amp; isolation levels <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. Single node: MULTI/EXEC transaction blocks + Lua script atomic execution (single-command atomicity, sequential execution of transaction blocks, no isolation-level concept); Cluster: multi-key operations across slots error out directly; <strong>no distributed transactions (confirmed absent)</strong>.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> Replication &amp; consistency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. Strong consistency on a single node; async master-replica replication by default (eventually consistent); Sentinel for failover arbitration; Cluster uses the gossip protocol; no distributed transactions across shards.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> Scaling <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (official docs / community consensus). Primarily vertical (more RAM / bigger machines), with the single-node performance ceiling set by the single thread; horizontal via Redis Cluster (16384 slots) or client-side sharding.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> Compatibility <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (official docs / community consensus). RESP2/RESP3 protocol; Redis ↔ Valkey identical in commands/behavior up to the 7.2 baseline, new features on each side not covered by the other afterwards; full-language clients (Jedis/Lettuce/ioredis/redis-py/go-redis, etc.) work with both.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> License &amp; business model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (official announcements / third-party statements). Redis moved to RSALv2/SSPLv1 in 2024-03 and has been triple-licensed since 2025-05 (AGPLv3 as one option); Valkey is a Linux Foundation BSD-3 fork. Business model: self-hosted is free; cloud-managed billed by memory/spec — memory cost dominates everything; ElastiCache for Valkey is roughly 20% cheaper than Redis OSS (Upstash 2026-06 pricing comparison blog, third-party statement); terabyte-scale all-in-memory is &quot;buying latency with money.&quot;</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> Chinese-language resources <span class="verdict v-neutral">Rich</span></h3><div class="dim-body"><p><strong>Rich</strong> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>. Official docs have a community Chinese translation; large volumes of hands-on posts on CSDN, Juejin, Zhihu.</p>
+<p><strong>Supplementary dimensions (not part of the fixed battery, for selection reference)</strong></p>
+<ul>
+<li><strong>Storage engine</strong>: Pure in-memory + optional persistence (RDB snapshots / AOF log; multi-file AOF manifest since 7.0) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li><strong>Deployment modes</strong>: Self-hosted (single node / Sentinel / Cluster), containers, cloud-managed; cloud vendors&#x27; managed product lines have diverged (some shifting to Valkey) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li><strong>Operational complexity</strong>: Low for single node (&quot;install and forget&quot; is the source of its reputation); medium for Sentinel; medium-high for Cluster (slot migration, client-side routing) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="杀手特性" data-en="Killer features">杀手特性</span></h2>
+<div class="lang-block lang-zh">
+<blockquote>
+<p>每个特性 = 它是什么 + 为什么是真本事 + 推到边缘会发生什么。</p>
+</blockquote>
+<ol>
+<li><strong>丰富的数据结构，不只是 KV</strong> 真本事：String/Hash/List/Set/ZSet/Stream/HyperLogLog/Geo/Bitmap 开箱即用，排行榜、计数器、去重、队列、延时任务都有&quot;原生语义&quot;，不用在应用层拼 SQL 或拼 JSON。这是它相对 Memcached 的代际优势，也是&quot;Redis 当数据库用&quot;的底气。 边缘真相：数据结构是双刃剑——一个几百万 field 的 Hash、一个上亿 member 的 ZSet，就是&quot;大 key&quot;（见深水区一）；<code>HGETALL</code> 一个大 Hash 能把单线程事件循环卡住几百毫秒。数据结构越顺手，越容易写出&quot;逻辑上优雅、物理上致命&quot;的用法。</li>
+<li><strong>单线程事件循环的亚毫秒延迟</strong> 真本事：单线程 + 多路复用，没有锁竞争、没有上下文切换抖动，P99 延迟可压到亚毫秒且极其稳定。缓存、会话、计数器场景&quot;快得无感&quot;是口碑根基。 边缘真相：见深水区一——单线程意味着&quot;一个慢命令，全员排队&quot;；多核机器上单实例只能用一个核，纵向扩展的天花板是单核性能 + 内存带宽。Redis 8 的 I/O 线程（<code>io-threads=8</code> 宣称吞吐 +112%，厂商口径）只卸载网络 IO，命令执行仍是单线程——&quot;多线程 Redis&quot;是误解。</li>
+<li><strong>RESP 协议与全语言客户端生态</strong> 真本事：RESP 简单到可以手写，几乎所有语言都有成熟客户端；协议成为内存数据库的事实标准，Valkey fork 后客户端零改造可切换。这是它&quot;换引擎不换应用&quot;的底气。 边缘真相：生态红利在 Cluster 下打折——客户端要处理 MOVED/ASK 重定向、slot 缓存更新；老旧客户端对 Cluster 支持参差不齐。以及：协议兼容 ≠ 行为兼容（7.2 之后的新命令/新语义两边分化）。</li>
+<li><strong>单机部署运维极简</strong> 真本事：一个二进制、一个配置文件，启动即用；&quot;缓存场景装完不用管&quot;是 DBA 口碑。相对分布式数据库的学习曲线，这是降维打击。 边缘真相：极简的是&quot;单机缓存&quot;，不是&quot;高可用/分片集群&quot;——Sentinel 脑裂、Cluster slot 迁移、持久化调优，复杂度一点不少（见深水区）。很多团队&quot;先单机跑着&quot;，数据量和可用性要求上来后才发现运维债。</li>
+<li><strong>Redis 8 的一体化：JSON/向量/时序/查询引擎进内核</strong> 真本事：Redis 8 把 Redis Stack（RediSearch/JSON/TimeSeries/Bloom）合并进内核，新增 Vector Sets（beta，HNSW）、JSONPath、时序结构、5 种概率数据结构、HGETDEL/HGETEX/HSETEX，Query Engine 查询能力宣称提升 16 倍<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>——&quot;一个 Redis 干缓存+搜索+RAG&quot;的故事。 边缘真相：这是 Redis Inc. 的路线，Valkey 走的是&quot;内核精简 + 模块（valkey-search/valkey-json）&quot;路线，两边新特性互不覆盖。选 Redis 8 等于押注 Redis Inc. 的产品路线；且 Vector Sets 仍是 beta，向量场景生产落地要 POC。</li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<blockquote>
+<p>Each feature = what it is + why it&#x27;s genuinely good + what happens when you push it to the edge.</p>
+</blockquote>
+<ol>
+<li><strong>Rich data structures, not just KV</strong> Why it&#x27;s real: Strings/Hashes/Lists/Sets/Sorted Sets/Streams/HyperLogLog/Geo/Bitmaps work out of the box — leaderboards, counters, deduplication, queues, delayed jobs all have &quot;native semantics&quot; instead of hand-rolled SQL or JSON in the application layer. This is its generational advantage over Memcached and the basis for &quot;using Redis as a database.&quot; Edge truth: Data structures are a double-edged sword — a Hash with millions of fields or a Sorted Set with hundreds of millions of members is a &quot;big key&quot; (see deep dive #1); <code>HGETALL</code> on a large Hash can stall the single-threaded event loop for hundreds of milliseconds. The handier the data structure, the easier it is to write code that is &quot;logically elegant, physically lethal.&quot;</li>
+<li><strong>Sub-millisecond latency from the single-threaded event loop</strong> Why it&#x27;s real: Single thread + multiplexing means no lock contention and no context-switch jitter; P99 can be pushed to sub-millisecond and stays extremely stable. &quot;So fast you don&#x27;t notice&quot; for cache, session, and counter workloads is the foundation of its reputation. Edge truth: See deep dive #1 — single-threaded means &quot;one slow command, everyone queues&quot;; on multi-core machines a single instance uses only one core, so the vertical-scaling ceiling is single-core performance + memory bandwidth. Redis 8&#x27;s I/O threads (<code>io-threads=8</code> claims +112% throughput, vendor claim) only offload network I/O; command execution remains single-threaded — &quot;multi-threaded Redis&quot; is a misunderstanding.</li>
+<li><strong>The RESP protocol and the all-language client ecosystem</strong> Why it&#x27;s real: RESP is simple enough to hand-write; nearly every language has a mature client; the protocol became the de facto standard for in-memory databases, and after the Valkey fork clients switch with zero changes. This is its &quot;change the engine, not the app&quot; confidence. Edge truth: The ecosystem dividend is discounted under Cluster — clients must handle MOVED/ASK redirects and slot-cache updates; older clients&#x27; Cluster support is uneven. And: protocol compatibility ≠ behavior compatibility (new commands / new semantics on each side diverged after 7.2).</li>
+<li><strong>Trivially simple single-node deployment and operations</strong> Why it&#x27;s real: One binary, one config file, usable the moment it starts; &quot;install and forget&quot; for cache workloads is DBA folklore. Against the learning curve of distributed databases, this is a different league. Edge truth: What&#x27;s simple is &quot;single-node cache,&quot; not &quot;HA / sharded clusters&quot; — Sentinel split-brain, Cluster slot migration, persistence tuning all keep their full complexity (see deep dives). Many teams &quot;start with a single node&quot; and only discover the operational debt when data volume and availability requirements catch up.</li>
+<li><strong>Redis 8&#x27;s all-in-one: JSON / vectors / time series / query engine in the core</strong> Why it&#x27;s real: Redis 8 merged Redis Stack (RediSearch/JSON/TimeSeries/Bloom) into the core, adding Vector Sets (beta, HNSW), JSONPath, time-series structures, 5 probabilistic data structures, HGETDEL/HGETEX/HSETEX, and a Query Engine claimed to be 16x faster (official statement) — the &quot;one Redis for cache + search + RAG&quot; story. Edge truth: This is Redis Inc.&#x27;s roadmap; Valkey&#x27;s is &quot;lean core + modules (valkey-search/valkey-json),&quot; and the new features on each side don&#x27;t cover the other. Choosing Redis 8 is a bet on Redis Inc.&#x27;s product roadmap; Vector Sets is still beta, so production use in vector workloads needs a POC.</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="深水区" data-en="Deep dives">深水区</span></h2>
+<div class="lang-block lang-zh">
+<blockquote>
+<p>每条 = 机制 + 推到边缘的行为 + 选型含义 + 来源。</p>
+</blockquote>
+<p><strong>深水区一（性能）：单线程 + 大 key——&quot;一个慢命令，全员排队&quot;</strong></p>
+<ul>
+<li>机制：命令执行是单线程事件循环；任何 O(N) 命令（<code>KEYS *</code>、<code>HGETALL</code>/<code>SMEMBERS</code> 大集合、<code>SORT</code>、<code>SUNION</code> 大集合）执行期间，整个实例不响应其他请求。</li>
+<li>推到边缘：一个几 GB 的大 key 上执行全量读取，P99 从亚毫秒直接跳到秒级，且是&quot;全实例&quot;雪崩不是&quot;单请求慢&quot;。生产经典事故：<code>KEYS *</code> 在生产环境执行、删除大 key 用 <code>DEL</code> 而不用 <code>UNLINK</code>（异步删除）。<code>--bigkeys</code> 扫描和 <code>MEMORY USAGE</code> 是日常巡检项。</li>
+<li>选型含义：key 设计的第一纪律是&quot;控制 value 大小&quot;，大集合必须分页（<code>HSCAN</code>/<code>SSCAN</code>）；POC 必须用真实 key 大小分布压测，不要用 100 字节小 key 测出漂亮数字就上线。这是 Redis 运维的头号深水区。</li>
+<li>来源：社区共识（多年生产事故总结）；<code>UNLINK</code>/渐进式删除为官方机制。</li>
+</ul>
+<p><strong>深水区二（持久化）：fork + COW——&quot;备份的那几秒，内存可能翻倍&quot;</strong></p>
+<ul>
+<li>机制：RDB 快照靠 <code>fork()</code> 子进程写盘，利用写时复制（COW）；AOF 重写同样触发 fork。fork 本身要复制页表，大内存实例上 fork 延迟可达秒级，期间事件循环被阻塞。</li>
+<li>推到边缘：BGSAVE 期间如果写入量大，COW 会导致父子进程内存快速膨胀——&quot;备份时内存翻倍打爆机器&quot;是经典事故。AOF <code>everysec</code> 刷盘下，fsync 抖动会拖慢事件循环（<code>INFO persistence</code> 的 <code>latest_fork_usec</code>、<code>aof_delayed_fsync</code> 是必看指标）。纯缓存场景关掉持久化是最常见的选择，但那意味着&quot;重启即失忆&quot;，故障恢复靠后端重建。</li>
+<li>选型含义：持久化不是&quot;打开就行&quot;：RDB（恢复快、可能丢 1 次快照间隔的数据）vs AOF（丢得少、文件大、恢复慢）vs 混合；大内存实例（&gt;100GB）做 RDB 要先算 fork 时间和 COW 预算。云托管把这部分外包了，自建必须自己面对。</li>
+<li>来源：官方文档（持久化章节）；社区共识（fork 延迟与 COW 事故）。</li>
+</ul>
+<p><strong>深水区三（扩展）：Cluster 分片——16384 个 slot 背后的全部代价</strong></p>
+<ul>
+<li>机制：数据按 CRC16(key) % 16384 分 slot；slot 是迁移基本单位；<code>{hash tag}</code> 强制同 slot；跨 slot 的多 key 操作（<code>MGET</code> 跨分片、<code>SUNION</code> 跨分片、事务 <code>MULTI</code>）直接报错。</li>
+<li>推到边缘：扩容/缩容要做 slot 迁移（<code>redis-cli --cluster reshard</code>），迁移期间相关 slot 的请求走 ASK 重定向，客户端必须正确处理；迁移是&quot;在线但不免费&quot;——大 slot 迁移吃带宽和 CPU。设计期没规划 hash tag，上线后发现需要跨 key 事务 = 重构。gossip 协议在节点数多时心跳开销上升，官方建议 Cluster 规模控制在千节点以内（社区共识口径）。</li>
+<li>选型含义：分片键设计是 Cluster 方案的第一优先级；POC 必须包含&quot;加节点迁移 slot&quot;的演练；中小规模优先 Sentinel 主从，别为了&quot;分布式&quot;而 Cluster。</li>
+<li>来源：官方文档（Cluster 教程）；社区共识。</li>
+</ul>
+<p><strong>深水区四（成本）：内存是按 GB 付费的——&quot;用钱换延迟&quot;的账本</strong></p>
+<ul>
+<li>机制：全内存存储 + 每个 key 的元数据开销（SDS、dictEntry 等）；Valkey 8.1 重写哈希表（Swiss Table 思路）宣称省约 20 字节/key、整体内存 -20%（Linux 基金会新闻稿，官方口径）；Redis 侧内存开销为基线。</li>
+<li>推到边缘：TB 级数据全放内存，硬件/云账单线性上涨；<code>maxmemory</code> + 逐出策略（<code>allkeys-lru</code> 等）配错会导致&quot;热数据被逐出、缓存命中率雪崩&quot;；pub/sub 的慢消费者会撑爆 client output buffer 导致 OOM——&quot;内存满了&quot;的原因有一半不在数据本身。碎片率（<code>mem_fragmentation_ratio</code>）持续 &gt;1.5 要警惕。</li>
+<li>选型含义：Redis 的甜蜜点是&quot;热数据 + 可重建&quot;；冷数据、大 value、TB 级归档需求，内存成本会逼你重新选型（SSD 方案或分级存储）。成本模型按&quot;每 GB 每月多少钱&quot;算，不要按&quot;实例多少钱&quot;算。</li>
+<li>来源：官方文档（内存管理）；Valkey 8.1 发布新闻稿（内存数据为官方口径）；社区共识（逐出/慢消费者事故）。</li>
+</ul>
+<p><strong>深水区五（可用性）：异步复制——&quot;切主成功，数据丢了&quot;</strong></p>
+<ul>
+<li>机制：主从复制默认异步；Sentinel 故障转移需要 quorum 达成，期间写不可用；<code>WAIT</code> 命令可实现半同步（等 N 个副本确认），代价是写延迟上升。</li>
+<li>推到边缘：主库宕机时，从库没收到的尾部写必然丢失——&quot;RPO=0&quot;在默认配置下不成立；Sentinel 脑裂时可能出现双主（旧主没被 fence 住继续写），恢复后数据冲突靠人工。把 Redis 当&quot;主数据库&quot;用的团队，必须显式回答 RPO 问题，而不是默认&quot;有副本就安全&quot;。</li>
+<li>选型含义：缓存场景丢数据可接受（后端重建）；当主存用则必须评估 <code>WAIT</code> + 持久化组合，且接受写延迟代价。高可用方案评审要同时回答：RPO、脑裂防护、客户端重连。</li>
+<li>来源：官方文档（复制/Sentinel）；社区共识。</li>
+</ul>
+<p><strong>深水区六（许可证）：2024 分叉——选型时真正的决策树</strong></p>
+<ul>
+<li>机制：2024-03-20 Redis 宣布 7.4+ 转 RSALv2/SSPLv1（source-available，非 OSI 开源）；2024-03-28 Linux 基金会 fork 7.2.4 为 Valkey（BSD-3，全程）；2025-05-01 Redis 8 加 AGPLv3 成三许可（RSALv2/SSPLv1/AGPLv3 任选其一）。</li>
+<li>推到边缘：<ul>
+<li><strong>云厂商集体倒向 Valkey</strong>：AWS ElastiCache 主推/默认 Valkey（约便宜 20%，Upstash 2026-06 定价对比，第三方口径）、Google Memorystore、OCI Cache 支持 Valkey；Linux 发行版（Fedora 42+、Ubuntu 26.04、Debian 13）默认打包 Valkey（第三方口径）。云托管选 Redis OSS 的路越走越窄。</li>
+<li><strong>AGPL 是&quot;开源&quot;但不是&quot;无代价&quot;</strong>：很多公司法务不接受 AGPL 的 copyleft（网络服务触发），这类团队实质可选只有 Valkey（BSD）或 Redis 商业版。</li>
+<li><strong>两条线已分化</strong>：Redis 8 的 Vector Sets/JSON 内置/Query Engine vs Valkey 的模块路线（valkey-search/valkey-json）+ 哈希表重写 + HFE（hash field expiry）。&quot;协议兼容&quot;不等于&quot;特性兼容&quot;，迁移时新特性要逐项核对。</li>
+<li><strong>迁移有坑</strong>：Redis 7.4+ 的 RDB v12 Valkey 读不了（社区口径，待官方交叉验证）；RIOT 迁移工具 2025-10 被归档（社区项目 README 口径）；AWS 对 ≤7.2.4 提供 ElastiCache 原地升级到 Valkey（第三方口径）。</li>
+</ul></li>
+<li>选型含义：决策树——①云托管：跟云厂商走，大概率是 Valkey；②自建且法务禁 AGPL：Valkey；③需要 Redis 8 原生向量/JSON/查询引擎：Redis 8（三许可任选其一）；④停留在 7.2：BSD 但无官方安全更新，等死。先定代码线，再谈版本。</li>
+<li>来源：endoflife.date 版本-许可对照（2026-09 查阅）；Linux 基金会 Valkey 8.1 新闻稿；Upstash 定价博客（2026-06）；社区迁移项目 README（RIOT/RDB 口径，社区来源）；Percona 调研&quot;约 75% 用户测试/考虑/采用 Valkey&quot;为第三方转述，待验证。</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<blockquote>
+<p>Each item = mechanism + behavior at the edge + selection implication + source.</p>
+</blockquote>
+<p><strong>Deep dive #1 (Performance): Single thread + big keys — &quot;one slow command, everyone queues&quot;</strong></p>
+<ul>
+<li>Mechanism: Command execution is a single-threaded event loop; during any O(N) command (<code>KEYS *</code>, <code>HGETALL</code>/<code>SMEMBERS</code> on large collections, <code>SORT</code>, <code>SUNION</code> on large sets), the whole instance stops responding to other requests.</li>
+<li>At the edge: A full read on a multi-GB big key jumps P99 from sub-millisecond straight to seconds — and it&#x27;s a &quot;whole instance&quot; avalanche, not &quot;one slow request.&quot; Classic production incidents: running <code>KEYS *</code> in production, deleting big keys with <code>DEL</code> instead of <code>UNLINK</code> (async deletion). <code>--bigkeys</code> scans and <code>MEMORY USAGE</code> are routine inspection items.</li>
+<li>Selection implication: The first discipline of key design is &quot;control value size&quot;; large collections must be paginated (<code>HSCAN</code>/<code>SSCAN</code>); the POC must be load-tested with the real key-size distribution — don&#x27;t go live on pretty numbers measured with 100-byte keys. This is Redis operations&#x27; #1 deep-water zone.</li>
+<li>Source: Community consensus (years of production-incident summaries); <code>UNLINK</code> / incremental deletion are official mechanisms.</li>
+</ul>
+<p><strong>Deep dive #2 (Persistence): fork + COW — &quot;for the seconds of the backup, memory may double&quot;</strong></p>
+<ul>
+<li>Mechanism: RDB snapshots rely on <code>fork()</code>-ing a child process to write to disk, exploiting copy-on-write (COW); AOF rewrites also trigger fork. fork itself must copy the page table, so on large-memory instances fork latency can reach seconds, during which the event loop is blocked.</li>
+<li>At the edge: If write volume is high during BGSAVE, COW causes parent and child memory to balloon quickly — &quot;the backup doubled memory and blew up the machine&quot; is a classic incident. Under AOF <code>everysec</code> fsync, fsync jitter drags the event loop (<code>latest_fork_usec</code> and <code>aof_delayed_fsync</code> in <code>INFO persistence</code> are must-watch metrics). Turning persistence off entirely is the most common choice for pure-cache workloads — but that means &quot;restart = amnesia,&quot; with recovery depending on the backend to rebuild.</li>
+<li>Selection implication: Persistence is not &quot;just turn it on&quot;: RDB (fast restore, may lose one snapshot interval of data) vs AOF (loses less, bigger files, slower restore) vs hybrid; for large-memory instances (&gt;100GB) doing RDB, budget fork time and COW headroom first. Managed services outsource this; self-hosted means facing it yourself.</li>
+<li>Source: Official docs (persistence chapter); community consensus (fork latency and COW incidents).</li>
+</ul>
+<p><strong>Deep dive #3 (Scaling): Cluster sharding — the full cost behind 16384 slots</strong></p>
+<ul>
+<li>Mechanism: Data is assigned to slots by CRC16(key) % 16384; the slot is the basic migration unit; <code>{hash tags}</code> force keys into the same slot; multi-key operations across slots (<code>MGET</code> across shards, <code>SUNION</code> across shards, <code>MULTI</code> transactions) error out directly.</li>
+<li>At the edge: Scaling up/down requires slot migration (<code>redis-cli --cluster reshard</code>); during migration, requests for affected slots follow ASK redirects, and clients must handle them correctly; migration is &quot;online but not free&quot; — large-slot migration eats bandwidth and CPU. Failing to plan hash tags at design time and discovering later that you need cross-key transactions = refactoring. Gossip-protocol heartbeat overhead rises with node count; the official guidance keeps Cluster size within thousands of nodes (community-consensus phrasing).</li>
+<li>Selection implication: Shard-key design is the #1 priority of any Cluster plan; the POC must include a &quot;add nodes and migrate slots&quot; drill; at small-to-medium scale prefer Sentinel master-replica — don&#x27;t go Cluster just for &quot;distributed.&quot;</li>
+<li>Source: Official docs (Cluster tutorial); community consensus.</li>
+</ul>
+<p><strong>Deep dive #4 (Cost): Memory is billed per GB — the ledger of &quot;buying latency with money&quot;</strong></p>
+<ul>
+<li>Mechanism: All-in-memory storage + per-key metadata overhead (SDS, dictEntry, etc.); Valkey 8.1&#x27;s hash-table rewrite (Swiss Table approach) claims ~20 bytes/key saved and -20% overall memory (Linux Foundation press release, official statement); the Redis side&#x27;s memory overhead is the baseline.</li>
+<li>At the edge: TB-scale data fully in memory makes hardware/cloud bills rise linearly; misconfigured <code>maxmemory</code> + eviction policy (<code>allkeys-lru</code>, etc.) causes &quot;hot data evicted, cache hit-rate avalanche&quot;; slow consumers of pub/sub can blow up client output buffers and cause OOM — half the reasons &quot;memory is full&quot; aren&#x27;t the data itself. A fragmentation ratio (<code>mem_fragmentation_ratio</code>) persistently &gt; 1.5 deserves attention.</li>
+<li>Selection implication: Redis&#x27;s sweet spot is &quot;hot data + rebuildable&quot;; cold data, large values, and TB-scale archival needs will have memory costs forcing a re-selection (SSD-based options or tiered storage). Model cost as &quot;dollars per GB per month,&quot; not &quot;dollars per instance.&quot;</li>
+<li>Source: Official docs (memory management); Valkey 8.1 release press release (memory figures as official statement); community consensus (eviction / slow-consumer incidents).</li>
+</ul>
+<p><strong>Deep dive #5 (Availability): Async replication — &quot;failover succeeded, data lost&quot;</strong></p>
+<ul>
+<li>Mechanism: Master-replica replication is async by default; Sentinel failover needs quorum, during which writes are unavailable; the <code>WAIT</code> command gives semi-sync (wait for N replicas to acknowledge) at the cost of higher write latency.</li>
+<li>At the edge: When the master dies, tail writes the replicas never received are necessarily lost — &quot;RPO=0&quot; does not hold under default configuration; in a Sentinel split-brain you can get dual masters (the old master not fenced, still taking writes), with data conflicts resolved by hand after recovery. Teams using Redis as their &quot;primary database&quot; must explicitly answer the RPO question rather than assume &quot;replicas = safe.&quot;</li>
+<li>Selection implication: Losing data is acceptable for cache workloads (backend rebuilds); using it as primary storage requires evaluating the <code>WAIT</code> + persistence combination and accepting the write-latency cost. Any HA design review must answer: RPO, split-brain protection, client reconnection.</li>
+<li>Source: Official docs (replication / Sentinel); community consensus.</li>
+</ul>
+<p><strong>Deep dive #6 (Licensing): The 2024 fork — the real decision tree at selection time</strong></p>
+<ul>
+<li>Mechanism: On 2024-03-20 Redis announced 7.4+ moves to RSALv2/SSPLv1 (source-available, not OSI open source); on 2024-03-28 the Linux Foundation forked 7.2.4 as Valkey (BSD-3, throughout); on 2025-05-01 Redis 8 added AGPLv3 as a third license option (choose any of RSALv2/SSPLv1/AGPLv3).</li>
+<li>At the edge:<ul>
+<li><strong>Cloud vendors have collectively swung to Valkey</strong>: AWS ElastiCache recommends/defaults to Valkey (~20% cheaper, Upstash 2026-06 pricing comparison, third-party statement), Google Memorystore and OCI Cache support Valkey; Linux distros (Fedora 42+, Ubuntu 26.04, Debian 13) ship Valkey by default (third-party statement). The road for cloud-managed Redis OSS keeps narrowing.</li>
+<li><strong>AGPL is &quot;open source&quot; but not &quot;cost-free&quot;</strong>: many companies&#x27; legal teams won&#x27;t accept AGPL copyleft (triggered by network service); such teams effectively can only choose Valkey (BSD) or the commercial Redis edition.</li>
+<li><strong>The two lines have diverged</strong>: Redis 8&#x27;s Vector Sets / built-in JSON / Query Engine vs Valkey&#x27;s module route (valkey-search/valkey-json) + hash-table rewrite + HFE (hash field expiry). &quot;Protocol compatible&quot; ≠ &quot;feature compatible&quot; — verify new features item by item during migration.</li>
+<li><strong>Migration has pitfalls</strong>: Redis 7.4+&#x27;s RDB v12 can&#x27;t be read by Valkey (community statement, pending official cross-verification); the RIOT migration tool was archived in 2025-10 (community project README statement); AWS offers in-place ElastiCache upgrades to Valkey for ≤7.2.4 (third-party statement).</li>
+</ul></li>
+<li>Selection implication: The decision tree — ① cloud-managed: follow the cloud vendor, most likely Valkey; ② self-hosted with legal banning AGPL: Valkey; ③ need Redis 8&#x27;s native vectors/JSON/query engine: Redis 8 (any of the three licenses); ④ staying on 7.2: BSD but no official security updates — a dead end. Pick the code line first, then the version.</li>
+<li>Source: endoflife.date version-to-license mapping (consulted 2026-09); Linux Foundation Valkey 8.1 press release; Upstash pricing blog (2026-06); community migration project READMEs (RIOT/RDB statements, community sources); Percona&#x27;s survey &quot;about 75% of users testing/considering/adopting Valkey&quot; is third-party hearsay, to-be-verified.</li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="用户最买账的 5 点" data-en="What users love most">用户最买账的 5 点</span></h2>
+<div class="lang-block lang-zh">
+<blockquote>
+<p>好的也要有深度。每条 = 为什么是真的 + 边缘与限度。</p>
+</blockquote>
+<ol>
+<li><strong>快，亚毫秒且稳</strong><ul>
+<li>为什么是真的：单线程事件循环无锁竞争，P99 亚毫秒；pipeline/连接复用后吞吐极高。</li>
+<li>边缘与限度：快的是&quot;小 key + 简单命令&quot;；大 key 一个慢命令全员排队（深水区一）；单实例吃不满多核，纵向天花板明确。压测必须用真实 key 分布。</li>
+<li>来源：社区共识。observed_version：全版本。</li>
+</ul></li>
+<li><strong>数据结构开箱即用，开发效率高</strong><ul>
+<li>为什么是真的：排行榜/计数器/去重/队列/位图都有原生命令，应用层代码量少一个数量级。</li>
+<li>边缘与限度：顺手的数据结构最容易养出大 key；Stream 当 MQ 用没有完善的消费组运维工具链（相对 Kafka/RabbitMQ），&quot;能用&quot;和&quot;好用&quot;是两回事。</li>
+<li>来源：社区共识。observed_version：全版本。</li>
+</ul></li>
+<li><strong>生态无敌，换引擎不换应用</strong><ul>
+<li>为什么是真的：RESP 协议 + 全语言客户端，Valkey fork 后客户端零改造切换。</li>
+<li>边缘与限度：红利在 7.2 基线处最厚；两边新特性分化后，&quot;零改造&quot;只保协议层；Cluster 下老旧客户端的 MOVED/ASK 处理要实测。</li>
+<li>来源：社区共识；Valkey 官方兼容说明。observed_version：7.2–8.x。</li>
+</ul></li>
+<li><strong>单机运维极简</strong><ul>
+<li>为什么是真的：单二进制、单配置文件，缓存场景&quot;装完不用管&quot;。</li>
+<li>边缘与限度：极简止于单机；Sentinel/Cluster/持久化调优的复杂度完整保留。很多团队的运维债是从&quot;先单机跑着&quot;开始欠的。</li>
+<li>来源：社区共识。observed_version：全版本。</li>
+</ul></li>
+<li><strong>省钱（在缓存场景）</strong><ul>
+<li>为什么是真的：相比&quot;缓存穿透打到数据库&quot;的事故成本，一台 Redis 省下的 DBA 救火时间远超机器钱；Valkey 让云托管再便宜约 20%。</li>
+<li>边缘与限度：省的是&quot;事故成本&quot;，不是&quot;内存成本&quot;——TB 级全内存账单很诚实；ElastiCache for Valkey 的降价是云厂商定价策略，随时会变，不要写进三年 TCO 当承诺。</li>
+<li>来源：社区共识；Upstash 定价博客（2026-06，第三方口径）。observed_version：Valkey 8.x。</li>
+</ul></li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<blockquote>
+<p>The good deserves depth too. Each item = why it&#x27;s true + edges and limits.</p>
+</blockquote>
+<ol>
+<li><strong>Fast — sub-millisecond and stable</strong><ul>
+<li>Why it&#x27;s true: The lock-free single-threaded event loop delivers sub-millisecond P99; pipelining / connection reuse push throughput very high.</li>
+<li>Edges and limits: What&#x27;s fast is &quot;small keys + simple commands&quot;; one slow command on a big key queues everyone (deep dive #1); a single instance can&#x27;t saturate multiple cores, so the vertical ceiling is explicit. Load tests must use the real key distribution.</li>
+<li>Source: Community consensus. observed_version: all versions.</li>
+</ul></li>
+<li><strong>Data structures work out of the box — high developer productivity</strong><ul>
+<li>Why it&#x27;s true: Leaderboards / counters / dedup / queues / bitmaps all have native commands, cutting application code by an order of magnitude.</li>
+<li>Edges and limits: The handiest data structures breed big keys most easily; using Streams as an MQ lacks a mature consumer-group operations toolchain (vs Kafka/RabbitMQ) — &quot;usable&quot; and &quot;good to use&quot; are different things.</li>
+<li>Source: Community consensus. observed_version: all versions.</li>
+</ul></li>
+<li><strong>Unbeatable ecosystem — change the engine, not the app</strong><ul>
+<li>Why it&#x27;s true: The RESP protocol + all-language clients; Valkey fork clients switch with zero changes.</li>
+<li>Edges and limits: The dividend is thickest at the 7.2 baseline; after the two sides&#x27; new features diverge, &quot;zero changes&quot; only covers the protocol layer; under Cluster, old clients&#x27; MOVED/ASK handling needs real testing.</li>
+<li>Source: Community consensus; Valkey official compatibility notes. observed_version: 7.2–8.x.</li>
+</ul></li>
+<li><strong>Trivial single-node operations</strong><ul>
+<li>Why it&#x27;s true: Single binary, single config file; &quot;install and forget&quot; for cache workloads.</li>
+<li>Edges and limits: Simplicity ends at single node; Sentinel / Cluster / persistence-tuning complexity is fully retained. Many teams start accruing operational debt with &quot;just run single-node for now.&quot;</li>
+<li>Source: Community consensus. observed_version: all versions.</li>
+</ul></li>
+<li><strong>Cheap (in cache workloads)</strong><ul>
+<li>Why it&#x27;s true: Compared to the incident cost of &quot;cache penetration hitting the database,&quot; the DBA firefighting hours one Redis box saves far exceed the machine cost; Valkey makes cloud-managed hosting ~20% cheaper still.</li>
+<li>Edges and limits: What&#x27;s saved is &quot;incident cost,&quot; not &quot;memory cost&quot; — the TB-scale all-in-memory bill is brutally honest; ElastiCache for Valkey&#x27;s discount is a cloud-vendor pricing move that can change anytime — don&#x27;t write it into a three-year TCO as a commitment.</li>
+<li>Source: Community consensus; Upstash pricing blog (2026-06, third-party statement). observed_version: Valkey 8.x.</li>
+</ul></li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="吐槽清单" data-en="Complaints">吐槽清单</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>分类</th><th>吐槽</th><th>影响版本</th><th>状态</th><th>来源</th></tr></thead>
+<tbody>
+<tr><td>性能坑</td><td>大 key 阻塞单线程事件循环，一个慢命令全实例雪崩</td><td>全版本</td><td>open（机制性，靠规范规避）</td><td>社区共识</td></tr>
+<tr><td>性能坑</td><td><code>KEYS *</code> / <code>FLUSHALL</code> 生产误操作；<code>DEL</code> 大 key 不如 <code>UNLINK</code></td><td>全版本</td><td>open（官方有 UNLINK，但误操作防不住）</td><td>社区共识</td></tr>
+<tr><td>持久化坑</td><td>fork 延迟（大内存秒级）+ COW 内存膨胀，BGSAVE 时打爆机器</td><td>全版本</td><td>open（机制性）</td><td>官方文档；社区共识</td></tr>
+<tr><td>持久化坑</td><td>纯缓存关持久化 = 重启失忆，故障后冷启动打爆后端 DB</td><td>全版本</td><td>open（架构选择）</td><td>社区共识</td></tr>
+<tr><td>扩展坑</td><td>Cluster 跨 slot 多 key 操作直接报错；hash tag 设计失误 = 重构</td><td>Cluster</td><td>open</td><td>官方文档</td></tr>
+<tr><td>扩展坑</td><td>slot 迁移在线但不免费，ASK 重定向要求客户端正确处理</td><td>Cluster</td><td>open</td><td>官方文档；社区共识</td></tr>
+<tr><td>可用性坑</td><td>异步复制默认丢尾部写；Sentinel 脑裂双主</td><td>全版本</td><td>open（WAIT 可缓解，代价写延迟）</td><td>官方文档</td></tr>
+<tr><td>成本坑</td><td>全内存按 GB 付费；TB 级账单劝退；maxmemory 逐出配错致命中率雪崩</td><td>全版本</td><td>open</td><td>社区共识</td></tr>
+<tr><td>成本坑</td><td>pub/sub 慢消费者撑爆 client output buffer 致 OOM</td><td>全版本</td><td>open</td><td>社区共识</td></tr>
+<tr><td>许可证坑</td><td>2024-03 许可变更打破十年预期；7.2 停留 = 无安全更新</td><td>7.4+</td><td>open（8.0 三许可后缓解，AGPL 法务门槛仍在）</td><td>官方公告；社区共识</td></tr>
+<tr><td>迁移坑</td><td>Redis 7.4+ RDB v12 Valkey 读不了；RIOT 归档后迁移工具链收缩</td><td>跨线迁移</td><td>open</td><td>社区项目 README（待官方交叉验证）</td></tr>
+<tr><td>生态坑</td><td>两条线新特性分化，选边后另一边的特性用不上</td><td>8.x</td><td>open（进行中）</td><td>社区共识</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Category</th><th>Complaint</th><th>Affected versions</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>Performance pitfall</td><td>Big keys block the single-threaded event loop — one slow command avalanches the whole instance</td><td>All versions</td><td>open (mechanistic, mitigated by discipline)</td><td>Community consensus</td></tr>
+<tr><td>Performance pitfall</td><td><code>KEYS *</code> / <code>FLUSHALL</code> production mis-operations; <code>DEL</code> on big keys inferior to <code>UNLINK</code></td><td>All versions</td><td>open (UNLINK exists officially, but mis-operations can&#x27;t be prevented)</td><td>Community consensus</td></tr>
+<tr><td>Persistence pitfall</td><td>fork latency (seconds at large memory) + COW memory inflation — BGSAVE blows up the machine</td><td>All versions</td><td>open (mechanistic)</td><td>Official docs; community consensus</td></tr>
+<tr><td>Persistence pitfall</td><td>Pure-cache with persistence off = amnesia on restart; cold start after failure hammers the backend DB</td><td>All versions</td><td>open (architectural choice)</td><td>Community consensus</td></tr>
+<tr><td>Scaling pitfall</td><td>Cluster multi-key operations across slots error out directly; hash-tag design mistakes = refactoring</td><td>Cluster</td><td>open</td><td>Official docs</td></tr>
+<tr><td>Scaling pitfall</td><td>Slot migration is online but not free; ASK redirects require clients to handle them correctly</td><td>Cluster</td><td>open</td><td>Official docs; community consensus</td></tr>
+<tr><td>Availability pitfall</td><td>Async replication drops tail writes by default; Sentinel split-brain dual masters</td><td>All versions</td><td>open (WAIT mitigates, at write-latency cost)</td><td>Official docs</td></tr>
+<tr><td>Cost pitfall</td><td>All-in-memory billed per GB; TB-scale bills are discouraging; misconfigured maxmemory eviction causes hit-rate avalanche</td><td>All versions</td><td>open</td><td>Community consensus</td></tr>
+<tr><td>Cost pitfall</td><td>pub/sub slow consumers blow up client output buffers → OOM</td><td>All versions</td><td>open</td><td>Community consensus</td></tr>
+<tr><td>Licensing pitfall</td><td>The 2024-03 license change broke a decade of expectations; staying on 7.2 = no security updates</td><td>7.4+</td><td>open (eased after the 8.0 triple license, AGPL legal bar remains)</td><td>Official announcements; community consensus</td></tr>
+<tr><td>Migration pitfall</td><td>Redis 7.4+ RDB v12 unreadable by Valkey; migration toolchain shrank after RIOT was archived</td><td>Cross-line migration</td><td>open</td><td>Community project READMEs (pending official cross-verification)</td></tr>
+<tr><td>Ecosystem pitfall</td><td>The two lines&#x27; new features diverge; after picking a side the other side&#x27;s features are unavailable</td><td>8.x</td><td>open (ongoing)</td><td>Community consensus</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="判决" data-en="Verdict">判决</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li><strong>一句话定位</strong>：内存数据结构存储的事实标准——为亚毫秒延迟而生，为内存账单和单线程模型还债；2024 年后选型先选代码线（Redis/Valkey），再选版本。</li>
+<li><strong>适合谁</strong>：<ul>
+<li>缓存、会话、计数器、排行榜、限流、分布式锁等&quot;热数据 + 可重建&quot;场景；</li>
+<li>需要亚毫秒 P99 且 key 规范可控的在线业务；</li>
+<li>法务禁 AGPL、要 BSD 许可的团队：Valkey；</li>
+<li>需要原生向量检索/JSON/查询引擎一体化的 AI 场景：Redis 8（三许可任选其一）。</li>
+</ul></li>
+<li><strong>不适合谁</strong>：<ul>
+<li>TB 级冷数据/大 value 归档（内存账单劝退）；</li>
+<li>需要跨分片多 key 事务的强一致场景；</li>
+<li>把 Redis 当唯一主存且 RPO=0 的团队（默认异步复制做不到）；</li>
+<li>法务既不接受 AGPL 又不接受 source-available，且不愿用 Valkey 的团队（基本只剩商业版）。</li>
+</ul></li>
+<li><strong>迁移成本</strong>：<ul>
+<li><strong>Redis ≤7.2 → Valkey</strong>：低。协议/命令兼容，客户端零改造；RDB 文件可直接迁移；AWS 等云厂商提供原地升级（第三方口径）。</li>
+<li><strong>Redis 7.4+ → Valkey</strong>：中。RDB v12 不兼容（社区口径），需经复制或工具迁移；新特性（7.4+ 的）需核对 Valkey 是否覆盖。</li>
+<li><strong>Valkey → Redis 8</strong>：中。协议兼容，但 Valkey 特有优化（哈希表内存、HFE）与 Redis 8 新特性（Vector Sets 等）互不覆盖，按特性清单逐项评估。</li>
+<li><strong>Memcached → Redis/Valkey</strong>：低-中。协议不同需改客户端，但数据结构升级通常值得。</li>
+</ul></li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li><strong>One-line positioning</strong>: The de facto standard for in-memory data structure stores — born for sub-millisecond latency, paying back in memory bills and the single-threaded model; after 2024, selection starts by picking the code line (Redis/Valkey), then the version.</li>
+<li><strong>Good fit for</strong>:<ul>
+<li>&quot;Hot data + rebuildable&quot; scenarios: cache, sessions, counters, leaderboards, rate limiting, distributed locks;</li>
+<li>Online businesses needing sub-millisecond P99 with controllable key hygiene;</li>
+<li>Teams whose legal bans AGPL and need a BSD license: Valkey;</li>
+<li>AI scenarios needing native vector search / JSON / query-engine integration: Redis 8 (any of the three licenses).</li>
+</ul></li>
+<li><strong>Not a good fit for</strong>:<ul>
+<li>TB-scale cold data / large-value archival (memory bills are discouraging);</li>
+<li>Strong-consistency scenarios needing multi-key transactions across shards;</li>
+<li>Teams using Redis as their sole primary store with RPO=0 (default async replication can&#x27;t do it);</li>
+<li>Teams whose legal accepts neither AGPL nor source-available and won&#x27;t use Valkey (basically only the commercial edition remains).</li>
+</ul></li>
+<li><strong>Migration cost</strong>:<ul>
+<li><strong>Redis ≤7.2 → Valkey</strong>: Low. Protocol/command compatible, zero client changes; RDB files migrate directly; AWS and other cloud vendors offer in-place upgrades (third-party statement).</li>
+<li><strong>Redis 7.4+ → Valkey</strong>: Medium. RDB v12 incompatible (community statement), migrate via replication or tooling; new features (7.4+) need checking against Valkey coverage.</li>
+<li><strong>Valkey → Redis 8</strong>: Medium. Protocol-compatible, but Valkey-specific optimizations (hash-table memory, HFE) and Redis 8 new features (Vector Sets, etc.) don&#x27;t cover each other — evaluate against a per-feature checklist.</li>
+<li><strong>Memcached → Redis/Valkey</strong>: Low-medium. Different protocol requires client changes, but the data-structure upgrade is usually worth it.</li>
+</ul></li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="来源与待验证清单" data-en="Sources & to-be-verified">来源与待验证清单</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li>许可证时间线：Redis 官方公告（2024-03-20 RSALv2/SSPLv1；2025-05-01 AGPLv3 三许可）；Linux 基金会 Valkey 公告（2024-03-28，fork 自 7.2.4，BSD-3）；endoflife.date redis 产品页版本-许可对照表（2026-09 查阅）</li>
+<li>Redis 8 特性：Redis 官方发布博客（Vector Sets beta、Stack 进内核、HGETDEL/HGETEX/HSETEX、30+ 性能优化、I/O 线程数据为厂商口径）；CSDN 8.0 综述（2025-05，社区转述）</li>
+<li>Valkey 版本与特性：Linux 基金会 Valkey 8.1 GA 新闻稿（2025-04-02，哈希表 -20% 内存、TLS 卸载、COMMANDLOG，官方口径）；ODBMS 对 Madelyn Olson 访谈（2025-06，8.0/8.1、LDAP、valkey-search）；社区迁移项目 README（HFE、per-slot stats、RIOT 归档、RDB v12，社区口径）</li>
+<li>云采用：Upstash 2026-06 定价对比博客（ElastiCache Valkey 约便宜 20%，第三方口径）；byteiota（AWS/Google/Oracle/Heroku 采用时间线，第三方口径）；Percona 调研&quot;75%&quot;为第三方转述，待验证</li>
+<li>机制类（单线程/fork/COW/Cluster slots/复制）：Redis 官方文档；社区多年生产事故总结<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>下次评审：跟踪 Valkey 9.x 状态与 Redis 8.2+ 新特性；复核 RDB v12 互操作性的官方口径；复核云厂商托管产品线的最新分化</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li>License timeline: Redis official announcements (2024-03-20 RSALv2/SSPLv1; 2025-05-01 AGPLv3 triple license); Linux Foundation Valkey announcement (2024-03-28, forked from 7.2.4, BSD-3); endoflife.date redis product page version-to-license mapping (consulted 2026-09)</li>
+<li>Redis 8 features: Redis official release blog (Vector Sets beta, Stack merged into core, HGETDEL/HGETEX/HSETEX, 30+ performance optimizations, I/O thread figures as official statement); CSDN 8.0 roundup (2025-05, community retelling)</li>
+<li>Valkey versions &amp; features: Linux Foundation Valkey 8.1 GA press release (2025-04-02, hash table -20% memory, TLS offload, COMMANDLOG, official statement); ODBMS interview with Madelyn Olson (2025-06, 8.0/8.1, LDAP, valkey-search); community migration project READMEs (HFE, per-slot stats, RIOT archival, RDB v12, community sources)</li>
+<li>Cloud adoption: Upstash 2026-06 pricing comparison blog (ElastiCache Valkey ~20% cheaper, third-party statement); byteiota (AWS/Google/Oracle/Heroku adoption timeline, third-party statement); Percona survey &quot;75%&quot; is third-party hearsay, to-be-verified</li>
+<li>Mechanics (single thread / fork / COW / Cluster slots / replication): Redis official docs; years of production-incident summaries from the community <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Next review: track Valkey 9.x status and Redis 8.2+ new features; re-verify the official statement on RDB v12 interoperability; re-verify the latest divergence of cloud vendors&#x27; managed product lines</li>
+</ul>
+</div>
+</section>
+</main>
+<footer class="footer">
+  <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
+</footer>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
