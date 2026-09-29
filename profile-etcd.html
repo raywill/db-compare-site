@@ -86,7 +86,7 @@
 </table></div>
 </div>
 </section>
-<section class="doc-section"><h2><span data-zh="硬维度（19 项）" data-en="Hard dimensions (19)">硬维度（19 项）</span></h2>
+<section class="doc-section"><h2><span data-zh="硬维度（46 项）" data-en="Hard dimensions (46)">硬维度（46 项）</span></h2>
 <div class="lang-block lang-zh">
 <div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-no">无（查证为无）</span></h3><div class="dim-body"><p>etcd 本体<strong>不提供任何静态加密</strong>：bbolt 数据文件、WAL、快照文件均为明文落盘。Kubernetes SIG 2019 年安全审计明确写&quot;not encrypted at rest&quot;，加密职责上移到 kube-apiserver 层的 EncryptionConfiguration（aescbc/aesgcm/KMS v2 插件）。 <strong>选型含义</strong>：把 etcd 当通用 KV 用、且数据敏感时，必须自己在应用层加密或依赖磁盘加密；<code>etcdctl snapshot save</code> 产出的快照是明文 bbolt 文件，备份外泄=数据外泄。</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p>client 与 peer 通信均可配置 TLS，可开 mTLS（<code>--client-cert-auth</code>，以客户端证书 CN 作为用户名参与认证）。v3.6.13/3.6.14 连续修复了 CRL 绕过（GHSA-3wh4-j44w-pg92）与 TLS 握手无 deadline 导致 goroutine 耗尽的 DoS（GHSA-6vch-q96h-7gc3）。 <strong>机制一句话</strong>：Go 标准 TLS 栈，证书热加载支持有限，生产必须配齐双向 TLS，否则&quot;拿到证书=拿到全部数据&quot;。</p></div></div>

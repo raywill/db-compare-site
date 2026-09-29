@@ -80,7 +80,7 @@
 </table></div>
 </div>
 </section>
-<section class="doc-section"><h2><span data-zh="硬维度（19 项）" data-en="Hard dimensions (19)">硬维度（19 项）</span></h2>
+<section class="doc-section"><h2><span data-zh="硬维度（46 项）" data-en="Hard dimensions (46)">硬维度（46 项）</span></h2>
 <div class="lang-block lang-zh">
 <div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——EPAS/PGE 15+ 内核级 TDE（数据文件 + WAL + 查询临时文件，对应用透明；密钥可经 PGDATAKEYWRAPCMD/UNWRAPCMD 对接外部 KMS）；initdb 时决定，事后难改。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（2026-09-28 查阅）。</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——TLS/SSL（继承 PG 机制，<code>ssl=on</code> + 证书配置）。证据：<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>（PG 机制沿用），官方文档待逐项复核。</p></div></div>

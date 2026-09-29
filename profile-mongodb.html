@@ -80,7 +80,7 @@
 </table></div>
 </div>
 </section>
-<section class="doc-section"><h2><span data-zh="硬维度（19 项）" data-en="Hard dimensions (19)">硬维度（19 项）</span></h2>
+<section class="doc-section"><h2><span data-zh="硬维度（46 项）" data-en="Hard dimensions (46)">硬维度（46 项）</span></h2>
 <div class="lang-block lang-zh">
 <div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>。WiredTiger 引擎级静态加密（AES-256-GCM）为 <strong>Enterprise 版专属</strong>，社区版<strong>查证为无</strong>（不带 <code>--enableEncryption</code> 相关能力）；密钥管理支持 KMIP（企业版）与本地 keyfile；Atlas 托管默认落盘加密。客户端字段级加密 Queryable Encryption（7.0 起）是客户端侧能力，不分社区/企业（需 crypt_shared 库）。来源等级：官方文档</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。TLS/SSL 全链路支持（客户端↔mongos/mongod、副本集内部、备份传输）；自 3.6 起默认仅绑定 localhost，暴露公网需显式配置。来源等级：官方文档</p></div></div>

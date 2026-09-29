@@ -84,7 +84,7 @@
 </table></div>
 </div>
 </section>
-<section class="doc-section"><h2><span data-zh="硬维度（19 项）" data-en="Hard dimensions (19)">硬维度（19 项）</span></h2>
+<section class="doc-section"><h2><span data-zh="硬维度（46 项）" data-en="Hard dimensions (46)">硬维度（46 项）</span></h2>
 <div class="lang-block lang-zh">
 <div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>——10.1 起实例级静态加密：InnoDB 表空间（<code>innodb_encrypt_tables</code>）、redo log（<code>innodb_encrypt_log</code>）、临时文件、binlog（<code>encrypt_binlog</code>，10.5+）；插件式密钥管理：file_key_management（社区版自带，密钥存本地文件，合规性弱）/ AWS KMS 插件（企业版限定，GPL 与 AWS SDK 许可证冲突故社区二进制不分发）。<strong>备份文件本身的加密未找到证据</strong>，视为需外部手段解决。</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>——社区版原生 TLS，可按用户 <code>REQUIRE SSL/X509</code> 强制或全局 <code>require_secure_transport=ON</code>。</p></div></div>

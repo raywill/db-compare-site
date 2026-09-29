@@ -82,7 +82,7 @@
 </table></div>
 </div>
 </section>
-<section class="doc-section"><h2><span data-zh="硬维度（19 项）" data-en="Hard dimensions (19)">硬维度（19 项）</span></h2>
+<section class="doc-section"><h2><span data-zh="硬维度（46 项）" data-en="Hard dimensions (46)">硬维度（46 项）</span></h2>
 <div class="lang-block lang-zh">
 <div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-tbd">未找到证据</span></h3><div class="dim-body"><p><strong>未找到证据</strong>——本轮未找到开源 Milvus 内核级 TDE（数据文件落盘加密）的可靠官方证据；数据实际落在对象存储、etcd、消息队列，可依赖 S3 / MinIO / 磁盘 / KMS 等基础设施层加密，但这不能称为 Milvus 的产品能力。证据：本轮官方文档检索无结果（待复核）。</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——支持客户端 TLS、双向 TLS（mTLS）及内部组件间 TLS。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（adminGuide/tls.md）。</p></div></div>

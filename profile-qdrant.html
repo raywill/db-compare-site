@@ -84,7 +84,7 @@
 </table></div>
 </div>
 </section>
-<section class="doc-section"><h2><span data-zh="硬维度（19 项）" data-en="Hard dimensions (19)">硬维度（19 项）</span></h2>
+<section class="doc-section"><h2><span data-zh="硬维度（46 项）" data-en="Hard dimensions (46)">硬维度（46 项）</span></h2>
 <div class="lang-block lang-zh">
 <div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-no">查证为无</span></h3><div class="dim-body"><p><strong>查证为无</strong>——官方安全文档的安全能力清单为 TLS、API key、JWT RBAC、审计日志，未提供落盘文件/快照的透明加密配置；开源内核无 TDE 证据，静态数据保护依赖操作系统或云盘卷级加密。Qdrant Cloud 官方文档称其集群使用加密存储磁盘（托管基础设施层能力，不等于数据库内核 TDE）。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（查证为无）+ 官方口径（Cloud）。</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——v1.2.0 起支持；REST 与 gRPC 共用 <code>service.enable_tls</code> 开关，集群内部 P2P 另有 <code>cluster.p2p.enable_tls</code> 可独立开启；默认连接不加密，生产必须显式开启。REST 证书支持运行时定期刷新（gRPC 是否同样支持以官方文档原文为准，本轮未核实）。证据：官方安全文档。</p></div></div>

@@ -86,7 +86,7 @@
 </table></div>
 </div>
 </section>
-<section class="doc-section"><h2><span data-zh="硬维度（19 项）" data-en="Hard dimensions (19)">硬维度（19 项）</span></h2>
+<section class="doc-section"><h2><span data-zh="硬维度（46 项）" data-en="Hard dimensions (46)">硬维度（46 项）</span></h2>
 <div class="lang-block lang-zh">
 <div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。信封加密——每文件唯一 DEK 加密数据，universe key 加密 DEK；OSS 自建版用 <code>openssl rand</code> 生成密钥经 <code>yb-admin</code> 启用，密钥只驻内存不落盘，新 flush/compaction 生效、老数据后台逐步重写加密；Anywhere 增加主密钥层（CMK），支持 AWS KMS / GCP KMS / Azure Key Vault / HashiCorp Vault，支持密钥轮换。YSQL 与 YCQL 无差异（加密在 DocDB 存储层）。<strong>WAL 是否独立加密官方文档未明确——待验证</strong>。</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。分 Node-to-Node TLS 与 Client-to-Node TLS（YSQL/YCQL）；<strong>默认关闭</strong>，开启/关闭需全节点重启（有短暂停机）；Anywhere 支持自签 CA / 上传 CA / Vault PKI / K8s cert-manager，到期前 30 天告警、可轮换。</p></div></div>

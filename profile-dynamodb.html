@@ -84,7 +84,7 @@
 </table></div>
 </div>
 </section>
-<section class="doc-section"><h2><span data-zh="硬维度（19 项）" data-en="Hard dimensions (19)">硬维度（19 项）</span></h2>
+<section class="doc-section"><h2><span data-zh="硬维度（46 项）" data-en="Hard dimensions (46)">硬维度（46 项）</span></h2>
 <div class="lang-block lang-zh">
 <div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。所有表默认 AES-256 落盘加密；三档：AWS owned key（默认）、AWS managed key（<code>aws/dynamodb</code>）、customer managed KMS key（自带轮换策略、CloudTrail 审计密钥使用）。注意：AWS owned key 无可见性，合规场景必须显式切 CMK。</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。所有 API 走 HTTPS/TLS；SDK 默认；支持 VPC endpoint 私有访问不走公网。</p></div></div>

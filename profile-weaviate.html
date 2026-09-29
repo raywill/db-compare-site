@@ -78,7 +78,7 @@
 </ul>
 </div>
 </section>
-<section class="doc-section"><h2><span data-zh="硬维度（19 项）" data-en="Hard dimensions (19)">硬维度（19 项）</span></h2>
+<section class="doc-section"><h2><span data-zh="硬维度（46 项）" data-en="Hard dimensions (46)">硬维度（46 项）</span></h2>
 <div class="lang-block lang-zh">
 <div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-no">查证为无</span></h3><div class="dim-body"><p><strong>查证为无</strong>——自建 Weaviate 内核没有透明数据加密（TDE）或 KMS 密钥轮换的原生能力，官方文档中没有对应配置项；第三方安全调研仅在托管云部署一侧记录 AES-256 与 BYOK（托管云限定），那是云基础设施层的能力，不是数据库内核 TDE；备份落到对象存储时可用 S3/GCS/Azure 自带的服务端加密，同样不是数据库 TDE。（官方文档无相关配置；第三方安全调研）</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——Weaviate Cloud 提供 HTTPS/TLS 终端（HTTP 与 gRPC 均走 443/TLS）（官方文档；社区实测）；自建部署的 TLS 终止发生在反向代理/Ingress 层（社区部署普遍用 Nginx/Caddy/Traefik 做 TLS 终止），未找到服务端原生 TLS 监听的官方证据。（社区实测；官方文档部分覆盖）</p></div></div>

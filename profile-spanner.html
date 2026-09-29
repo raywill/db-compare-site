@@ -80,7 +80,7 @@
 </table></div>
 </div>
 </section>
-<section class="doc-section"><h2><span data-zh="硬维度（19 项）" data-en="Hard dimensions (19)">硬维度（19 项）</span></h2>
+<section class="doc-section"><h2><span data-zh="硬维度（46 项）" data-en="Hard dimensions (46)">硬维度（46 项）</span></h2>
 <div class="lang-block lang-zh">
 <div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-yes">有全量落盘数据默认由 Google</span></h3><div class="dim-body"><p>有 全量落盘数据默认由 Google 管理的密钥加密（Google default encryption），无需用户配置；可选用 <strong>CMEK</strong>（Cloud KMS 客户管理密钥，支持手动创建与 Autokey、外部密钥管理 EKM），备份同样加密。启用 CMEK 对性能与 SLA&quot;无影响&quot;（官方口径）。密钥可轮换、禁用、销毁；KMS API 操作可进审计日志。</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有GCP 服务间默认 TLS</span></h3><div class="dim-body"><p>有 GCP 服务间默认 TLS；客户端库走 gRPC + TLS；PGAdapter 支持 SSL 连接。查证为&quot;默认启用&quot;，无&quot;明文模式&quot;可配项。</p></div></div>

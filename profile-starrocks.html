@@ -82,7 +82,7 @@
 </table></div>
 </div>
 </section>
-<section class="doc-section"><h2><span data-zh="硬维度（19 项）" data-en="Hard dimensions (19)">硬维度（19 项）</span></h2>
+<section class="doc-section"><h2><span data-zh="硬维度（46 项）" data-en="Hard dimensions (46)">硬维度（46 项）</span></h2>
 <div class="lang-block lang-zh">
 <div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——<code>enable_transparent_data_encryption</code>（BE 静态参数，v3.3.1 / v3.4.0 / v3.5.0 / v4.0.0 起引入）：开启后新写入的存储对象（segment、delete/update 文件、lake SST、persistent index 等）落盘加密，密钥经 KEK / KeyCache 管理。<strong>边缘</strong>：默认关闭；必须在部署前开启、运行期不可动态修改；FE 与 BE 的加密开关必须一致，否则 BE 在心跳时直接 abort（LOG(FATAL)）；仅覆盖&quot;开启后新写入&quot;的对象，老数据需重写才加密；WAL / 临时文件 / 备份的覆盖边界未找到明确证据。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（BE 参数文档）。</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——v3.4 起支持 MySQL 协议链路的 SSL（fe.conf <code>ssl_force_secure_transport=true</code> 可强制，客户端不用加密会被 5205 拒绝）；Stream Load 可走 HTTPS。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（v3.4 release notes、SSL 配置文档）。</p></div></div>

@@ -86,7 +86,7 @@
 </table></div>
 </div>
 </section>
-<section class="doc-section"><h2><span data-zh="硬维度（19 项）" data-en="Hard dimensions (19)">硬维度（19 项）</span></h2>
+<section class="doc-section"><h2><span data-zh="硬维度（46 项）" data-en="Hard dimensions (46)">硬维度（46 项）</span></h2>
 <div class="lang-block lang-zh">
 <div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。MySQL 版：实例级 TDE（控制台/API <code>UpdateDBInstanceTDE</code> 开启），8.0 引擎自 8.0.1.1.15 起支持&quot;新建表自动加密&quot;；一表空间级透明加密，密钥由阿里云 KMS 产生和管理，应用无感，开启后数据文件落盘加密、读入内存解密，不改变数据文件大小。PG/Oracle 版：仅支持<strong>创建集群时</strong>开启，开通后无法关闭；对数据文件执行实时 I/O 加密；KMS 密钥管理，<strong>支持阿里云自动生成密钥，也支持 BYOK（自带密钥材料再授权 PolarDB 使用）</strong>。限制：源 RDS 若开启 TDE/SSL 则无法使用&quot;一键升级至 PolarDB&quot;（官方文档前提条件）。<span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>：MySQL 版 BYOK 支持情况（未找到证据）；WAL/redo、临时文件、备份文件的加密范围（未找到官方证据）；PG 版 I/O 密集场景性能影响（官方注意事项有提及，量化待验证）。</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p>MySQL <strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>——2020-02-11 起主地址支持 SSL 加密传输，可按需开启；开启会增加网络连接响应时间（官方说明）；API <code>UpdateDBInstanceSSL</code>。PG <strong>有</strong>（官方 API 文档）——<code>ModifyDBClusterSSL</code> 支持设置集群 SSL 的开通/关闭/更新 CA 证书。Oracle 版：<strong>未找到证据</strong>——没查到 PolarDB-O 的 SSL 设置文档，待验证。</p></div></div>
