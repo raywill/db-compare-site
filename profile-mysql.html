@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>MySQL - DB 选型参考</title>
+<link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">&#9672;</span> DB <span data-zh="选型参考" data-en="Compare">选型参考</span></a>
+    <nav class="mainnav">
+<a href="index.html" class="active" data-zh="首页" data-en="Home">首页</a>
+<a href="compare.html" class="" data-zh="维度对比" data-en="Compare">维度对比</a>
+<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
+<a href="advisor.html" class="" data-zh="AI选型" data-en="AI Selection">AI选型</a>
+    </nav>
+    <div class="cmp-tray">
+      <button id="cmp-tray-btn" type="button" class="tray-btn" aria-expanded="false" aria-haspopup="true"><span data-zh="对比" data-en="Compare">对比</span> <b class="tray-count"><i id="cmp-count">0</i>/4</b></button>
+      <div id="cmp-panel" class="tray-panel" hidden>
+        <div class="tray-sec"><span data-zh="已选" data-en="Selected">已选</span></div>
+        <div id="cmp-selected" class="tray-selected"></div>
+        <div class="tray-sec"><span data-zh="全部产品（最多选 4 款）" data-en="All products (up to 4)">全部产品（最多选 4 款）</span></div>
+        <div id="cmp-list" class="tray-list"></div>
+        <div class="tray-actions"><button id="cmp-clear" type="button" class="tray-clear"><span data-zh="清空选择" data-en="Clear selection">清空选择</span></button></div>
+      </div>
+    </div>
+    <button id="lang-toggle" class="lang-btn" type="button" aria-label="switch language">EN</button>
+  </div>
+</header>
+<main class="page">
+<div class="profile-hero">
+  <a class="back" href="index.html"><span data-zh="← 返回首页" data-en="← Back to home">← 返回首页</span></a>
+  <h1>MySQL</h1>
+  <div class="meta-row"><span class="cat cat-oltp" data-zh="关系型 OLTP" data-en="Relational OLTP">关系型 OLTP</span> </div>
+  <p class="oneliner"><div class="lang-block lang-zh">
+<p>MySQL Server（Oracle 旗下开源关系型数据库）</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<p>MySQL Server (open-source relational database under Oracle)</p>
+</div></p>
+  <div class="ai-dive-row" data-product="MySQL">
+    <span class="ai-dive-label" data-zh="用 AI 深挖这款：" data-en="Deep-dive with AI:">用 AI 深挖这款：</span>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('chatgpt', this)">ChatGPT <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('grok', this)">Grok <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('claude', this)">Claude <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn addcmp-btn" data-addcmp="mysql"><span class="addcmp-label">＋ 对比</span></button>
+  </div>
+  <div class="legend"><span class="legend-label" data-zh="证据等级：" data-en="Evidence levels: ">证据等级：</span><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></div>
+</div>
+<section class="doc-section">
+<h2><span data-zh="基本信息" data-en="Basics">基本信息</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>项</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td>全称</td><td>MySQL Server（Oracle 旗下开源关系型数据库）</td></tr>
+<tr><td>当前稳定线</td><td>8.4.x（首个 LTS）、9.7.x（2026-04 起第二个 LTS）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></td></tr>
+<tr><td>版本策略</td><td>自 2023 年起双线：LTS（约每 2 年一版，Premier 5 年 + Extended 3 年；同一 LTS 内功能与数据格式冻结，支持原地升级/降级）与 Innovation（快速迭代、短支持周期）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></td></tr>
+<tr><td>存储引擎</td><td>InnoDB 为默认引擎（事务、MVCC、行锁、崩溃恢复）；另有 MyISAM（遗留）、NDB（MySQL Cluster 独立产品）等</td></tr>
+<tr><td>许可证</td><td>Community 版 GPLv2；MySQL Enterprise Edition 商业订阅；云服务 MySQL HeatWave（OCI/AWS）</td></tr>
+<tr><td>协议</td><td>MySQL 协议（wire protocol），事实上的生态标准</td></tr>
+</tbody>
+</table></div>
+<p><strong>版本线索（截至 2026-09-29 查阅）：</strong></p>
+<ul>
+<li>8.0 → 8.4 → 9.7 为 LTS 升级路径；8.0 据社区资料于 <strong>2026-04-30</strong> 结束常规支持（EOL），进入 Sustaining Support <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>（正式措辞待官方页复核）。</li>
+<li>有第三方资料称 9.7 之后 Oracle 改用日历版本号（如 26.7 Innovation），但本档案评审 8.x/9.x，统一以 <strong>9.7 LTS</strong> 为评审版本；日历版本变化标 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>，不写死。</li>
+<li>8.4 中 <code>mysqlpump</code> 二进制不再发布、<code>SHOW SLAVE STATUS</code>/<code>CHANGE MASTER TO</code> 被移除（统一为 <code>REPLICA</code>/<code>SOURCE</code> 术语）、<code>expire_logs_days</code> 被移除（改用 <code>binlog_expire_logs_seconds</code>）、<code>binlog_format</code> 仅支持 ROW、TLS 1.0/1.1 被移除 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>（多份升级检查清单一致指向）。</li>
+</ul>
+<hr/>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Item</th><th>Content</th></tr></thead>
+<tbody>
+<tr><td>Full name</td><td>MySQL Server (open-source relational database under Oracle)</td></tr>
+<tr><td>Current stable lines</td><td>8.4.x (first LTS), 9.7.x (second LTS since 2026-04) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></td></tr>
+<tr><td>Release policy</td><td>Since 2023, two tracks: LTS (roughly one release every 2 years; Premier 5 years + Extended 3 years; features and data format frozen within a single LTS, supporting in-place upgrade/downgrade) and Innovation (fast iteration, short support window) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></td></tr>
+<tr><td>Storage engines</td><td>InnoDB is the default engine (transactions, MVCC, row locks, crash recovery); also MyISAM (legacy), NDB (separate MySQL Cluster product), etc.</td></tr>
+<tr><td>License</td><td>Community edition under GPLv2; MySQL Enterprise Edition commercial subscription; cloud service MySQL HeatWave (OCI/AWS)</td></tr>
+<tr><td>Protocol</td><td>MySQL protocol (wire protocol), the de facto ecosystem standard</td></tr>
+</tbody>
+</table></div>
+<p><strong>Version notes (as checked on 2026-09-29):</strong></p>
+<ul>
+<li>8.0 → 8.4 → 9.7 is the LTS upgrade path; 8.0 reached end of regular support (EOL) on <strong>2026-04-30</strong> per community sources and entered Sustaining Support <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> (official wording pending verification against the official page).</li>
+<li>Some third-party sources say Oracle switched to calendar versioning after 9.7 (e.g., 26.7 Innovation), but this profile reviews the 8.x/9.x lines and treats <strong>9.7 LTS</strong> as the reviewed version; the calendar-versioning change is marked <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span> and not stated as fact.</li>
+<li>In 8.4, the <code>mysqlpump</code> binary is no longer shipped, <code>SHOW SLAVE STATUS</code> / <code>CHANGE MASTER TO</code> were removed (unified under the <code>REPLICA</code>/<code>SOURCE</code> terminology), <code>expire_logs_days</code> was removed (replaced by <code>binlog_expire_logs_seconds</code>), <code>binlog_format</code> supports only ROW, and TLS 1.0/1.1 were removed <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> (multiple upgrade checklists agree on this).</li>
+</ul>
+<hr/>
+</div>
+</section>
+<section class="doc-section"><h2><span data-zh="硬维度（14 项）" data-en="Hard dimensions (14)">硬维度（14 项）</span></h2>
+<div class="lang-block lang-zh">
+<div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>有：InnoDB 表空间静态加密，两级密钥结构（tablespace key 存于表空间头部，由 master key 加密；支持主密钥轮换）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。覆盖范围：表空间、doublewrite、系统表空间、redo、undo；binlog/relay log、审计日志加密需分别配置 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>所有 Edition（含社区版）都有本地文件型 keyring（<code>component_keyring_file</code>/<code>keyring_file</code>）；Enterprise 额外提供加密密码保护文件、KMIP、Oracle Key Vault、AWS KMS 等 keyring 后端 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>社区版具备表空间加密，但<strong>本地文件 keyring 不等于合规级外部 KMS/HSM</strong>；密钥丢失即数据不可恢复 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>TDE 不保护运行中内存、授权 SQL 用户或传输中的数据 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>云托管注意：RDS/Aurora MySQL 不支持 MySQL 原生 keyring/TDE，改用云盘 KMS 加密替代——这是云方案差异，不是 MySQL 内核缺陷 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>支持 TLS 连接、证书与 cipher 配置；MySQL 8.4 移除了 TLS 1.0/1.1 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li><code>caching_sha2_password</code> 的完整认证流程需要安全连接（TLS）或 RSA 密钥交换，否则老客户端可能连不上——这是 8.0→8.4 升级最常见的连接中断原因之一 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> 审计 <span class="verdict v-partial">部分支持（企业版分水岭）</span></h3><div class="dim-body"><ul>
+<li><strong>Enterprise Audit 插件（<code>audit_log</code>）仅限商业版</strong>；社区版没有官方审计插件 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>社区替代方案：general log（性能开销大，不适合生产常开）、binlog（只记录变更不记录读）、Percona Server 自带的免费 Audit Log Plugin（配置键与官方不同）<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>结论：合规审计需求在社区版是&quot;能凑合但不体面&quot;，企业版才有一等公民方案。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> 认证与权限 <span class="verdict v-yes">有（部分企业版功能缺失）</span></h3><div class="dim-body"><ul>
+<li>有：<code>caching_sha2_password</code>（8.0 起默认）、角色（Role）、动态权限（SUPER 被拆分为 <code>SYSTEM_VARIABLES_ADMIN</code> 等细粒度权限）<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>8.4 起 <code>mysql_native_password</code> 默认禁用（独立动态插件，需显式 <code>--mysql-native-password=ON</code> 启用），老客户端升级后连不上是第一大坑 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>企业版独占：PAM、LDAP、Kerberos 认证；FIDO 认证在 8.4 被移除 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li><strong>缺失：行级安全（Row-Level Security）</strong>。MySQL 没有 PG 式的 RLS，只能靠视图/应用层实现多租户隔离 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> 备份恢复 <span class="verdict v-yes">有（工具链完整但层级分明）</span></h3><div class="dim-body"><div class="table-wrap"><table>
+<thead><tr><th>工具</th><th>类型</th><th>适用</th><th>备注</th></tr></thead>
+<tbody>
+<tr><td><code>mysqldump</code></td><td>逻辑</td><td>&lt;10GB、小库、跨版本迁移</td><td>单线程；大库备份慢、恢复更慢 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></td></tr>
+<tr><td>MySQL Shell dump/load</td><td>逻辑并行</td><td>10GB+</td><td><code>mysqlpump</code> 已在 8.4 移除，官方推荐改用它 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></td></tr>
+<tr><td>Percona XtraBackup</td><td>物理热备</td><td>大库生产</td><td>免费开源、增量、恢复快；社区版事实标准 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></td></tr>
+<tr><td>MySQL Enterprise Backup</td><td>物理热备</td><td>大库生产</td><td>商业版独占 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></td></tr>
+<tr><td>Clone 插件</td><td>物理克隆</td><td>快速建从库/测试环境</td><td>内建，支持本地与远程克隆 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></td></tr>
+</tbody>
+</table></div>
+<ul>
+<li>PITR：全备 + binlog 回放实现；需要 <code>log_bin</code> 开启并保留 binlog（8.4 用 <code>binlog_expire_logs_seconds</code> 控制过期）<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>深水点：<strong>备份≠恢复能力</strong>。逻辑备份恢复是单线程回放 SQL，大库 RTO 以小时计；物理备份需 <code>--prepare</code>；从没做过恢复演练的备份只是愿望 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> 大版本升级 <span class="verdict v-yes">有（LTS 线内顺滑，跨线有坑）</span></h3><div class="dim-body"><ul>
+<li>机制：同一 LTS 内功能/数据格式冻结，支持原地升级与降级；8.0→8.4→9.7 为官方 LTS 升级路径 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>官方升级检查工具：MySQL Shell 的 <code>util.checkForServerUpgrade()</code>，升级前必跑 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>8.0→8.4 真实踩坑清单（多份社区升级指南一致）：<ol>
+<li><code>mysql_native_password</code> 默认禁用 → 老客户端/旧账号连不上；</li>
+<li>被移除的系统变量（<code>expire_logs_days</code>、<code>innodb_log_file_size</code> 等）若还写在配置文件里，<strong>服务器拒绝启动</strong>；</li>
+<li><code>binlog_format</code> 仅 ROW；<code>mysqlpump</code> 移除；TLS 1.0/1.1 移除；</li>
+<li>升级顺序：<strong>先升级从库再升级主库</strong>（新主→旧从的复制不受支持）；</li>
+<li>升级前 <code>innodb_fast_shutdown=0</code> 做干净关闭。</li>
+</ol></li>
+<li>回退边界：<strong>in-place 大版本升级不可逆</strong>。回退靠升级前全备、或先在克隆实例上 dry-run <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> 可观测性 <span class="verdict v-yes">有（内建强，但有&quot;可观测性税&quot;）</span></h3><div class="dim-body"><ul>
+<li>有：<code>performance_schema</code> + <code>sys</code> schema（SQL digest、等待事件、锁、IO、线程）、慢查询日志、<code>SHOW ENGINE INNODB STATUS</code>、<code>data_locks</code>/<code>data_lock_waits</code>、<code>EXPLAIN ANALYZE</code> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>税：默认 instrument 集通常适合生产；<strong>全开所有 instrument/consumer 会产生可测开销</strong>。LINE 旧实测在特定 sysbench 场景下全开约降 TPS 15%——必须强调这是<strong>旧版特定负载的社区实测，不能推广为固定数字</strong> <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
+<li>慢日志阈值设太低会产生明显 IO 开销；<code>EXPLAIN ANALYZE</code> 会<strong>真实执行</strong>语句，写语句不能当无副作用诊断用 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>正确姿势：选择性启用 + 事故期间临时放大采集。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> 连接模型 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>默认 <strong>thread-per-connection</strong>：每个连接一个 OS 线程；<code>max_connections</code> 默认 151 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li><strong>线程池（Thread Pool）插件仅限 Enterprise</strong>；Percona Server 提供免费的 <code>thread_pool</code> 插件作为替代 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>深水点：每个连接的内存成本是真实的（<code>sort_buffer_size</code>、<code>join_buffer_size</code> 等按连接分配）；社区有&quot;1000 连接 × 256MB sort buffer = 256GB 上限&quot;的经典算式 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。连接风暴下线程上下文切换会拖垮实例，生产标准做法是前面加连接池（ProxySQL / MySQL Router / 应用侧有界池），池大小一般取 <code>max_connections - 10</code>（留 10 给管理和复制）<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> 事务与隔离级别 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>默认 <code>REPEATABLE READ</code>，InnoDB 用 record lock + gap lock + next-key lock 防幻读 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li><strong>不同键的 INSERT 也可能死锁</strong>（落在同一 gap、唯一性检查、加锁顺序不同）；缺索引的 UPDATE/DELETE 会扫描逐行加锁（不是&quot;锁升级&quot;，而是大量行锁）<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>死锁自动检测并回滚一个 victim（错误 1213），应用必须捕获并<strong>重试整个事务</strong>；1205 是锁等待超时，与死锁不同 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>降到 READ COMMITTED 能减少大部分 gap 锁，但消灭不了锁顺序、唯一键、外键导致的死锁 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>长事务/大事务见深水区。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> 复制与一致性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>默认<strong>异步复制</strong>：主库提交不等从库，切主可能丢未应用事务，RPO &gt; 0 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>GTID + <code>SOURCE_AUTO_POSITION=1</code> 简化从库重定位，但 <strong>GTID 不是零丢失保证</strong>；提升从库前仍要比对 <code>Executed_Gtid_Set</code> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>半同步 <code>AFTER_SYNC</code>：用约一次网络 RTT 换已确认提交的更强持久性；<code>AFTER_COMMIT</code> 不能等同无丢失 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>Group Replication：内置复制组/故障转移；但认证过程<strong>不考虑 gap 锁</strong>（多主模式官方推荐 READ COMMITTED）、有事务大小限制、要求表有主键（无主键表在组内不可写）、InnoDB Cluster 官方明确<strong>只适合局域网</strong>（跨 WAN 写性能明显受损），多数据中心用 InnoDB ClusterSet（异步链路）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>读扩展：从库只扩读不扩写；<code>Seconds_Behind_Source</code> 有空闲重置等盲区，社区建议用 heartbeat/GTID 交叉监控 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> 扩展方式 <span class="verdict v-partial">部分支持（无原生自动分片）</span></h3><div class="dim-body"><ul>
+<li>纵向：单机 scale-up（大内存、大 NVMe 是 MySQL 的舒适区）。</li>
+<li>横向读：异步从库、Group Replication、InnoDB Cluster。</li>
+<li>横向写：<strong>原生无自动分片</strong>。靠 Vitess / ShardingSphere / ProxySQL 等中间件，或应用层分片 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>NDB Cluster（MySQL Cluster）是独立产品，内存-centric、运维小众，不计入常规选型 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> 兼容性 <span class="verdict v-yes">有（协议是事实标准，但家族已分化）</span></h3><div class="dim-body"><ul>
+<li>MySQL 协议 + SQL 方言是生态事实标准：驱动、ORM、工具链最全 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>分化现实：MariaDB 已走远（GTID、系统表、优化器行为多处不兼容）；Aurora MySQL 线路兼容但存储引擎完全不同（故障行为、性能特征不能直接套用）；Percona Server 紧跟上游、基本可视为&quot;MySQL+补丁&quot; <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> 许可证与商业模式 <span class="verdict v-yes">有（双轨清晰）</span></h3><div class="dim-body"><ul>
+<li>Community：GPLv2，功能完整但无官方审计/线程池/企业级 keyring 后端/PAM-LDAP/商业备份工具 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>Enterprise Edition：商业订阅，含上述企业插件 + MySQL Enterprise Monitor + 官方支持（LTS：Premier 5 年 + Extended 3 年）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>云：MySQL HeatWave（OCI/AWS 上的托管 MySQL + 内存加速/Lakehouse），Oracle 的云叙事主力 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> 中文资料丰富度 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>官方文档无中文版 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>（未找到官方中文文档证据，标&quot;查证为无&quot;而非&quot;未找到&quot;需再确认，暂标待验证）。</li>
+<li>中文社区资料丰富（博客、专栏、翻译），但版本滞后于 8.4/9.x 新特性是常态 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul>
+<hr/></div></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-neutral">Partially supporte</span></h3><div class="dim-body"><ul>
+<li>Supported: InnoDB tablespace data-at-rest encryption with a two-level key hierarchy (tablespace key stored in the tablespace header, encrypted by the master key; master key rotation supported) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. Coverage: tablespaces, doublewrite, system tablespace, redo, undo; binlog/relay log and audit log encryption each require separate configuration <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>All editions (including Community) ship a local file-based keyring (<code>component_keyring_file</code> / <code>keyring_file</code>); Enterprise additionally provides encrypted password-protected key files, KMIP, Oracle Key Vault, AWS KMS and other keyring backends <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Community Edition has tablespace encryption, but <strong>a local file keyring is not a compliance-grade external KMS/HSM</strong>; losing the key means the data is unrecoverable <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>TDE does not protect in-memory data, authorized SQL users, or data in transit <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Cloud hosting caveat: RDS/Aurora MySQL do not support MySQL&#x27;s native keyring/TDE and instead use cloud-disk KMS encryption — this is a cloud-offering difference, not a MySQL kernel deficiency <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / transport encryption <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><ul>
+<li>TLS connections supported, with certificate and cipher configuration; MySQL 8.4 removed TLS 1.0/1.1 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>The full <code>caching_sha2_password</code> authentication flow requires a secure connection (TLS) or RSA key exchange; otherwise older clients may fail to connect — one of the most common causes of connection breakage when upgrading from 8.0 to 8.4 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> Auditing <span class="verdict v-neutral">Partially supporte</span></h3><div class="dim-body"><ul>
+<li><strong>The Enterprise Audit plugin (<code>audit_log</code>) is commercial-only</strong>; Community Edition has no official audit plugin <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Community alternatives: the general log (heavy performance overhead, unsuitable to leave on in production), binlog (records writes only, not reads), Percona Server&#x27;s free built-in Audit Log Plugin (configuration keys differ from the official one) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Conclusion: for compliance auditing, Community Edition is &quot;workable but undignified&quot;; only Enterprise has a first-class solution.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> Authentication &amp; authorization <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><ul>
+<li>Supported: <code>caching_sha2_password</code> (default since 8.0), roles, dynamic privileges (SUPER split into fine-grained privileges such as <code>SYSTEM_VARIABLES_ADMIN</code>) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Since 8.4, <code>mysql_native_password</code> is disabled by default (separate dynamic plugin, requires explicit <code>--mysql-native-password=ON</code> to enable); old clients failing to connect after upgrade is the #1 pitfall <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Enterprise-only: PAM, LDAP, Kerberos authentication; FIDO authentication was removed in 8.4 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li><strong>Missing: row-level security (RLS)</strong>. MySQL has no PG-style RLS; multi-tenant isolation can only be implemented via views or the application layer <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> Backup &amp; recovery <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><div class="table-wrap"><table>
+<thead><tr><th>Tool</th><th>Type</th><th>Suitable for</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td><code>mysqldump</code></td><td>Logical</td><td>&lt;10GB, small DBs, cross-version migration</td><td>Single-threaded; slow backup, even slower restore for large DBs <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></td></tr>
+<tr><td>MySQL Shell dump/load</td><td>Parallel logical</td><td>10GB+</td><td><code>mysqlpump</code> was removed in 8.4; this is the officially recommended replacement <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></td></tr>
+<tr><td>Percona XtraBackup</td><td>Physical hot backup</td><td>Large production DBs</td><td>Free, open source, incremental, fast restore; the de facto standard for Community Edition <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></td></tr>
+<tr><td>MySQL Enterprise Backup</td><td>Physical hot backup</td><td>Large production DBs</td><td>Commercial-only <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></td></tr>
+<tr><td>Clone plugin</td><td>Physical clone</td><td>Fast replica provisioning / test environments</td><td>Built in, supports local and remote cloning <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></td></tr>
+</tbody>
+</table></div>
+<ul>
+<li>PITR: full backup + binlog replay; requires <code>log_bin</code> enabled and binlogs retained (expiration controlled by <code>binlog_expire_logs_seconds</code> in 8.4) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Deep-water point: <strong>backup ≠ recovery capability</strong>. Logical backup restore is single-threaded SQL replay; for large DBs, RTO is measured in hours; physical backups require <code>--prepare</code>; a backup that has never been through a restore drill is just a wish <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> Major-version upgrades <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><ul>
+<li>Mechanism: within a single LTS, features/data format are frozen, supporting in-place upgrade and downgrade; 8.0→8.4→9.7 is the official LTS upgrade path <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Official pre-upgrade checker: MySQL Shell&#x27;s <code>util.checkForServerUpgrade()</code> — mandatory before upgrading <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Real-world 8.0→8.4 pitfall checklist (consistent across multiple community upgrade guides):<ol>
+<li><code>mysql_native_password</code> disabled by default → old clients/accounts can&#x27;t connect;</li>
+<li>Removed system variables (<code>expire_logs_days</code>, <code>innodb_log_file_size</code>, etc.) still present in the config file will cause the <strong>server to refuse to start</strong>;</li>
+<li><code>binlog_format</code> supports ROW only; <code>mysqlpump</code> removed; TLS 1.0/1.1 removed;</li>
+<li>Upgrade order: <strong>replicas first, then the primary</strong> (replication from a new primary to an old replica is unsupported);</li>
+<li>Before upgrading, do a clean shutdown with <code>innodb_fast_shutdown=0</code>.</li>
+</ol></li>
+<li>Rollback boundary: <strong>in-place major upgrades are irreversible</strong>. Roll back via a pre-upgrade full backup, or dry-run on a cloned instance first <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> Observability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><ul>
+<li>Available: <code>performance_schema</code> + <code>sys</code> schema (SQL digest, wait events, locks, IO, threads), slow query log, <code>SHOW ENGINE INNODB STATUS</code>, <code>data_locks</code> / <code>data_lock_waits</code>, <code>EXPLAIN ANALYZE</code> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>The tax: the default instrument set is generally production-safe; <strong>enabling all instruments/consumers produces measurable overhead</strong>. LINE&#x27;s old benchmark saw roughly a 15% TPS drop with everything enabled in a specific sysbench scenario — this is a <strong>community-tested result on an old version under a specific workload and must not be generalized into a fixed number</strong> <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>.</li>
+<li>Setting the slow-log threshold too low produces significant IO overhead; <code>EXPLAIN ANALYZE</code> <strong>actually executes</strong> the statement — it cannot be used as a side-effect-free diagnostic for writes <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Correct posture: selective enablement normally, temporarily widened collection during incidents.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> Connection model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><ul>
+<li>Default <strong>thread-per-connection</strong>: one OS thread per connection; <code>max_connections</code> defaults to 151 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>The <strong>Thread Pool plugin is Enterprise-only</strong>; Percona Server provides a free <code>thread_pool</code> plugin as an alternative <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Deep-water point: per-connection memory cost is real (<code>sort_buffer_size</code>, <code>join_buffer_size</code>, etc. are allocated per connection); the community&#x27;s classic formula is &quot;1000 connections × 256MB sort buffer = 256GB upper bound&quot; <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>. Under connection storms, thread context switching drags the instance down; the production standard is a connection pooler in front (ProxySQL / MySQL Router / bounded application-side pools), with pool size typically set to <code>max_connections - 10</code> (reserving 10 for management and replication) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> Transactions &amp; isolation levels <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><ul>
+<li>Default <code>REPEATABLE READ</code>; InnoDB uses record locks + gap locks + next-key locks to prevent phantom reads <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li><strong>INSERTs on different keys can also deadlock</strong> (insert intention checks the gap for locks, uniqueness checks take record locks, and reversed lock acquisition order forms a cycle); UPDATE/DELETE without an index locks row by row during the scan (not &quot;lock escalation&quot;, but a large number of row locks) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Deadlock auto-detection rolls back one victim (error 1213); applications must catch it and <strong>retry the entire transaction</strong>; 1205 is lock wait timeout, different from deadlock <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Dropping to READ COMMITTED eliminates most gap locks, but cannot eliminate deadlocks caused by lock ordering, unique keys, or foreign keys <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Long/large transactions: see Deep Dives.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> Replication &amp; consistency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><ul>
+<li>Default <strong>asynchronous replication</strong>: the primary commits without waiting for replicas; failover can lose unapplied transactions, RPO &gt; 0 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>GTID + <code>SOURCE_AUTO_POSITION=1</code> simplifies replica re-pointing, but <strong>GTID is not a zero-loss guarantee</strong>; compare <code>Executed_Gtid_Set</code> before promoting a replica <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Semi-sync <code>AFTER_SYNC</code>: trades roughly one network RTT for a stronger durability guarantee of acknowledged commits; <code>AFTER_COMMIT</code> is not equivalent to zero loss <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Group Replication: built-in replication group / failover; but the certification process <strong>does not see gap locks</strong> (multi-primary mode officially recommends READ COMMITTED), has transaction size limits, requires tables to have primary keys (tables without PKs are not writable inside a group), InnoDB Cluster is officially <strong>LAN-only</strong> (cross-WAN writes suffer noticeably), and multi-datacenter deployments should use InnoDB ClusterSet (async links) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Read scale-out: replicas scale reads only, not writes; <code>Seconds_Behind_Source</code> has blind spots such as idle resets, and the community recommends cross-checking with heartbeat/GTID monitoring <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> Scaling <span class="verdict v-no">no native auto-sharding</span></h3><div class="dim-body"><ul>
+<li>Vertical: single-node scale-up (big memory, big NVMe is MySQL&#x27;s comfort zone).</li>
+<li>Horizontal read: async replicas, Group Replication, InnoDB Cluster.</li>
+<li>Horizontal write: <strong>no native auto-sharding</strong>. Rely on middleware such as Vitess / ShardingSphere / ProxySQL, or application-level sharding <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>NDB Cluster (MySQL Cluster) is a separate product — memory-centric, niche to operate — excluded from conventional evaluation <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> Compatibility <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><ul>
+<li>The MySQL protocol + SQL dialect is the ecosystem de facto standard: drivers, ORMs, toolchains are the most complete <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Divergence reality: MariaDB has drifted far (GTID, system tables, optimizer behavior all incompatible in places); Aurora MySQL is wire-compatible but has a completely different storage engine (failure behavior and performance characteristics cannot be assumed transferable); Percona Server tracks upstream closely and is basically &quot;MySQL + patches&quot; <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> License &amp; business model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><ul>
+<li>Community: GPLv2, feature-complete but without official audit / thread pool / enterprise-grade keyring backends / PAM-LDAP / commercial backup tools <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Enterprise Edition: commercial subscription, includes the above enterprise plugins + MySQL Enterprise Monitor + official support (LTS: Premier 5 years + Extended 3 years) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Cloud: MySQL HeatWave (managed MySQL on OCI/AWS + in-memory acceleration/Lakehouse), Oracle&#x27;s flagship cloud narrative <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> Chinese-language resources <span class="verdict v-neutral">Partially supporte</span></h3><div class="dim-body"><ul>
+<li>No Chinese version of the official documentation <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span> (no evidence of official Chinese docs found; whether to mark this &quot;verified absent&quot; vs &quot;not found&quot; needs reconfirmation — temporarily marked to-be-verified).</li>
+<li>Chinese community materials are abundant (blogs, columns, translations), but lagging behind 8.4/9.x new features is the norm <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul>
+<hr/></div></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="杀手特性" data-en="Killer features">杀手特性</span></h2>
+<div class="lang-block lang-zh">
+<ol>
+<li><strong>极成熟的生态与人才储备</strong>——驱动/ORM/监控/中间件覆盖最全，招 DBA 和排查问题的人最好找。这是 MySQL 最硬的护城河，不是技术参数。</li>
+<li><strong>MySQL 协议是事实标准</strong>——ProxySQL、Vitess、各类网关、云厂商兼容层都先兼容 MySQL 协议；选 MySQL 等于接入整个工具宇宙。</li>
+<li><strong>InnoDB 单机 OLTP 的低延迟与稳定性</strong>——B+Tree 聚簇索引 + MVCC + 自适应哈希，打了二十年磨出来的单机事务引擎；常规互联网 OLTP 的延迟表现是标杆。</li>
+<li><strong>复制/GTID/半同步/Group Replication/InnoDB Cluster 的 HA 梯度</strong>——从&quot;主从+VIP&quot;到官方 AdminAPI 一键搭集群，官方内置方案完整，不像某些数据库 HA 全靠第三方。</li>
+<li><strong>Online DDL 与日常工具链</strong>——<code>INSTANT</code>/<code>INPLACE</code> 算法分级、gh-ost/pt-osc 生态、<code>performance_schema</code>+<code>sys</code>、MySQL Shell（dump/load/升级检查/AdminAPI），DBA 日常趁手。</li>
+</ol>
+<hr/>
+</div>
+<div class="lang-block lang-en" hidden>
+<ol>
+<li><strong>The most mature ecosystem and talent pool</strong> — the most complete coverage of drivers/ORMs/monitoring/middleware; MySQL DBAs and troubleshooters are the easiest to hire. This is MySQL&#x27;s hardest moat, not a technical parameter.</li>
+<li><strong>The MySQL protocol is the de facto standard</strong> — ProxySQL, Vitess, various gateways, and cloud compatibility layers all target the MySQL protocol first; choosing MySQL means plugging into the entire tool universe.</li>
+<li><strong>InnoDB&#x27;s low latency and stability for single-node OLTP</strong> — B+Tree clustered indexes + MVCC + adaptive hash, a single-node transactional engine honed for twenty years; latency for conventional internet OLTP workloads is the benchmark.</li>
+<li><strong>A complete replication/GTID/semi-sync/Group Replication/InnoDB Cluster HA gradient</strong> — from &quot;primary-replica + VIP&quot; to one-click cluster setup via the official AdminAPI, official built-in solutions are complete, unlike some databases where HA is entirely third-party.</li>
+<li><strong>Online DDL and day-to-day tooling</strong> — tiered <code>INSTANT</code> / <code>INPLACE</code> algorithms, the gh-ost/pt-osc ecosystem, <code>performance_schema</code> + <code>sys</code>, MySQL Shell (dump/load, upgrade checker, AdminAPI) — a DBA&#x27;s daily toolkit that just works.</li>
+</ol>
+<hr/>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="深水区" data-en="Deep dives">深水区</span></h2>
+<div class="lang-block lang-zh">
+<h3>Deep Dive 1：锁、gap/next-key 与&quot;无辜&quot;死锁</h3>
+<p>默认 REPEATABLE READ 下，InnoDB 用 next-key lock 防幻读。生产中最反直觉的是：<strong>两个事务插入不同键也可能死锁</strong>——因为插入要检查插入位置的 gap 是否有锁、唯一性检查要加 record lock，而两个事务加锁顺序相反即成环。监控上 <code>SHOW ENGINE INNODB STATUS</code> 的 LATEST DETECTED DEADLOCK 段 + <code>performance_schema.data_locks</code>/<code>data_lock_waits</code> 是标准诊断组合。应用层铁律：捕获 1213 后重试<strong>整个事务</strong>，而不是重试单条语句。降到 READ COMMITTED 能砍掉大部分 gap 锁，但唯一键冲突、外键检查、加锁顺序反转照样死锁——隔离级别不是银弹。</p>
+<p>来源：planetscale/database-skills（deadlocks / row-locking-gotchas）<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>；villagesql-docs <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。观察版本：8.0/8.4。</p>
+<h3>Deep Dive 2：长事务、undo/purge 与大事务的&quot;机制税&quot;</h3>
+<p>InnoDB 的旧版本存在 undo log（8.0 起独立 undo 表空间文件），后台 purge 线程在确认无事务再可见旧版本后清理。一旦有长查询、长事务或 <code>idle in transaction</code> 持有老 Read View，purge 被堵住：History List Length 飙涨、undo 空间膨胀、版本链越拉越长导致读变慢、旧页挤压 buffer pool。MySQL Bug #117448 的生产报告里 HLL 达数亿，释放老事务后 purge coordinator 回读冷 undo 反成瓶颈，云盘上更严重。这是 MySQL 版的&quot;VACUUM 阻塞&quot;——PG 的税交在表膨胀上，MySQL 的税交在 undo/purge 上，只是位置不同。大事务另有三宗罪：超大 binlog 事件、复制延迟放大、回滚耗时与锁持有时间拉长。</p>
+<p>来源：bugs.mysql.com #117448 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>；discuss.google.dev purge 讨论 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。观察版本：8.0。</p>
+<h3>Deep Dive 3：异步复制延迟、GTID 切主与 read-after-write</h3>
+<p>默认异步复制下，主库提交不等待从库——这是 RPO&gt;0 的根。GTID + 自动定位让&quot;从库跟谁&quot;不再靠文件名位点，但<strong>切主前必须比对 <code>Executed_Gtid_Set</code></strong>，否则切过去才发现事务没到。半同步 <code>AFTER_SYNC</code> 用约一次 RTT 换&quot;至少一个从库收到&quot;的提交保证，是延迟与持久性的经典 trade-off。大事务、COPY 算法 DDL、慢查询都会把延迟峰值拉高；<code>Seconds_Behind_Source</code> 在从库空闲时会归零、有时钟/单线程应用盲区，严肃的延迟监控要用 heartbeat 表或 GTID 位置差。Read-after-write 的三条路：读主（主库扛不住）、sticky session（路由复杂）、<code>WAIT_FOR_EXECUTED_GTID_SET</code>（读延迟换一致性）——没有免费选项。</p>
+<p>来源：percona-lab mysql-replication-ha SKILL <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>；planetscale replication-lag <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。观察版本：8.0/8.4。</p>
+<h3>Deep Dive 4：Online DDL 与 MDL——&quot;在线&quot;二字的有效期</h3>
+<p><code>ALTER TABLE</code> 三档算法：<code>INSTANT</code>（只改元数据，近乎即时）、<code>INPLACE</code>（后台重建，多数场景允许 DML）、<code>COPY</code>（全表复制，长阻塞写）。但<strong>三档在开始/提交阶段都要拿 metadata lock</strong>：一个长事务就能卡住 DDL，而排队中的 DDL 又会挡住后面所有请求——MDL 队头阻塞是生产 DDL 事故的头号形态。改列类型、字符集转换常被迫走 COPY。铁律：显式指定 <code>ALGORITHM=INSTANT/INPLACE</code> + <code>LOCK=NONE</code>，让不满足条件时<strong>失败</strong>而不是悄悄降级为阻塞。大热表用 gh-ost（依赖 binlog）或 pt-osc（依赖触发器），两者都吃 IO/复制容量，且最后的 swap 照样要 MDL。复制环境里 COPY DDL 还会堵住从库 relay 应用，造成延迟尖峰。</p>
+<p>来源：nuggocto/dotfiles online-ddl <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>；villagesql zero-downtime-schema-changes <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。观察版本：8.0/8.4。</p>
+<h3>Deep Dive 5：分库分表困境——MySQL 扩写的真正天花板</h3>
+<p>MySQL 原生无分片，扩写靠 Vitess/ShardingSphere/中间件。Vitess 的真实约束（多份 2026 年 skill 文档一致）：</p>
+<ul>
+<li>跨分片 JOIN 支持但昂贵（scatter-gather / nested loop），聚合在 VTGate 内存里归并，大结果集慢；</li>
+<li>事务三档：<code>SINGLE</code>（拒绝跨分片）、<code>MULTI</code>（默认，尽力而为，顺序提交，可能部分提交）、<code>TWOPC</code>（原子但<strong>不隔离</strong>——隔离级别只在分片本地有效）；</li>
+<li>VTGate 不支持存储过程/触发器/事件、<code>LOCK TABLES</code>/<code>GET_LOCK</code>；外键支持有限，官方建议应用层保证引用完整性；</li>
+<li>ID 要用 Vitess Sequence 或应用生成（UUID/雪花），否则跨分片冲突。</li>
+</ul>
+<p>更深的是<strong>运维与语义双重成本</strong>：选错 shard key 是经典灾难（<code>hash(key)%N</code> 从 4 分片扩到 5 要搬 80% 数据，一致性哈希才只搬 1/N）；reshard 是在线 VReplication 流程但依然是重操作；相关子查询跨分片可能直接失败。结论：分片把&quot;数据库的问题&quot;变成了&quot;分布式系统的问题&quot;，而 MySQL 内核对此不提供任何原生帮助——这是它与 CockroachDB/TiDB 系最根本的分水岭。</p>
+<p>来源：planetscale/database-skills vitess query-serving <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>；dbengines planetscale <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>；forge-orm SHARDING <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。观察版本：Vitess v21–v24（2026）。</p>
+<h3>Deep Dive 6：可观测性的税（Performance Schema）</h3>
+<p><code>performance_schema</code> + <code>sys</code> 是 MySQL 内建可观测的核心，默认 instrument 集生产可用。但&quot;全开&quot;的代价是真实的：LINE 旧实测在特定 sysbench 下全开 instrument 降 TPS 约 15%（<strong>旧版特定负载，不可推广</strong>）；Percona 旧材料也有类似量级结论。生产事故时正确的节奏是平时选择性启用、救火时临时放大。另两个暗坑：慢日志阈值过低本身就是 IO 负载；<code>EXPLAIN ANALYZE</code> 真实执行语句，对写语句用它做诊断等于又写了一遍。</p>
+<p>来源：LINE engineering blog <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>；Percona webinar 材料 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。观察版本：5.6/5.7 时代实测，机制在 8.x 延续。</p>
+<h3>Deep Dive 7：TDE、密钥管理与社区/企业版边界</h3>
+<p>机制本身是扎实的：两级密钥、主密钥轮换、覆盖表空间/redo/undo/doublewrite。但生产落地的三个真相：① 社区版只有本地文件 keyring——key 文件和数据的备份必须分离存放、异地容灾，否则&quot;加密了但 key 和数据一起丢&quot;；② binlog/relay log/审计日志加密是<strong>分别配置</strong>的，漏配等于链条断裂；③ RDS/Aurora 走云盘 KMS 而非 MySQL 原生 TDE，自建与云托管的加密责任模型不同，迁移时要重新对。TDE 防的是&quot;硬盘被偷&quot;，不防 SQL 注入、不防删库、不防内存 dump——威胁模型要先对齐。</p>
+<p>来源：Oracle 官方文档 innodb-data-encryption <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>；dev.mysql.com TDE 博客 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。观察版本：8.0/8.4。</p>
+<h3>Deep Dive 8：版本线、升级与&quot;8.0.38 式惊魂&quot;</h3>
+<p>LTS/Innovation 双线是好设计（8.4 首个 LTS，9.7 第二个），但 8.0→8.4 升级有真实断裂点：<code>mysql_native_password</code> 默认禁用、<code>expire_logs_days</code> 等变量移除（写进配置则拒绝启动）、<code>mysqlpump</code> 消失、binlog 仅 ROW、TLS 1.0/1.1 移除。升级铁律：先跑 <code>util.checkForServerUpgrade()</code>、先升从库再升主库、升级前 <code>innodb_fast_shutdown=0</code>、in-place 大版本<strong>不可逆</strong>（回退靠全备或克隆 dry-run）。历史教训：2024 年 8.0.38/8.4.1/9.0.0 出现&quot;表超 1 万张则重启后 crash 且无法再启动&quot;的严重 bug（#115517），Percona 公开建议暂缓升级——提醒我们：<strong>LTS 不等于每个小版本都可上生产，patch 版本也要看社区反馈再跟进</strong>。</p>
+<p>来源：villagesql mysql-80-eol-upgrade <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>；aws-samples RDS 升级 playbook <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>；thenewstack 报道 Percona advisory <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。观察版本：8.0.38/8.4.1/9.0.0（2024）。</p>
+<h3>Deep Dive 9：Group Replication / InnoDB Cluster——官方 HA 的适用半径</h3>
+<p>Group Replication 的认证机制<strong>看不到 gap 锁</strong>（gap 锁信息出不了 InnoDB），多主模式官方推荐 READ COMMITTED 以对齐本地与分布式冲突检测；认证也不考虑表锁与命名锁（<code>GET_LOCK</code>）；有事务大小上限；<strong>表必须有主键</strong>（无主键表在组内只读）。InnoDB Cluster（Shell AdminAPI + Router）官方明确：<strong>只适合局域网</strong>，跨 WAN 部署写性能明显受损；多数据中心正确姿势是 InnoDB ClusterSet（每 DC 一个 Cluster，DC 间异步复制）。手动配的异步复制通道 Cluster 不管，可能脑裂。生产经验（MySQL User Camp 分享）：长事务在集群里是性能杀手，重 DDL 会打断并行应用把从节点打进 RECOVERY。</p>
+<p>来源：Oracle 官方 Group Replication Limitations / InnoDB Cluster Limitations <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>；slideshare InnoDB Cluster Experience <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。观察版本：8.0/8.4。</p>
+<hr/>
+</div>
+<div class="lang-block lang-en" hidden>
+<h3>Deep Dive 1: Locks, gap/next-key, and &quot;innocent&quot; deadlocks</h3>
+<p>Under the default REPEATABLE READ, InnoDB uses next-key locks to prevent phantom reads. The most counterintuitive production reality: <strong>two transactions inserting different keys can still deadlock</strong> — because an insert must check whether the target gap is locked and uniqueness checks take record locks, and reversed lock acquisition order between two transactions forms a cycle. For monitoring, the LATEST DETECTED DEADLOCK section of <code>SHOW ENGINE INNODB STATUS</code> combined with <code>performance_schema.data_locks</code> / <code>data_lock_waits</code> is the standard diagnostic pair. The iron rule at the application layer: after catching error 1213, retry the <strong>entire transaction</strong>, not the single statement. Dropping to READ COMMITTED removes most gap locks, but deadlocks from unique-key conflicts, foreign-key checks, and reversed lock order remain — isolation level is not a silver bullet.</p>
+<p>Sources: planetscale/database-skills (deadlocks / row-locking-gotchas) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>; villagesql-docs <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>. Observed versions: 8.0/8.4.</p>
+<h3>Deep Dive 2: Long transactions, undo/purge, and the &quot;mechanism tax&quot; of large transactions</h3>
+<p>InnoDB keeps old row versions in the undo log (separate undo tablespace files since 8.0), and a background purge thread cleans them up once no transaction can still see them. As soon as a long query, long transaction, or <code>idle in transaction</code> session holds an old read view, purge stalls: History List Length skyrockets, undo space swells, lengthening version chains slow reads, and old pages squeeze the buffer pool. In the production report of MySQL Bug #117448, HLL reached the hundreds of millions; after releasing the old transactions, the purge coordinator reading back cold undo became the bottleneck itself, worse on cloud disks. This is MySQL&#x27;s version of &quot;blocked VACUUM&quot; — in PG the tax is paid in table bloat, in MySQL it&#x27;s paid in undo/purge; only the location differs. Large transactions have three additional sins: oversized binlog events, amplified replication lag, and rollback time plus lock-hold duration stretching out.</p>
+<p>Sources: bugs.mysql.com #117448 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>; discuss.google.dev purge discussion <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>. Observed version: 8.0.</p>
+<h3>Deep Dive 3: Async replication lag, GTID failover, and read-after-write</h3>
+<p>Under default async replication, the primary commits without waiting for replicas — that is the root of RPO&gt;0. GTID + auto-positioning means &quot;which primary to follow&quot; no longer depends on file-name positions, but <strong>you must compare <code>Executed_Gtid_Set</code> before failover</strong>, or you&#x27;ll discover missing transactions only after the cutover. Semi-sync <code>AFTER_SYNC</code> trades roughly one RTT for a commit guarantee of &quot;at least one replica has received it&quot; — the classic latency-vs-durability trade-off. Large transactions, COPY-algorithm DDL, and slow queries all push lag spikes higher; <code>Seconds_Behind_Source</code> resets to zero when the replica is idle and has clock/single-threaded-apply blind spots, so serious lag monitoring should use heartbeat tables or GTID position deltas. Three options for read-after-write: read from primary (the primary can&#x27;t take it), sticky sessions (complex routing), <code>WAIT_FOR_EXECUTED_GTID_SET</code> (trading read latency for consistency) — there is no free option.</p>
+<p>Sources: percona-lab mysql-replication-ha SKILL <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>; planetscale replication-lag <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>. Observed versions: 8.0/8.4.</p>
+<h3>Deep Dive 4: Online DDL and MDL — the expiration date on the word &quot;online&quot;</h3>
+<p><code>ALTER TABLE</code> has three algorithm tiers: <code>INSTANT</code> (metadata-only, near-instant), <code>INPLACE</code> (background rebuild, DML allowed in most cases), <code>COPY</code> (full table copy, long write blocking). But <strong>all three tiers must take a metadata lock at the start/commit phases</strong>: a single long transaction can stall the DDL, and the queued DDL then blocks everything behind it — MDL head-of-line blocking is the #1 shape of production DDL incidents. Changing column types or character sets is often forced into COPY. The iron rule: explicitly specify <code>ALGORITHM=INSTANT/INPLACE</code> + <code>LOCK=NONE</code> so the operation <strong>fails</strong> when conditions aren&#x27;t met instead of silently degrading into blocking. For hot large tables, use gh-ost (depends on binlog) or pt-osc (depends on triggers) — both consume IO/replication capacity, and the final swap still needs the MDL. In replication setups, COPY DDL also blocks relay application on replicas, causing lag spikes.</p>
+<p>Sources: nuggocto/dotfiles online-ddl <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>; villagesql zero-downtime-schema-changes <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>. Observed versions: 8.0/8.4.</p>
+<h3>Deep Dive 5: The sharding dilemma — MySQL&#x27;s true write-scaling ceiling</h3>
+<p>MySQL has no native sharding; write scale-out relies on Vitess/ShardingSphere/middleware. Vitess&#x27;s real constraints (consistent across multiple 2026 skill docs):</p>
+<ul>
+<li>Cross-shard JOINs are supported but expensive (scatter-gather / nested loop), with aggregation merged in VTGate memory — slow for large result sets;</li>
+<li>Three transaction modes: <code>SINGLE</code> (rejects cross-shard), <code>MULTI</code> (default, best-effort, sequential commits, possible partial commits), <code>TWOPC</code> (atomic but <strong>not isolated</strong> — isolation is only effective within a single shard);</li>
+<li>VTGate does not support stored procedures/triggers/events, <code>LOCK TABLES</code> / <code>GET_LOCK</code>; foreign key support is limited, and the official guidance is to enforce referential integrity at the application layer;</li>
+<li>IDs must use Vitess Sequences or be application-generated (UUID/snowflake), otherwise cross-shard conflicts occur.</li>
+</ul>
+<p>Deeper still is the <strong>dual cost of operations and semantics</strong>: picking the wrong shard key is the classic disaster (<code>hash(key)%N</code> moving from 4 to 5 shards relocates 80% of the data; consistent hashing only moves 1/N); resharding is an online VReplication process but still a heavy operation; correlated subqueries across shards may fail outright. Conclusion: sharding turns &quot;database problems&quot; into &quot;distributed systems problems&quot;, and the MySQL kernel offers no native help with any of it — this is the most fundamental watershed between MySQL and the CockroachDB/TiDB family.</p>
+<p>Sources: planetscale/database-skills vitess query-serving <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>; dbengines planetscale <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>; forge-orm SHARDING <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>. Observed versions: Vitess v21–v24 (2026).</p>
+<h3>Deep Dive 6: The tax on observability (Performance Schema)</h3>
+<p><code>performance_schema</code> + <code>sys</code> is the core of MySQL&#x27;s built-in observability, and the default instrument set is production-safe. But the cost of &quot;enabling everything&quot; is real: LINE&#x27;s old benchmark saw roughly a 15% TPS drop with all instruments enabled under a specific sysbench workload (<strong>old version, specific workload — not generalizable</strong>); old Percona materials reached similar-magnitude conclusions. The correct rhythm in production is selective enablement normally, temporarily widened collection during incidents. Two more hidden pitfalls: a slow-log threshold set too low is itself an IO load; <code>EXPLAIN ANALYZE</code> actually executes the statement — using it to diagnose a write is equivalent to writing it again.</p>
+<p>Sources: LINE engineering blog <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>; Percona webinar materials <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>. Observed versions: 5.6/5.7-era benchmarks; the mechanism carries over into 8.x.</p>
+<h3>Deep Dive 7: TDE, key management, and the Community/Enterprise boundary</h3>
+<p>The mechanism itself is solid: two-level keys, master key rotation, coverage of tablespaces/redo/undo/doublewrite. But three truths of production deployment: ① Community Edition only has the local file keyring — key files and data backups must be stored separately with off-site disaster recovery, otherwise you get &quot;encrypted, but the key and the data were lost together&quot;; ② binlog/relay log/audit log encryption is <strong>configured separately</strong> — a missed configuration breaks the chain; ③ RDS/Aurora uses cloud-disk KMS rather than MySQL-native TDE, so self-hosted and cloud-managed deployments have different encryption responsibility models, which must be re-aligned during migration. TDE defends against &quot;the disk gets stolen&quot; — it does not defend against SQL injection, accidental deletion, or memory dumps; align the threat model first.</p>
+<p>Sources: Oracle official docs innodb-data-encryption <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>; dev.mysql.com TDE blog <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. Observed versions: 8.0/8.4.</p>
+<h3>Deep Dive 8: Release lines, upgrades, and the &quot;8.0.38 scare&quot;</h3>
+<p>The LTS/Innovation dual track is a good design (8.4 the first LTS, 9.7 the second), but the 8.0→8.4 upgrade has real breaking points: <code>mysql_native_password</code> disabled by default, removed variables like <code>expire_logs_days</code> (server refuses to start if they&#x27;re in the config), <code>mysqlpump</code> gone, binlog ROW-only, TLS 1.0/1.1 removed. The iron rules of upgrading: run <code>util.checkForServerUpgrade()</code> first, upgrade replicas before the primary, <code>innodb_fast_shutdown=0</code> before upgrading, and in-place major upgrades are <strong>irreversible</strong> (roll back via full backup or cloned dry-runs). Historical lesson: in 2024, 8.0.38/8.4.1/9.0.0 shipped a severe bug where instances with more than ~10,000 tables would crash on restart and could never start again (#115517), and Percona publicly advised holding off the upgrade — a reminder that <strong>LTS does not mean every patch release is production-ready; patch versions also deserve a look at community feedback before adoption</strong>.</p>
+<p>Sources: villagesql mysql-80-eol-upgrade <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>; aws-samples RDS upgrade playbook <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>; thenewstack coverage of the Percona advisory <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>. Observed versions: 8.0.38/8.4.1/9.0.0 (2024).</p>
+<h3>Deep Dive 9: Group Replication / InnoDB Cluster — the applicable radius of official HA</h3>
+<p>Group Replication&#x27;s certification mechanism <strong>cannot see gap locks</strong> (gap-lock information never leaves InnoDB); multi-primary mode officially recommends READ COMMITTED to align local and distributed conflict detection; certification also ignores table locks and named locks (<code>GET_LOCK</code>); there are transaction size limits; <strong>tables must have primary keys</strong> (tables without PKs are read-only inside a group). InnoDB Cluster (Shell AdminAPI + Router) is officially <strong>LAN-only</strong> — cross-WAN deployments suffer noticeably degraded write performance; the correct multi-datacenter posture is InnoDB ClusterSet (one Cluster per DC, async replication between DCs). Manually configured async replication channels are not managed by the Cluster and can split-brain. Production experience (MySQL User Camp talks): long transactions are performance killers inside a cluster, and heavy DDL interrupts parallel apply and drives replica nodes into RECOVERY.</p>
+<p>Sources: Oracle official Group Replication Limitations / InnoDB Cluster Limitations <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>; slideshare InnoDB Cluster Experience <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>. Observed versions: 8.0/8.4.</p>
+<hr/>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="用户最买账的 5 点" data-en="What users love most">用户最买账的 5 点</span></h2>
+<div class="lang-block lang-zh">
+<h3>1. 生态与人才：出问题时最容易找到答案和人</h3>
+<ul>
+<li><strong>why_true</strong>：MySQL 协议是事实标准，驱动/ORM/监控/中间件覆盖最全；StackOverflow、Percona 博客、中文社区沉淀了二十年踩坑记录；会调 MySQL 的 DBA/开发最好招。</li>
+<li><strong>edge_and_limits</strong>：生态红利在云原生/Serverless 场景被稀释（连接模型不友好）；MariaDB/Aurora 的&quot;兼容&quot;不等于行为一致，照搬调优经验会翻车。</li>
+<li>来源：<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>；观察版本：8.x。</li>
+</ul>
+<h3>2. 单机 OLTP 低延迟：常规互联网业务的&quot;够用且好用&quot;</h3>
+<ul>
+<li><strong>why_true</strong>：InnoDB 聚簇索引 + MVCC + 自适应哈希，打了二十年的单机事务引擎；点查点写延迟稳定，QPS 上限靠大内存/大 NVMe 纵向扩展。</li>
+<li><strong>edge_and_limits</strong>：单机有写天花板；redo 默认 100MB 对生产写负载普遍太小（<code>innodb_redo_log_capacity</code> 需按峰值调到 GB 级，否则 checkpoint 压力导致写抖动）；大到单机装不下就必须分片，见深水区 5。</li>
+<li>来源：<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> + netdata/oneuptime redo sizing 指南 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>；观察版本：8.0.30+（redo 在线 resize）。</li>
+</ul>
+<h3>3. 复制 HA 梯度完整：从主从到官方集群都有现成答案</h3>
+<ul>
+<li><strong>why_true</strong>：异步复制 + GTID + 半同步 + Group Replication + InnoDB Cluster + MySQL Router，官方内置一条龙；<code>util.checkForServerUpgrade</code>、AdminAPI 等 Shell 工具链成熟。</li>
+<li><strong>edge_and_limits</strong>：默认异步 RPO&gt;0；Group Replication 只适合 LAN、有主键/事务大小等硬约束；切主前的 GTID 比对、延迟监控都要自己搭。</li>
+<li>来源：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> + <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>；观察版本：8.4。</li>
+</ul>
+<h3>4. DDL 在线化做得早：大表变更有成熟套路</h3>
+<ul>
+<li><strong>why_true</strong>：<code>INSTANT</code>/<code>INPLACE</code> 分级 + <code>ALGORITHM</code>/<code>LOCK</code> 显式控制 + gh-ost/pt-osc 生态，大表加列/加索引不停机是标准操作。</li>
+<li><strong>edge_and_limits</strong>：MDL 队头阻塞是头号 DDL 事故形态；改列类型/字符集常被迫 COPY；gh-ost 吃 binlog、pt-osc 用触发器，都有额外成本；复制环境 COPY DDL 会放大从库延迟。</li>
+<li>来源：<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>；观察版本：8.0/8.4。</li>
+</ul>
+<h3>5. 可观测性内建：不用外挂就能定位大多数问题</h3>
+<ul>
+<li><strong>why_true</strong>：<code>performance_schema</code> + <code>sys</code> schema + 慢日志 + <code>SHOW ENGINE INNODB STATUS</code>，锁、等待、IO、复制状态一应俱全；MySQL Shell 还有升级检查等管理功能。</li>
+<li><strong>edge_and_limits</strong>：全开 instrument 有可测开销（旧实测特定场景 ~15%，不可推广）；慢日志阈值、长事务监控、复制延迟 heartbeat 都要主动配置——默认不包办。</li>
+<li>来源：<span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>（LINE）+ <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>；观察版本：8.x。</li>
+</ul>
+<hr/>
+</div>
+<div class="lang-block lang-en" hidden>
+<h3>1. Ecosystem &amp; talent: the easiest place to find answers and people when things break</h3>
+<ul>
+<li><strong>why_true</strong>: The MySQL protocol is the de facto standard with the most complete driver/ORM/monitoring/middleware coverage; StackOverflow, the Percona blog, and Chinese-language communities hold twenty years of accumulated war stories; MySQL DBAs and developers are the easiest to hire.</li>
+<li><strong>edge_and_limits</strong>: The ecosystem dividend is diluted in cloud-native/serverless scenarios (the connection model is unfriendly there); MariaDB/Aurora &quot;compatibility&quot; does not mean behavioral equivalence — blindly copying tuning experience will backfire.</li>
+<li>Sources: <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>; observed versions: 8.x.</li>
+</ul>
+<h3>2. Single-node OLTP latency: &quot;good enough and pleasant&quot; for conventional internet workloads</h3>
+<ul>
+<li><strong>why_true</strong>: InnoDB&#x27;s clustered indexes + MVCC + adaptive hash — a single-node transactional engine honed over twenty years; stable point-query/point-write latency, with QPS ceiling raised by vertical scaling on big memory/big NVMe.</li>
+<li><strong>edge_and_limits</strong>: Single nodes have a write ceiling; the default 100MB redo is generally too small for production write loads (<code>innodb_redo_log_capacity</code> needs to be sized to GB levels against peak throughput, otherwise checkpoint pressure causes write jitter); once data outgrows a single node, sharding is mandatory — see Deep Dive 5.</li>
+<li>Sources: <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> + netdata/oneuptime redo sizing guides <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>; observed versions: 8.0.30+ (online redo resize).</li>
+</ul>
+<h3>3. Complete replication HA gradient: ready-made answers from primary-replica to official clustering</h3>
+<ul>
+<li><strong>why_true</strong>: Async replication + GTID + semi-sync + Group Replication + InnoDB Cluster + MySQL Router — a complete official stack; Shell tooling such as <code>util.checkForServerUpgrade</code> and AdminAPI is mature.</li>
+<li><strong>edge_and_limits</strong>: Default async means RPO&gt;0; Group Replication is LAN-only with hard constraints (primary keys, transaction size limits); GTID comparison before failover and lag monitoring are all on you to build.</li>
+<li>Sources: <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> + <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>; observed versions: 8.4.</li>
+</ul>
+<h3>4. Early online DDL: mature playbooks for large-table changes</h3>
+<ul>
+<li><strong>why_true</strong>: Tiered <code>INSTANT</code> / <code>INPLACE</code> + explicit <code>ALGORITHM</code> / <code>LOCK</code> control + the gh-ost/pt-osc ecosystem — adding columns/indexes to large tables without downtime is standard practice.</li>
+<li><strong>edge_and_limits</strong>: MDL head-of-line blocking is the #1 DDL incident shape; changing column types/character sets is often forced into COPY; gh-ost consumes binlog, pt-osc uses triggers — both have extra costs; COPY DDL in replication setups amplifies replica lag.</li>
+<li>Sources: <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>; observed versions: 8.0/8.4.</li>
+</ul>
+<h3>5. Built-in observability: most problems locatable without add-ons</h3>
+<ul>
+<li><strong>why_true</strong>: <code>performance_schema</code> + <code>sys</code> schema + slow log + <code>SHOW ENGINE INNODB STATUS</code> cover locks, waits, IO, and replication status; MySQL Shell adds management functions like the upgrade checker.</li>
+<li><strong>edge_and_limits</strong>: Fully enabling instruments has measurable overhead (old benchmark ~15% in a specific scenario — not generalizable); slow-log thresholds, long-transaction monitoring, and replication-lag heartbeats all need active configuration — the defaults don&#x27;t cover everything.</li>
+<li>Sources: <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span> (LINE) + <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>; observed versions: 8.x.</li>
+</ul>
+<hr/>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="吐槽清单" data-en="Complaints">吐槽清单</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>#</th><th>吐槽</th><th>维度</th><th>状态</th><th>版本</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>默认 REPEATABLE READ + gap/next-key 锁：不同键 INSERT 也能死锁，新手极易中招</td><td>事务</td><td>open（设计使然）</td><td>8.x</td></tr>
+<tr><td>2</td><td>无行级安全（RLS），多租户隔离只能靠视图/应用层</td><td>授权</td><td>open</td><td>8.x</td></tr>
+<tr><td>3</td><td>线程池插件企业版独占；默认 thread-per-connection，连接风暴下上下文切换拖垮实例</td><td>性能/运维</td><td>open（Percona 有免费替代）</td><td>8.x</td></tr>
+<tr><td>4</td><td>Enterprise Audit 企业版独占；社区版合规审计只能 general log 硬扛或找第三方</td><td>授权/运维</td><td>open</td><td>8.x</td></tr>
+<tr><td>5</td><td>PAM/LDAP/Kerberos 认证企业版独占</td><td>授权</td><td>open</td><td>8.x</td></tr>
+<tr><td>6</td><td>原生无自动分片；扩写靠 Vitess 等中间件，跨分片事务 2PC 原子但不隔离、外键/存储过程受限</td><td>扩展</td><td>open</td><td>8.x</td></tr>
+<tr><td>7</td><td>默认异步复制 RPO&gt;0；GTID 不是零丢失保证，切主前必须人工比对</td><td>运维</td><td>open（半同步/GR 可缓解，有代价）</td><td>8.x</td></tr>
+<tr><td>8</td><td>MDL 队头阻塞：一个长事务卡住 DDL，DDL 再挡住后面所有请求</td><td>运维</td><td>open</td><td>8.x</td></tr>
+<tr><td>9</td><td>8.0→8.4：<code>mysql_native_password</code> 默认禁用致老客户端断连；被移除变量写进配置则拒绝启动</td><td>版本/兼容</td><td>open（升级必查项）</td><td>8.4</td></tr>
+<tr><td>10</td><td>8.0.38/8.4.1/9.0.0：表超 ~1 万张则重启 crash 且无法再启动（#115517），Percona 曾公开建议暂缓升级</td><td>版本</td><td>fixed-in-后续小版本（以官方 release notes 为准）</td><td>8.0.38/8.4.1/9.0.0</td></tr>
+<tr><td>11</td><td><code>mysqlpump</code> 在 8.4 被移除；<code>mysqldump</code> 单线程，大库备份恢复慢</td><td>运维</td><td>partially-fixed（MySQL Shell dump/load 接替）</td><td>8.4</td></tr>
+<tr><td>12</td><td>redo log 默认 100MB 对生产写负载普遍太小，checkpoint 压力导致写抖动</td><td>性能</td><td>open（8.0.30+ 支持在线调大，需手动调）</td><td>8.0.30+</td></tr>
+<tr><td>13</td><td>长事务堵 purge → undo 膨胀、HLL 飙涨、读变慢；<code>idle in transaction</code> 是慢性毒药</td><td>事务/运维</td><td>open</td><td>8.x</td></tr>
+<tr><td>14</td><td><code>Seconds_Behind_Source</code> 有盲区（空闲归零等），延迟监控要自己搭 heartbeat</td><td>可观测</td><td>open</td><td>8.x</td></tr>
+<tr><td>15</td><td>全开 Performance Schema instrument 有可测开销；可观测性要交税</td><td>性能</td><td>open（默认集可用，全开需谨慎）</td><td>8.x</td></tr>
+<tr><td>16</td><td>与 MariaDB 已实质分化（GTID/系统表/优化器），&quot;MySQL 兼容&quot;不能互换使用</td><td>兼容</td><td>open</td><td>8.x</td></tr>
+<tr><td>17</td><td><code>utf8mb3</code> 包袱、字符集/排序规则历史遗留（<code>utf8</code> 别名变更），老库迁移要查</td><td>兼容</td><td>partially-fixed（8.0 默认 utf8mb4）</td><td>8.x</td></tr>
+<tr><td>18</td><td>社区版 TDE 只有本地文件 keyring，无合规级 KMS/HSM 后端；密钥与备份分离靠自觉</td><td>授权/运维</td><td>open</td><td>8.x</td></tr>
+</tbody>
+</table></div>
+<hr/>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>#</th><th>Complaint</th><th>Dimension</th><th>Status</th><th>Version</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Default REPEATABLE READ + gap/next-key locks: INSERTs on different keys can deadlock — a classic beginner trap</td><td>Transactions</td><td>open (by design)</td><td>8.x</td></tr>
+<tr><td>2</td><td>No row-level security (RLS); multi-tenant isolation only via views/application layer</td><td>Authorization</td><td>open</td><td>8.x</td></tr>
+<tr><td>3</td><td>Thread pool plugin is Enterprise-only; default thread-per-connection drags instances down via context switching under connection storms</td><td>Performance/Ops</td><td>open (Percona offers a free alternative)</td><td>8.x</td></tr>
+<tr><td>4</td><td>Enterprise Audit is Enterprise-only; Community compliance auditing means grinding on the general log or finding third-party tools</td><td>Authorization/Ops</td><td>open</td><td>8.x</td></tr>
+<tr><td>5</td><td>PAM/LDAP/Kerberos authentication is Enterprise-only</td><td>Authorization</td><td>open</td><td>8.x</td></tr>
+<tr><td>6</td><td>No native auto-sharding; write scale-out depends on middleware like Vitess — cross-shard 2PC transactions are atomic but not isolated, and foreign keys/stored procedures are limited</td><td>Scaling</td><td>open</td><td>8.x</td></tr>
+<tr><td>7</td><td>Default async replication means RPO&gt;0; GTID is not a zero-loss guarantee — manual comparison required before failover</td><td>Ops</td><td>open (semi-sync/GR mitigate, at a cost)</td><td>8.x</td></tr>
+<tr><td>8</td><td>MDL head-of-line blocking: one long transaction stalls DDL, and the DDL then blocks everything behind it</td><td>Ops</td><td>open</td><td>8.x</td></tr>
+<tr><td>9</td><td>8.0→8.4: <code>mysql_native_password</code> disabled by default breaks old clients; removed variables left in config cause refusal to start</td><td>Version/Compatibility</td><td>open (mandatory upgrade checklist items)</td><td>8.4</td></tr>
+<tr><td>10</td><td>8.0.38/8.4.1/9.0.0: instances with ~10,000+ tables crash on restart and can never start again (#115517); Percona publicly advised holding off the upgrade</td><td>Version</td><td>fixed-in-later patch releases (per official release notes)</td><td>8.0.38/8.4.1/9.0.0</td></tr>
+<tr><td>11</td><td><code>mysqlpump</code> removed in 8.4; <code>mysqldump</code> is single-threaded — slow backup/restore for large DBs</td><td>Ops</td><td>partially-fixed (MySQL Shell dump/load takes over)</td><td>8.4</td></tr>
+<tr><td>12</td><td>Default 100MB redo log is generally too small for production write loads; checkpoint pressure causes write jitter</td><td>Performance</td><td>open (online resize supported since 8.0.30+, manual tuning required)</td><td>8.0.30+</td></tr>
+<tr><td>13</td><td>Long transactions block purge → undo bloat, HLL spikes, slower reads; <code>idle in transaction</code> is a slow poison</td><td>Transactions/Ops</td><td>open</td><td>8.x</td></tr>
+<tr><td>14</td><td><code>Seconds_Behind_Source</code> has blind spots (idle resets etc.); lag monitoring needs a self-built heartbeat</td><td>Observability</td><td>open</td><td>8.x</td></tr>
+<tr><td>15</td><td>Fully enabling Performance Schema instruments has measurable overhead; observability comes with a tax</td><td>Performance</td><td>open (default set is safe; full enablement needs care)</td><td>8.x</td></tr>
+<tr><td>16</td><td>Substantially diverged from MariaDB (GTID/system tables/optimizer) — &quot;MySQL compatible&quot; is not interchangeable</td><td>Compatibility</td><td>open</td><td>8.x</td></tr>
+<tr><td>17</td><td><code>utf8mb3</code> legacy baggage, character-set/collation history (<code>utf8</code> alias changes) — old-DB migrations need checking</td><td>Compatibility</td><td>partially-fixed (utf8mb4 default since 8.0)</td><td>8.x</td></tr>
+<tr><td>18</td><td>Community TDE has only the local-file keyring, no compliance-grade KMS/HSM backend; separating keys from backups is on your own discipline</td><td>Authorization/Ops</td><td>open</td><td>8.x</td></tr>
+</tbody>
+</table></div>
+<hr/>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="判决" data-en="Verdict">判决</span></h2>
+<div class="lang-block lang-zh">
+<h3>适合</h3>
+<ul>
+<li><strong>常规互联网 OLTP</strong>：点查点写、读写比适中、单机（或纵向扩展后）能装下数据量与 QPS 的业务——这是 MySQL 的主场。</li>
+<li><strong>生态/人才优先的团队</strong>：需要最全的工具链、最多的现成答案、最好招的 DBA/开发；以及已有 MySQL 技术栈、追求稳定少折腾的团队。</li>
+<li><strong>云托管广泛可用</strong>：RDS/Aurora/HeatWave/自建都有成熟方案，HA 梯度（主从→半同步→InnoDB Cluster）官方内置，上手路径短。</li>
+<li><strong>读多写少、可用从库横向扩读</strong>的场景。</li>
+</ul>
+<h3>不适合</h3>
+<ul>
+<li><strong>需要原生多地域强一致写</strong>：Group Replication 只适合 LAN，原生没有全球同步写方案；要这个去看 CockroachDB/TiDB 系。</li>
+<li><strong>需要无中间件的水平写扩展</strong>：MySQL 扩写 = 分片中间件 + 应用改造，跨分片事务/JOIN/扩容再分片都是持续成本；写扩展是刚需且不想养 Vitess 团队的，别选。</li>
+<li><strong>纯重 OLAP/分析</strong>：行存 InnoDB 做大扫描、复杂聚合是短板（HeatWave 是 Oracle 云上的解法，不是开源 MySQL 的）。</li>
+<li><strong>SQL 标准/复杂对象关系优先</strong>：缺 RLS、CTE/窗口函数虽有但优化器与 PG 仍有代差、JSON 能力可用但非最强；这类需求 PG 更合适。</li>
+<li><strong>强合规但不想付费</strong>：审计、线程池、KMS 级密钥管理、LDAP 集成都在企业版墙内，社区版要么凑合要么找第三方。</li>
+</ul>
+<h3>迁移成本</h3>
+<ul>
+<li><strong>from MySQL（本库内升级，8.0→8.4→9.7）</strong>：<strong>低-中</strong>。LTS 线内原地升级顺滑；但 8.0→8.4 有断裂点（<code>mysql_native_password</code>、被移除变量、binlog 仅 ROW），必须跑 <code>util.checkForServerUpgrade()</code> 并做克隆 dry-run。8.0 已于 2026-04-30 EOL，留在 8.0 等于裸奔。</li>
+<li><strong>from PostgreSQL</strong>：<strong>中-高</strong>。应用层要改：无 RLS、无部分 PG 特有类型/函数、默认 RR 与 PG 的 MVCC 语义差异、序列/自增差异、大小写与引号习惯；运维层要重建：备份（pg_basebackup→XtraBackup）、复制（流复制→GTID）、监控体系。生态工具链要换血。</li>
+<li><strong>from Oracle</strong>：<strong>高</strong>。PL/SQL 几乎要重写（存储过程/包/触发器语义差异大）；RAC→InnoDB Cluster 不是对等替换；商业授权模式从&quot;买 Oracle 全家桶&quot;变成&quot;GPLv2 社区版免费 + 按需买 Enterprise 订阅&quot;，商务与合规流程要重走。</li>
+</ul>
+<hr/>
+</div>
+<div class="lang-block lang-en" hidden>
+<h3>Good fit</h3>
+<ul>
+<li><strong>Conventional internet OLTP</strong>: point queries/point writes, moderate read/write ratios, workloads whose data volume and QPS fit on one node (after vertical scaling) — this is MySQL&#x27;s home turf.</li>
+<li><strong>Ecosystem/talent-first teams</strong>: teams that need the most complete toolchain, the most ready-made answers, and the easiest-to-hire DBAs/developers; teams already on the MySQL stack seeking stability with minimal fuss.</li>
+<li><strong>Broadly available cloud hosting</strong>: mature options across RDS/Aurora/HeatWave/self-hosted, with the official built-in HA gradient (primary-replica → semi-sync → InnoDB Cluster) and a short onboarding path.</li>
+<li><strong>Read-heavy scenarios</strong> where reads can be scaled out across replicas.</li>
+</ul>
+<h3>Bad fit</h3>
+<ul>
+<li><strong>Needs native multi-region strongly-consistent writes</strong>: Group Replication is LAN-only; there is no native global synchronous-write story — look at the CockroachDB/TiDB family for that.</li>
+<li><strong>Needs horizontal write scaling without middleware</strong>: MySQL write scale-out = sharding middleware + application changes; cross-shard transactions/JOINs/resharding are ongoing costs. If write scaling is a hard requirement and you don&#x27;t want to staff a Vitess team, don&#x27;t choose it.</li>
+<li><strong>Pure heavy OLAP/analytics</strong>: row-store InnoDB is weak at large scans and complex aggregations (HeatWave is Oracle&#x27;s cloud-side answer, not open-source MySQL&#x27;s).</li>
+<li><strong>SQL-standard/complex object-relational priority</strong>: no RLS, CTEs/window functions exist but the optimizer still trails PG, JSON is usable but not best-in-class; PG is the better fit for these needs.</li>
+<li><strong>Strong compliance without paying</strong>: audit, thread pool, KMS-grade key management, and LDAP integration all sit behind the Enterprise wall; Community users must either make do or find third parties.</li>
+</ul>
+<h3>Migration cost</h3>
+<ul>
+<li><strong>from MySQL (in-place upgrade within the family, 8.0→8.4→9.7)</strong>: <strong>Low–Medium</strong>. In-place upgrades within an LTS line are smooth; but 8.0→8.4 has breaking points (<code>mysql_native_password</code>, removed variables, ROW-only binlog) — <code>util.checkForServerUpgrade()</code> must be run plus a cloned dry-run. 8.0 went EOL on 2026-04-30; staying on 8.0 means running unsupported.</li>
+<li><strong>from PostgreSQL</strong>: <strong>Medium–High</strong>. Application layer changes: no RLS, no PG-specific types/functions, default RR vs PG&#x27;s MVCC semantic differences, sequence/auto-increment differences, case and quoting habits; ops layer rebuild: backups (pg_basebackup→XtraBackup), replication (streaming replication→GTID), monitoring stack. The ecosystem toolchain needs replacing.</li>
+<li><strong>from Oracle</strong>: <strong>High</strong>. PL/SQL largely needs rewriting (large semantic gaps in stored procedures/packages/triggers); RAC→InnoDB Cluster is not a like-for-like swap; the commercial licensing model changes from &quot;buy the whole Oracle stack&quot; to &quot;free GPLv2 Community + Enterprise subscription as needed&quot; — business and compliance processes must be redone.</li>
+</ul>
+<hr/>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="来源与待验证清单" data-en="Sources & to-be-verified">来源与待验证清单</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>来源</th><th>类型</th><th>用途</th></tr></thead>
+<tbody>
+<tr><td>dev.mysql.com 官方博客（LTS/Innovation 政策）</td><td>官方文档</td><td>版本线、支持周期</td></tr>
+<tr><td>docs.oracle.com：innodb-data-encryption、group-replication-limitations、mysql-innodb-cluster-limitations</td><td>官方文档</td><td>TDE、GR/Cluster 限制</td></tr>
+<tr><td>dev.mysql.com/doc/mysql-shell/8.4 InnoDB Cluster Limitations</td><td>官方文档</td><td>Cluster LAN 限制、ClusterSet</td></tr>
+<tr><td>bugs.mysql.com #117448</td><td>社区实测</td><td>purge/HLL 生产事故</td></tr>
+<tr><td>thenewstack.io（Percona advisory）</td><td>社区实测</td><td>8.0.38 万表重启 crash</td></tr>
+<tr><td>engineering.linecorp.com（Performance Schema 开销）</td><td>社区实测</td><td>可观测性税（旧版特定负载）</td></tr>
+<tr><td>planetscale/database-skills（deadlocks / row-locking / replication-lag / vitess）</td><td>社区共识</td><td>锁、复制、Vitess 约束</td></tr>
+<tr><td>percona-lab/skills mysql-replication-ha</td><td>社区共识</td><td>复制/GTID/切主</td></tr>
+<tr><td>villagesql-docs（deadlocks / zero-downtime-schema-changes / mysql-80-eol-upgrade / backup-strategies）</td><td>社区共识</td><td>死锁、DDL、升级、备份</td></tr>
+<tr><td>nuggocto/dotfiles online-ddl</td><td>社区共识</td><td>DDL 算法与 MDL</td></tr>
+<tr><td>evgeniypatlan/skills mysql-to-percona</td><td>社区共识</td><td>企业版/社区版功能边界、Percona 替代</td></tr>
+<tr><td>aws-samples RDS MySQL 升级 playbook、kiwonilee Cloud SQL 升级检查 skill、dbaoraclestar 升级迁移笔记</td><td>社区共识</td><td>8.0→8.4 踩坑清单</td></tr>
+<tr><td>netdata/oneuptime redo log sizing 指南</td><td>社区共识</td><td>redo 容量调优</td></tr>
+<tr><td>slideshare MyDBOPS InnoDB Cluster Experience</td><td>社区实测</td><td>Cluster 生产经验</td></tr>
+<tr><td>endoflife-date/endoflife.date products/mysql.md、teinam/easy-rdbms release-policy</td><td>社区共识</td><td>版本 EOL 时间线</td></tr>
+</tbody>
+</table></div>
+<p><strong>更新记录</strong>：2026-09-29 初版。评审基线 MySQL 8.4 LTS / 9.7 LTS。以下标 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>：9.7 之后的日历版本号变化；官方中文文档是否存在；8.0 EOL 正式措辞（社区一致指向 2026-04-30，待官方页复核）。</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Source</th><th>Type</th><th>Used for</th></tr></thead>
+<tbody>
+<tr><td>dev.mysql.com official blog (LTS/Innovation policy)</td><td>official docs</td><td>Release lines, support lifecycle</td></tr>
+<tr><td>docs.oracle.com: innodb-data-encryption, group-replication-limitations, mysql-innodb-cluster-limitations</td><td>official docs</td><td>TDE, GR/Cluster limitations</td></tr>
+<tr><td>dev.mysql.com/doc/mysql-shell/8.4 InnoDB Cluster Limitations</td><td>official docs</td><td>Cluster LAN limitation, ClusterSet</td></tr>
+<tr><td>bugs.mysql.com #117448</td><td>community-tested</td><td>purge/HLL production incident</td></tr>
+<tr><td>thenewstack.io (Percona advisory)</td><td>community-tested</td><td>8.0.38 ten-thousand-table restart crash</td></tr>
+<tr><td>engineering.linecorp.com (Performance Schema overhead)</td><td>community-tested</td><td>observability tax (old version, specific workload)</td></tr>
+<tr><td>planetscale/database-skills (deadlocks / row-locking / replication-lag / vitess)</td><td>community consensus</td><td>locks, replication, Vitess constraints</td></tr>
+<tr><td>percona-lab/skills mysql-replication-ha</td><td>community consensus</td><td>replication/GTID/failover</td></tr>
+<tr><td>villagesql-docs (deadlocks / zero-downtime-schema-changes / mysql-80-eol-upgrade / backup-strategies)</td><td>community consensus</td><td>deadlocks, DDL, upgrades, backups</td></tr>
+<tr><td>nuggocto/dotfiles online-ddl</td><td>community consensus</td><td>DDL algorithms and MDL</td></tr>
+<tr><td>evgeniypatlan/skills mysql-to-percona</td><td>community consensus</td><td>Enterprise/Community feature boundary, Percona alternatives</td></tr>
+<tr><td>aws-samples RDS MySQL upgrade playbook, kiwonilee Cloud SQL upgrade checklist skill, dbaoraclestar upgrade/migration notes</td><td>community consensus</td><td>8.0→8.4 pitfall checklist</td></tr>
+<tr><td>netdata/oneuptime redo log sizing guides</td><td>community consensus</td><td>redo capacity sizing</td></tr>
+<tr><td>slideshare MyDBOPS InnoDB Cluster Experience</td><td>community-tested</td><td>Cluster production experience</td></tr>
+<tr><td>endoflife-date/endoflife.date products/mysql.md, teinam/easy-rdbms release-policy</td><td>community consensus</td><td>version EOL timeline</td></tr>
+</tbody>
+</table></div>
+<p><strong>Update log</strong>: 2026-09-29 first edition. Review baseline MySQL 8.4 LTS / 9.7 LTS. Marked <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>: the calendar-versioning change after 9.7; whether official Chinese documentation exists; the official wording of 8.0 EOL (community sources consistently point to 2026-04-30, pending verification against the official page).</p>
+</div>
+</section>
+</main>
+<footer class="footer">
+  <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
+</footer>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
