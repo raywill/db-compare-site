@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>档案：Microsoft SQL Server - DB 选型参考</title>
+<link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">&#9672;</span> DB <span data-zh="选型参考" data-en="Compare">选型参考</span></a>
+    <nav class="mainnav">
+<a href="index.html" class="active" data-zh="首页" data-en="Home">首页</a>
+<a href="compare.html" class="" data-zh="维度对比" data-en="Compare">维度对比</a>
+<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
+<a href="advisor.html" class="" data-zh="AI选型" data-en="AI Selection">AI选型</a>
+    </nav>
+    <div class="cmp-tray">
+      <button id="cmp-tray-btn" type="button" class="tray-btn" aria-expanded="false" aria-haspopup="true"><span data-zh="对比" data-en="Compare">对比</span> <b class="tray-count"><i id="cmp-count">0</i>/4</b></button>
+      <div id="cmp-panel" class="tray-panel" hidden>
+        <div class="tray-sec"><span data-zh="已选" data-en="Selected">已选</span></div>
+        <div id="cmp-selected" class="tray-selected"></div>
+        <div class="tray-sec"><span data-zh="全部产品（最多选 4 款）" data-en="All products (up to 4)">全部产品（最多选 4 款）</span></div>
+        <div id="cmp-list" class="tray-list"></div>
+        <div class="tray-actions"><button id="cmp-clear" type="button" class="tray-clear"><span data-zh="清空选择" data-en="Clear selection">清空选择</span></button></div>
+      </div>
+    </div>
+    <button id="lang-toggle" class="lang-btn" type="button" aria-label="switch language">EN</button>
+  </div>
+</header>
+<main class="page">
+<div class="profile-hero">
+  <a class="back" href="index.html"><span data-zh="← 返回首页" data-en="← Back to home">← 返回首页</span></a>
+  <h1>档案：Microsoft SQL Server</h1>
+  <div class="meta-row"><span class="cat cat-oltp" data-zh="关系型 OLTP" data-en="Relational OLTP">关系型 OLTP</span> <span class="tag">#商业闭源</span> <span class="tag">#T-SQL</span> <span class="tag">#Windows生态</span> <span class="tag">#AlwaysOn</span> <span class="tag">#按核授权</span> <span class="tag">#纵向扩展</span> <span class="tag">#Azure</span></div>
+  <p class="oneliner"><div class="lang-block lang-zh">
+<p>微软的商业关系型数据库旗舰，Windows/.NET 生态的事实标准 OLTP 数据库；以 T-SQL、SSMS 工具链、Always On 高可用和纵深安全栈见长，授权复杂度与按核成本是选型时必须正面回答的问题。</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<p>Microsoft&#x27;s flagship commercial relational database — the de facto standard OLTP database for the Windows/.NET ecosystem; known for T-SQL, the SSMS toolchain, Always On high availability, and a defense-in-depth security stack. Licensing complexity and per-core cost are questions any evaluation must answer head-on.</p>
+</div></p>
+  <div class="ai-dive-row" data-product="档案：Microsoft SQL Server">
+    <span class="ai-dive-label" data-zh="用 AI 深挖这款：" data-en="Deep-dive with AI:">用 AI 深挖这款：</span>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('chatgpt', this)">ChatGPT <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('grok', this)">Grok <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('claude', this)">Claude <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn addcmp-btn" data-addcmp="sqlserver"><span class="addcmp-label">＋ 对比</span></button>
+  </div>
+  <div class="legend"><span class="legend-label" data-zh="证据等级：" data-en="Evidence levels: ">证据等级：</span><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></div>
+</div>
+<section class="doc-section">
+<h2><span data-zh="基本信息" data-en="Basics">基本信息</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>项</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td>厂商</td><td>Microsoft（美国）</td></tr>
+<tr><td>起源</td><td>1989 年与 Sybase 合作起步，SQL Server 7.0（1998）/ 2005 重写后成为独立产品线，30+ 年演进</td></tr>
+<tr><td>许可证</td><td>商业闭源；Express / Developer 免费（Developer 仅限非生产）</td></tr>
+<tr><td>托管服务</td><td>Azure SQL Database、Azure SQL Managed Instance、SQL Server on Azure VM；2025 起支持 Azure Arc 纳管与按量计费（PAYG）</td></tr>
+<tr><td>主类型</td><td>关系型（OLTP 为主）</td></tr>
+<tr><td>兼具类型</td><td>OLAP（列存索引）、向量检索（2025 原生 vector + DiskANN）、JSON 文档（2025 原生 JSON 类型）</td></tr>
+<tr><td>一致性模型</td><td>单机强一致（ACID）；Always On 同步提交副本 RPO=0</td></tr>
+<tr><td>复制协议</td><td>非共识协议：日志流复制（Always On AG 日志 hardening）、共享存储故障转移（FCI）、日志传送</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Item</th><th>Content</th></tr></thead>
+<tbody>
+<tr><td>Vendor</td><td>Microsoft (USA)</td></tr>
+<tr><td>Origin</td><td>Started in 1989 in partnership with Sybase; SQL Server 7.0 (1998) / the 2005 rewrite made it an independent product line; 30+ years of evolution</td></tr>
+<tr><td>License</td><td>Commercial closed-source; Express / Developer are free (Developer for non-production only)</td></tr>
+<tr><td>Managed services</td><td>Azure SQL Database, Azure SQL Managed Instance, SQL Server on Azure VM; since 2025, Azure Arc management and pay-as-you-go (PAYG) billing supported</td></tr>
+<tr><td>Primary type</td><td>Relational (OLTP-first)</td></tr>
+<tr><td>Also covers</td><td>OLAP (columnstore indexes), vector search (2025 native vector + DiskANN), JSON documents (2025 native JSON type)</td></tr>
+<tr><td>Consistency model</td><td>Strongly consistent single node (ACID); Always On synchronous-commit replicas RPO=0</td></tr>
+<tr><td>Replication protocol</td><td>Non-consensus protocols: log-stream replication (Always On AG log hardening), shared-storage failover (FCI), log shipping</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section"><h2><span data-zh="硬维度（14 项）" data-en="Hard dimensions (14)">硬维度（14 项）</span></h2>
+<div class="lang-block lang-zh">
+<div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。TDE 加密数据文件与事务日志文件；实例上任一库开启 TDE 则 tempdb 自动被加密；TDE 库的备份天然带加密。密钥管理：master 库证书/非对称密钥 → DMK → SMK 层级，可用 EKM 提供程序或 Azure Key Vault（BYOK）。另有 Always Encrypted（客户端列级加密，DBA 也看不到明文；secure enclave 支持密文上有限计算）、备份加密、动态数据掩码。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。支持 TLS 1.2/1.3，可强制加密连接（ForceEncryption）；2025 起默认 <code>Encrypt=True</code>、TDS 8.0 走 TLS 1.3（第三方资料，细节待验证）。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>为主</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> 审计 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。SQL Server Audit（服务器/数据库审计规范），可写文件、安全日志、应用日志；Azure SQL 可审计到 Log Analytics/Storage。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> 认证与权限 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。Windows 认证（Kerberos/NTLM）、SQL Server 登录、2025 起 Entra ID（含 Azure Arc 托管标识）；服务器角色/数据库角色/架构级权限，另有行级安全（RLS）。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> 备份恢复 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。原生 BACKUP/RESTORE：完整/差异/日志备份、压缩备份、加密备份、备份到 URL（Azure Blob）；日志链支持时间点恢复（PITR）。限制：备份只能还原到<strong>同版本或更新版本</strong>，不可降级还原。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> 大版本升级 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>。支持 in-place 直接升级（历史路径如 2012→2022；到 2025 的直升路径以官方升级矩阵为准，待验证），但<strong>升级是单向门，不支持降级</strong>，回退只能靠升级前备份还原到并行实例。风险杠杆是&quot;兼容级别&quot;：升级后数据库保留旧兼容级别（如 2022=160、2025=170），新优化器行为只在新级别生效，引擎升级与执行计划变更解耦。AG 支持滚动升级。证据：官方文档 + 社区共识</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> 可观测性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。DMV/DMF（sys.dm_os_wait_stats 等等待统计是 DBA 母语）、Extended Events、Query Store（2022 起新库默认开启）、SSMS；Azure Arc 提供最佳实践评估。证据：官方文档 + 社区共识</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> 连接模型 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。TDS 协议；连接池在客户端驱动侧（ADO.NET 连接池），服务端按 worker 线程调度；版本按内存/CPU 上限约束并发能力。证据：官方文档 + 社区共识</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> 事务与隔离级别 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。完整 ACID；默认 READ COMMITTED 是<strong>加锁读</strong>（读写互阻塞），RCSI/快照隔离需显式开启（代价是 tempdb 版本存储）；支持保存点；Windows 上支持 DTC 分布式事务。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> 复制与一致性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（见基本信息）。同步提交要求备库日志 hardening（落盘，非重做）才返回，主库提交延迟 = 网络 RTT 税；异步提交主库不等确认，允许备库落后。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> 扩展方式 <span class="verdict v-partial">部分支持（纵向为主）</span></h3><div class="dim-body"><p><strong>部分支持（纵向为主）</strong>。Enterprise 单实例 CPU/内存无上限（只受 OS 限制）；横向能力有限：可读副本（备库只读分流）、分布式 AG、手动分片。Standard 版单实例限 32 核/256GB 内存（2025 版官方口径）。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> 兼容性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。T-SQL 方言（与 Sybase 有历史渊源）；不兼容 MySQL/PG/Oracle 协议；SSMA 提供从 Oracle/MySQL/DB2 的迁移评估与转换。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> 许可证与商业模式 <span class="verdict v-yes">有（商业闭源）</span></h3><div class="dim-body"><p><strong>有（商业闭源）</strong>。Enterprise 仅按核；Standard 按核或 Server+CAL；Express/Developer 免费（Developer 禁生产）；Azure 上按 vCore/DTU/Serverless 计费，Arc 纳管支持 PAYG；Software Assurance 带来许可移动性与虚拟化权益。<strong>价格只询价，不引用标价</strong>（见文末授权核对清单）。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> + 第三方授权指南</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> 中文资料丰富度 <span class="verdict v-yes">有（丰富）</span></h3><div class="dim-body"><p><strong>有（丰富）</strong>。官方中文文档齐全，中文博客/社区实践帖大量。证据：<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></p></div></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes</strong>. TDE encrypts data files and transaction log files; if any database on the instance enables TDE, tempdb is automatically encrypted; backups of TDE-enabled databases are inherently encrypted. Key management: master-database certificate/asymmetric key → DMK → SMK hierarchy; EKM providers or Azure Key Vault (BYOK) supported. Also Always Encrypted (client-side column-level encryption — even DBAs can&#x27;t see plaintext; secure enclave supports limited computation on ciphertext), backup encryption, dynamic data masking. Evidence: official docs</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / transport encryption <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes</strong>. Supports TLS 1.2/1.3, forced encrypted connections (ForceEncryption); since 2025, default <code>Encrypt=True</code> and TDS 8.0 over TLS 1.3 (third-party source; details to-be-verified). Evidence: primarily official docs</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> Auditing <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes</strong>. SQL Server Audit (server/database audit specifications), writable to files, security log, application log; Azure SQL can audit to Log Analytics/Storage. Evidence: official docs</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> Authentication &amp; authorization <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes</strong>. Windows authentication (Kerberos/NTLM), SQL Server logins, Entra ID since 2025 (including Azure Arc managed identity); server roles / database roles / schema-level permissions, plus row-level security (RLS). Evidence: official docs</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> Backup &amp; recovery <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes</strong>. Native BACKUP/RESTORE: full / differential / log backups, compressed backups, encrypted backups, backup to URL (Azure Blob); log chains support point-in-time recovery (PITR). Limitation: backups can only be restored to the <strong>same or newer version</strong> — no downgrade restores. Evidence: official docs</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> Major-version upgrades <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong>. Supports in-place direct upgrades (historical paths such as 2012→2022; the direct upgrade path to 2025 should be checked against the official upgrade matrix, to-be-verified), but <strong>upgrading is a one-way door — no downgrade supported</strong>; rollback relies on pre-upgrade backups restored to a parallel instance. The risk lever is &quot;compatibility level&quot;: after upgrade, databases keep their old compatibility level (e.g., 2022=160, 2025=170); new optimizer behavior only takes effect at the new level, decoupling engine upgrade from plan-change risk. AG supports rolling upgrades. Evidence: official docs + community consensus</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> Observability <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes</strong>. DMV/DMF (wait statistics like sys.dm_os_wait_stats are every DBA&#x27;s mother tongue), Extended Events, Query Store (enabled by default on new databases since 2022), SSMS; Azure Arc provides best-practices assessment. Evidence: official docs + community consensus</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> Connection model <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes</strong>. TDS protocol; connection pooling lives on the client driver side (ADO.NET connection pool); server schedules by worker thread; editions cap concurrency via memory/CPU limits. Evidence: official docs + community consensus</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> Transactions &amp; isolation levels <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes</strong>. Full ACID; the default READ COMMITTED is <strong>locking reads</strong> (readers block writers), RCSI/snapshot isolation must be enabled explicitly (at the cost of tempdb version store); savepoints supported; DTC distributed transactions supported on Windows. Evidence: official docs</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> Replication &amp; consistency <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes</strong> (see basic info). Synchronous commit requires the secondary to harden the log (durable write, not redo) before the primary returns — primary commit latency = network RTT tax; asynchronous commit doesn&#x27;t wait for acknowledgment, allowing the secondary to lag. Evidence: official docs</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> Scaling <span class="verdict v-neutral">Scale-up first</span></h3><div class="dim-body"><p><strong>Scale-up first</strong>. Enterprise single instance has no CPU/memory ceiling (only OS limits); limited scale-out: readable replicas (secondary read offload), distributed AGs, manual sharding. Standard edition is limited to 32 cores / 256 GB RAM per instance (2025 edition, official statement). Evidence: official docs</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> Compatibility <span class="verdict v-neutral">T-SQL dialect</span></h3><div class="dim-body"><p>T-SQL dialect (with historical Sybase roots); incompatible with MySQL/PG/Oracle protocols; SSMA provides migration assessment and conversion from Oracle/MySQL/DB2. Evidence: official docs</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> License &amp; business model <span class="verdict v-neutral">Commercial closed-</span></h3><div class="dim-body"><p>Commercial closed-source. Enterprise is per-core only; Standard is per-core or Server+CAL; Express/Developer are free (Developer forbidden in production); on Azure, billed by vCore/DTU/Serverless; Arc-managed instances support PAYG; Software Assurance brings license mobility and virtualization rights. <strong>Prices by quote only — no list prices cited</strong> (see the licensing checklist at the end). Evidence: official docs + third-party licensing guides</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> Chinese-language resources <span class="verdict v-neutral">Abundant</span></h3><div class="dim-body"><p><strong>Abundant</strong>. Official Chinese documentation is complete, and there is a large volume of Chinese blogs/community practice posts. Evidence: community consensus</p></div></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="杀手特性" data-en="Killer features">杀手特性</span></h2>
+<div class="lang-block lang-zh">
+<ol>
+<li><strong>Always Encrypted（含 secure enclave）：连 DBA 都看不到的列级加密</strong> 真本事：应用端驱动加密，密钥不出客户端，数据库内存里出现的是密文；enclave 允许在密文上做有限计算（模糊匹配、范围查询）。 边缘真相：要用它，应用必须改驱动/代码并管理列主密钥（CMK），运维复杂度从 DBA 侧转移到应用侧；enclave 需要 attestation，故障排查时&quot;看不到明文&quot;既是卖点也是排障地狱。适合的是&quot;合规强制且应用可控&quot;场景，不是&quot;一键开启&quot;。</li>
+<li><strong>Query Store + 自动计划修正：执行计划的&quot;飞行记录仪&quot;</strong> 真本事：持久化保存计划历史与运行时统计，2022 起新库默认开；自动计划修正可在检测到回归时自动强制上一个好计划。 边缘真相：Query Store 本身有捕获与存储开销，高频 OLTP 要调捕获模式与保留期；自动修正只对&quot;稳定可重复 workload&quot;有效，ad-hoc 满天飞的系统里它帮不上忙。基线质量决定一切——没跑满一个业务周期的基线，修正就是瞎修正。</li>
+<li><strong>纵深安全栈：TDE + 审计 + RLS + 掩码 + Ledger 一套配齐</strong> 真本事：金融/政企合规要的&quot;静态加密、传输加密、审计、行级权限、防篡改账本&quot;全是第一方功能，不用拼第三方件，这是它相对开源库最硬的差异之一。 边缘真相：功能全不等于默认全开——TDE 证书过期会导致历史备份无法还原（真实事故类），审计写文件要规划存储，Ledger 有写入放大。安全栈的运维税是持续的，买之前先问团队有没有人懂证书生命周期管理。</li>
+<li><strong>2025 的 Optimized Locking（TID 锁 + LAQ）：不改代码的并发提升</strong> 真本事：锁在谓词判定<strong>之后</strong>再获取（Lock After Qualification），大幅减少锁内存与阻塞；Azure SQL 先验证过的技术下放到本地版。 边缘真相：这是 2025 新行为，老 DBA 的阻塞排障肌肉记忆（看 LCK_M_* 等）要更新；是否要求兼容级别 170 待验证。以及它缓解的是锁争用，不是烂 SQL——缺索引的全表扫描照样慢。</li>
+<li><strong>混合云故事：Arc 纳管 + Fabric 镜像</strong> 真本事：本地 SQL Server 可被 Azure Arc 统一纳管（清点、评估、PAYG 计费），数据可近实时镜像到 Fabric OneLake 做分析，OLTP 与分析解耦不写 ETL。 边缘真相：Arc 是 agent 依赖，容器里跑的 SQL Server 不支持 Arc 相关能力（官方明确）；Fabric 镜像是&quot;分析加速器&quot;不是&quot;第二活库&quot;，指望它当 DR 是误用。</li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<ol>
+<li><strong>Always Encrypted (with secure enclave): column-level encryption even DBAs can&#x27;t see</strong> Why it&#x27;s real: encryption happens in the application driver; keys never leave the client; the database only ever sees ciphertext in memory; enclaves allow limited computation (fuzzy matching, range queries) on ciphertext. Edge truth: to use it, the application must change drivers/code and manage column master keys (CMK) — operational complexity moves from the DBA side to the application side; enclaves require attestation, and &quot;can&#x27;t see plaintext&quot; is a selling point and a troubleshooting hell at once. This fits &quot;compliance-mandated and application-controlled&quot; scenarios — not &quot;turn it on and forget&quot;.</li>
+<li><strong>Query Store + automatic plan correction: the flight recorder for execution plans</strong> Why it&#x27;s real: persistently stores plan history and runtime statistics, enabled by default on new databases since 2022; automatic plan correction can detect regressions and force the last good plan automatically. Edge truth: Query Store itself has capture and storage overhead — high-frequency OLTP workloads need to tune capture mode and retention; automatic correction only helps &quot;stable, repeatable workloads&quot; — systems full of ad-hoc queries get no help. Baseline quality decides everything: correcting against a baseline that hasn&#x27;t covered a full business cycle is correcting blind.</li>
+<li><strong>Defense-in-depth security stack: TDE + audit + RLS + masking + Ledger in one box</strong> Why it&#x27;s real: everything finance/government compliance asks for — data-at-rest encryption, transport encryption, auditing, row-level permissions, tamper-evident ledger — is a first-party feature; no assembling third-party parts. This is one of its hardest differences vs. open-source databases. Edge truth: full feature list doesn&#x27;t mean everything is on by default — an expired TDE certificate can make historical backups unrestorable (real accident class), file-based auditing needs storage planning, Ledger adds write amplification. The security stack&#x27;s operational tax is ongoing; before buying, ask whether the team has anyone who understands certificate lifecycle management.</li>
+<li><strong>2025&#x27;s Optimized Locking (TID locks + LAQ): concurrency gains without code changes</strong> Why it&#x27;s real: locks are acquired <strong>after</strong> predicate qualification (Lock After Qualification), dramatically reducing lock memory and blocking; technology battle-tested on Azure SQL brought down to the on-prem edition. Edge truth: this is new 2025 behavior — veteran DBAs&#x27; blocking-troubleshooting muscle memory (watching LCK_M_* waits) needs updating; whether compatibility level 170 is required is to-be-verified. And it mitigates lock contention, not bad SQL — full table scans missing indexes are still slow.</li>
+<li><strong>Hybrid cloud story: Arc management + Fabric mirroring</strong> Why it&#x27;s real: on-prem SQL Server can be centrally managed by Azure Arc (inventory, assessment, PAYG billing), and data can be mirrored near-real-time into Fabric OneLake for analytics — OLTP and analytics decoupled without writing ETL. Edge truth: Arc is an agent dependency — SQL Server running in containers doesn&#x27;t support Arc-related capabilities (officially stated); Fabric mirroring is an &quot;analytics accelerator&quot;, not a &quot;second live database&quot; — relying on it as DR is misuse.</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="深水区" data-en="Deep dives">深水区</span></h2>
+<div class="lang-block lang-zh">
+<p><strong>深水区一（授权与成本）：按核计费是把双刃剑，CAL 的&quot;多路复用&quot;不省钱</strong></p>
+<ul>
+<li>机制：Enterprise 只按核卖，Standard 可选按核或 Server+CAL；有 SA 才允许&quot;按虚机授权&quot;和获得免费被动副本；Azure Hybrid Benefit 可把本地许可折抵到云上。</li>
+<li>推到边缘：<ul>
+<li>虚机上 vCPU 在建虚机时随手给大，授权数虚胖 15–30% 是第三方审计里的常见发现——<strong>分配的核，不是用的核</strong>，决定账单。</li>
+<li>CAL 模式下，应用经中间层连接<strong>不能</strong>减少 CAL 数量（多路复用规则），最终用户数照算；互联网应用基本只能选按核。</li>
+<li>被动副本&quot;免费&quot;的前提是 SA 在有效期内且副本真正被动（可读副本不算被动），很多团队的&quot;高可用&quot;最后在授权审计里变成&quot;要补钱&quot;。</li>
+<li>Developer 版功能与 Enterprise 完全一致但禁生产——开发/测试环境误用生产许可是 SAM 审计重灾区。</li>
+</ul></li>
+<li>选型含义：询价前先做&quot;计量边界核对清单&quot;（见文末）；核心数/CAL 数/SA 状态三个变量任一个没对齐，报价单都失真。授权复杂度本身就是 TCO 的一部分。</li>
+</ul>
+<p><strong>深水区二（复制与容灾）：Always On 的自动故障转移比想象中苛刻</strong></p>
+<ul>
+<li>机制：同步提交 = 主库等备库日志 hardening（落盘）才提交；自动故障转移要求：主备均为同步提交 + 自动故障转移模式 + 备库处于 SYNCHRONIZED + WSFC 仲裁正常 + 满足灵活故障转移策略。</li>
+<li>推到边缘：<ul>
+<li>仲裁丢了，整个 AG 不会自动切——<strong>仲裁是比 AG 更大的单点</strong>，脑裂靠&quot;多数派仲裁&quot;防，但代价是少数派分区直接停写。2025 增强了仲裁丢失后的恢复逻辑<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>，防止库卡在 Not Synchronizing，但这只是&quot;恢复更快&quot;，不是&quot;不丢仲裁也能切&quot;。</li>
+<li>异步提交的唯一故障转移方式是强制故障转移（可能丢数据），且只能手动——DR 演练时 DBA 必须亲手按按钮，RTO 里要算上&quot;人&quot;的时间。</li>
+<li>同步备库的 redo 队列是隐形杀手：备库重做跟不上时，故障转移时间被 redo 拖长，RPO=0 不等于 RTO 小。</li>
+<li>Standard 版只有 Basic AG（2 节点、每组 1 个库），完整 AG 是 Enterprise 专属——&quot;高可用&quot;三个字在两个版本里不是一个东西。</li>
+</ul></li>
+<li>选型含义：AG 方案评审要画仲裁拓扑（见证放在哪），压测要测备库 redo 延迟，RTO 承诺要含&quot;人肉决策&quot;时间。</li>
+</ul>
+<p><strong>深水区三（存储与并发）：TempDB 是全实例的共享税，锁升级是隐形阻塞源</strong></p>
+<ul>
+<li>机制：TempDB 被所有会话共享（排序、溢出、版本存储、临时表），分配页 PFS/GAM/SGAM 是全局串行点；单语句持锁超约 5000 个会触发锁升级（行锁→表锁）。</li>
+<li>推到边缘：<ul>
+<li>高并发 OLTP 下 TempDB 分配页出现 PAGELATCH_EX 等待，经典解法是&quot;文件数 = 逻辑 CPU 数（上限 8）+ 等大文件&quot;；2022 起 tempdb 元数据优化与 GAM/SGAM 增强缓解了争用，但版本存储（RCSI/快照的代价）依然住在 TempDB——<strong>开了 RCSI 就要给 TempDB 留 IO 预算</strong>，这是拆东墙补西墙。</li>
+<li>一个批量 UPDATE 突然阻塞整张表的无关查询：大概率是锁升级过了 5000 阈值。NOLOCK 能绕开阻塞，但代价是脏读 + 页分裂导致的<strong>丢行/重行</strong>（正确性 bug，不只是&quot;读到旧数据&quot;）。</li>
+<li>2025 的 LAQ/TID 锁缓解锁争用，但改变的是&quot;锁什么时候拿&quot;，拿不拿、拿多少还是看执行计划。</li>
+</ul></li>
+<li>选型含义：TempDB 要独盘、预分配、等大文件三件套写进部署规范；RCSI 不是免费午餐，POC 时必须开着目标隔离级别压测。</li>
+</ul>
+<p><strong>深水区四（运维与升级）：升级是单向门，真正的风险在优化器</strong></p>
+<ul>
+<li>机制：in-place 升级不支持降级；备份只能向上还原；兼容级别让&quot;引擎升级&quot;与&quot;优化器行为变更&quot;解耦——老库升级后保留旧兼容级别，新 CE（基数估计器）只在新级别生效。</li>
+<li>推到边缘：<ul>
+<li>升级最大的坑不是引擎装不上，而是升了兼容级别后执行计划回归：新 CE 对关联谓词、相关列的估计方式变了，慢查询在升级后&quot;凭空&quot;出现。标准流程是：保持旧兼容级别升级 → 开 Query Store 跑满一个业务周期采基线 → 逐库升兼容级别 → 用 Query Store 找回归强制旧计划。跳过基线直接升级别，等于闭眼换引擎。</li>
+<li>大表统计信息自动更新阈值约 SQRT(1000×行数)：10 亿行表要 100 万行变更才触发，统计信息&quot;算新鲜&quot;但实际已漂移很远——升级前后都要查统计信息新鲜度。</li>
+<li>side-by-side 是生产环境唯一推荐路径（可回退=切 DNS），in-place 留给测试环境；50 个实例的 in-place 是单向门叠 buff。</li>
+</ul></li>
+<li>选型含义：升级预算要按&quot;引擎升级 + 兼容级别爬坡 + 计划回归治理&quot;三段算，只算第一段的一定爆。</li>
+</ul>
+<p><strong>深水区五（兼容与迁移）：Azure SQL 的&quot;95% 兼容&quot;是迁移时最贵的 5%</strong></p>
+<ul>
+<li>机制：Azure SQL Database 与本地引擎同源但 PaaS 化：无 SQL Agent（用 Elastic Jobs/自动化）、无跨库查询（用 elastic query）、无手动备份（平台自动备份+PITR）、无 Windows 认证/链接服务器/FILESTREAM；Managed Instance 接近 99%，SQL VM 则是 100% 本地版。</li>
+<li>推到边缘：<ul>
+<li>迁移评估（DMA/SSMA）扫出来&quot;不支持&quot;最多的三件套：SQL Agent 作业、跨库三段式命名、CLR/链接服务器——恰好是老系统最爱用的。</li>
+<li>计费模型 DTU（打包）vs vCore（分开配）：DTU 简单但扩缩不灵活，vCore 灵活但选错 tier 账单难看；Serverless 自动暂停省的是闲置钱，代价是唤醒延迟， latency 敏感的生产库别碰。</li>
+<li>备份策略要重写：本地那套&quot;全备+差异+日志自建保留策略&quot;在 SQL DB 上不存在，RPO/RTO 改由平台 SLA 定义，合规审计要换口径。</li>
+</ul></li>
+<li>选型含义：上 Azure 不是&quot;搬机器&quot;，是&quot;换运维模型&quot;；POC 必须跑真实作业与跨库调用，不要只测单库 CRUD。</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<p><strong>Deep Water 1 (Licensing &amp; cost): per-core billing is a double-edged sword; CAL &quot;multiplexing&quot; doesn&#x27;t save money</strong></p>
+<ul>
+<li>Mechanism: Enterprise is sold per-core only; Standard can be per-core or Server+CAL; only SA allows &quot;licensing by VM&quot; and free passive replicas; Azure Hybrid Benefit lets on-prem licenses offset cloud spend.</li>
+<li>At the edge:<ul>
+<li>vCPUs sized generously when a VM is created inflate license counts 15–30% in third-party audit findings — <strong>allocated cores, not used cores</strong>, determine the bill.</li>
+<li>Under CAL licensing, applications connecting through a middle tier do <strong>not</strong> reduce CAL counts (the multiplexing rule); end users are counted regardless; internet-facing applications basically must license per-core.</li>
+<li>The &quot;free&quot; passive replica requires SA to be active <strong>and</strong> the replica to be genuinely passive (a readable replica doesn&#x27;t count as passive) — many teams&#x27; &quot;high availability&quot; turns into &quot;you owe money&quot; at license audit time.</li>
+<li>Developer edition is feature-identical to Enterprise but production-forbidden — misusing production licenses in dev/test environments is a SAM-audit disaster zone.</li>
+</ul></li>
+<li>Selection implication: align the &quot;metering boundary checklist&quot; (at the end) before requesting a quote; if any of the three variables — core count, CAL count, SA status — is off, the quote is fiction. Licensing complexity itself is part of TCO.</li>
+</ul>
+<p><strong>Deep Water 2 (Replication &amp; DR): Always On automatic failover is stricter than you think</strong></p>
+<ul>
+<li>Mechanism: synchronous commit = primary waits for secondary log hardening (durable write) before committing; automatic failover requires: both primary and secondary on synchronous commit + automatic failover mode + secondary in SYNCHRONIZED state + WSFC quorum healthy + flexible failover policy satisfied.</li>
+<li>At the edge:<ul>
+<li>If quorum is lost, the whole AG won&#x27;t fail over automatically — <strong>quorum is a bigger single point of failure than the AG itself</strong>; split-brain is prevented by &quot;majority quorum&quot;, but the cost is that minority partitions go write-stopped. 2025 improved post-quorum-loss recovery logic <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>, preventing databases from getting stuck in Not Synchronizing — but that&#x27;s &quot;faster recovery&quot;, not &quot;failover without quorum&quot;.</li>
+<li>The only failover mode for asynchronous commit is forced failover (may lose data), and it&#x27;s manual only — during DR drills the DBA must press the button by hand; budget &quot;human decision time&quot; into RTO.</li>
+<li>The synchronous secondary&#x27;s redo queue is the invisible killer: when the secondary can&#x27;t keep up with redo, failover time stretches with redo; RPO=0 does not mean small RTO.</li>
+<li>Standard edition only gets Basic AG (2 nodes, 1 database per group); the full AG is Enterprise-only — &quot;high availability&quot; isn&#x27;t the same phrase in the two editions.</li>
+</ul></li>
+<li>Selection implication: AG design reviews must draw the quorum topology (where the witness lives), stress tests must measure secondary redo lag, and RTO commitments must include &quot;human decision&quot; time.</li>
+</ul>
+<p><strong>Deep Water 3 (Storage &amp; concurrency): TempDB is a whole-instance shared tax; lock escalation is an invisible blocking source</strong></p>
+<ul>
+<li>Mechanism: TempDB is shared by all sessions (sorts, spills, version store, temp tables); allocation pages PFS/GAM/SGAM are global serialization points; a single statement holding ~5,000+ locks triggers lock escalation (row locks → table lock).</li>
+<li>At the edge:<ul>
+<li>Under high-concurrency OLTP, TempDB allocation pages show PAGELATCH_EX waits; the classic fix is &quot;file count = number of logical CPUs (capped at 8) + equally sized files&quot;; 2022&#x27;s tempdb metadata optimization and GAM/SGAM enhancements eased contention, but the version store (the cost of RCSI/snapshot) still lives in TempDB — <strong>enabling RCSI means budgeting IO for TempDB</strong>; that&#x27;s robbing Peter to pay Paul.</li>
+<li>One batch UPDATE suddenly blocking unrelated queries on the whole table: most likely lock escalation crossing the ~5,000 threshold. NOLOCK dodges the blocking, but the cost is dirty reads plus page splits causing <strong>missing/repeated rows</strong> (a correctness bug, not just &quot;reading stale data&quot;).</li>
+<li>2025&#x27;s LAQ/TID locks mitigate lock contention, but they change &quot;when the lock is taken&quot; — whether and how many locks are taken still depends on the execution plan.</li>
+</ul></li>
+<li>Selection implication: write the TempDB spec into deployment standards — dedicated disks, pre-sizing, equally sized files; RCSI is not a free lunch; POCs must stress-test under the target isolation level.</li>
+</ul>
+<p><strong>Deep Water 4 (Operations &amp; upgrades): upgrade is a one-way door; the real risk is in the optimizer</strong></p>
+<ul>
+<li>Mechanism: in-place upgrades don&#x27;t support downgrade; backups restore only upward; compatibility levels decouple &quot;engine upgrade&quot; from &quot;optimizer behavior change&quot; — old databases keep their old compatibility level after upgrade, and the new CE (cardinality estimator) only takes effect at the new level.</li>
+<li>At the edge:<ul>
+<li>The biggest upgrade pitfall isn&#x27;t the engine failing to install — it&#x27;s plan regressions after raising the compatibility level: the new CE estimates join predicates and correlated columns differently, and slow queries appear &quot;out of nowhere&quot; post-upgrade. The standard flow: upgrade at the old compatibility level → run Query Store for a full business cycle to collect a baseline → raise compatibility level database by database → use Query Store to force old plans on regressions. Skipping the baseline and raising the level directly is swapping the engine blindfolded.</li>
+<li>Large-table auto-update statistics threshold ≈ SQRT(1000 × rows): a 1-billion-row table needs 1M row changes to trigger; statistics &quot;count as fresh&quot; while actually drifting far — check statistics freshness before and after upgrade.</li>
+<li>Side-by-side is the only recommended production path (rollback = flipping DNS); in-place stays in test environments; in-place across 50 instances is stacking one-way doors.</li>
+</ul></li>
+<li>Selection implication: budget upgrades in three phases — &quot;engine upgrade + compatibility-level climb + plan-regression remediation&quot;. Budgeting only the first phase guarantees overrun.</li>
+</ul>
+<p><strong>Deep Water 5 (Compatibility &amp; migration): Azure SQL&#x27;s &quot;95% compatibility&quot; hides the most expensive 5%</strong></p>
+<ul>
+<li>Mechanism: Azure SQL Database shares the same engine lineage but is PaaS-ified: no SQL Agent (use Elastic Jobs/automation), no cross-database queries (use elastic query), no manual backups (platform automatic backup + PITR), no Windows authentication/linked servers/FILESTREAM; Managed Instance is ~99%, and SQL VM is 100% the on-prem edition.</li>
+<li>At the edge:<ul>
+<li>Migration assessment (DMA/SSMA) flags &quot;unsupported&quot; most often on three things: SQL Agent jobs, cross-database three-part naming, CLR/linked servers — exactly what legacy systems love most.</li>
+<li>Billing models DTU (bundled) vs vCore (separately provisioned): DTU is simple but inflexible to scale, vCore is flexible but picking the wrong tier makes the bill ugly; Serverless auto-pause saves idle money at the cost of wake-up latency — latency-sensitive production databases should stay away.</li>
+<li>Backup strategy must be rewritten: the on-prem &quot;full + differential + log self-built retention&quot; doesn&#x27;t exist on SQL DB; RPO/RTO are defined by the platform SLA, and compliance audits must change caliber.</li>
+</ul></li>
+<li>Selection implication: moving to Azure isn&#x27;t &quot;moving machines&quot;, it&#x27;s &quot;changing the operations model&quot;; POCs must run real jobs and cross-database calls, not just single-database CRUD.</li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="用户最买账的 5 点" data-en="What users love most">用户最买账的 5 点</span></h2>
+<div class="lang-block lang-zh">
+<ol>
+<li><strong>SSMS + T-SQL 生态：RDBMS 里最成熟的工具链</strong><ul>
+<li>为什么是真的：SSMS 的图形化执行计划、活动监视器、Profiler/Extended Events 链条完整；T-SQL 人才池是所有数据库里最深的，招 DBA 最容易。</li>
+<li>边缘与限度：SSMS 是 Windows only，跨平台靠 Azure Data Studio（功能弱一档）；人才池深但老龄化，新生代开发者更熟悉 PG/MySQL。生态强的另一面是锁定——SSIS/SSRS/SSAS 全家桶迁出去的成本极高。</li>
+</ul></li>
+<li><strong>查询优化器与 IQP（智能查询处理）：&quot;不改代码变快&quot;的代表</strong><ul>
+<li>为什么是真的：自适应连接、批处理模式、参数敏感计划优化（2022+）等多代 IQP 积累，优化器是业界标杆；很多升级收益不需要改 SQL。</li>
+<li>边缘与限度：优化器的聪明建立在统计信息和&quot;第一次编译的参数值&quot;上——参数嗅探（为首个参数值编译的计划被后续调用复用）是 DBA 的经典噩梦；2022 的参数敏感计划优化与 2025 的可选参数计划优化是缓解，不是根治。</li>
+</ul></li>
+<li><strong>Always On 高可用口碑</strong><ul>
+<li>为什么是真的：同步提交 RPO=0 是真同步（备库日志落盘确认），可读副本能分流报表，2012 年至今 10+ 年生产验证。</li>
+<li>边缘与限度：见深水区二——同步的代价是提交延迟=网络 RTT，跨城同步 AG 的写延迟是物理定律；仲裁、redo 队列、人肉决策都是 RTO 的组成部分。&quot;RPO=0&quot;不等于&quot;故障无感知&quot;，应用重连与 DNS 切换的时间要算进去。</li>
+</ul></li>
+<li><strong>安全合规栈开箱即用</strong><ul>
+<li>为什么是真的：TDE、Always Encrypted、审计、RLS、动态掩码、Ledger 全是第一方功能，等保/金融合规要的材料一次配齐，不用攒第三方件。</li>
+<li>边缘与限度：见杀手特性 3——证书生命周期、审计存储、Ledger 写放大都是持续运维税；功能&quot;有&quot;不等于&quot;开&quot;，POC 时要按合规清单逐项验证开启状态与开销。</li>
+</ul></li>
+<li><strong>向后兼容：30 年前的应用还能跑</strong><ul>
+<li>为什么是真的：兼容级别机制让老库平滑升级；T-SQL 方言稳定，企业里跑 10 年以上的存储过程是常态。</li>
+<li>边缘与限度：兼容是双刃剑——老兼容级别意味着用老 CE、错过新优化器，&quot;能跑&quot;不等于&quot;跑得好&quot;；技术债被兼容性掩盖，越往后还越贵。选型时要问：团队是&quot;需要兼容&quot;还是&quot;在拿兼容当借口不重构&quot;。</li>
+</ul></li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<ol>
+<li><strong>SSMS + T-SQL ecosystem: the most mature toolchain among RDBMSs</strong><ul>
+<li>Why it&#x27;s real: SSMS&#x27;s graphical execution plans, activity monitor, and the Profiler/Extended Events chain are complete; the T-SQL talent pool is the deepest of any database — hiring DBAs is easiest.</li>
+<li>Edge and limits: SSMS is Windows-only; cross-platform relies on Azure Data Studio (one tier weaker); the deep talent pool is aging, and the new generation of developers knows PG/MySQL better. The flip side of a strong ecosystem is lock-in — migrating off the SSIS/SSRS/SSAS full stack is extremely expensive.</li>
+</ul></li>
+<li><strong>Query optimizer and IQP (Intelligent Query Processing): the poster child of &quot;faster without code changes&quot;</strong><ul>
+<li>Why it&#x27;s real: multiple generations of IQP accumulation — adaptive joins, batch mode, parameter-sensitive plan optimization (2022+) — make it the industry benchmark optimizer; many upgrade gains require no SQL changes.</li>
+<li>Edge and limits: the optimizer&#x27;s intelligence rests on statistics and &quot;the parameter value at first compile&quot; — parameter sniffing (a plan compiled for the first parameter value being reused by later calls) is the classic DBA nightmare; 2022&#x27;s parameter-sensitive plan optimization and 2025&#x27;s optional parameter plan optimization are mitigations, not cures.</li>
+</ul></li>
+<li><strong>Always On high-availability reputation</strong><ul>
+<li>Why it&#x27;s real: synchronous commit RPO=0 is genuine synchrony (secondary log-durable acknowledgment); readable replicas can offload reporting; 10+ years of production validation since 2012.</li>
+<li>Edge and limits: see Deep Water 2 — the cost of synchrony is commit latency = network RTT; cross-city synchronous AG write latency is physics; quorum, redo queues, and human decisions are all components of RTO. &quot;RPO=0&quot; ≠ &quot;failover is invisible&quot; — application reconnection and DNS switchover time count.</li>
+</ul></li>
+<li><strong>Out-of-the-box security/compliance stack</strong><ul>
+<li>Why it&#x27;s real: TDE, Always Encrypted, auditing, RLS, dynamic masking, Ledger are all first-party features — compliance materials for 等保 (China&#x27;s MLPS cybersecurity standard) / finance land in one pass, no assembling third-party parts.</li>
+<li>Edge and limits: see Killer Feature 3 — certificate lifecycle, audit storage, and Ledger write amplification are ongoing operational taxes; &quot;feature exists&quot; ≠ &quot;feature is on&quot;; POCs should verify each compliance checklist item&#x27;s enabled state and overhead.</li>
+</ul></li>
+<li><strong>Backward compatibility: 30-year-old applications still run</strong><ul>
+<li>Why it&#x27;s real: compatibility levels let old databases upgrade smoothly; the T-SQL dialect is stable; stored procedures running 10+ years are common in enterprises.</li>
+<li>Edge and limits: compatibility cuts both ways — an old compatibility level means an old CE and missing the new optimizer; &quot;it runs&quot; ≠ &quot;it runs well&quot;; technical debt gets masked by compatibility, and the longer it accumulates, the more it costs to repay. Ask at selection time: does the team &quot;need compatibility&quot; or &quot;use compatibility as an excuse not to refactor&quot;?</li>
+</ul></li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="吐槽清单" data-en="Complaints">吐槽清单</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>分类</th><th>吐槽</th><th>影响版本</th><th>状态</th></tr></thead>
+<tbody>
+<tr><td>授权坑</td><td>按核计费随核数线性涨，Enterprise 成本在高核数下陡增；&quot;小规模便宜、大规模贵&quot;的模型随扩容反转</td><td>全版本</td><td>open</td></tr>
+<tr><td>授权坑</td><td>授权规则复杂：按虚机授权需 SA/订阅、被动副本免费有前提（SA 有效+真被动）、CAL 多路复用不省钱；SAM 审计是悬顶之剑</td><td>全版本（2022 起按虚机授权规则收紧）</td><td>open</td></tr>
+<tr><td>授权坑</td><td>Standard 与 Enterprise 功能刀法重：完整 AG、可读副本高级能力、部分安全/性能特性是 Enterprise 专属；买错版本=重构</td><td>全版本</td><td>open</td></tr>
+<tr><td>性能坑</td><td>参数嗅探：存储过程首次编译的参数值决定缓存计划，数据分布不均时后续调用性能断崖，&quot;重启实例就好&quot;是典型症状</td><td>全版本</td><td>partially-fixed（2022 参数敏感计划优化、2025 可选参数计划优化、Query Store 自动修正缓解）</td></tr>
+<tr><td>性能坑</td><td>锁升级：单语句超约 5000 锁触发行锁→表锁，批量 UPDATE 阻塞整表无关查询；NOLOCK 绕阻塞但可能丢行/重行</td><td>全版本</td><td>partially-fixed（2025 Optimized Locking 缓解争用，不改变升级阈值逻辑）</td></tr>
+<tr><td>性能坑</td><td>TempDB 分配页争用（PAGELATCH_EX）：高并发临时表/排序打满全局串行点；开了 RCSI 后版本存储再吃一波 TempDB</td><td>全版本</td><td>partially-fixed（2022+ tempdb 元数据优化与 GAM/SGAM 增强；文件数规范仍是必修）</td></tr>
+<tr><td>性能坑</td><td>大表统计信息自动更新阈值过高（约 SQRT(1000×行数)），10 亿行表可漂移百万行仍&quot;算新鲜&quot;，执行计划渐进式变坏</td><td>全版本</td><td>open</td></tr>
+<tr><td>运维坑</td><td>升级单向门：in-place 不支持降级，回退=备份还原到并行实例；备份不可向下还原</td><td>全版本</td><td>open（流程规避：side-by-side）</td></tr>
+<tr><td>运维坑</td><td>升兼容级别引发计划回归：新 CE 改变基数估计，老 SQL 在新级别下变慢；必须走&quot;基线→升级别→Query Store 治理&quot;三段式</td><td>2014+（新 CE 引入后）</td><td>open（流程规避）</td></tr>
+<tr><td>运维坑</td><td>AG 运维负担：WSFC/仲裁/Pacemaker（Linux）、redo 队列监控、同步延迟调优；&quot;高可用&quot;约等于&quot;多雇半个 DBA&quot;</td><td>2012+</td><td>open</td></tr>
+<tr><td>运维坑</td><td>MERGE 语句并发 bug 是社区共识坑：高并发下可能报错/错误结果，老手一律改写为 UPDATE+IF ROWCOUNT=0 INSERT</td><td>全版本</td><td>open</td></tr>
+<tr><td>兼容坑</td><td>Linux 版功能缺口：SSAS/SSRS/R 服务缺失、SSIS 在 2025 的 Linux 版不可用、容器不支持 Arc 相关能力、Intel 12 代+混合 CPU 在 Linux 上曾无法启动</td><td>2017+</td><td>partially-fixed（2025 补齐向量/JSON/Entra 等，但缺口仍在）</td></tr>
+<tr><td>兼容坑</td><td>Azure SQL Database &quot;95% 兼容&quot;：SQL Agent、跨库查询、CLR、手动备份等缺失，迁移时最后 5% 最贵</td><td>全版本</td><td>open</td></tr>
+<tr><td>生态坑</td><td>T-SQL/SSIS/SSRS 锁定：全家桶迁出成本极高，议价能力随使用深度递减</td><td>全版本</td><td>open</td></tr>
+<tr><td>成本坑</td><td>老版本钉子户：2008/2012 仍在生产环境跑，ESU（扩展安全更新）按年收费，升级拖延=持续交税</td><td>2008–2014</td><td>open</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Category</th><th>Complaint</th><th>Affected versions</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Licensing trap</td><td>Per-core billing scales linearly with core count; Enterprise cost steepens sharply at high core counts; the &quot;cheap at small scale, expensive at large scale&quot; model flips as you grow</td><td>All versions</td><td>open</td></tr>
+<tr><td>Licensing trap</td><td>Complex licensing rules: licensing by VM requires SA/subscription; free passive replicas have preconditions (active SA + genuinely passive); CAL multiplexing doesn&#x27;t save money; SAM audits hang overhead</td><td>All versions (licensing-by-VM rules tightened since 2022)</td><td>open</td></tr>
+<tr><td>Licensing trap</td><td>Heavy feature gating between Standard and Enterprise: full AG, advanced readable-replica capabilities, some security/performance features are Enterprise-only; buying the wrong edition = refactoring</td><td>All versions</td><td>open</td></tr>
+<tr><td>Performance trap</td><td>Parameter sniffing: the parameter value at a stored procedure&#x27;s first compile decides the cached plan; with skewed data distribution, later calls fall off a performance cliff — &quot;restarting the instance fixes it&quot; is the classic symptom</td><td>All versions</td><td>partially-fixed (2022 parameter-sensitive plan optimization, 2025 optional parameter plan optimization, Query Store automatic correction mitigate)</td></tr>
+<tr><td>Performance trap</td><td>Lock escalation: a single statement exceeding ~5,000 locks triggers row-lock → table-lock escalation; batch UPDATEs block unrelated queries on the whole table; NOLOCK dodges blocking but may skip/duplicate rows</td><td>All versions</td><td>partially-fixed (2025 Optimized Locking eases contention; doesn&#x27;t change escalation-threshold logic)</td></tr>
+<tr><td>Performance trap</td><td>TempDB allocation-page contention (PAGELATCH_EX): high-concurrency temp tables/sorts saturate the global serialization point; enabling RCSI adds another wave of version-store consumption on TempDB</td><td>All versions</td><td>partially-fixed (2022+ tempdb metadata optimization and GAM/SGAM enhancements; the file-count convention remains mandatory)</td></tr>
+<tr><td>Performance trap</td><td>Auto-update statistics threshold too high for large tables (≈ SQRT(1000 × rows)); a 1-billion-row table can drift by millions of rows and still &quot;count as fresh&quot;; execution plans degrade progressively</td><td>All versions</td><td>open</td></tr>
+<tr><td>Operations trap</td><td>One-way upgrade door: in-place doesn&#x27;t support downgrade; rollback = restoring backups to a parallel instance; backups can&#x27;t restore downward</td><td>All versions</td><td>open (workaround: side-by-side)</td></tr>
+<tr><td>Operations trap</td><td>Raising compatibility level causes plan regressions: the new CE changes cardinality estimation; old SQL gets slower at the new level; must follow the three-phase &quot;baseline → raise level → Query Store remediation&quot;</td><td>2014+ (since the new CE was introduced)</td><td>open (process mitigation)</td></tr>
+<tr><td>Operations trap</td><td>AG operational burden: WSFC/quorum/Pacemaker (Linux), redo-queue monitoring, synchronous-latency tuning; &quot;high availability&quot; ≈ &quot;hiring half a DBA&quot;</td><td>2012+</td><td>open</td></tr>
+<tr><td>Operations trap</td><td>MERGE statement concurrency bug is a community-consensus trap: under high concurrency it can error or produce wrong results; veterans uniformly rewrite as UPDATE + IF ROWCOUNT=0 INSERT</td><td>All versions</td><td>open</td></tr>
+<tr><td>Compatibility trap</td><td>Linux edition feature gaps: SSAS/SSRS/R services missing, SSIS unavailable on the 2025 Linux edition, containers don&#x27;t support Arc-related capabilities, Intel 12th-gen+ hybrid CPUs once failed to start on Linux</td><td>2017+</td><td>partially-fixed (2025 backfills vector/JSON/Entra etc., but gaps remain)</td></tr>
+<tr><td>Compatibility trap</td><td>Azure SQL Database &quot;95% compatible&quot;: SQL Agent, cross-database queries, CLR, manual backups missing — the last 5% is the most expensive in migration</td><td>All versions</td><td>open</td></tr>
+<tr><td>Ecosystem trap</td><td>T-SQL/SSIS/SSRS lock-in: migrating off the full stack is extremely expensive; bargaining power decays with depth of use</td><td>All versions</td><td>open</td></tr>
+<tr><td>Cost trap</td><td>Legacy-version holdouts: 2008/2012 still running in production; ESU (Extended Security Updates) billed annually; delaying upgrades = paying tax continuously</td><td>2008–2014</td><td>open</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="判决" data-en="Verdict">判决</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li><strong>适合谁</strong>：Windows/.NET 技术栈团队；需要 RPO=0 同步高可用 + 可读副本分流的企业 OLTP；强合规行业（金融/政企/医疗）要开箱即用安全审计栈；已有 SQL Server DBA 人才储备、SSIS/SSAS/Power BI 全家桶的组织；&quot;去 Oracle&quot;但不想换分布式架构的传统企业。</li>
+<li><strong>不适合谁</strong>：成本敏感的初创团队（授权是持续税）；Linux-first/云原生多语言团队（Linux 版是二等公民）；需要横向 scale-out 写扩展的互联网高并发场景；无专职 DBA 又想&quot;装完不管&quot;的团队（TempDB/AG/授权三件套都要人养）。</li>
+<li><strong>迁移成本</strong>：MySQL → 中（方言差异大，SSMA 可评估，无协议兼容）；PostgreSQL → 中（SQL 方言接近但 T-SQL 特性、窗口函数细节、过程语言都要改）；Oracle → 中高（PL/SQL→T-SQL 改造成本高，但授权费从 Oracle 降到 SQL Server 是经典降本路径，SSMA for Oracle 可辅助）。</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li><strong>Fits</strong>: Windows/.NET stack teams; enterprise OLTP needing RPO=0 synchronous HA + readable-replica offload; heavily regulated industries (finance/government/healthcare) wanting an out-of-the-box security-and-audit stack; organizations with SQL Server DBA talent and the SSIS/SSAS/Power BI full stack; traditional enterprises &quot;leaving Oracle&quot; without switching to a distributed architecture.</li>
+<li><strong>Doesn&#x27;t fit</strong>: cost-sensitive startups (licensing is a continuing tax); Linux-first / cloud-native polyglot teams (the Linux edition is a second-class citizen); internet-scale high-concurrency scenarios needing horizontal scale-out write expansion; teams with no dedicated DBA hoping for &quot;install and forget&quot; (TempDB/AG/licensing all need tending).</li>
+<li><strong>Migration cost</strong>: MySQL → medium (large dialect differences; SSMA can assess; no protocol compatibility); PostgreSQL → medium (SQL dialects are close, but T-SQL features, window-function details, and procedural languages all need rework); Oracle → medium-high (PL/SQL→T-SQL rework is costly, but cutting license spend from Oracle to SQL Server is a classic cost-reduction path, with SSMA for Oracle to assist).</li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="附录" data-en="Appendix">附录</span></h2>
+<div class="lang-block lang-zh">
+<p>询价前请先对齐以下每一项，否则报价单失真：</p>
+<ol>
+<li>版本线：Enterprise（按核）还是 Standard（按核 / Server+CAL）——先定功能（AG 完整度、可读副本、安全特性），再定计费</li>
+<li>核数口径：物理核还是 vCPU；虚机按虚机授权<strong>必须</strong>有 SA 或订阅；虚机 vCPU 是否虚胖（建虚机时随手给大是常见浪费）</li>
+<li>SA 状态：是否在有效期内——决定许可移动性、被动副本免费、版本升级权</li>
+<li>CAL 计数（如走 Server+CAL）：按用户还是按设备；经应用中间层<strong>不减少</strong> CAL（多路复用规则）；互联网应用基本只能按核</li>
+<li>高可用拓扑：被动副本是否&quot;真被动&quot;（可读=不免费）；仲裁见证的授权归属</li>
+<li>非生产环境：开发/测试一律用免费 Developer 版，不要为非生产买 Enterprise</li>
+<li>云路径：是否用 Azure Hybrid Benefit 折抵；Arc PAYG 按量是否比买断划算（波动型负载算三年 TCO）</li>
+<li>历史包袱：老版本（2008–2014）是否在 ESU 续费，不如把 ESU 的钱折进升级预算</li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<p>Align each of the following before requesting a quote, or the quote will be fiction:</p>
+<ol>
+<li>Edition line: Enterprise (per-core) or Standard (per-core / Server+CAL) — decide features first (AG completeness, readable replicas, security features), then billing</li>
+<li>Core-count metric: physical cores or vCPU; licensing a VM by VM <strong>requires</strong> SA or subscription; check whether VM vCPUs are bloated (casually oversizing at VM creation is common waste)</li>
+<li>SA status: whether it&#x27;s active — decides license mobility, free passive replicas, upgrade rights</li>
+<li>CAL count (for Server+CAL): per-user or per-device; going through an application middle tier does <strong>not</strong> reduce CALs (the multiplexing rule); internet-facing applications are basically per-core only</li>
+<li>HA topology: whether the passive replica is &quot;genuinely passive&quot; (readable ≠ free); the witness&#x27;s licensing ownership</li>
+<li>Non-production environments: use free Developer edition for all dev/test — never buy Enterprise for non-production</li>
+<li>Cloud path: whether to offset with Azure Hybrid Benefit; whether Arc PAYG beats buying outright (model 3-year TCO for fluctuating workloads)</li>
+<li>Legacy baggage: whether old versions (2008–2014) are renewing ESU — better to fold ESU money into the upgrade budget</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="来源与待验证清单" data-en="Sources & to-be-verified">来源与待验证清单</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li>版本与发布：SQL Server 2025（17.x）GA 2025-11-18（Microsoft Ignite；TrustedTech/Neowin 报道）；Linux 版 CU6（17.0.4055.5）发布于 2026-06-17（Microsoft Learn 发版历史）；主流支持至 2031-01-07、扩展支持至 2036-01-07（第三方转述微软生命周期页）</li>
+<li>2025 新特性：原生 vector + DiskANN、原生 JSON 类型与 JSON 索引、正则函数、Optimized Locking（TID 锁/LAQ）、Entra 托管标识、Fabric 镜像、TLS 1.3/TDS 8.0（dev.to、The Register、TrustedTech；LAQ 是否需兼容级别 170 待验证）</li>
+<li>授权与版本：Enterprise 按核、Standard 按核或 Server+CAL、Standard 限 32 核/256GB（Microsoft Learn 2025 版本对照；licenseware.io、redresscompliance.com 授权指南）；Developer/Express 免费与限制（官方口径；Express 2025 库大小上限另有第三方称放宽，待验证）</li>
+<li>Always On 机制：同步/异步提交、自动/手动/强制故障转移条件、2025 仲裁恢复增强（Microsoft Learn Always On 文档）</li>
+<li>TempDB/锁/优化器：PAGELATCH 分配页争用与文件数规范、2022 tempdb 元数据优化（Microsoft Learn、bobsql 演示）；锁升级约 5000 阈值、参数嗅探、CE 统计阈值（社区 DBA 共识：erikdarlingdata、mssql-performance-skills）</li>
+<li>升级：单向门、备份不可向下还原、兼容级别解耦、Query Store 基线流程（社区 runbook：peterwhyte-lgtm；aws-samples 迁移参考；到 2025 的直升路径待以官方升级矩阵核对）</li>
+<li>Linux/容器：不支持清单（Microsoft Learn 2025 Linux 版对照页）、容器不支持 Arc 相关能力、混合 CPU 启动问题、2025 Linux 版无 SSIS、SLES 在 2025 被移除</li>
+<li>Azure SQL 差异：SQL DB ~95% / MI ~99% 兼容口径、无 SQL Agent/跨库查询/手动备份、DTU vs vCore（社区 skill 与 TechTarget 综述）</li>
+<li>下次评审：跟踪 SQL Server 2025 CU 更新中的 LAQ/参数计划优化细节，以及 Express 2025 限额是否有官方调整</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li>Versions &amp; releases: SQL Server 2025 (17.x) GA 2025-11-18 (Microsoft Ignite; TrustedTech/Neowin reporting); Linux CU6 (17.0.4055.5) released 2026-06-17 (Microsoft Learn release history); mainstream support through 2031-01-07, extended support through 2036-01-07 (third-party relay of the Microsoft lifecycle page)</li>
+<li>2025 new features: native vector + DiskANN, native JSON type and JSON indexes, regex functions, Optimized Locking (TID locks/LAQ), Entra managed identity, Fabric mirroring, TLS 1.3/TDS 8.0 (dev.to, The Register, TrustedTech; whether LAQ requires compatibility level 170 to-be-verified)</li>
+<li>Licensing &amp; editions: Enterprise per-core, Standard per-core or Server+CAL, Standard limited to 32 cores/256GB (Microsoft Learn 2025 edition comparison; licenseware.io, redresscompliance.com licensing guides); Developer/Express free with limits (official statement; Express 2025 database size limit — some third parties claim it was relaxed, to-be-verified)</li>
+<li>Always On mechanics: synchronous/asynchronous commit, automatic/manual/forced failover conditions, 2025 quorum-recovery enhancement (Microsoft Learn Always On docs)</li>
+<li>TempDB/locks/optimizer: PAGELATCH allocation-page contention and file-count convention, 2022 tempdb metadata optimization (Microsoft Learn, bobsql demos); ~5,000 lock-escalation threshold, parameter sniffing, CE statistics threshold (community DBA consensus: erikdarlingdata, mssql-performance-skills)</li>
+<li>Upgrades: one-way door, backups can&#x27;t restore downward, compatibility-level decoupling, Query Store baseline flow (community runbooks: peterwhyte-lgtm; aws-samples migration reference; direct upgrade path to 2025 to be checked against the official upgrade matrix)</li>
+<li>Linux/containers: unsupported-features list (Microsoft Learn 2025 Linux edition comparison page), containers lack Arc-related capabilities, hybrid CPU boot issue, no SSIS in the 2025 Linux edition, SLES removed in 2025</li>
+<li>Azure SQL differences: SQL DB ~95% / MI ~99% compatibility claims, no SQL Agent/cross-database queries/manual backups, DTU vs vCore (community skill and TechTarget overview)</li>
+<li>Next review: track LAQ/parameter-plan-optimization details in SQL Server 2025 CUs, and whether Express 2025 limits get official adjustments</li>
+</ul>
+</div>
+</section>
+</main>
+<footer class="footer">
+  <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
+</footer>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
