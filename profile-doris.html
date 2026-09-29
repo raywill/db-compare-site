@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Apache Doris - DB 选型参考</title>
+<link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">&#9672;</span> DB <span data-zh="选型参考" data-en="Compare">选型参考</span></a>
+    <nav class="mainnav">
+<a href="index.html" class="active" data-zh="首页" data-en="Home">首页</a>
+<a href="compare.html" class="" data-zh="维度对比" data-en="Compare">维度对比</a>
+<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
+<a href="advisor.html" class="" data-zh="AI选型" data-en="AI Selection">AI选型</a>
+    </nav>
+    <div class="cmp-tray">
+      <button id="cmp-tray-btn" type="button" class="tray-btn" aria-expanded="false" aria-haspopup="true"><span data-zh="对比" data-en="Compare">对比</span> <b class="tray-count"><i id="cmp-count">0</i>/4</b></button>
+      <div id="cmp-panel" class="tray-panel" hidden>
+        <div class="tray-sec"><span data-zh="已选" data-en="Selected">已选</span></div>
+        <div id="cmp-selected" class="tray-selected"></div>
+        <div class="tray-sec"><span data-zh="全部产品（最多选 4 款）" data-en="All products (up to 4)">全部产品（最多选 4 款）</span></div>
+        <div id="cmp-list" class="tray-list"></div>
+        <div class="tray-actions"><button id="cmp-clear" type="button" class="tray-clear"><span data-zh="清空选择" data-en="Clear selection">清空选择</span></button></div>
+      </div>
+    </div>
+    <button id="lang-toggle" class="lang-btn" type="button" aria-label="switch language">EN</button>
+  </div>
+</header>
+<main class="page">
+<div class="profile-hero">
+  <a class="back" href="index.html"><span data-zh="← 返回首页" data-en="← Back to home">← 返回首页</span></a>
+  <h1>Apache Doris</h1>
+  <div class="meta-row"><span class="cat cat-olap" data-zh="OLAP" data-en="OLAP">OLAP</span> </div>
+  <p class="oneliner"><div class="lang-block lang-zh">
+<p>Apache Doris 是 Apache 顶级项目（源自百度 Palo）的 MPP 实时分析型数据库：列式存储 + 全向量化执行引擎，MySQL 协议接入，主打&quot;高并发点查与复杂 OLAP 查询统一服务&quot;，是实时数仓与统一分析场景的主流选项之一。</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<p>Apache Doris is an Apache top-level project (originating from Baidu Palo), an MPP real-time analytical database: columnar storage plus a fully vectorized execution engine, accessed via the MySQL protocol. It targets &quot;unified serving of high-concurrency point queries and complex OLAP queries&quot; and is a mainstream choice for real-time data warehousing and unified analytics.</p>
+</div></p>
+  <div class="ai-dive-row" data-product="Apache Doris">
+    <span class="ai-dive-label" data-zh="用 AI 深挖这款：" data-en="Deep-dive with AI:">用 AI 深挖这款：</span>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('chatgpt', this)">ChatGPT <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('grok', this)">Grok <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('claude', this)">Claude <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn addcmp-btn" data-addcmp="doris"><span class="addcmp-label">＋ 对比</span></button>
+  </div>
+  <div class="legend"><span class="legend-label" data-zh="证据等级：" data-en="Evidence levels: ">证据等级：</span><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></div>
+</div>
+<section class="doc-section">
+<h2><span data-zh="基本信息" data-en="Basics">基本信息</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li><strong>开发方 / 社区</strong>：Apache 软件基金会顶级项目，社区驱动；前身为百度 Palo，2018 年捐赠进入 Apache 孵化器，后毕业为顶级项目。商业公司 SelectDB（由 Doris 创始团队创立）提供企业版与云托管服务——评估时须把 Apache 社区项目与商业产品分开。</li>
+<li><strong>与 StarRocks 的关系（中立说明）</strong>：两者都可追溯到百度 Palo。Palo 于 2018 年捐赠给 Apache 形成 Apache Doris；StarRocks 由早期 Doris 代码线独立发展，于 2021 年以 StarRocks 之名开源。今天两者是独立的项目：架构术语与部分接口仍有共同历史痕迹，但功能实现、版本节奏、社区治理已经分化，不能按&quot;相互兼容&quot;做选型假设。</li>
+<li><strong>评审版本</strong>：4.1.4（2026-09-29 查看 GitHub Releases，为当时最新 release；4.0.x 亦在同步维护，如 4.0.8）。</li>
+<li><strong>架构</strong>：FE（Frontend：SQL 解析、查询规划、元数据管理）+ BE（Backend：数据存储与查询执行）两类角色；表按分区/分桶切分为 Tablet，多副本分布到 BE。3.0 起支持存算分离模式（计算节点 + 对象存储/HDFS，元数据侧引入 FoundationDB 等共享组件）。</li>
+<li><strong>接入协议</strong>：MySQL 协议（默认 9030）、HTTP 接口（默认 8030）。</li>
+<li><strong>许可证</strong>：Apache License 2.0。</li>
+<li><strong>主要运行环境</strong>：Linux（x86/ARM 均有发行版），支持物理机、容器、Kubernetes（官方提供 Doris Operator）。</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li><strong>Vendor / community</strong>: Apache Software Foundation top-level project, community-driven; formerly Baidu Palo, donated into the Apache Incubator in 2018 and later graduated as a top-level project. SelectDB (founded by the Doris creators) offers commercial editions and managed cloud services — evaluate the Apache community project and commercial products separately.</li>
+<li><strong>Relationship with StarRocks (neutral note)</strong>: both trace back to Baidu Palo. Palo was donated to Apache in 2018 and became Apache Doris; StarRocks evolved independently from an early Doris code line and was open-sourced under the StarRocks name in 2021. They are independent projects today: architecture terminology and some interfaces still show common history, but features, implementations, and release cadences have diverged. Do not assume mutual compatibility when selecting.</li>
+<li><strong>Reviewed version</strong>: 4.1.4 (latest release on GitHub Releases as checked on 2026-09-29; the 4.0.x line is maintained in parallel, e.g. 4.0.8).</li>
+<li><strong>Architecture</strong>: two roles — FE (Frontend: SQL parsing, query planning, metadata management) and BE (Backend: data storage and query execution); tables are split by partitions/buckets into Tablets, with multiple replicas spread across BEs. Since 3.0, a compute-storage separated mode is supported (stateless compute nodes + object storage/HDFS, with shared components such as FoundationDB on the metadata side).</li>
+<li><strong>Access protocols</strong>: MySQL protocol (default 9030), HTTP interface (default 8030).</li>
+<li><strong>License</strong>: Apache License 2.0.</li>
+<li><strong>Platforms</strong>: Linux (x86/ARM builds), bare metal, containers, Kubernetes (official Doris Operator).</li>
+</ul>
+</div>
+</section>
+<section class="doc-section"><h2><span data-zh="硬维度（14 项）" data-en="Hard dimensions (14)">硬维度（14 项）</span></h2>
+<div class="lang-block lang-zh">
+<div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-tbd">未找到证据</span></h3><div class="dim-body"><p><strong>未找到证据</strong>——本轮检索未在官方文档与社区资料中找到 Apache Doris 社区版原生 TDE（落盘透明加密）的可靠证据。对象存储服务端加密、磁盘层加密属于基础设施能力，不等于 Doris 内核 TDE。某中文博客声称的 <code>be.conf</code> 中 <code>enable_tde</code> 参数无官方佐证，不可采信。（证据：中；结论方向偏向&quot;查证为无&quot;，但因未找到官方明确的不支持声明，按规则记为&quot;未找到证据&quot;）</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——官方 2.1 中文手册确认自 2.0 起 FE HTTP 接口支持 HTTPS（JKS/PKCS12 证书配置）。MySQL 协议链路、FE–BE 内部 RPC、Stream Load 等链路的 TLS 覆盖情况未找到完整官方说明，故记为部分支持。（证据：中）</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> 审计 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——FE 提供查询/慢查询审计日志（<code>audit_log_dir</code>、<code>audit_log_modules</code> 支持 <code>slow_query</code>、<code>query</code> 等模块，<code>audit_log_roll_num</code> 控制滚动），并有官方 Audit Loader 插件可把审计日志导入 Doris 内表做分析。注意：这是&quot;有审计日志能力&quot;，不等于开箱即用的合规审计报表。（证据：强，见 2.1 中文手册 PDF）</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> 认证与权限 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——支持用户、角色（Role）、GRANT/REVOKE 权限体系。行级/列级等更细粒度权限的版本边界本轮未逐项核实；LDAP/外部目录集成的官方证据本轮未找到。（证据：中）</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> 备份恢复 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——通过 Repository + BACKUP/RESTORE 把快照经 Broker 保存到远端存储，支持表级/库级备份与跨集群恢复，可做周期快照与集群迁移。限制：恢复期间表可能已可见但不可访问；覆盖恢复失败后通常需要重新执行；未找到官方 PITR（时间点恢复）证据。（证据：中，核心机制见 2.1 中文手册）</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> 大版本升级 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——支持滚动升级，常规做法是先升级 FE 再升级 BE。但 FE 元数据格式升级后不可轻易回滚；FE/BE 混部版本有兼容窗口要求；跨大版本需要按官方升级路径逐级验证，周边插件与工具链需同步验证。（证据：中，社区实践总结）</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> 可观测性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——FE/BE 提供 metrics 接口、查询 Profile、慢查询日志、审计日志；官方文档提供 Prometheus + Grafana 监控接入方案。这是 Doris 运维体系中比较完整的一块。（证据：强）</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> 连接模型 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——客户端经 MySQL 协议连接 FE（默认 9030），由 FE 管理会话、解析与规划，再下发到 BE 执行。高并发接入需要前端负载均衡与连接数管理（FE 有 <code>qe_max_connection</code> 等连接上限配置），长连接复用是常规做法。（证据：强）</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> 事务与隔离级别 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——Doris 的&quot;事务&quot;主要存在于导入路径：Stream Load 的 label 去重与单批原子性、两阶段提交（2PC）预提交/提交、Group Commit 攒批事务；查询侧是快照读。不支持通用 OLTP 式多语句交互事务与标准隔离级别语义，不要按关系型事务数据库做选型假设。（证据：强）</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> 复制与一致性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——数据层按 Tablet 多副本（默认 3 副本）分布在 BE 上，副本故障后自动修复与重平衡；FE 元数据多节点高可用（基于 bdbje）。单副本写入多数派确认等协议级细节本轮未做源码级核实。（证据：中）</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> 扩展方式 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——传统存算一体架构下 BE 可热扩容（注册新 BE 即加入集群，数据自动重平衡）；3.0 起的存算分离模式支持计算节点弹性扩缩。FE 扩容涉及元数据组变更，比 BE 重。（证据：强）</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> 兼容性 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——MySQL 协议兼容：JDBC 与各语言 MySQL 驱动可直接连接，常用 SQL 语法可用，BI 工具接入顺滑。但这不等于 MySQL 存储引擎/事务语义兼容；复杂 MySQL 特性、存储过程等需逐项验证。（证据：强）</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> 许可证与商业模式 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——Apache License 2.0，社区版功能完整。SelectDB 等厂商提供商业版/云托管服务（含额外企业特性与 SLA），与 Apache 社区项目是两条线，POC 时要确认测的是哪一条。（证据：强）</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> 中文资料丰富度 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——官方文档中英文齐全，国内社区活跃，博客、问答、生产案例多。但第三方中文博客质量参差，个别文章存在未经核实的配置声称（如所谓 TDE 参数），关键配置务必以官方文档为准。（证据：强）</p></div></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-no">No evidence found</span></h3><div class="dim-body"><p><strong>No evidence found</strong> — this round of research found no reliable evidence of native TDE (transparent data-at-rest encryption) in the Apache Doris community edition, in official docs or community materials. Object-storage server-side encryption or disk-layer encryption are infrastructure capabilities, not Doris kernel TDE. An <code>enable_tde</code> parameter in <code>be.conf</code> claimed by one Chinese blog has no official corroboration and must not be treated as fact. (Evidence: medium; leaning toward &quot;verified absent&quot;, but recorded as &quot;no evidence found&quot; since no explicit official statement of non-support was located.)</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / transport encryption <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — the official 2.1 Chinese manual confirms FE HTTP supports HTTPS since 2.0 (JKS/PKCS12 certificate configuration). TLS coverage for the MySQL protocol path, FE–BE internal RPC, Stream Load and other links has no complete official statement, hence partially supported. (Evidence: medium)</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> Auditing <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — FE provides query/slow-query audit logging (<code>audit_log_dir</code>, <code>audit_log_modules</code> with <code>slow_query</code>, <code>query</code> modules, <code>audit_log_roll_num</code> for rotation), plus an official Audit Loader plugin that loads audit logs into Doris internal tables for analysis. Note: this is audit-logging capability, not out-of-the-box compliance audit reporting. (Evidence: strong, per the 2.1 Chinese manual PDF)</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> Authentication &amp; authorization <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — users, roles, and a GRANT/REVOKE privilege system. Version boundaries for finer-grained privileges (row/column level) were not verified item by item; no official evidence of LDAP/external directory integration was found in this round. (Evidence: medium)</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> Backup &amp; recovery <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — Repository + BACKUP/RESTORE snapshots via Broker to remote storage, with table/database-level backup and cross-cluster restore, usable for periodic snapshots and cluster migration. Limits: tables may be visible but inaccessible during restore; a failed overwrite-restore usually must be redone; no official PITR (point-in-time recovery) evidence found. (Evidence: medium; core mechanism per the 2.1 Chinese manual)</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> Major-version upgrades <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — rolling upgrades are supported, with the conventional order of FE first, then BE. But FE metadata format upgrades are not easily reversible; FE/BE mixed-version compatibility windows are limited; cross-major upgrades must be validated step by step along the official upgrade path, including plugins and surrounding tooling. (Evidence: medium, community practice)</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> Observability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — FE/BE metrics endpoints, query profiles, slow-query logs, audit logs; official docs provide a Prometheus + Grafana monitoring setup. This is one of the more complete areas of Doris operations. (Evidence: strong)</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> Connection model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — clients connect to FE via the MySQL protocol (default 9030); FE manages sessions, parsing, and planning, then dispatches to BEs. High-concurrency access needs front-end load balancing and connection management (FE has connection caps such as <code>qe_max_connection</code>); long-lived connection reuse is standard practice. (Evidence: strong)</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> Transactions &amp; isolation levels <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — Doris &quot;transactions&quot; live mainly on the ingestion path: Stream Load label dedup with per-batch atomicity, two-phase commit (2PC) pre-commit/commit, Group Commit batched transactions; queries are snapshot reads. No general-purpose OLTP-style multi-statement interactive transactions or standard isolation-level semantics — do not select it as a transactional database. (Evidence: strong)</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> Replication &amp; consistency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — data is replicated per Tablet (default 3 replicas) across BEs, with automatic replica repair and rebalancing on BE failure/scale-out; FE metadata is multi-node HA (based on bdbje). Protocol-level details such as write quorums were not verified at source level in this round. (Evidence: medium)</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> Scaling <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — in the classic shared-nothing architecture BEs scale out hot (register a new BE and data rebalances automatically); the 3.0+ compute-storage separated mode supports elastic compute scaling. FE scale-out involves metadata group changes and is heavier than BE. (Evidence: strong)</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> Compatibility <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — MySQL protocol compatibility: JDBC and MySQL drivers in every language connect directly, common SQL syntax works, BI tools connect smoothly. This does not equal MySQL storage-engine/transaction-semantics compatibility; complex MySQL features and stored procedures need case-by-case verification. (Evidence: strong)</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> License &amp; business model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — Apache License 2.0 with a complete community edition. Vendors such as SelectDB offer commercial editions/managed services (extra enterprise features and SLAs) — a separate track from the Apache project; confirm which one a POC is testing. (Evidence: strong)</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> Chinese-language resources <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — official docs in both Chinese and English, an active domestic community, and plenty of blogs, Q&amp;A, and production cases. But third-party Chinese blog quality varies; some contain unverified configuration claims (e.g. a fabricated TDE switch) — always verify key settings against official docs. (Evidence: strong)</p></div></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="杀手特性" data-en="Killer features">杀手特性</span></h2>
+<div class="lang-block lang-zh">
+<ol>
+<li><strong>全向量化执行引擎 + 列式存储</strong>：是什么——BE 存储全列式，执行层算子向量化，MPP 并行扫描。为什么是真本事——复杂聚合、大范围扫描类查询吞吐高，这是 Doris 报表与即席查询体验好的根本原因。边缘真相——对超高并发小查询，FE 的解析/调度与网络开销仍是瓶颈；向量化不解决建模错误，宽表无脑扫描一样慢。</li>
+<li><strong>MySQL 协议生态兼容</strong>：是什么——9030 端口讲 MySQL 协议，JDBC 改连接串即连，FineBI/Tableau 等 BI 工具、各类 ORM 与脚本开箱可用。为什么是真本事——协议层兼容是实打实的，大幅降低应用迁移与工具链对接成本。边缘真相——协议兼容不等于语义兼容：写入走导入作业而非普通 INSERT 事务，权限与事务行为与 MySQL 完全不同，迁移应用必须重测。</li>
+<li><strong>流式导入体系（Stream Load label 幂等 + 2PC + Group Commit）</strong>：是什么——HTTP Stream Load 单批次 label 去重（&quot;Label Already Exists&quot; 即幂等命中）；2PC 预提交/提交配合 Flink Doris Connector 实现端到端 exactly-once；2.1+ 的 Group Commit 把高频小批量在服务端攒成事务提交（sync/async 两种模式，async 先写 WAL 即返回）。为什么是真本事——从&quot;能灌进去&quot;到&quot;exactly-once&quot;再到&quot;扛住高频小批量&quot;，三层机制是完整的。边缘真相——exactly-once 的前提是 checkpoint/2PC 配置正确且落在事务超时窗口内；小批量不攒批（不用 Group Commit 又不做客户端攒批）会触发 too many versions，compaction 压力直接拖垮写入。</li>
+<li><strong>异步物化视图与透明查询改写</strong>：是什么——异步 MV 支持全量刷新与分区增量刷新（变化分区拆成多个 INSERT OVERWRITE 顺序处理），查询可被优化器自动改写命中预聚合结果。为什么是真本事——预聚合+自动改写让&quot;加速查询&quot;不需要改业务 SQL。边缘真相——刷新是最终一致且本身是计算密集任务（官方建议用 workload group 约束其资源）；外表数据变更感知不足时，透明改写可能用陈旧数据做加速，相关开关必须在明确接受一致性风险后才开。</li>
+<li><strong>存算分离（3.0+）</strong>：是什么——数据落对象存储/HDFS，计算节点无状态化按需扩缩，存储成本显著低于三副本本地盘。为什么是真本事——弹性与成本结构是真实变化的，尤其适合潮汐负载。边缘真相——计算节点依赖本地 File Cache，缓存冷启动、对象存储限流/延迟会直接传导为查询抖动；元数据侧引入 FoundationDB 等新依赖，其成熟度边界要按自己跑的版本实测验证，不能默认&quot;官方 GA 即生产就绪&quot;。</li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<ol>
+<li><strong>Fully vectorized execution engine + columnar storage</strong>: what it is — BE storage is fully columnar with vectorized operators and MPP parallel scans. Why it&#x27;s real — high throughput on complex aggregations and wide scans, the fundamental reason Doris feels fast for reporting and ad-hoc queries. Edge truth — for ultra-high-concurrency tiny queries, FE parse/schedule and network overhead remain the bottleneck; vectorization doesn&#x27;t fix bad modeling, and blind wide-table scans are still slow.</li>
+<li><strong>MySQL protocol ecosystem compatibility</strong>: what it is — port 9030 speaks the MySQL protocol; JDBC needs only a connection-string change, and BI tools (FineBI, Tableau, etc.), ORMs, and scripts work out of the box. Why it&#x27;s real — protocol-level compatibility is genuine and sharply cuts application migration and tooling integration cost. Edge truth — protocol compatibility is not semantic compatibility: writes go through load jobs rather than ordinary INSERT transactions, and auth/transaction behavior differs entirely from MySQL; migrated applications must be re-tested end to end.</li>
+<li><strong>Streaming ingestion stack (Stream Load label idempotency + 2PC + Group Commit)</strong>: what it is — HTTP Stream Load dedups per batch by label (&quot;Label Already Exists&quot; is the idempotency hit); 2PC pre-commit/commit plus the Flink Doris Connector delivers end-to-end exactly-once; Group Commit (2.1+) batches high-frequency micro-batches into server-side transactions (sync/async modes, async returns after writing WAL). Why it&#x27;s real — the three layers cover &quot;get data in&quot;, &quot;exactly-once&quot;, and &quot;survive high-frequency micro-batches&quot; completely. Edge truth — exactly-once requires correct checkpoint/2PC configuration within transaction timeout windows; micro-batches without Group Commit (and without client-side batching) trigger too many versions, and compaction pressure kills write throughput.</li>
+<li><strong>Asynchronous materialized views with transparent query rewrite</strong>: what it is — async MVs support full and partition-incremental refresh (changed partitions split into sequential INSERT OVERWRITE jobs); the optimizer can automatically rewrite queries to hit pre-aggregations. Why it&#x27;s real — pre-aggregation plus automatic rewrite accelerates queries without changing business SQL. Edge truth — refresh is eventually consistent and itself compute-intensive (official guidance: constrain it with workload groups); with external tables, change awareness may be insufficient and transparent rewrite can serve stale data — only enable it after explicitly accepting the consistency risk.</li>
+<li><strong>Compute-storage separation (3.0+)</strong>: what it is — data lands on object storage/HDFS, compute nodes become stateless and scale on demand, with storage costs well below triple-replica local disks. Why it&#x27;s real — the elasticity and cost-structure change is genuine, especially for spiky workloads. Edge truth — compute nodes depend on local File Cache: cold-cache ramp-up and object-storage throttling/latency translate directly into query jitter; new metadata-side dependencies (FoundationDB) add failure domains whose production maturity must be validated against the version you actually run — &quot;officially GA&quot; is not &quot;production-proven&quot;.</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="深水区" data-en="Deep dives">深水区</span></h2>
+<div class="lang-block lang-zh">
+<ol>
+<li><strong>领域：架构与高可用——FE/BE 分工与 Tablet 多副本的真实代价</strong>。机制：FE 负责 SQL 解析、规划与元数据（多 FE 节点经 bdbje 同步元数据），BE 负责存储与执行；表按分区/分桶切成 Tablet，多副本分散到不同 BE。边缘行为：BE 故障或扩容会触发副本修复与数据重平衡，大量吃磁盘 IO 与网络带宽，期间查询尾延迟明显上升；FE 是元数据的风险集中域，bdbje 过半丢失/损坏后恢复极困难，依赖 image 检查点与备份。选型含义：必须把 FE 元数据当作有状态系统做定期备份（不能只备份 BE 数据目录）；重平衡期间的业务 SLO 要单独评估。来源：官方架构文档（证据强）；SRE 实践总结 thneoly/sre-learning-hub（证据中）。</li>
+<li><strong>领域：数据导入——exactly-once 的完整边界</strong>。机制：Stream Load 单批以 label 标识，同一 label 至多生效一次，重试命中 &quot;Label Already Exists&quot; 即视为成功（幂等）；Stream Load 2PC 支持预提交（数据不可见）+ 提交（可见）两阶段，Flink Doris Connector 默认开启 2PC，以 Flink checkpoint 为边界实现端到端 exactly-once；Routine Load 从 Kafka 持续消费、按 checkpoint 恢复进度。边缘行为：label 复用或过期会导致误判；checkpoint 间隔直接决定数据可见延迟；checkpoint 与 Doris 提交之间的故障窗口、事务超时、FE/BE 故障都可能打破&quot;恰好一次&quot;的假设；高频小批次不攒批会产生大量版本，触发 too many versions。选型含义：exactly-once 不是开箱即得，是 connector 版本 + 2PC/checkpoint 配置 + 表模型三者共同保证的，POC 必须做故障注入验证。来源：Flink Doris Connector 实践文章（证据中）；geaflow Doris connector 文档对 label 幂等的描述（证据中）。</li>
+<li><strong>领域：数据模型——Unique Key 的 Merge-on-Write 与 Merge-on-Read</strong>。机制：建表参数 <code>enable_unique_key_merge_on_write</code> 控制合并时机；MoR（默认）写入只追加、查询时合并多版本，写入快；MoW 写入时即完成合并、保证存储最新数据，查询快。边缘行为：MoW 有写放大，需要维护删除位图（delete bitmap），compaction 负担更重；高频小更新场景下 MoW 的写入代价可能超过查询收益。选型含义：更新频度与查询 SLA 决定选哪边：读多写少选 MoW，写入吞吐优先选 MoR；没有银弹，POC 要用真实更新比例压测。来源：社区文档与实践博客（证据中）。</li>
+<li><strong>领域：建模——分区/分桶与 Tablet 数量的平衡术</strong>。机制：分区裁剪查询范围，分桶决定并行度与数据分布，Tablet 是调度的最小单位。边缘行为：分桶键选择错误导致数据倾斜，热点 BE 成为长尾；Tablet 过多拖累 FE 元数据规模与调度开销（每个 tablet 在 BE 还有 memtable 等内存开销），过少则限制查询并行度；社区实践建议单个 tablet 大小控制在 1–10GB。选型含义：建表即架构评审，分桶键必须按真实数据分布验证倾斜度；表数量大、tablet 总数大的集群要给 FE 留足内存。来源：官方建表最佳实践的社区转述（证据中）。</li>
+<li><strong>领域：物化视图——异步刷新的延迟、资源争抢与陈旧读</strong>。机制：异步 MV 支持全量与分区增量刷新，增量刷新把变化分区拆为多个 INSERT OVERWRITE 顺序处理；透明改写默认开启（资料称自 2.1.5 起）。边缘行为：刷新延迟意味着 MV 永远是最终一致；高频刷新会与业务查询争 CPU、内存、IO；外表数据变更感知不足时，透明改写可能用陈旧数据加速查询而不自知。选型含义：用 workload group 把刷新任务的资源隔离开并错峰；对一致性敏感的核心报表，评估关闭透明改写或明确接受延迟 SLA。来源：腾讯云开发者社区文章、InfoQ 文章（证据中）。</li>
+<li><strong>领域：存算分离——弹性背后的缓存与外部依赖</strong>。机制：3.0 起计算节点无状态，数据在对象存储/HDFS，本地 File Cache 扛热数据；元数据侧引入 FoundationDB 等共享组件。边缘行为：缓存冷启动慢，对象存储 429/限流、网络抖动直接变成查询抖动；File Cache 命中率是核心观测指标，不调优等于没做存算分离；新增的元数据依赖项带来新的故障域。选型含义：适合弹性伸缩与成本敏感场景，但容量规划必须包含缓存命中率目标与对象存储 SLA；3.x 存算分离的生产成熟度按自身版本实测，不套用&quot;官方发布即稳定&quot;的假设。来源：阿里云开发者社区文章（证据中；其中具体性能数字为厂商口径，未采用）。</li>
+<li><strong>领域：升级——滚动升级的窗口与不可逆点</strong>。机制：常规滚动升级先 FE 后 BE，BE 可逐台替换。边缘行为：FE 元数据格式一旦升级不可轻易回滚；FE/BE 混部版本的兼容窗口有限，拖太久会出问题；Audit Loader 插件、周边工具链版本要同步验证。选型含义：升级前全量备份 FE 元数据与数据快照；在测试集群把&quot;升级→验证→回滚预案&quot;完整走一遍再上生产。来源：社区部署实践总结（证据中）。</li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<ol>
+<li><strong>Area: architecture &amp; HA — the real cost of the FE/BE split and Tablet multi-replica</strong>. Mechanism: FE handles SQL parsing, planning, and metadata (multiple FEs sync metadata via bdbje); BE handles storage and execution; tables are cut into Tablets by partition/bucket with replicas spread across BEs. Edge behavior: BE failure or scale-out triggers replica repair and rebalancing, consuming heavy disk IO and network bandwidth while tail latency rises; FE is the metadata risk concentration point — recovery after bdbje quorum loss/corruption is very hard and depends on image checkpoints plus backups. Selection implication: back up FE metadata on a schedule as a stateful system (not just BE data directories); evaluate business SLOs during rebalancing windows separately. Sources: official architecture docs (strong); SRE practice notes thneoly/sre-learning-hub (medium).</li>
+<li><strong>Area: ingestion — the full boundary of exactly-once</strong>. Mechanism: Stream Load batches are identified by label; a label takes effect at most once, and a retry hitting &quot;Label Already Exists&quot; is treated as success (idempotency); Stream Load 2PC supports pre-commit (invisible) + commit (visible), and the Flink Doris Connector enables 2PC by default to achieve end-to-end exactly-once bounded by Flink checkpoints; Routine Load consumes from Kafka continuously and resumes progress by checkpoint. Edge behavior: label reuse or expiry causes misjudgment; checkpoint interval directly sets data-visibility latency; the failure window between checkpoint and Doris commit, transaction timeouts, and FE/BE failures can all break the exactly-once assumption; high-frequency micro-batches without batching create version explosions (too many versions). Selection implication: exactly-once is not out-of-the-box — it is jointly guaranteed by connector version, 2PC/checkpoint configuration, and table model; POCs must include fault-injection tests. Sources: Flink Doris Connector practice articles (medium); geaflow Doris connector docs on label idempotency (medium).</li>
+<li><strong>Area: data modeling — Unique Key Merge-on-Write vs Merge-on-Read</strong>. Mechanism: the table property <code>enable_unique_key_merge_on_write</code> controls merge timing; MoR (default) appends on write and merges versions at query time (fast writes); MoW merges at write time so stored data is always latest (fast queries). Edge behavior: MoW has write amplification and must maintain delete bitmaps, with heavier compaction load; under high-frequency small updates MoW&#x27;s write cost can outweigh its query benefit. Selection implication: update frequency vs query SLA decides — MoW for read-heavy, MoR for write-throughput priority; there is no silver bullet, POC with real update ratios. Sources: community docs and practice blogs (medium).</li>
+<li><strong>Area: modeling — the balancing act of partitions/buckets/Tablet counts</strong>. Mechanism: partitions prune query scope, buckets set parallelism and data distribution, Tablets are the scheduling unit. Edge behavior: a wrong bucket key causes skew and hotspot BEs with long tails; too many Tablets bloat FE metadata and scheduling overhead (each tablet also carries memtable memory cost on BE), too few cap query parallelism; community practice suggests 1–10GB per tablet. Selection implication: table creation is architecture review — validate bucket-key skew against real data distribution; tablet-heavy clusters need generous FE memory. Sources: official best-practice docs as relayed by community (medium).</li>
+<li><strong>Area: materialized views — async refresh latency, resource contention, and stale reads</strong>. Mechanism: async MVs support full and partition-incremental refresh, with incremental refresh splitting changed partitions into sequential INSERT OVERWRITE jobs; transparent rewrite is on by default (reportedly since 2.1.5). Edge behavior: refresh latency means MVs are always eventually consistent; frequent refreshes contend with business queries for CPU/memory/IO; with external tables, insufficient change awareness lets transparent rewrite accelerate queries with stale data without anyone noticing. Selection implication: isolate refresh jobs with workload groups and schedule off-peak; for consistency-sensitive core reports, evaluate disabling transparent rewrite or explicitly accepting a delay SLA. Sources: Tencent Cloud developer article, InfoQ article (medium).</li>
+<li><strong>Area: compute-storage separation — caching and external dependencies behind elasticity</strong>. Mechanism: since 3.0, compute nodes are stateless with data on object storage/HDFS and hot data served from local File Cache; the metadata side adds shared components such as FoundationDB. Edge behavior: slow cold-cache ramp-up; object-storage 429s/throttling and network jitter become query jitter directly; File Cache hit ratio is the core metric — un-tuned separation is separation in name only; new metadata dependencies add failure domains. Selection implication: fits elastic scaling and cost-sensitive scenarios, but capacity planning must include cache-hit targets and object-storage SLAs; validate production maturity of 3.x separation against your own version rather than assuming &quot;released means stable&quot;. Sources: Alibaba Cloud developer article (medium; vendor performance figures not adopted).</li>
+<li><strong>Area: upgrades — rolling-upgrade windows and points of no return</strong>. Mechanism: conventional rolling upgrade goes FE first, then BE, with BEs replaceable one by one. Edge behavior: FE metadata format upgrades are not easily reversible; FE/BE mixed-version compatibility windows are limited and lingering too long causes issues; Audit Loader plugins and surrounding toolchains need version-synced validation. Selection implication: take full FE metadata and data snapshots before upgrading; walk the complete &quot;upgrade → verify → rollback plan&quot; path on a staging cluster before production. Sources: community deployment practice summaries (medium).</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="用户最买账的 5 点" data-en="What users love most">用户最买账的 5 点</span></h2>
+<div class="lang-block lang-zh">
+<ol>
+<li><strong>上手极快，MySQL 生态直连</strong>。为什么是真的：9030 端口讲 MySQL 协议，JDBC 改个连接串就能连，BI 工具、脚本、ORM 几乎零改造成本。极限和失效条件：协议兼容不等于语义兼容——写入要走导入作业、事务行为完全不同，复杂应用迁移仍需全链路重测，指望&quot;换个连接串就上线&quot;会踩坑。</li>
+<li><strong>报表与即席查询快</strong>。为什么是真的：列式存储 + 向量化执行 + MPP 并行，聚合扫描类查询吞吐确实高。极限和失效条件：建模错误（无脑宽表、分桶倾斜）或资源不足时一样慢；超高并发小查询受 FE 调度开销限制，&quot;快&quot;是有前提的。</li>
+<li><strong>实时导入跟得上，语义讲得清</strong>。为什么是真的：Stream Load label 幂等、2PC、Routine Load、Group Commit 四件套覆盖了从批量到流式、从 at-least-once 到 exactly-once 的需求。极限和失效条件：exactly-once 依赖 connector 与 checkpoint 的正确配置；高频小批量不用 Group Commit 又不做客户端攒批，会触发 too many versions 把写入拖死。</li>
+<li><strong>扩容与自愈相对省心</strong>。为什么是真的：BE 热扩容（注册即加入、自动重平衡），副本故障自动修复，日常运维负担低于很多自建方案。极限和失效条件：FE 元数据是有状态的，bdbje 出问题时的恢复是深水区；重平衡期间 IO/网络被吃，尾延迟会涨——&quot;省心&quot;不包括元数据层。</li>
+<li><strong>中文社区与资料多</strong>。为什么是真的：Apache 项目 + 国内大厂生产背书，官方中英文文档齐全，问答、博客、案例丰富，遇到问题容易找到前人经验。极限和失效条件：第三方博客质量参差，出现过编造配置参数（如所谓 TDE 开关）的情况，关键配置必须以官方文档为准。</li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<ol>
+<li><strong>Extremely fast onboarding via the MySQL ecosystem</strong>. Why it&#x27;s real: port 9030 speaks the MySQL protocol — JDBC needs only a connection-string change, and BI tools, scripts, and ORMs work with near-zero adaptation. Limits and failure modes: protocol compatibility is not semantic compatibility — writes go through load jobs and transaction behavior differs entirely; complex application migrations still need full end-to-end re-testing, and &quot;just change the connection string&quot; will bite.</li>
+<li><strong>Fast reporting and ad-hoc queries</strong>. Why it&#x27;s real: columnar storage + vectorized execution + MPP parallelism genuinely deliver high aggregation/scan throughput. Limits and failure modes: bad modeling (blind wide tables, skewed buckets) or insufficient resources are slow like anywhere else; ultra-high-concurrency tiny queries are bounded by FE scheduling overhead — &quot;fast&quot; has preconditions.</li>
+<li><strong>Streaming ingestion that keeps up, with clear semantics</strong>. Why it&#x27;s real: Stream Load label idempotency, 2PC, Routine Load, and Group Commit cover batch-to-streaming and at-least-once to exactly-once needs. Limits and failure modes: exactly-once depends on correct connector/checkpoint configuration; high-frequency micro-batches without Group Commit or client-side batching trigger too many versions and kill writes.</li>
+<li><strong>Relatively painless scale-out and self-healing</strong>. Why it&#x27;s real: BE hot scale-out (register and rebalance automatically) plus automatic replica repair keep day-to-day operations lighter than many self-built alternatives. Limits and failure modes: FE metadata is stateful — bdbje recovery is deep water; rebalancing eats IO/network and tail latency rises — &quot;painless&quot; excludes the metadata layer.</li>
+<li><strong>Large Chinese community and rich materials</strong>. Why it&#x27;s real: an Apache project with domestic production backing, complete Chinese/English official docs, and abundant Q&amp;A, blogs, and cases — prior art is easy to find. Limits and failure modes: third-party blog quality varies, including fabricated configuration parameters (e.g. a supposed TDE switch) — verify key settings against official docs.</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="吐槽清单" data-en="Complaints">吐槽清单</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>分类</th><th>吐槽</th><th>影响版本</th><th>状态</th></tr></thead>
+<tbody>
+<tr><td>导入</td><td>高频小批量导入不攒批会触发 too many versions，compaction 跟不上拖死写入</td><td>2.x</td><td>open</td></tr>
+<tr><td>导入</td><td>Stream Load 经 FE 8030 返回 307 重定向，客户端不跟随或不透传认证导致导入失败，新手常踩</td><td>2.x–4.x</td><td>open</td></tr>
+<tr><td>查询/资源</td><td>大查询与在线查询共享 BE 无隔离，报表曾把在线查询拖死；workload group 在 3.x 有增强但仍需手工规划</td><td>2.x–3.x</td><td>partially-fixed</td></tr>
+<tr><td>元数据</td><td>FE bdbje 元数据损坏或过半丢失后恢复困难，FE 必须当有状态系统备份</td><td>2.x–4.x</td><td>open</td></tr>
+<tr><td>物化视图</td><td>异步 MV 透明改写在外表场景下可能用陈旧数据加速查询而不自知</td><td>2.1+</td><td>open</td></tr>
+<tr><td>部署</td><td>BE 对 vm.max_map_count、ulimit 敏感，环境不达标时 BE 注册后 Alive=false，新手部署常踩</td><td>2.x–4.x</td><td>open</td></tr>
+<tr><td>安全</td><td>社区版无原生 TDE/落盘加密的官方方案，强合规场景需靠基础设施层补</td><td>4.x</td><td>open</td></tr>
+<tr><td>升级</td><td>大版本升级路径文档分散，FE 元数据升级不可逆，回滚预案全靠自建</td><td>3.x–4.x</td><td>open</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Category</th><th>Complaint</th><th>Affected versions</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Ingestion</td><td>High-frequency micro-batches without batching trigger too many versions; compaction can&#x27;t keep up and writes die</td><td>2.x</td><td>open</td></tr>
+<tr><td>Ingestion</td><td>Stream Load via FE 8030 returns 307 redirects; clients that don&#x27;t follow redirects or forward auth fail — a classic beginner trap</td><td>2.x–4.x</td><td>open</td></tr>
+<tr><td>Query/Resources</td><td>Large queries share BEs with online queries with no isolation; reports have killed online queries; workload groups improved in 3.x but still need manual planning</td><td>2.x–3.x</td><td>partially-fixed</td></tr>
+<tr><td>Metadata</td><td>FE bdbje metadata corruption or quorum loss is hard to recover from — FE must be backed up as a stateful system</td><td>2.x–4.x</td><td>open</td></tr>
+<tr><td>Materialized views</td><td>Async MV transparent rewrite can silently accelerate queries with stale data on external tables</td><td>2.1+</td><td>open</td></tr>
+<tr><td>Deployment</td><td>BE is sensitive to vm.max_map_count and ulimits; BEs show Alive=false when the environment doesn&#x27;t meet requirements — a common deployment trap</td><td>2.x–4.x</td><td>open</td></tr>
+<tr><td>Security</td><td>No official native TDE/at-rest encryption story in the community edition; strong-compliance scenarios must compensate at the infrastructure layer</td><td>4.x</td><td>open</td></tr>
+<tr><td>Upgrades</td><td>Major-upgrade paths are scattered across docs; FE metadata upgrades are irreversible, so rollback plans are all DIY</td><td>3.x–4.x</td><td>open</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="判决" data-en="Verdict">判决</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li><strong>适合谁</strong>：需要 MySQL 生态接入的实时数仓/OLAP 团队；已有 Flink/Kafka 实时链路、要求端到端 exactly-once 的数据团队；希望一套引擎同时扛&quot;高并发点查 + 复杂分析查询&quot;混合负载的；看重中文社区与国内生产案例的团队。</li>
+<li><strong>不适合谁</strong>：需要原生 TDE/落盘加密等强合规安全能力的（社区版无官方方案）；想把 Doris 当 OLTP/高并发事务库用的（它的事务是导入事务，不是通用事务）；期望 exactly-once 开箱即得、不愿投入 connector 配置与表模型调优的；接受不了 FE 元数据有状态运维负担的团队。</li>
+<li><strong>迁移成本</strong>：从 MySQL 生态迁查询层成本低（协议兼容，BI 与应用连接改动小）；但写入链路（导入作业、CDC 同步）、数据建模（分区/分桶/tablet、物化视图设计）、权限体系都要重做。从 ClickHouse/StarRocks 迁移：SQL 方言与导入语义差异需逐项验证；Doris 与 StarRocks 虽同源但已分化，不能按&quot;平滑切换&quot;假设，必须做完整 POC。</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li><strong>Good fit for</strong>: real-time data warehouse / OLAP teams wanting MySQL-ecosystem access; data teams with Flink/Kafka streaming pipelines requiring end-to-end exactly-once; mixed workloads needing one engine for both high-concurrency point queries and complex analytical queries; teams that value a Chinese community and domestic production references.</li>
+<li><strong>Not a fit for</strong>: scenarios requiring native TDE/at-rest encryption or other hard compliance security features (no official community-edition story); anyone wanting to use Doris as an OLTP/high-concurrency transactional store (its transactions are ingestion transactions, not general ones); teams expecting exactly-once out of the box without investing in connector configuration and table-model tuning; teams unwilling to carry stateful FE metadata operations.</li>
+<li><strong>Migration cost</strong>: low for the query layer from the MySQL ecosystem (protocol-compatible, small changes for BI and app connections); but write paths (load jobs, CDC sync), data modeling (partitions/buckets/tablets, MV design), and the privilege system must be rebuilt. Migrating from ClickHouse/StarRocks: SQL dialect and ingestion semantics differ item by item — verify each; Doris and StarRocks share ancestry but have diverged, so never assume a smooth switch — run a full POC.</li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="来源与待验证清单" data-en="Sources & to-be-verified">来源与待验证清单</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li><strong>last_reviewed</strong>：2026-09-29；<strong>评审版本</strong>：Apache Doris 4.1.4（以当日 GitHub Releases 最新 release 为准；4.0.x 同步维护）。</li>
+<li><strong>来源</strong>：<ul>
+<li>Apache Doris GitHub Releases（版本信息，证据强）</li>
+<li>Apache Doris 2.1 中文手册 PDF（审计、备份、HTTPS、插件机制，证据强；版本较旧，4.x 能力以官方最新文档复核为准）</li>
+<li>apache/doris-website TOC（文档结构，证据强）</li>
+<li>Flink Doris Connector 实践文章（2PC exactly-once 机制，证据中）</li>
+<li>geaflow Doris connector 文档（Stream Load label 幂等描述，证据中）</li>
+<li>SRE 学习笔记 thneoly/sre-learning-hub（常见故障与恢复，证据中）</li>
+<li>阿里云开发者社区文章（存算分离机制，证据中；性能数字为厂商口径未采用）</li>
+<li>腾讯云开发者社区、InfoQ 文章（异步物化视图机制，证据中）</li>
+<li>若干 CSDN 博客（仅作线索；其中个别配置声称如 TDE 参数无官方佐证，已排除）</li>
+</ul></li>
+<li><strong>证据等级说明</strong>：本档案中&quot;强&quot;指官方文档/GitHub 源码与 release 信息；&quot;中&quot;指社区实践文章、第三方技术博客中有机制描述但未经官方逐项复核；&quot;弱&quot;指单一样本或立场明显的厂商转载。本轮未对 4.x 官方文档做逐页复核，标记为&quot;部分支持&quot;的维度建议在 POC 前查阅对应版本官方文档确认。</li>
+<li><strong>Doris/StarRocks 分叉说明</strong>：本档案采用中立表述——两者同源于百度 Palo，2018 年 Palo 捐赠 Apache 形成 Doris，StarRocks 由早期代码线独立发展后于 2021 年开源；现为独立项目，不做&quot;谁更正统&quot;的价值判断。</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li><strong>last_reviewed</strong>: 2026-09-29; <strong>reviewed version</strong>: Apache Doris 4.1.4 (latest release on GitHub Releases as of that date; 4.0.x maintained in parallel).</li>
+<li><strong>Sources</strong>:<ul>
+<li>Apache Doris GitHub Releases (version info, strong evidence)</li>
+<li>Apache Doris 2.1 Chinese manual PDF (audit, backup, HTTPS, plugin mechanics — strong evidence; older version, verify 4.x capabilities against current official docs)</li>
+<li>apache/doris-website TOC (doc structure, strong)</li>
+<li>Flink Doris Connector practice articles (2PC exactly-once mechanics, medium)</li>
+<li>geaflow Doris connector docs (Stream Load label idempotency description, medium)</li>
+<li>SRE study notes thneoly/sre-learning-hub (common failures &amp; recovery, medium)</li>
+<li>Alibaba Cloud developer article (compute-storage separation mechanics, medium; vendor performance figures not adopted)</li>
+<li>Tencent Cloud developer and InfoQ articles (async materialized view mechanics, medium)</li>
+<li>Various CSDN blogs (leads only; unverified claims such as the TDE parameter, lacking official corroboration, were excluded)</li>
+</ul></li>
+<li><strong>Evidence grading</strong>: &quot;strong&quot; = official docs/GitHub source and release info; &quot;medium&quot; = community practice articles and third-party technical blogs with mechanism descriptions not individually re-verified against official sources; &quot;weak&quot; = single samples or vendor-slanted reposts. This round did not page through the 4.x official docs exhaustively — dimensions marked &quot;partially supported&quot; should be confirmed against the official docs of your target version before a POC.</li>
+<li><strong>Doris/StarRocks fork note</strong>: neutral wording is used throughout — both descend from Baidu Palo; Palo&#x27;s 2018 donation to Apache became Doris, while StarRocks evolved from an early code line and was open-sourced in 2021; they are independent projects today, with no &quot;who is more legitimate&quot; judgment made.</li>
+</ul>
+</div>
+</section>
+</main>
+<footer class="footer">
+  <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
+</footer>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

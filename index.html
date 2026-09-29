@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>DB 选型参考 - 首页</title>
+<link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">&#9672;</span> DB <span data-zh="选型参考" data-en="Compare">选型参考</span></a>
+    <nav class="mainnav">
+<a href="index.html" class="active" data-zh="首页" data-en="Home">首页</a>
+<a href="compare.html" class="" data-zh="维度对比" data-en="Compare">维度对比</a>
+<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
+<a href="advisor.html" class="" data-zh="AI选型" data-en="AI Selection">AI选型</a>
+    </nav>
+    <div class="cmp-tray">
+      <button id="cmp-tray-btn" type="button" class="tray-btn" aria-expanded="false" aria-haspopup="true"><span data-zh="对比" data-en="Compare">对比</span> <b class="tray-count"><i id="cmp-count">0</i>/4</b></button>
+      <div id="cmp-panel" class="tray-panel" hidden>
+        <div class="tray-sec"><span data-zh="已选" data-en="Selected">已选</span></div>
+        <div id="cmp-selected" class="tray-selected"></div>
+        <div class="tray-sec"><span data-zh="全部产品（最多选 4 款）" data-en="All products (up to 4)">全部产品（最多选 4 款）</span></div>
+        <div id="cmp-list" class="tray-list"></div>
+        <div class="tray-actions"><button id="cmp-clear" type="button" class="tray-clear"><span data-zh="清空选择" data-en="Clear selection">清空选择</span></button></div>
+      </div>
+    </div>
+    <button id="lang-toggle" class="lang-btn" type="button" aria-label="switch language">EN</button>
+  </div>
+</header>
+<main class="page">
+
+<div class="hero">
+  <h1><span data-zh="数据库选型参考" data-en="Database Selection Reference">数据库选型参考</span></h1>
+  <p class="hero-sub"><span data-zh="27 款数据库 · 14 个硬维度 · 证据分级 · 不做综合评分、不做排名" data-en="27 databases · 14 hard dimensions · evidence-graded · no aggregate scores, no rankings">27 款数据库 · 14 个硬维度 · 证据分级 · 不做综合评分、不做排名</span></p>
+  <p class="hero-note"><span data-zh="信息截至 2026-09-29。每个档案包含杀手特性、深水区、用户买账点、吐槽清单与判决，并标注每条结论的证据等级。" data-en="Information current as of 2026-09-29. Each profile covers killer features, deep dives, praised points, complaints and a verdict, with evidence levels on every claim.">信息截至 2026-09-29。每个档案包含杀手特性、深水区、用户买账点、吐槽清单与判决，并标注每条结论的证据等级。</span></p>
+</div>
+<div class="filter-bar" role="group" aria-label="filter">
+  <button type="button" class="filter-btn active" data-filter="all"><span data-zh="全部" data-en="All">全部</span> <b>27</b></button>
+  <button type="button" class="filter-btn" data-filter="oltp"><span data-zh="关系型 OLTP" data-en="Relational OLTP">关系型 OLTP</span> <b>15</b></button>
+  <button type="button" class="filter-btn" data-filter="kvdoc"><span data-zh="KV · 宽列 · 文档" data-en="KV · Wide-column · Document">KV · 宽列 · 文档</span> <b>5</b></button>
+  <button type="button" class="filter-btn" data-filter="olap"><span data-zh="OLAP" data-en="OLAP">OLAP</span> <b>4</b></button>
+  <button type="button" class="filter-btn" data-filter="aidb"><span data-zh="AI 数据库" data-en="AI databases">AI 数据库</span> <b>3</b></button>
+</div>
+<section class="domain-sec" data-domain="oltp">
+<h2 class="domain-h"><span data-zh="关系型 OLTP" data-en="Relational OLTP">关系型 OLTP</span> <b class="domain-n">15</b></h2>
+<div class="card-grid">
+<article class="card" data-domain="oltp">
+  <div class="card-top"><span class="cat cat-oltp" data-zh="关系型 OLTP" data-en="Relational OLTP">关系型 OLTP</span><button type="button" class="addcmp-btn" data-addcmp="mysql"><span class="addcmp-label">＋ 对比</span></button></div>
+  <h3><a href="profile-mysql.html">MySQL</a></h3>
+  <div class="lang-block lang-zh"><p class="card-one">MySQL Server（Oracle 旗下开源关系型数据库）</p></div>
+  <div class="lang-block lang-en" hidden><p class="card-one">MySQL Server (open-source relational database under Oracle)</p></div>
+  <a class="card-link" href="profile-mysql.html"><span data-zh="查看档案 →" data-en="View profile →">查看档案 →</span></a>
+</article>
+<article class="card" data-domain="oltp">
+  <div class="card-top"><span class="cat cat-oltp" data-zh="关系型 OLTP" data-en="Relational OLTP">关系型 OLTP</span><button type="button" class="addcmp-btn" data-addcmp="postgresql"><span class="addcmp-label">＋ 对比</span></button></div>
+  <h3><a href="profile-postgresql.html">PostgreSQL（社区版）</a></h3>
+  <div class="lang-block lang-zh"><p class="card-one">开源关系型数据库的&quot;默认选项&quot;——通用 OLTP 的水桶机，扩展生态是最深的护城河；代价是把 PG 的机制税（VACUUM、连接模型、大版本升级）内化为团队的运维能力。</p></div>
+  <div class="lang-block lang-en" hidden><p class="card-one">The &quot;default choice&quot; among open-source relational databases — a well-rounded machine for general OLTP, whose extension ecosystem is its deepest moat; the price is internalizing PG&#x27;s mechanism taxes (VACUUM, the connection model, major-version upgrades) as your team&#x27;s operational capability.</p></div>
+  <a class="card-link" href="profile-postgresql.html"><span data-zh="查看档案 →" data-en="View profile →">查看档案 →</span></a>
+</article>
+<article class="card" data-domain="oltp">
+  <div class="card-top"><span class="cat cat-oltp" data-zh="关系型 OLTP" data-en="Relational OLTP">关系型 OLTP</span><button type="button" class="addcmp-btn" data-addcmp="oracle"><span class="addcmp-label">＋ 对比</span></button></div>
+  <h3><a href="profile-oracle.html">Oracle Database（甲骨文）</a></h3>
+  <div class="lang-block lang-zh"><p class="card-one">企业级关系型数据库的事实标准与&quot;税&quot;——为四十年的正确性工程、PL/SQL 存量生态和 MAA 高可用体系付费，代价是业界最复杂的授权计量体系和最深的供应商锁定。</p></div>
+  <div class="lang-block lang-en" hidden><p class="card-one">The de facto standard of enterprise relational databases — and its &quot;tax&quot;: you pay for four decades of correctness engineering, the PL/SQL installed base, and the MAA high-availability stack; the price is the industry&#x27;s most complex licensing metering system and the deepest vendor lock-in.</p></div>
+  <a class="card-link" href="profile-oracle.html"><span data-zh="查看档案 →" data-en="View profile →">查看档案 →</span></a>
+</article>
+<article class="card" data-domain="oltp">
+  <div class="card-top"><span class="cat cat-oltp" data-zh="关系型 OLTP" data-en="Relational OLTP">关系型 OLTP</span><button type="button" class="addcmp-btn" data-addcmp="sqlserver"><span class="addcmp-label">＋ 对比</span></button></div>
+  <h3><a href="profile-sqlserver.html">档案：Microsoft SQL Server</a></h3>
+  <div class="lang-block lang-zh"><p class="card-one">微软的商业关系型数据库旗舰，Windows/.NET 生态的事实标准 OLTP 数据库；以 T-SQL、SSMS 工具链、Always On 高可用和纵深安全栈见长，授权复杂度与按核成本是选型时必须正面回答的问题。</p></div>
+  <div class="lang-block lang-en" hidden><p class="card-one">Microsoft&#x27;s flagship commercial relational database — the de facto standard OLTP database for the Windows/.NET ecosystem; known for T-SQL, the SSMS toolchain, Always On high availability, and a defense-in-depth security stack. Licensing complexity and per-core cost are questions any evaluation must answer head-on.</p></div>
+  <a class="card-link" href="profile-sqlserver.html"><span data-zh="查看档案 →" data-en="View profile →">查看档案 →</span></a>
+</article>
+<article class="card" data-domain="oltp">
+  <div class="card-top"><span class="cat cat-oltp" data-zh="关系型 OLTP" data-en="Relational OLTP">关系型 OLTP</span><button type="button" class="addcmp-btn" data-addcmp="mariadb"><span class="addcmp-label">＋ 对比</span></button></div>
+  <h3><a href="profile-mariadb.html">MariaDB</a></h3>
+  <div class="lang-block lang-zh"><p class="card-one">MySQL 的嫡系 fork（创始人 Monty Widenius 主导），2010 年代初曾是&quot;MySQL 的 drop-in 替代&quot;，如今已与 Oracle MySQL 实质分化为两个独立演进的产品；社区版慷慨、公司刚经历私有化动荡。</p></div>
+  <div class="lang-block lang-en" hidden><p class="card-one">The legitimate fork of MySQL (led by founder Monty Widenius). In the early 2010s it was &quot;a drop-in replacement for MySQL&quot;; today it has substantively diverged from Oracle MySQL into two independently evolving products. Generous community edition; the company has just gone through privatization turbulence.</p></div>
+  <a class="card-link" href="profile-mariadb.html"><span data-zh="查看档案 →" data-en="View profile →">查看档案 →</span></a>
+</article>
+<article class="card" data-domain="oltp">
+  <div class="card-top"><span class="cat cat-oltp" data-zh="关系型 OLTP" data-en="Relational OLTP">关系型 OLTP</span><button type="button" class="addcmp-btn" data-addcmp="oceanbase"><span class="addcmp-label">＋ 对比</span></button></div>
+  <h3><a href="profile-oceanbase.html">OceanBase</a></h3>
+  <div class="lang-block lang-zh"><p class="card-one">蚂蚁集团自研的原生分布式关系型数据库，为金融级核心系统而生，&quot;去 O&quot;（替代 Oracle）场景的国产首选之一。</p></div>
+  <div class="lang-block lang-en" hidden><p class="card-one">A natively distributed relational database developed in-house by Ant Group (蚂蚁集团), built for financial-grade core systems — one of the top domestic choices for &quot;qu-O&quot; (去 O, replacing Oracle) scenarios.</p></div>
+  <a class="card-link" href="profile-oceanbase.html"><span data-zh="查看档案 →" data-en="View profile →">查看档案 →</span></a>
+</article>
+<article class="card" data-domain="oltp">
+  <div class="card-top"><span class="cat cat-oltp" data-zh="关系型 OLTP" data-en="Relational OLTP">关系型 OLTP</span><button type="button" class="addcmp-btn" data-addcmp="tidb"><span class="addcmp-label">＋ 对比</span></button></div>
+  <h3><a href="profile-tidb.html">TiDB</a></h3>
+  <div class="lang-block lang-zh"><p class="card-one">PingCAP 开源的分布式 NewSQL 数据库——&quot;云原生的 MySQL 扩展方案&quot;：让 MySQL 技术栈的团队不做分库分表、不搭 ETL，就拿到水平扩展和实时 HTAP，但要为架构的固定成本和运维复杂度付费。</p></div>
+  <div class="lang-block lang-en" hidden><p class="card-one">PingCAP&#x27;s open-source distributed NewSQL database — the &quot;cloud-native MySQL scaling solution&quot;: it gives MySQL-based teams horizontal scaling and real-time HTAP without sharding or building ETL pipelines, but you pay for it in fixed architectural cost and operational complexity.</p></div>
+  <a class="card-link" href="profile-tidb.html"><span data-zh="查看档案 →" data-en="View profile →">查看档案 →</span></a>
+</article>
+<article class="card" data-domain="oltp">
+  <div class="card-top"><span class="cat cat-oltp" data-zh="关系型 OLTP" data-en="Relational OLTP">关系型 OLTP</span><button type="button" class="addcmp-btn" data-addcmp="edb"><span class="addcmp-label">＋ 对比</span></button></div>
+  <h3><a href="profile-edb.html">EDB Postgres / EDB Postgres Advanced Server（EPAS）</a></h3>
+  <div class="lang-block lang-zh"><p class="card-one">EDB Postgres Advanced Server 是把 PostgreSQL 内核、Oracle 迁移兼容层和商业支持 / HA / 安全工具打包成一套企业平台的商业发行版；它的价值不在于替代社区 PostgreSQL，而在于**降低大型 Oracle 迁移与受监管企业标准化 Postgres 的组织风险**。</p></div>
+  <div class="lang-block lang-en" hidden><p class="card-one">EDB Postgres Advanced Server is a commercial distribution that bundles the PostgreSQL kernel, an Oracle-migration compatibility layer, and commercial support / HA / security tooling into one enterprise platform. Its value is not in replacing community PostgreSQL, but in **reducing organizational risk for large Oracle migrations and for regulated enterprises standardizing on Postgres**.</p></div>
+  <a class="card-link" href="profile-edb.html"><span data-zh="查看档案 →" data-en="View profile →">查看档案 →</span></a>
+</article>
+<article class="card" data-domain="oltp">
+  <div class="card-top"><span class="cat cat-oltp" data-zh="关系型 OLTP" data-en="Relational OLTP">关系型 OLTP</span><button type="button" class="addcmp-btn" data-addcmp="cockroachdb"><span class="addcmp-label">＋ 对比</span></button></div>
+  <h3><a href="profile-cockroachdb.html">CockroachDB</a></h3>
+  <div class="lang-block lang-zh"><p class="card-one">Cockroach Labs 出品的 Spanner 式强一致分布式 SQL 数据库：默认 Serializable、跨地域多活接入、PostgreSQL 线协议——但&quot;多活接入&quot;不等于&quot;跨洋写本地完成&quot;，&quot;PG 兼容&quot;不等于&quot;PostgreSQL&quot;。</p></div>
+  <div class="lang-block lang-en" hidden><p class="card-one">A Spanner-style strongly consistent distributed SQL database from Cockroach Labs: Serializable by default, multi-active access across regions, PostgreSQL wire protocol — but &quot;multi-active access&quot; does not mean &quot;cross-ocean writes complete locally,&quot; and &quot;PG compatible&quot; does not mean &quot;PostgreSQL.&quot;</p></div>
+  <a class="card-link" href="profile-cockroachdb.html"><span data-zh="查看档案 →" data-en="View profile →">查看档案 →</span></a>
+</article>
+<article class="card" data-domain="oltp">
+  <div class="card-top"><span class="cat cat-oltp" data-zh="关系型 OLTP" data-en="Relational OLTP">关系型 OLTP</span><button type="button" class="addcmp-btn" data-addcmp="yugabytedb"><span class="addcmp-label">＋ 对比</span></button></div>
+  <h3><a href="profile-yugabytedb.html">YugabyteDB</a></h3>
+  <div class="lang-block lang-zh"><p class="card-one">美国 Yugabyte 公司的分布式 SQL 数据库：把 PostgreSQL 的查询层（C 代码）直接搬到自研的 DocDB 分布式存储（per-tablet Raft + RocksDB）之上，&quot;PG 方言、水平扩展、多地域&quot;是它的三张牌；2019 年起核心 100% Apache 2.0，与 2026 年源码转私有的 CockroachDB 形成许可证上的硬分水岭。</p></div>
+  <div class="lang-block lang-en" hidden><p class="card-one">A distributed SQL database from US-based Yugabyte, Inc.: it lifts PostgreSQL&#x27;s query layer (the C code) directly onto a self-developed distributed DocDB storage layer (per-tablet Raft + RocksDB). &quot;PG dialect, horizontal scale-out, and multi-region&quot; are its three calling cards; since 2019 its core has been 100% Apache 2.0, forming a hard licensing watershed against CockroachDB, which took its new source private in 2026.</p></div>
+  <a class="card-link" href="profile-yugabytedb.html"><span data-zh="查看档案 →" data-en="View profile →">查看档案 →</span></a>
+</article>
+<article class="card" data-domain="oltp">
+  <div class="card-top"><span class="cat cat-oltp" data-zh="关系型 OLTP" data-en="Relational OLTP">关系型 OLTP</span><button type="button" class="addcmp-btn" data-addcmp="aurora"><span class="addcmp-label">＋ 对比</span></button></div>
+  <h3><a href="profile-aurora.html">档案：Amazon Aurora</a></h3>
+  <div class="lang-block lang-zh"><p class="card-one">AWS 的云原生关系型数据库：计算与存储分离、存储层 6 副本 quorum、MySQL / PostgreSQL 双协议兼容的**全托管**数据库，&quot;不想运维数据库&quot;的团队在 AWS 上的默认答案。</p></div>
+  <div class="lang-block lang-en" hidden><p class="card-one">AWS&#x27;s cloud-native relational database: compute-storage separation, a 6-copy quorum storage layer, fully managed with MySQL / PostgreSQL dual-protocol compatibility — the default answer for teams on AWS that &quot;don&#x27;t want to operate a database&quot;.</p></div>
+  <a class="card-link" href="profile-aurora.html"><span data-zh="查看档案 →" data-en="View profile →">查看档案 →</span></a>
+</article>
+<article class="card" data-domain="oltp">
+  <div class="card-top"><span class="cat cat-oltp" data-zh="关系型 OLTP" data-en="Relational OLTP">关系型 OLTP</span><button type="button" class="addcmp-btn" data-addcmp="alloydb"><span class="addcmp-label">＋ 对比</span></button></div>
+  <h3><a href="profile-alloydb.html">Google AlloyDB（AlloyDB for PostgreSQL）</a></h3>
+  <div class="lang-block lang-zh"><p class="card-one">Google Cloud 的 PG 兼容云原生数据库：计算存储分离 + 行存列存双引擎，定位是&quot;GCP 上的 Aurora，但只做 PostgreSQL 且带 HTAP&quot;；另有可下载的 AlloyDB Omni 版本跑在任意环境。</p></div>
+  <div class="lang-block lang-en" hidden><p class="card-one">Google Cloud&#x27;s PostgreSQL-compatible cloud-native database: disaggregated compute and storage + dual row-store/column-store engines, positioned as &quot;Aurora on GCP, but PostgreSQL-only with HTAP&quot;; also available as a downloadable AlloyDB Omni edition that runs in any environment.</p></div>
+  <a class="card-link" href="profile-alloydb.html"><span data-zh="查看档案 →" data-en="View profile →">查看档案 →</span></a>
+</article>
+<article class="card" data-domain="oltp">
+  <div class="card-top"><span class="cat cat-oltp" data-zh="关系型 OLTP" data-en="Relational OLTP">关系型 OLTP</span><button type="button" class="addcmp-btn" data-addcmp="polardb"><span class="addcmp-label">＋ 对比</span></button></div>
+  <h3><a href="profile-polardb.html">PolarDB</a></h3>
+  <div class="lang-block lang-zh"><p class="card-one">阿里云自研的云原生关系型数据库，云上托管、对标 AWS Aurora 路线：计算与存储彻底分离（共享存储一写多读），三引擎（MySQL / PostgreSQL / Oracle 兼容）共用同一套 PolarStore 分布式存储底座；2017 年公测，&quot;云原生存算分离&quot;在国内云厂商中最早规模商用的实践者之一。</p></div>
+  <div class="lang-block lang-en" hidden><p class="card-one">Alibaba Cloud&#x27;s self-developed cloud-native relational database, a managed cloud offering on the same track as AWS Aurora: complete compute-storage separation (shared storage, single-writer/multi-reader), with three engines (MySQL / PostgreSQL / Oracle-compatible) sharing the same PolarStore distributed storage foundation; public beta in 2017 — one of the earliest large-scale commercial practices of &quot;cloud-native compute-storage separation&quot; among Chinese cloud vendors.</p></div>
+  <a class="card-link" href="profile-polardb.html"><span data-zh="查看档案 →" data-en="View profile →">查看档案 →</span></a>
+</article>
+<article class="card" data-domain="oltp">
+  <div class="card-top"><span class="cat cat-oltp" data-zh="关系型 OLTP" data-en="Relational OLTP">关系型 OLTP</span><button type="button" class="addcmp-btn" data-addcmp="tdsql"><span class="addcmp-label">＋ 对比</span></button></div>
+  <h3><a href="profile-tdsql.html">档案：腾讯云 TDSQL</a></h3>
+  <div class="lang-block lang-zh"><p class="card-one">腾讯云的企业级数据库**产品家族**：以金融级分布式 OLTP 起家（TDSQL for MySQL），逐步长出云原生 Serverless（TDSQL-C）、PG/Oracle 双模兼容（TDSQL for PostgreSQL）、HTAP 与多模态新引擎（TDSQL Boundless）——&quot;在腾讯云上用数据库&quot;的完整答案，但每个答案都深度绑定腾讯云。</p></div>
+  <div class="lang-block lang-en" hidden><p class="card-one">Tencent Cloud&#x27;s enterprise-grade database **product family**: it started as financial-grade distributed OLTP (TDSQL for MySQL) and grew into cloud-native Serverless (TDSQL-C), PG/Oracle dual-mode compatibility (TDSQL for PostgreSQL), and HTAP plus a new multi-model engine (TDSQL Boundless) — the complete answer to &quot;which database do I use on Tencent Cloud&quot;, except every answer binds you deeply to Tencent Cloud.</p></div>
+  <a class="card-link" href="profile-tdsql.html"><span data-zh="查看档案 →" data-en="View profile →">查看档案 →</span></a>
+</article>
+<article class="card" data-domain="oltp">
+  <div class="card-top"><span class="cat cat-oltp" data-zh="关系型 OLTP" data-en="Relational OLTP">关系型 OLTP</span><button type="button" class="addcmp-btn" data-addcmp="spanner"><span class="addcmp-label">＋ 对比</span></button></div>
+  <h3><a href="profile-spanner.html">Google Spanner</a></h3>
+  <div class="lang-block lang-zh"><p class="card-one">Google Cloud 的全球分布式关系型数据库，用 TrueTime（GPS + 原子钟授时）把&quot;跨洲线性一致性&quot;做成工程现实——它是极少数把 external consistency（严格可串行化）做到全球 OLTP 规模的系统，代价是 GCP 锁定、高起步门槛和&quot;建模即分片&quot;的设计纪律。</p></div>
+  <div class="lang-block lang-en" hidden><p class="card-one">Google Cloud&#x27;s globally distributed relational database, which uses TrueTime (GPS + atomic-clock timekeeping) to make &quot;cross-continent linear consistency&quot; an engineering reality — it is one of the very few systems to bring external consistency (strict serializability) to global OLTP scale, at the cost of GCP lock-in, a high entry floor, and the design discipline of &quot;modeling is sharding&quot;.</p></div>
+  <a class="card-link" href="profile-spanner.html"><span data-zh="查看档案 →" data-en="View profile →">查看档案 →</span></a>
+</article>
+</div>
+</section>
+<section class="domain-sec" data-domain="kvdoc">
+<h2 class="domain-h"><span data-zh="KV · 宽列 · 文档" data-en="KV · Wide-column · Document">KV · 宽列 · 文档</span> <b class="domain-n">5</b></h2>
+<div class="card-grid">
+<article class="card" data-domain="kvdoc">
+  <div class="card-top"><span class="cat cat-kvdoc" data-zh="KV · 宽列 · 文档" data-en="KV · Wide-column · Document">KV · 宽列 · 文档</span><button type="button" class="addcmp-btn" data-addcmp="redis-valkey"><span class="addcmp-label">＋ 对比</span></button></div>
+  <h3><a href="profile-redis-valkey.html">Redis / Valkey</a></h3>
+  <div class="lang-block lang-zh"><p class="card-one">内存数据结构存储的事实标准：用&quot;全内存 + 单线程事件循环 + 丰富数据结构&quot;换取亚毫秒延迟；2024 年许可证风波后分裂为 Redis（Redis Inc.，三许可）与 Valkey（Linux 基金会，BSD）两条线，协议兼容但新特性渐行渐远。</p></div>
+  <div class="lang-block lang-en" hidden><p class="card-one">The de facto standard for in-memory data structure stores: trading &quot;all-in-memory + single-threaded event loop + rich data structures&quot; for sub-millisecond latency; after the 2024 licensing upheaval it split into two lines — Redis (Redis Inc., triple-licensed) and Valkey (Linux Foundation, BSD) — protocol-compatible but with new features drifting apart.</p></div>
+  <a class="card-link" href="profile-redis-valkey.html"><span data-zh="查看档案 →" data-en="View profile →">查看档案 →</span></a>
+</article>
+<article class="card" data-domain="kvdoc">
+  <div class="card-top"><span class="cat cat-kvdoc" data-zh="KV · 宽列 · 文档" data-en="KV · Wide-column · Document">KV · 宽列 · 文档</span><button type="button" class="addcmp-btn" data-addcmp="etcd"><span class="addcmp-label">＋ 对比</span></button></div>
+  <h3><a href="profile-etcd.html">etcd</a></h3>
+  <div class="lang-block lang-zh"><p class="card-one">CNCF 毕业的分布式 KV 存储，Raft 强一致，主打元数据 / 协调 / 配置场景——Kubernetes 的元数据底座。&quot;无聊的可靠性&quot;本身：把野心限制在元数据，它几乎不背锅；把野心放到数据面，它的每个设计约束都会变成你的故障复盘标题。</p></div>
+  <div class="lang-block lang-en" hidden><p class="card-one">CNCF-graduated distributed KV store with Raft strong consistency, aimed at metadata / coordination / configuration scenarios — the metadata foundation of Kubernetes. &quot;Boring reliability&quot; itself: keep your ambitions within metadata and it almost never takes the blame; point your ambitions at the data plane and every one of its design constraints becomes a title in your postmortem.</p></div>
+  <a class="card-link" href="profile-etcd.html"><span data-zh="查看档案 →" data-en="View profile →">查看档案 →</span></a>
+</article>
+<article class="card" data-domain="kvdoc">
+  <div class="card-top"><span class="cat cat-kvdoc" data-zh="KV · 宽列 · 文档" data-en="KV · Wide-column · Document">KV · 宽列 · 文档</span><button type="button" class="addcmp-btn" data-addcmp="dynamodb"><span class="addcmp-label">＋ 对比</span></button></div>
+  <h3><a href="profile-dynamodb.html">Amazon DynamoDB</a></h3>
+  <div class="lang-block lang-zh"><p class="card-one">AWS 的 serverless KV/文档数据库：按分区键哈希分片、单毫秒延迟与表规模无关、多 Region 可多活——但&quot;无运维&quot;的代价是把 DBA 的工作换成了容量建模与账单工程，访问模式设计错了比选错数据库更贵。</p></div>
+  <div class="lang-block lang-en" hidden><p class="card-one">AWS&#x27;s serverless KV/document database: sharded by partition-key hash, single-digit-millisecond latency independent of table size, multi-active across regions — but &quot;no ops&quot; comes at the cost of turning the DBA&#x27;s job into capacity modeling and bill engineering, and designing your access patterns wrong costs more than picking the wrong database.</p></div>
+  <a class="card-link" href="profile-dynamodb.html"><span data-zh="查看档案 →" data-en="View profile →">查看档案 →</span></a>
+</article>
+<article class="card" data-domain="kvdoc">
+  <div class="card-top"><span class="cat cat-kvdoc" data-zh="KV · 宽列 · 文档" data-en="KV · Wide-column · Document">KV · 宽列 · 文档</span><button type="button" class="addcmp-btn" data-addcmp="cassandra-scylladb"><span class="addcmp-label">＋ 对比</span></button></div>
+  <h3><a href="profile-cassandra-scylladb.html">Apache Cassandra / ScyllaDB</a></h3>
+  <div class="lang-block lang-zh"><p class="card-one">宽列分布式 NoSQL 的鼻祖与它的 C++ 重写：为&quot;写密集、永远在线、线性扩展&quot;而生的最终一致性存储。Cassandra 是生态与许可证中立性的代表；ScyllaDB 是单节点性能与尾延迟的代表，代价是 2025 年起的 source-available 许可证与更小的社区。</p></div>
+  <div class="lang-block lang-en" hidden><p class="card-one">The original wide-column distributed NoSQL and its C++ rewrite: storage built for &quot;write-heavy, always-on, linearly scalable&quot; workloads, with tunable consistency on an eventually consistent base. Cassandra stands for ecosystem maturity and license neutrality; ScyllaDB stands for per-node performance and tail-latency control — at the cost of a source-available license since 2025 and a smaller community.</p></div>
+  <a class="card-link" href="profile-cassandra-scylladb.html"><span data-zh="查看档案 →" data-en="View profile →">查看档案 →</span></a>
+</article>
+<article class="card" data-domain="kvdoc">
+  <div class="card-top"><span class="cat cat-kvdoc" data-zh="KV · 宽列 · 文档" data-en="KV · Wide-column · Document">KV · 宽列 · 文档</span><button type="button" class="addcmp-btn" data-addcmp="mongodb"><span class="addcmp-label">＋ 对比</span></button></div>
+  <h3><a href="profile-mongodb.html">MongoDB</a></h3>
+  <div class="lang-block lang-zh"><p class="card-one">文档型数据库的事实标准：BSON 文档 + 灵活 Schema + 原生分片，把&quot;上线快&quot;做到了极致——但&quot;没有 Schema&quot;不等于&quot;不需要数据治理&quot;，SSPL 许可证意味着它早已不是传统意义上的开源数据库。</p></div>
+  <div class="lang-block lang-en" hidden><p class="card-one">The de facto standard for document databases: BSON documents + flexible schema + native sharding, taking &quot;time-to-launch&quot; to the extreme — but &quot;no schema&quot; does not mean &quot;no data governance,&quot; and the SSPL license means it is long past being an open-source database in the traditional sense.</p></div>
+  <a class="card-link" href="profile-mongodb.html"><span data-zh="查看档案 →" data-en="View profile →">查看档案 →</span></a>
+</article>
+</div>
+</section>
+<section class="domain-sec" data-domain="olap">
+<h2 class="domain-h"><span data-zh="OLAP" data-en="OLAP">OLAP</span> <b class="domain-n">4</b></h2>
+<div class="card-grid">
+<article class="card" data-domain="olap">
+  <div class="card-top"><span class="cat cat-olap" data-zh="OLAP" data-en="OLAP">OLAP</span><button type="button" class="addcmp-btn" data-addcmp="clickhouse"><span class="addcmp-label">＋ 对比</span></button></div>
+  <h3><a href="profile-clickhouse.html">ClickHouse</a></h3>
+  <div class="lang-block lang-zh"><p class="card-one">面向高吞吐追加写和大规模扫描聚合的开源列式 OLAP 数据库——&quot;单机极致效率的实时分析引擎&quot;：以列存、向量化执行和 MergeTree 为核心，一台机器就能打出传统数仓集群的扫描吞吐；代价是几乎没有通用 ACID 事务、高频更新/删除是架构级税、分布式复制与 DDL 运维得自己设计好。</p></div>
+  <div class="lang-block lang-en" hidden><p class="card-one">An open-source columnar OLAP database for high-throughput append writes and massive scan-aggregation — &quot;a real-time analytics engine with extreme single-node efficiency&quot;: columnar storage, vectorized execution and MergeTree at its core, delivering scan throughput on one box that row-store warehouses need clusters for; the price is almost no general-purpose ACID transactions, architecturally expensive high-frequency updates/deletes, and distributed replication plus DDL operations you must design yourself.</p></div>
+  <a class="card-link" href="profile-clickhouse.html"><span data-zh="查看档案 →" data-en="View profile →">查看档案 →</span></a>
+</article>
+<article class="card" data-domain="olap">
+  <div class="card-top"><span class="cat cat-olap" data-zh="OLAP" data-en="OLAP">OLAP</span><button type="button" class="addcmp-btn" data-addcmp="doris"><span class="addcmp-label">＋ 对比</span></button></div>
+  <h3><a href="profile-doris.html">Apache Doris</a></h3>
+  <div class="lang-block lang-zh"><p class="card-one">Apache Doris 是 Apache 顶级项目（源自百度 Palo）的 MPP 实时分析型数据库：列式存储 + 全向量化执行引擎，MySQL 协议接入，主打&quot;高并发点查与复杂 OLAP 查询统一服务&quot;，是实时数仓与统一分析场景的主流选项之一。</p></div>
+  <div class="lang-block lang-en" hidden><p class="card-one">Apache Doris is an Apache top-level project (originating from Baidu Palo), an MPP real-time analytical database: columnar storage plus a fully vectorized execution engine, accessed via the MySQL protocol. It targets &quot;unified serving of high-concurrency point queries and complex OLAP queries&quot; and is a mainstream choice for real-time data warehousing and unified analytics.</p></div>
+  <a class="card-link" href="profile-doris.html"><span data-zh="查看档案 →" data-en="View profile →">查看档案 →</span></a>
+</article>
+<article class="card" data-domain="olap">
+  <div class="card-top"><span class="cat cat-olap" data-zh="OLAP" data-en="OLAP">OLAP</span><button type="button" class="addcmp-btn" data-addcmp="starrocks"><span class="addcmp-label">＋ 对比</span></button></div>
+  <h3><a href="profile-starrocks.html">StarRocks</a></h3>
+  <div class="lang-block lang-zh"><p class="card-one">源自百度 Palo / Doris 代码基的极速 MPP 分析型数据库——为&quot;多表关联的实时报表 + 湖仓一体&quot;而生：全向量化执行引擎配 Cascades 风格 CBO，主键模型做实时 upsert，存算分离做弹性；代价是 FE 中心化元数据、tablet 规划和主键内存这些&quot;建表第一天就写好&quot;的约束。</p></div>
+  <div class="lang-block lang-en" hidden><p class="card-one">A blazing-fast MPP analytical database with roots in the Baidu Palo / Doris codebase — built for &quot;real-time reporting over many joined tables plus lakehouse in one engine&quot;: a fully vectorized execution engine with a Cascades-style CBO, a primary-key model for real-time upserts, and shared-data storage for elasticity; the price is front-loading constraints like FE-centralized metadata, tablet planning, and primary-key memory — decisions made on day one of table design.</p></div>
+  <a class="card-link" href="profile-starrocks.html"><span data-zh="查看档案 →" data-en="View profile →">查看档案 →</span></a>
+</article>
+<article class="card" data-domain="olap">
+  <div class="card-top"><span class="cat cat-olap" data-zh="OLAP" data-en="OLAP">OLAP</span><button type="button" class="addcmp-btn" data-addcmp="duckdb"><span class="addcmp-label">＋ 对比</span></button></div>
+  <h3><a href="profile-duckdb.html">DuckDB</a></h3>
+  <div class="lang-block lang-zh"><p class="card-one">&quot;分析型 SQLite&quot;——跑在进程里的单机列存 OLAP 引擎：pip install 即用、向量化执行吃满多核、直接对 Parquet/CSV/S3 做 SQL，把&quot;不够上数仓、pandas 又太慢&quot;的中间地带一口吃掉；代价是单写者、单机天花板，以及所有服务端能力（认证、审计、多用户）一概没有。</p></div>
+  <div class="lang-block lang-en" hidden><p class="card-one">The &quot;analytical SQLite&quot; — an in-process, single-node columnar OLAP engine: `pip install` and go, vectorized execution saturating all cores, SQL directly against Parquet/CSV/S3. It devours the middle ground between &quot;not enough for a warehouse, too slow in pandas&quot; — at the cost of a single-writer lock, a single-node ceiling, and zero server-side capabilities (auth, audit, multi-user).</p></div>
+  <a class="card-link" href="profile-duckdb.html"><span data-zh="查看档案 →" data-en="View profile →">查看档案 →</span></a>
+</article>
+</div>
+</section>
+<section class="domain-sec" data-domain="aidb">
+<h2 class="domain-h"><span data-zh="AI 数据库" data-en="AI databases">AI 数据库</span> <b class="domain-n">3</b></h2>
+<div class="card-grid">
+<article class="card" data-domain="aidb">
+  <div class="card-top"><span class="cat cat-aidb" data-zh="AI 数据库" data-en="AI databases">AI 数据库</span><button type="button" class="addcmp-btn" data-addcmp="milvus"><span class="addcmp-label">＋ 对比</span></button></div>
+  <h3><a href="profile-milvus.html">Milvus</a></h3>
+  <div class="lang-block lang-zh"><p class="card-one">Zilliz 开源的分布式向量数据库，为十亿级向量检索而生：索引类型矩阵（HNSW / IVF / DiskANN / 稀疏 / BM25）和存算分离架构是它的真本事；但它把复杂度拆成协调、消息队列、对象存储、segment、索引构建等多条链路——数据量尚未逼近 pgvector 边界时，这些能力只是额外的运维税。</p></div>
+  <div class="lang-block lang-en" hidden><p class="card-one">Zilliz&#x27;s open-source distributed vector database, built for billion-scale vector search: its index-type matrix (HNSW / IVF / DiskANN / sparse / BM25) and storage-compute separation are the real deal — but the complexity is split across coordination, message queues, object storage, segments, and index building. If your data volume hasn&#x27;t pushed past pgvector&#x27;s limits, those capabilities are just extra ops tax.</p></div>
+  <a class="card-link" href="profile-milvus.html"><span data-zh="查看档案 →" data-en="View profile →">查看档案 →</span></a>
+</article>
+<article class="card" data-domain="aidb">
+  <div class="card-top"><span class="cat cat-aidb" data-zh="AI 数据库" data-en="AI databases">AI 数据库</span><button type="button" class="addcmp-btn" data-addcmp="weaviate"><span class="addcmp-label">＋ 对比</span></button></div>
+  <h3><a href="profile-weaviate.html">Weaviate</a></h3>
+  <div class="lang-block lang-zh"><p class="card-one">Weaviate 是一个开源的 AI 原生向量数据库：把向量检索、BM25 混合搜索、embedding/重排/生成模型模块和多租户生命周期收进同一个系统，甜蜜点是 RAG 与语义搜索平台，而不是事务主库。</p></div>
+  <div class="lang-block lang-en" hidden><p class="card-one">Weaviate is an open-source, AI-native vector database: it folds vector retrieval, BM25 hybrid search, embedding/rerank/generation model modules, and multi-tenant lifecycle management into one system. Its sweet spot is RAG and semantic-search platforms — not a transactional system of record.</p></div>
+  <a class="card-link" href="profile-weaviate.html"><span data-zh="查看档案 →" data-en="View profile →">查看档案 →</span></a>
+</article>
+<article class="card" data-domain="aidb">
+  <div class="card-top"><span class="cat cat-aidb" data-zh="AI 数据库" data-en="AI databases">AI 数据库</span><button type="button" class="addcmp-btn" data-addcmp="qdrant"><span class="addcmp-label">＋ 对比</span></button></div>
+  <h3><a href="profile-qdrant.html">Qdrant</a></h3>
+  <div class="lang-block lang-zh"><p class="card-one">Qdrant Solutions（柏林）用 Rust 写的开源向量数据库——为 AI 应用（RAG、语义检索、推荐、智能体记忆）提供&quot;带丰富元数据过滤的低延迟近似最近邻搜索&quot;：核心卖点是 filterable HNSW、多向量/稀疏向量与服务端混合检索融合、可调的量化压缩矩阵，以及 payload 驱动的多租户模型；但它是一个**检索层的派生索引**，不是事实主库——没有多记录 ACID 事务、没有连续 PITR，分布式一致性是&quot;元数据走 Raft 强一致、点数据可调确认&quot;的两层模型，选型时必须按这个心智使用它。</p></div>
+  <div class="lang-block lang-en" hidden><p class="card-one">An open-source vector database written in Rust by Qdrant Solutions (Berlin) — built for AI applications (RAG, semantic search, recommendations, agent memory) that need &quot;low-latency approximate nearest-neighbor search with rich metadata filtering&quot;: its core strengths are filterable HNSW, multi-vector/sparse vectors with server-side hybrid retrieval fusion, a tunable quantization matrix, and a payload-driven multitenancy model; but it is a **derived index at the retrieval layer**, not a system of record — no multi-record ACID transactions, no continuous PITR, and a two-tier distributed consistency model (&quot;Raft for metadata, tunable acknowledgements for point data&quot;) that you must internalize to use it correctly.</p></div>
+  <a class="card-link" href="profile-qdrant.html"><span data-zh="查看档案 →" data-en="View profile →">查看档案 →</span></a>
+</article>
+</div>
+</section>
+
+</main>
+<footer class="footer">
+  <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
+</footer>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
