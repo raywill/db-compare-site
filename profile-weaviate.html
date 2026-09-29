@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Weaviate - DB 选型参考</title>
+<link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">&#9672;</span> DB <span data-zh="选型参考" data-en="Compare">选型参考</span></a>
+    <nav class="mainnav">
+<a href="index.html" class="active" data-zh="首页" data-en="Home">首页</a>
+<a href="compare.html" class="" data-zh="维度对比" data-en="Compare">维度对比</a>
+<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
+<a href="advisor.html" class="" data-zh="AI选型" data-en="AI Selection">AI选型</a>
+    </nav>
+    <div class="cmp-tray">
+      <button id="cmp-tray-btn" type="button" class="tray-btn" aria-expanded="false" aria-haspopup="true"><span data-zh="对比" data-en="Compare">对比</span> <b class="tray-count"><i id="cmp-count">0</i>/4</b></button>
+      <div id="cmp-panel" class="tray-panel" hidden>
+        <div class="tray-sec"><span data-zh="已选" data-en="Selected">已选</span></div>
+        <div id="cmp-selected" class="tray-selected"></div>
+        <div class="tray-sec"><span data-zh="全部产品（最多选 4 款）" data-en="All products (up to 4)">全部产品（最多选 4 款）</span></div>
+        <div id="cmp-list" class="tray-list"></div>
+        <div class="tray-actions"><button id="cmp-clear" type="button" class="tray-clear"><span data-zh="清空选择" data-en="Clear selection">清空选择</span></button></div>
+      </div>
+    </div>
+    <button id="lang-toggle" class="lang-btn" type="button" aria-label="switch language">EN</button>
+  </div>
+</header>
+<main class="page">
+<div class="profile-hero">
+  <a class="back" href="index.html"><span data-zh="← 返回首页" data-en="← Back to home">← 返回首页</span></a>
+  <h1>Weaviate</h1>
+  <div class="meta-row"><span class="cat cat-aidb" data-zh="AI 数据库" data-en="AI databases">AI 数据库</span> </div>
+  <p class="oneliner"><div class="lang-block lang-zh">
+<p>Weaviate 是一个开源的 AI 原生向量数据库：把向量检索、BM25 混合搜索、embedding/重排/生成模型模块和多租户生命周期收进同一个系统，甜蜜点是 RAG 与语义搜索平台，而不是事务主库。</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<p>Weaviate is an open-source, AI-native vector database: it folds vector retrieval, BM25 hybrid search, embedding/rerank/generation model modules, and multi-tenant lifecycle management into one system. Its sweet spot is RAG and semantic-search platforms — not a transactional system of record.</p>
+</div></p>
+  <div class="ai-dive-row" data-product="Weaviate">
+    <span class="ai-dive-label" data-zh="用 AI 深挖这款：" data-en="Deep-dive with AI:">用 AI 深挖这款：</span>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('chatgpt', this)">ChatGPT <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('grok', this)">Grok <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('claude', this)">Claude <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn addcmp-btn" data-addcmp="weaviate"><span class="addcmp-label">＋ 对比</span></button>
+  </div>
+  <div class="legend"><span class="legend-label" data-zh="证据等级：" data-en="Evidence levels: ">证据等级：</span><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></div>
+</div>
+<section class="doc-section">
+<h2><span data-zh="基本信息" data-en="Basics">基本信息</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li><strong>产品</strong>：Weaviate（AI 原生向量数据库 / AI 搜索平台）</li>
+<li><strong>公司</strong>：Weaviate（荷兰创立，总部阿姆斯特丹；厂商口径：创立于 2019 年）</li>
+<li><strong>实现语言</strong>：Go<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li><strong>许可证</strong>：核心开源，BSD-3-Clause（官方仓库 LICENSE；截至本次评审未发现改为 BSL/SSPL 等限制性许可的证据）</li>
+<li><strong>评审版本</strong>：v1.39（官方博客发布于 2026-08-27；配套 Python 客户端 v4.23.1）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li><strong>部署形态</strong>：自建（Docker / Kubernetes Helm / 二进制）、Weaviate Cloud（Serverless、Dedicated、BYOC）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li><strong>数据模型</strong>：Collection（旧称 Class）→ Object（JSON 文档 + 属性）→ 向量（支持 named vectors / 多向量）；对象间可建 cross-reference；每个 collection 可配 vectorizer 模块、向量索引类型、距离度量<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li><strong>主要接口</strong>：REST（:8080）、GraphQL、gRPC（:50051；v1.23 起官方推荐高吞吐数据路径走 gRPC）（官方文档；社区实测）</li>
+<li><strong>官网</strong>：weaviate.io；<strong>仓库</strong>：github.com/weaviate/weaviate</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li><strong>Product</strong>: Weaviate (AI-native vector database / AI search platform)</li>
+<li><strong>Company</strong>: Weaviate (founded in Amsterdam, Netherlands; vendor states founded in 2019)</li>
+<li><strong>Language</strong>: Go <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li><strong>License</strong>: Core is open source under BSD-3-Clause (repo LICENSE; no evidence of a switch to BSL/SSPL-style restrictive licensing found as of this review)</li>
+<li><strong>Reviewed version</strong>: v1.39 (official blog, 2026-08-27; Python client v4.23.1) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li><strong>Deployment</strong>: self-hosted (Docker / Kubernetes Helm / binaries), Weaviate Cloud (Serverless, Dedicated, BYOC) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li><strong>Data model</strong>: Collection (formerly Class) → Object (JSON document + properties) → vectors (named vectors / multi-vector supported); cross-references between objects; per-collection vectorizer module, vector index type, and distance metric <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li><strong>APIs</strong>: REST (:8080), GraphQL, gRPC (:50051; gRPC recommended for high-throughput data paths since v1.23) (official docs; community deployments)</li>
+<li><strong>Website</strong>: weaviate.io; <strong>Repo</strong>: github.com/weaviate/weaviate</li>
+</ul>
+</div>
+</section>
+<section class="doc-section"><h2><span data-zh="硬维度（14 项）" data-en="Hard dimensions (14)">硬维度（14 项）</span></h2>
+<div class="lang-block lang-zh">
+<div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-no">查证为无</span></h3><div class="dim-body"><p><strong>查证为无</strong>——自建 Weaviate 内核没有透明数据加密（TDE）或 KMS 密钥轮换的原生能力，官方文档中没有对应配置项；第三方安全调研仅在托管云部署一侧记录 AES-256 与 BYOK（托管云限定），那是云基础设施层的能力，不是数据库内核 TDE；备份落到对象存储时可用 S3/GCS/Azure 自带的服务端加密，同样不是数据库 TDE。（官方文档无相关配置；第三方安全调研）</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——Weaviate Cloud 提供 HTTPS/TLS 终端（HTTP 与 gRPC 均走 443/TLS）（官方文档；社区实测）；自建部署的 TLS 终止发生在反向代理/Ingress 层（社区部署普遍用 Nginx/Caddy/Traefik 做 TLS 终止），未找到服务端原生 TLS 监听的官方证据。（社区实测；官方文档部分覆盖）</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> 审计 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——启用 RBAC 后，Weaviate 自动记录所有授权决策（允许/拒绝、用户、资源、操作），审计日志支持记录源 IP（v1.30 起，<code>AUTHORIZATION_RBAC_IP_IN_AUDIT_LOG_DISABLED</code> 可关）；厂商安全文章称同时覆盖认证事件、角色变更与数据访问上下文。日志通过标准 logging 配置输出，可接入集中日志系统。（官方文档；厂商口径）</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> 认证与权限 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——认证：API Key、OIDC（含 OIDC group 映射角色）、DB 用户（客户端可创建/停用/轮换 key）；匿名访问可配置，生产要求关闭。授权：RBAC（v1.28 技术预览、v1.29 起 GA），内置 <code>admin</code>/<code>viewer</code>、部署时 <code>root</code>，支持自定义角色，权限粒度覆盖 collection、object/data、tenant、backup、cluster、role 等，v1.30 起支持按 tenant 过滤 data/tenant 权限；另有不可定制的 admin-list 旧方案（与 RBAC 互斥）。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> 备份恢复 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——备份后端支持 filesystem、S3、GCS、Azure Blob；可按 collection 粒度备份/恢复、查询备份状态、取消进行中的备份与恢复（恢复取消 v1.36 起 GA）；v1.34 起支持增量备份；<code>cpu_for_backup</code> 可限制备份对在线流量的资源争抢。注意恢复要求目标 collection 不存在（需先删后恢复）。（官方客户端文档；厂商发布说明）</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> 大版本升级 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——官方提供 migration/升级指导文档；厂商发布过&quot;零停机滚动升级&quot;实战方案（前提：replication factor ≥ 2、多副本）；升级方式本质是换镜像 + StatefulSet 滚动重启，无在线 schema 自动迁移魔法。但客户端与服务端版本强耦合：Python 客户端 v3→v4 为破坏性迁移，且客户端会逐步停止支持旧服务端（如 v4.9.6 是最后一个支持 v1.23/v1.24 的版本），升级必须服务端与客户端协同规划；未找到 LTS 支持窗口的官方承诺。（官方文档；厂商博客；客户端 changelog）</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> 可观测性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——v1.14 起支持 Prometheus 指标并可配 Grafana；v1.34 新增 30+ 指标，覆盖 LSM bucket、WAL 恢复、memtable flush、async replication 等；<code>/v1/nodes</code> 节点状态 API（v1.16 起）可查各节点 shard 分布与健康；支持结构化日志与授权审计日志。（官方发布说明；官方文档）</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> 连接模型 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——REST（:8080）、GraphQL、gRPC（:50051）三接口并存；gRPC 为高吞吐写入/批量路径推荐通道，客户端支持批量导入与服务端批量（v1.36 起 server-side batching GA）；连接池、重试、超时由各官方客户端（Python/TypeScript/Go/Java/C#）处理。明确边界：<strong>不是</strong> SQL/ PG wire / Mongo 协议兼容，查询语言是 GraphQL + REST + 聚合/过滤 DSL。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> 事务与隔离级别 <span class="verdict v-no">不支持</span></h3><div class="dim-body"><p><strong>不支持</strong>——Weaviate 不提供多对象 ACID 事务，也没有 READ COMMITTED/SERIALIZABLE 这类 SQL 隔离级别语义；单对象写入是原子的，batch 写入按对象逐个处理、非&quot;全有或全无&quot;（社区共识；第三方对比）。注意不要把&quot;写一致性 ONE/QUORUM/ALL&quot;误读为事务隔离级别——那是副本确认数的可调参数，属于复制维度。（社区共识；官方文档）</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> 复制与一致性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——collection 级可配 replication factor；leaderless 复制架构；v1.18 起读写一致性均可调为 ONE/QUORUM/ALL（默认 QUORUM，QUORUM=n/2+1）；支持异步复制（async replication，写入更快、持久性语义更弱）与 read-repair；schema/集群元数据自 v1.25 起走 Raft（schema 操作强一致）；v1.32 起 shard replica 可在节点间移动。注意：元数据 Raft ≠ 用户数据走 Raft 共识复制。（官方文档；厂商发布说明）</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> 扩展方式 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——水平扩展：加节点 + 分片（virtual/physical shard；多租户下每 tenant 即独立 shard）+ 提高 replication factor；Cloud Serverless 可自动扩缩。但自建扩容<strong>不会自动再均衡</strong>：新节点加入不改变既有 shard 所有权，需手动（v1.32 起支持）移动 shard replica 做再均衡；多租户冷热状态机可降低小租户资源占用。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> 兼容性 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——API/SDK 兼容：REST/GraphQL/gRPC 接口稳定，官方客户端覆盖 Python/TypeScript/Go/Java/C#，深度集成 LangChain/LlamaIndex/Haystack/Dify 等生态。但三类不兼容要写清：① 非 SQL/pgwire 协议兼容，别指望把 ORM/SQL 直接搬过来；② 客户端与服务端版本耦合（见&quot;大版本升级&quot;）；③ vectorizer、距离度量、向量索引类型是<strong>建 collection 时的决定</strong>，改模型/改度量基本等于重建 collection + 全量重向量化。（官方文档；客户端 changelog；社区共识）</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> 许可证与商业模式 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——核心自建开源免费（BSD-3-Clause）；商业模式三层：Weaviate Cloud（Serverless 按使用量、Dedicated 独立资源、BYOC 落自有 VPC，满足数据驻留）、企业支持包 Assurance（年订阅制，分 Flex/Plus/Premium 档，厂商 PDF 公示过 $95k/$130k/$165k 每年每生产集群——厂商口径、易过期，仅记计量维度不作价格依据）、企业版云高级功能。截至评审未发现 BSL/SSPL 变更证据。（官方仓库 LICENSE；官方定价页；厂商口径）</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> 中文资料丰富度 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——官方文档为英文，无官方中文文档；中文社区资料以 CSDN/博客教程为主（如《Weaviate REST API：HTTP 接口详细文档》2025-08），多为入门与 RAG 集成内容，深度运维/源码级中文资料少；中文社区体量小于 Milvus、pgvector 等在国内的生态。（社区实测：2026-09-29 中文检索）</p></div></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-no">No evidence found</span></h3><div class="dim-body"><p><strong>No evidence found</strong> — the self-hosted Weaviate core has no native transparent data encryption (TDE) or KMS key rotation; there is no corresponding configuration in the official docs. A third-party security survey records AES-256 and BYOK only on the managed-cloud side (managed cloud only) — that is cloud-infrastructure capability, not database-kernel TDE. Backups landing on object storage can use S3/GCS/Azure server-side encryption, which is likewise not database TDE. (No matching config in official docs; third-party security survey)</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / transport encryption <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — Weaviate Cloud terminates HTTPS/TLS (HTTP and gRPC on 443/TLS) (official docs; community deployments); self-hosted deployments terminate TLS at the reverse proxy / ingress layer (community deployments commonly use Nginx/Caddy/Traefik), and no official evidence was found of a native TLS listener in the server itself. (Community deployments; official docs partially cover this)</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> Auditing <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — with RBAC enabled, Weaviate automatically logs all authorization decisions (allow/deny, user, resource, action); audit logs support source-IP recording (since ~v1.30, disable via <code>AUTHORIZATION_RBAC_IP_IN_AUDIT_LOG_DISABLED</code>); vendor security articles state authentication events, role changes, and data-access context are covered. Logs go through the standard logging configuration and can feed centralized log systems. (Official docs; vendor statement)</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> Authentication &amp; authorization <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — Auth: API key, OIDC (including OIDC-group-to-role mapping), DB users (create/deactivate/rotate keys via clients); anonymous access is configurable and must be off in production. Authz: RBAC (tech preview in v1.28, GA since v1.29), built-in <code>admin</code>/<code>viewer</code> plus deployment-time <code>root</code>, custom roles with granularity across collections, objects/data, tenants, backups, cluster, and roles; per-tenant filtering of data/tenant permissions since v1.30; a legacy non-customizable admin-list scheme exists (mutually exclusive with RBAC). (Official docs)</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> Backup &amp; recovery <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — backends: filesystem, S3, GCS, Azure Blob; per-collection backup/restore, backup status queries, cancellation of in-flight backups and restores (restore cancellation GA in v1.36); incremental backups since v1.34; <code>cpu_for_backup</code> throttles backup resource contention with live traffic. Note: restore requires the target collection to not exist (delete before restore). (Official client docs; vendor release notes)</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> Major-version upgrades <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — official migration/upgrade guidance exists; the vendor published a zero-downtime rolling-upgrade recipe (prerequisites: replication factor ≥ 2, multiple replicas); upgrades are essentially image swaps plus StatefulSet rolling restarts — no online schema auto-migration magic. But client and server versions are tightly coupled: the Python client v3→v4 migration is breaking, and clients progressively drop old servers (e.g. v4.9.6 is the last supporting v1.23/v1.24), so upgrades must plan server and client together; no official LTS support window was found. (Official docs; vendor blog; client changelog)</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> Observability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — Prometheus metrics since v1.14 with Grafana support; 30+ new metrics in v1.34 covering LSM buckets, WAL recovery, memtable flushes, async replication, etc.; <code>/v1/nodes</code> node-status API (since v1.16) shows per-node shard distribution and health; structured logging plus authorization audit logs. (Official release notes; official docs)</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> Connection model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — REST (:8080), GraphQL, and gRPC (:50051) coexist; gRPC is the recommended channel for high-throughput writes/batching, and clients support bulk import plus server-side batching (GA in v1.36); connection pooling, retries, and timeouts are handled by the official clients (Python/TypeScript/Go/Java/C#). Explicit boundary: <strong>not</strong> SQL / PG-wire / Mongo protocol compatible — query languages are GraphQL + REST + filter/aggregation DSL. (Official docs)</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> Transactions &amp; isolation levels <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><p><strong>Not supported</strong> — Weaviate offers no multi-object ACID transactions and no SQL-style isolation semantics (READ COMMITTED / SERIALIZABLE); single-object writes are atomic, and batch writes are processed per object, not all-or-nothing (community consensus; third-party comparison). Do not mistake the tunable write consistency ONE/QUORUM/ALL for transaction isolation — that parameter counts replica acknowledgments and belongs to the replication dimension. (Community consensus; official docs)</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> Replication &amp; consistency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — per-collection replication factor; leaderless replication architecture; tunable read/write consistency ONE/QUORUM/ALL since v1.18 (default QUORUM = n/2 + 1); optional async replication (faster writes, weaker durability); read-repair; schema/cluster metadata via Raft since v1.25 (strongly consistent schema operations); shard-replica movement across nodes since v1.32. Note: metadata Raft ≠ user data replicated via Raft consensus. (Official docs; vendor release notes)</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> Scaling <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — horizontal scale-out: add nodes + sharding (virtual/physical shards; per-tenant shards under multi-tenancy) + raise replication factor; Cloud Serverless autoscales. But self-hosted scale-out does <strong>not</strong> auto-rebalance: new nodes don&#x27;t take over existing shards; you must move shard replicas (supported since v1.32) to rebalance; the multi-tenant hot/cold state machine reduces small-tenant footprint. (Official docs)</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> Compatibility <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — API/SDK compatibility: stable REST/GraphQL/gRPC, official clients for Python/TypeScript/Go/Java/C#, deep integrations with LangChain/LlamaIndex/Haystack/Dify. Three incompatibilities to state plainly: ① no SQL/pg-wire protocol compatibility — don&#x27;t expect to lift ORM/SQL over; ② client–server version coupling (see &quot;Major-version upgrades&quot;); ③ vectorizer, distance metric, and vector index type are <strong>collection-creation-time decisions</strong> — changing model/metric is effectively rebuild collection + full re-vectorization. (Official docs; client changelog; community consensus)</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> License &amp; business model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — self-hosted core is free open source (BSD-3-Clause); three commercial layers: Weaviate Cloud (Serverless usage-based, Dedicated resources, BYOC into your own VPC for data residency), the Assurance enterprise support package (annual subscription, Flex/Plus/Premium tiers; vendor PDF listed $95k/$130k/$165k per year per production cluster — vendor statement, expires quickly, recorded as billing dimensions only), and enterprise cloud premium features. No BSL/SSPL change evidence found as of this review. (Repo LICENSE; official pricing page; vendor statements)</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> Chinese-language resources <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — official docs are English-only, no official Chinese docs; Chinese community material is mostly CSDN/blog tutorials (e.g. &quot;Weaviate REST API：HTTP 接口详细文档&quot;, 2025-08), focused on getting started and RAG integration, with little deep ops/source-level Chinese content; the Chinese community is smaller than Milvus&#x27;s or pgvector&#x27;s in China. (Community check via Chinese search, 2026-09-29)</p></div></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="杀手特性" data-en="Killer features">杀手特性</span></h2>
+<div class="lang-block lang-zh">
+<ol>
+<li><strong>原生混合搜索（Hybrid Search）：BM25 与向量检索在同一查询里融合。</strong> 是什么：一次查询同时跑 BM25/BM25F 关键词检索和向量近似检索，用 <code>alpha</code>（0=纯关键词，1=纯向量）与 fusion 策略（<code>rankedFusion</code>/<code>relativeScoreFusion</code>）合成最终排序；v1.39 把 Boost API 与 MMR 多样性选择推到 GA。为什么是真本事：语义检索擅长&quot;意思相近&quot;，关键词检索擅长产品编号、人名、型号等精确匹配，生产级 RAG 两者缺一不可；Weaviate 把它做进存储引擎而不是应用层胶水。边缘真相：混合≠自动正确——<code>alpha</code> 与 fusion 策略必须用自己的评测集调参；lexical 分数与 vector 分数的分布不一致，简单融合可能让一侧淹没另一侧；分词器、过滤选择率、长短文本都会改变结果。（官方文档；v1.39 发布说明）</li>
+<li><strong>模块生态：把向量化、重排、生成收进数据库 API。</strong> 是什么：<code>text2vec-*</code>（OpenAI/Cohere/HuggingFace/AWS/Anthropic/Mistral/本地 transformers/Ollama 等）、<code>generative-*</code>、<code>reranker-*</code>、<code>qna-*</code>、<code>multi2vec-*</code> 模块，collection 建表时声明，写入/查询时数据库自动调模型做 embedding、rerank 乃至 RAG 生成，一次 API 返回 grounded 答案。为什么是真本事：把&quot;切分→向量化→检索→重排→生成&quot;这条 RAG 链路的胶水代码量压到最少，原型到生产最快。边缘真相：embedding/LLM 供应商的故障、限流、涨价、模型升级会直接进入你的数据库读写路径；<strong>换 embedding 模型通常意味着维度/向量空间变化，必须全量重向量化+重建索引</strong>，这笔迁移成本常被低估；数据会被发往外部模型供应商，形成数据驻留与合规边界；模块也会弃用（如 <code>text2vec-contextionary</code> 在 Python 客户端 4.16.6 被弃用，<code>*-palm</code> 改名 <code>*-google</code>）。（官方文档；客户端 changelog；社区共识）</li>
+<li><strong>多租户：tenant-per-shard 物理隔离 + 冷热生命周期。</strong> 是什么：多租户 collection 里每个 tenant 是独立 shard/索引（不是共享索引里加个 <code>tenant_id</code> 过滤），状态机 ACTIVE/INACTIVE/OFFLOADED：冷 tenant 可卸载到对象存储（<code>offload-s3</code> 模块，≥v1.26），访问时再激活；支持 <code>autoTenantCreation/autoTenantActivation</code>。为什么是真本事：SaaS&quot;一人一向量空间&quot;的长尾场景下，冷租户不占内存，厂商口径称单集群可支撑百万级 tenant。边缘真相：物理隔离≠CPU/内存/网络 QoS 完全隔离，大量 ACTIVE 小租户会产生 shard/index 元数据与文件句柄开销；OFFLOADED tenant 首次访问有冷启动延迟（对象存储拉回）；<code>tenant not found</code>/<code>tenant is inactive</code> 是最常见的新手坑；RBAC 的 tenant 级权限过滤要同时配对。厂商&quot;无 noisy neighbor&quot;宣传按厂商口径处理，不进入选型依据。（官方文档；厂商多租户架构文章；社区实测）</li>
+<li><strong>向量索引的选择面：HNSW / flat / dynamic / HFresh + 量化矩阵。</strong> 是什么：默认 HNSW（<code>efConstruction</code>/<code>maxConnections</code>/查询时 <code>ef</code> 可调）；小数据可用 flat 穷举；v1.25 起 dynamic 索引（默认 1 万对象以下 flat、超过自动单向转 HNSW）；v1.36 起 HFresh 技术预览（内存 centroid HNSW + 磁盘 LSM postings，面向十亿级）；压缩支持 PQ/BQ/SQ/RQ，v1.39 预览 4-bit RQ；过滤检索有 ACORN 策略（v1.27 引入，v1.34 起为新 collection 默认）。为什么是真本事：从原型（flat）到大规模（HNSW+量化）到超大规模（HFresh），索引形态随数据量演进而不必换库。边缘真相：HNSW 的内存公式是硬约束（向量 float32 全驻内存 + 图，<code>vectors×dims×4B×~1.5</code> 量级），内存不足表现是 OOM 而非变慢；提高 <code>ef</code>/<code>efConstruction</code> 换召回要同时付出 CPU、延迟与构建时间；删除/更新带来图维护成本，长期高更新场景图质量会退化；HFresh 仍是 Preview，百毫秒级延迟预期，别当 GA 用。（官方发布说明；社区共识）</li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<ol>
+<li><strong>Native hybrid search: BM25 and vector retrieval fused in a single query.</strong> What it is: one query runs BM25/BM25F keyword retrieval and vector ANN retrieval together, combined via <code>alpha</code> (0 = pure keyword, 1 = pure vector) and a fusion strategy (<code>rankedFusion</code>/<code>relativeScoreFusion</code>); v1.39 brought the Boost API and MMR diversity selection to GA. Why it&#x27;s a real strength: semantic retrieval is good at &quot;similar meaning&quot;, keyword retrieval at product codes, names, and model numbers — production RAG needs both, and Weaviate builds it into the storage engine instead of application glue. Edge truth: hybrid ≠ automatically correct — <code>alpha</code> and fusion strategy must be tuned on your own eval set; lexical and vector scores live on different scales, and naive fusion lets one side systematically drown the other; tokenizer choice (especially CJK), filter selectivity, and short-vs-long text embedding quality all flip rankings. (Official docs; v1.39 release notes)</li>
+<li><strong>Module ecosystem: vectorization, reranking, and generation inside the database API.</strong> What it is: <code>text2vec-*</code> (OpenAI/Cohere/HuggingFace/AWS/Anthropic/Mistral/local transformers/Ollama, …), <code>generative-*</code>, <code>reranker-*</code>, <code>qna-*</code>, <code>multi2vec-*</code> modules, declared at collection creation; Weaviate calls the model on write/query paths, so RAG (&quot;retrieve + generate&quot;) completes in one API call returning a grounded answer. Why it&#x27;s a real strength: it minimizes the glue code across the chunk→embed→retrieve→rerank→generate pipeline — fastest path from prototype to production. Edge truth: embedding/LLM provider outages, rate limits, price hikes, and model deprecations land directly in your database write/read path; <strong>switching embedding models usually means dimension/vector-space change, i.e. full re-vectorization plus index rebuild</strong> — a migration cost routinely underestimated; data leaves for external model vendors, creating data-residency and compliance boundaries; modules themselves get deprecated (<code>text2vec-contextionary</code> deprecated in Python client 4.16.6, <code>*-palm</code> renamed <code>*-google</code>). (Official docs; client changelog; community consensus)</li>
+<li><strong>Multi-tenancy: tenant-per-shard physical isolation with a hot/cold lifecycle.</strong> What it is: in multi-tenant collections each tenant is a separate shard/index (not a <code>tenant_id</code> filter on a shared index), with an ACTIVE/INACTIVE/OFFLOADED state machine: cold tenants offload to object storage (<code>offload-s3</code> module, ≥v1.26) and reactivate on access; <code>autoTenantCreation</code>/<code>autoTenantActivation</code> supported. Why it&#x27;s a real strength: for long-tail SaaS (&quot;one vector space per end user&quot;), cold tenants consume no RAM; the vendor claims million-tenant scale per cluster. Edge truth: physical isolation ≠ full CPU/memory/network QoS isolation, and many ACTIVE small tenants still cost shard/index metadata and file handles; OFFLOADED tenants pay cold-start latency on first access (pulled back from object storage); <code>tenant not found</code> / <code>tenant is inactive</code> are the most common beginner errors; RBAC tenant-level permission filters must be designed together with tenant lifecycle. The vendor&#x27;s &quot;no noisy neighbor&quot; marketing is treated as vendor statement, not selection evidence. (Official docs; vendor multi-tenancy architecture article; community reports)</li>
+<li><strong>Vector-index option surface: HNSW / flat / dynamic / HFresh plus a quantization matrix.</strong> What it is: HNSW by default (<code>efConstruction</code>/<code>maxConnections</code>/query-time <code>ef</code> tunable); flat brute force for small data; dynamic index since v1.25 (flat below 10k objects by default, one-way switch to HNSW above); HFresh tech preview since v1.36 (in-memory centroid HNSW + on-disk LSM postings for billion-scale); compression via PQ/BQ/SQ/RQ with 4-bit RQ previewed in v1.39; ACORN filter strategy (introduced v1.27, default for new collections since v1.34). Why it&#x27;s a real strength: index shape evolves with data size — prototype (flat) to large scale (HNSW+quantization) to hyperscale (HFresh) — without changing databases. Edge truth: HNSW&#x27;s memory formula is a hard constraint (all float32 vectors + graph resident, roughly <code>vectors × dims × 4B × ~1.5</code>); undersizing shows up as OOM kills, not graceful slowdown; raising <code>ef</code>/<code>efConstruction</code> buys recall with CPU, latency, and build time; deletes/updates cost graph maintenance and long-running high-churn workloads see graph quality decay; HFresh is still Preview — treat its hundred-millisecond latency expectation accordingly, not as GA. (Official release notes; community consensus)</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="深水区" data-en="Deep dives">深水区</span></h2>
+<div class="lang-block lang-zh">
+<h3>1. 向量索引：HNSW 的内存墙与调参四方权衡</h3>
+<ul>
+<li><strong>领域</strong>：向量索引（ANN）。</li>
+<li><strong>机制一句话</strong>：Weaviate 默认用 HNSW 图索引做近似最近邻检索，<code>efConstruction</code>/<code>maxConnections</code> 决定建图质量与内存，查询时 <code>ef</code> 决定遍历广度；另有 flat（穷举）、dynamic（flat→HNSW 单向切换）、HFresh（Preview：centroid HNSW 常驻内存、postings 落磁盘 LSM）与 PQ/BQ/SQ/RQ 量化压缩可选。（官方文档；官方发布说明）</li>
+<li><strong>推到边缘</strong>：HNSW 要求全量向量与图驻内存，内存公式约 <code>向量数×维度×4字节×1.5（含图开销）</code>——1000 万×768 维轻松吃掉 40–50GB+，配小了的表现是 OOM  kill 而不是&quot;慢一点&quot;<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>；调参是四方权衡：<code>ef</code>/<code>efConstruction</code> 拉高→召回升、延迟升、构建时间升、内存升，<code>efConstruction&gt;200</code> 后收益递减；删除/更新会在图中留下&quot;空洞&quot;，长期高更新场景图质量缓慢退化，需要周期性重建；强过滤（高选择性 where 条件）会缩小图的可达候选集导致召回下降——这正是 ACORN（v1.27 引入、v1.34 起默认）要解决的问题，它用自适应两跳扩展在过滤稀疏区保持图连通。（官方文档；厂商博客；社区共识）</li>
+<li><strong>选型含义</strong>：做容量规划先算内存公式再定副本数；十亿级要么接受 HNSW 的内存账单+量化压缩（PQ/BQ 以召回换内存），要么等 HFresh GA——Preview 阶段别把生产押上去；高更新场景把重建/重索引排进运维日历。</li>
+<li><strong>来源</strong>：官方文档（向量索引配置）；v1.36/v1.39 发布说明（HFresh、RQ）；社区共识（内存公式与 OOM 表现）。</li>
+</ul>
+<h3>2. 混合搜索：<code>alpha</code> 不是魔法数字，fusion 是门手艺</h3>
+<ul>
+<li><strong>领域</strong>：混合检索（lexical + vector）。</li>
+<li><strong>机制一句话</strong>：一次 hybrid 查询同时执行 BM25/BM25F 关键词检索与向量检索，按 <code>alpha</code> 加权并经 fusion 策略（<code>relativeScoreFusion</code> 等）合并排序；v1.39 新增 Boost API（按条件加权）与 MMR 多样性选择并进入 GA。（官方文档；v1.39 发布说明）</li>
+<li><strong>推到边缘</strong>：混合搜索的正确性完全依赖调参：<code>alpha=0.5</code> 只是起点，不同语料（短商品标题 vs 长文档）最优值差异巨大，必须用自己的评测集（标注 query-doc 对）扫参；BM25 分数与向量距离不在一个量纲，fusion 策略选错会让一方系统性淹没另一方；过滤条件选择率、分词器（尤其 CJK）、长短文本 embedding 质量都会翻转排序；reranker 能救最终相关性，但代价是外部模型调用的尾延迟与成本；v1.39 起自动建 collection 默认使用 named vector <code>default</code>，旧版客户端（如 langchain4j 旧版）读不到 embedding 会静默返回空向量——升级 1.39 必须同步检查客户端。（官方文档；langchain4j 集成文档；社区共识）</li>
+<li><strong>选型含义</strong>：把混合搜索当&quot;可调的排序系统&quot;而不是&quot;开箱即用的正确答案&quot;；立项时就准备评测集与重排预算；1.39 的 named vector 变更是升级检查项。</li>
+<li><strong>来源</strong>：官方文档（hybrid search）；v1.39 发布说明；langchain4j 官方集成文档（1.39 兼容说明）。</li>
+</ul>
+<h3>3. 模块生态：方便是真的，锁定也是真的</h3>
+<ul>
+<li><strong>领域</strong>：AI 模型集成（vectorizer / generative / reranker）。</li>
+<li><strong>机制一句话</strong>：服务端以 <code>ENABLE_MODULES</code> 启用模块，collection 建表时声明 <code>text2vec-*</code>/<code>generative-*</code>/<code>reranker-*</code> 等，对象写入与查询时由 Weaviate 直接调用外部（或本地）模型做向量化/重排/生成，RAG 可一次 API 完成&quot;检索+生成&quot;。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li><strong>推到边缘</strong>：模块把第三方依赖焊进了数据库的数据路径：供应商故障/限流/涨价/模型下线会直接表现为你的写入失败或查询延迟爆炸，需要熔断与降级预案；<strong>更换 embedding 模型几乎总是全量重向量化+重建索引</strong>（维度或向量空间变了，旧向量直接作废），这笔成本经常超过&quot;换数据库&quot;本身；用了外部模块就等于数据要出境/出内网，数据驻留与合规评审必须前置；模块本身会演进甚至弃用（<code>text2vec-contextionary</code> 在客户端 4.16.6 弃用、<code>*-palm</code> 更名 <code>*-google</code>），升级要跟；想完全避免外发就用本地模块（transformers/Ollama/本地推理），代价是自己扛 GPU 与模型运维。（官方文档；客户端 changelog；社区共识）</li>
+<li><strong>选型含义</strong>：选模块 = 选供应商锁定策略；生产立项时就要定&quot;换模型预案&quot;（双索引并行切换、回填流水线）与&quot;供应商故障预案&quot;。</li>
+<li><strong>来源</strong>：官方文档（模块）；weaviate-python-client changelog（弃用与更名记录）；社区共识。</li>
+</ul>
+<h3>4. 多租户：物理隔离的 shard 与它的三个状态</h3>
+<ul>
+<li><strong>领域</strong>：多租户架构。</li>
+<li><strong>机制一句话</strong>：多租户 collection 中每个 tenant 对应独立 shard/索引；tenant 状态机为 ACTIVE（加载服务）/INACTIVE（元数据保留、不占内存）/OFFLOADED（数据卸载到对象存储，需 <code>offload-s3</code> 模块、≥v1.26）；支持 <code>autoTenantCreation</code>（写入时自动建 tenant）与 <code>autoTenantActivation</code>。（官方文档；厂商多租户架构文章）</li>
+<li><strong>推到边缘</strong>：物理 shard 隔离不等于 QoS 隔离——大量 ACTIVE 小租户会产生可观的 shard/index 元数据、文件句柄与内存开销，&quot;租户多但每个很小&quot;依然要压测；OFFLOADED 租户首次访问要从对象存储拉回，有冷启动延迟，对延迟敏感路径要预热或保持 ACTIVE；<code>autoTenantCreation</code> 开着时打错 tenant 名会静默建出空租户，而读不存在的租户会报 <code>tenant not found</code>、读 INACTIVE 租户需先激活——这是新手最高频的坑；RBAC 的 tenant 级权限（v1.30+）必须与 tenant 生命周期一起设计，否则出现&quot;建得出来但读不到&quot;的授权死角；厂商&quot;单集群百万 tenant、9 节点 17 万活跃租户&quot;是厂商口径，可作容量上限参考，不作 SLA 依据。（官方文档；厂商多租户文章；社区实测）</li>
+<li><strong>选型含义</strong>：长尾 SaaS（海量小租户、活跃度不均）是 Weaviate 多租户最舒服的形状；立项时定好租户冷热策略、命名规范与 RBAC tenant filter，压测要覆盖&quot;十万级租户元数据&quot;而不仅是向量规模。</li>
+<li><strong>来源</strong>：官方文档（多租户）；厂商博客《multi-tenancy architecture》（2025-10）；社区实测。</li>
+</ul>
+<h3>5. 复制、一致性与&quot;脑裂&quot;边界：leaderless + 可调一致性</h3>
+<ul>
+<li><strong>领域</strong>：分布式复制与一致性。</li>
+<li><strong>机制一句话</strong>：collection 级 replication factor 做 leaderless 复制；v1.18 起读写一致性均可调 ONE/QUORUM/ALL（默认 QUORUM=n/2+1），可配异步复制提速；schema 与集群元数据自 v1.25 起走 Raft 强一致；v1.32 起 shard replica 可在节点间移动以利再均衡。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li><strong>推到边缘</strong>：可调一致性是&quot;确认数&quot;游戏：<code>ONE</code> 写 + <code>ONE</code> 读最快但可能读到旧副本，官方给出的最小最终一致组合是 QUORUM/QUORUM、ONE/ALL、ALL/ONE 三选一，配错组合会在节点故障时读到分歧——社区有人实测过用 <code>consistency_level=ONE</code> 在隔离副本上读出不一</li>
+</ul>
+<p>致的数据<span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>；异步复制下副本分歧窗口更大，依赖 read-repair 收敛；GraphQL 历史上固定走 ONE（v1.17 及更早），老版本混用接口要注意语义差；schema 操作走 Raft 强一致，但<strong>用户数据复制不走 Raft</strong>，别把&quot;元数据强一致&quot;脑补成&quot;全库线性一致&quot;。（官方文档；社区实测）</p>
+<ul>
+<li><strong>选型含义</strong>：默认 QUORUM/QUORUM 是平衡起点；对&quot;写后立即可读&quot;有硬要求的链路用 ALL 写或读时指定 QUORUM/ALL，并接受延迟代价；多副本集群的混沌测试要覆盖副本分歧与修复。</li>
+<li><strong>来源</strong>：官方文档（replication / consistency）；v1.18 发布说明；社区实测（replica-recall-divergence 研究）。</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<h3>1. Vector index: the HNSW memory wall and the four-way tuning trade-off</h3>
+<ul>
+<li><strong>Area</strong>: vector indexing (ANN).</li>
+<li><strong>Mechanism in one line</strong>: Weaviate defaults to HNSW graph indexes for approximate nearest-neighbor retrieval, with <code>efConstruction</code>/<code>maxConnections</code> controlling build quality and memory and query-time <code>ef</code> controlling traversal breadth; flat (brute force), dynamic (one-way flat→HNSW switch), HFresh (Preview: centroid HNSW in memory, postings on disk LSM), and PQ/BQ/SQ/RQ quantization are also available. (Official docs; official release notes)</li>
+<li><strong>Pushed to the edge</strong>: HNSW requires all vectors and the graph resident in memory — roughly <code>vector count × dims × 4 bytes × 1.5 (graph overhead)</code>; 10M × 768-dim easily exceeds 40–50GB, and undersizing manifests as OOM kills rather than &quot;a bit slower&quot; <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>. Tuning is a four-way trade-off: higher <code>ef</code>/<code>efConstruction</code> → higher recall, higher latency, longer build time, more memory, with diminishing returns past <code>efConstruction &gt; 200</code>. Deletes/updates leave &quot;holes&quot; in the graph; long-running high-churn workloads see graph quality decay and need periodic rebuilds. Highly selective filters shrink the reachable candidate set during graph traversal and hurt recall — exactly the problem ACORN (introduced v1.27, default since v1.34) addresses with adaptive two-hop expansion that preserves connectivity in sparsely-filtered regions. (Official docs; vendor blog; community consensus)</li>
+<li><strong>Selection implication</strong>: do the memory math before sizing replicas; at billion-scale either accept the HNSW memory bill plus quantization (PQ/BQ trade recall for memory) or wait for HFresh GA — don&#x27;t bet production on a Preview; schedule rebuilds/reindexing into the ops calendar for high-churn workloads.</li>
+<li><strong>Sources</strong>: official docs (vector index configuration); v1.36/v1.39 release notes (HFresh, RQ); community consensus (memory formula and OOM behavior).</li>
+</ul>
+<h3>2. Hybrid search: <code>alpha</code> is not a magic number, fusion is a craft</h3>
+<ul>
+<li><strong>Area</strong>: hybrid retrieval (lexical + vector).</li>
+<li><strong>Mechanism in one line</strong>: one hybrid query executes BM25/BM25F keyword retrieval and vector retrieval together, weighted by <code>alpha</code> and merged through a fusion strategy (e.g. <code>relativeScoreFusion</code>); v1.39 added the Boost API (conditional weighting) and MMR diversity selection, both GA. (Official docs; v1.39 release notes)</li>
+<li><strong>Pushed to the edge</strong>: hybrid correctness depends entirely on tuning: <code>alpha=0.5</code> is only a starting point, and the optimum differs wildly between corpora (short product titles vs long documents) — you need your own eval set of labeled query–doc pairs to sweep it. BM25 scores and vector distances are on different scales; the wrong fusion strategy lets one side systematically drown the other. Filter selectivity, tokenizer (especially CJK), and short-vs-long text embedding quality all flip rankings. Rerankers can rescue final relevance at the cost of external-model tail latency and spend. Since v1.39, auto-created collections default to the named vector <code>default</code>; older clients (e.g. old langchain4j) silently return empty embeddings — upgrading to 1.39 requires a client-compatibility check. (Official docs; langchain4j integration docs; community consensus)</li>
+<li><strong>Selection implication</strong>: treat hybrid search as a tunable ranking system, not an out-of-the-box correct answer; budget for an eval set and reranking from day one; the 1.39 named-vector change is an upgrade checklist item.</li>
+<li><strong>Sources</strong>: official docs (hybrid search); v1.39 release notes; langchain4j official integration docs (1.39 compatibility note).</li>
+</ul>
+<h3>3. Module ecosystem: the convenience is real, and so is the lock-in</h3>
+<ul>
+<li><strong>Area</strong>: AI model integration (vectorizer / generative / reranker).</li>
+<li><strong>Mechanism in one line</strong>: modules are enabled server-side via <code>ENABLE_MODULES</code> and declared per collection (<code>text2vec-*</code>/<code>generative-*</code>/<code>reranker-*</code>, …); Weaviate calls the external (or local) model directly on write/query paths, so RAG completes as &quot;retrieve + generate&quot; in one API call. (Official docs)</li>
+<li><strong>Pushed to the edge</strong>: modules weld third-party dependencies into the database&#x27;s data path — provider outages/rate limits/price hikes/model sunsets surface directly as your write failures or query latency explosions, so you need circuit breakers and degradation plans. <strong>Switching embedding models almost always means full re-vectorization plus index rebuild</strong> (dimension or vector space changed; old vectors are void) — a cost that frequently exceeds &quot;switching databases&quot; itself. Using external modules means data leaves your network/perimeter; data-residency and compliance review must come first. Modules themselves evolve and deprecate (<code>text2vec-contextionary</code> deprecated in client 4.16.6, <code>*-palm</code> renamed <code>*-google</code>) — track them on upgrade. Full avoidance of data egress means local modules (transformers/Ollama/local inference) at the cost of owning GPU and model ops. (Official docs; client changelog; community consensus)</li>
+<li><strong>Selection implication</strong>: choosing a module = choosing a vendor lock-in strategy; plan the &quot;model swap&quot; playbook (dual indexes, backfill pipeline) and the &quot;provider outage&quot; playbook before production.</li>
+<li><strong>Sources</strong>: official docs (modules); weaviate-python-client changelog (deprecation/rename records); community consensus.</li>
+</ul>
+<h3>4. Multi-tenancy: physically isolated shards and their three states</h3>
+<ul>
+<li><strong>Area</strong>: multi-tenant architecture.</li>
+<li><strong>Mechanism in one line</strong>: in multi-tenant collections each tenant maps to its own shard/index; the tenant state machine is ACTIVE (loaded, serving) / INACTIVE (metadata kept, no memory) / OFFLOADED (data offloaded to object storage via the <code>offload-s3</code> module, ≥v1.26); <code>autoTenantCreation</code> (create tenant on write) and <code>autoTenantActivation</code> are supported. (Official docs; vendor multi-tenancy architecture article)</li>
+<li><strong>Pushed to the edge</strong>: physical shard isolation is not QoS isolation — many ACTIVE small tenants still cost significant shard/index metadata, file handles, and memory; &quot;many tenants but each tiny&quot; still needs load testing. OFFLOADED tenants pay cold-start latency on first access (pulled back from object storage); pre-warm or keep latency-sensitive tenants ACTIVE. With <code>autoTenantCreation</code> on, a typo&#x27;d tenant name silently creates an empty tenant, while reading a nonexistent tenant errors <code>tenant not found</code> and reading an INACTIVE one needs activation — the most frequent beginner pitfalls. RBAC tenant-level permission filters (v1.30+) must be designed together with tenant lifecycle, or you get &quot;creatable but unreadable&quot; authorization dead ends. Vendor claims of &quot;a million tenants per cluster, ~170k active tenants on 9 nodes&quot; are vendor statements — useful as capacity ceiling references, not SLA evidence. (Official docs; vendor multi-tenancy article; community reports)</li>
+<li><strong>Selection implication</strong>: long-tail SaaS (huge tenant counts, skewed activity) is Weaviate multi-tenancy&#x27;s most comfortable shape; decide the tenant hot/cold policy, naming conventions, and RBAC tenant filters up front, and load-test tenant-metadata scale — not just vector scale.</li>
+<li><strong>Sources</strong>: official docs (multi-tenancy); vendor blog &quot;multi-tenancy architecture&quot; (2025-10); community reports.</li>
+</ul>
+<h3>5. Replication, consistency, and the split-brain boundary: leaderless + tunable consistency</h3>
+<ul>
+<li><strong>Area</strong>: distributed replication and consistency.</li>
+<li><strong>Mechanism in one line</strong>: per-collection replication factor with leaderless replication; tunable read/write consistency ONE/QUORUM/ALL since v1.18 (default QUORUM = n/2 + 1); optional async replication for speed; schema/cluster metadata strongly consistent via Raft since v1.25; shard-replica movement across nodes since v1.32 for rebalancing. (Official docs)</li>
+<li><strong>Pushed to the edge</strong>: tunable consistency is an acknowledgment-count game: <code>ONE</code> write + <code>ONE</code> read is fastest but can serve stale replicas; the documented minimum eventually-consistent pairings are QUORUM/QUORUM, ONE/ALL, ALL/ONE — misconfigured pairings read divergent data during node failures, and community members have demonstrated reading divergent state from an isolated replica at <code>consistency_level=ONE</code> (community test). Async replication widens the divergence window and relies on read-repair to converge. GraphQL historically pinned consistency to ONE (v1.17 and earlier) — mind the semantic difference when mixing interfaces on old versions. Schema operations are Raft-strongly-consistent, but <strong>user-data replication does not go through Raft</strong> — don&#x27;t hallucinate &quot;fully linearizable&quot; from &quot;strongly consistent metadata&quot;. (Official docs; community test)</li>
+<li><strong>Selection implication</strong>: QUORUM/QUORUM is the balanced default; hard read-after-write requirements call for ALL writes or QUORUM/ALL reads at a latency price; chaos-test replica divergence and repair on multi-replica clusters.</li>
+<li><strong>Sources</strong>: official docs (replication / consistency); v1.18 release notes; community test (replica-recall-divergence research).</li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="用户最买账的 5 点" data-en="What users love most">用户最买账的 5 点</span></h2>
+<div class="lang-block lang-zh">
+<ol>
+<li><strong>一条 API 跑通 RAG 全链路，原型快得离谱。</strong> 为什么是真的：hybrid 检索 + vectorizer 模块 + reranker + generative search 全在库内，一次查询返回 grounded 答案，胶水代码量是同类里最少的。好到什么程度/在哪失效：原型到 demo 无敌；但生产化后，模型供应商的延迟/限流/费用会成为系统 SLO 的一部分，链路越长越要补熔断、缓存与评测集。（官方文档；社区共识）</li>
+<li><strong>多租户是&quot;一等公民&quot;，SaaS 长尾场景省心。</strong> 为什么是真的：tenant-per-shard 物理隔离 + ACTIVE/INACTIVE/OFFLOADED 冷热状态，冷租户不占内存，RBAC 还能按 tenant 限权。好到什么程度/在哪失效：海量小租户、活跃度不均的 SaaS 最受益；但&quot;十万 ACTIVE 小租户&quot;的元数据开销要实测，冷租户首查延迟要预留，租户命名与权限要一次设计对。（官方文档；厂商口径；社区实测）</li>
+<li><strong>开源可自建，Cloud 可接，锁定感低。</strong> 为什么是真的：BSD-3-Clause 核心，笔记本、K8s、Weaviate Cloud 跑的是同一引擎，还有 BYOC 落自有 VPC 满足数据驻留；Pinecone 这类纯托管没有自建退出路径。好到什么程度/在哪失效：对合规/驻留敏感的团队这是决定性优势；但自建的运维成本（K8s、监控、备份、升级）要自己扛，&quot;免费&quot;的是许可不是运维。（官方仓库 LICENSE；第三方对比；社区共识）</li>
+<li><strong>带过滤的向量检索是真强（ACORN）。</strong> 为什么是真的：ACORN（v1.27 引入、v1.34 起默认）专门解决&quot;高选择性过滤 + HNSW 图遍历&quot;的难题，低相关过滤场景下性能提升显著且无需重建索引。好到什么程度/在哪失效：电商式&quot;语义+价格/库存/品牌多条件过滤&quot;是其舒适区；但过滤语义仍要自己验证召回，老 collection 不会自动切到 ACORN（只影响 v1.34+ 新建 collection）。（厂商博客；官方文档）</li>
+<li><strong>生态集成广，SDK 好用。</strong> 为什么是真的：官方 Python/TypeScript/Go/Java/C# 客户端，LangChain/LlamaIndex/Haystack/Dify 开箱集成，GraphQL 查询表达力强，文档与 recipe 丰富。好到什么程度/在哪失效：生态越深绑定越紧——客户端与服务端版本耦合（v3→v4 破坏性迁移、旧服务端逐步被新客户端放弃支持），升级必须两端协同；v4 客户端的 <code>vector_config</code> 等新 API 意味着旧代码要改。（客户端 changelog；社区实测）</li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<ol>
+<li><strong>One API runs the whole RAG pipeline — prototypes are absurdly fast.</strong> Why it&#x27;s real: hybrid retrieval + vectorizer modules + reranker + generative search all live in the database; one query returns a grounded answer with minimal glue code. How far it goes / where it breaks: unbeatable for prototype-to-demo; but in production the model vendors&#x27; latency/rate limits/costs become part of your SLO — the longer the chain, the more you need circuit breakers, caching, and eval sets. (Official docs; community consensus)</li>
+<li><strong>Multi-tenancy is a first-class citizen — reassuring for long-tail SaaS.</strong> Why it&#x27;s real: tenant-per-shard physical isolation plus the ACTIVE/INACTIVE/OFFLOADED cold lifecycle means cold tenants cost no RAM, and RBAC can scope permissions per tenant. How far it goes / where it breaks: best for SaaS with huge tenant counts and skewed activity; but &quot;100k ACTIVE small tenants&quot; metadata overhead needs real testing, cold-tenant first-query latency needs budgeting, and tenant naming plus permissions must be designed once, correctly. (Official docs; vendor statements; community reports)</li>
+<li><strong>Open source and self-hostable, with a Cloud to graduate to — low lock-in feel.</strong> Why it&#x27;s real: BSD-3-Clause core; laptop, K8s, and Weaviate Cloud run the same engine, plus BYOC into your own VPC for data residency; pure-managed products offer no self-hosted exit path. How far it goes / where it breaks: decisive for compliance/residency-sensitive teams; but self-hosted ops cost (K8s, monitoring, backups, upgrades) is yours — the license is free, operations are not. (Repo LICENSE; third-party comparisons; community consensus)</li>
+<li><strong>Filtered vector search is genuinely strong (ACORN).</strong> Why it&#x27;s real: ACORN (introduced v1.27, default since v1.34) targets exactly the hard problem of highly-selective filters over HNSW traversal, with significant speedups in low-correlation filter scenarios and no reindexing required. How far it goes / where it breaks: e-commerce-style &quot;semantic + price/stock/brand filters&quot; is its comfort zone; but filter recall still needs your own verification, and existing collections don&#x27;t auto-switch to ACORN (only collections created on v1.34+). (Vendor blog; official docs)</li>
+<li><strong>Broad ecosystem integration and pleasant SDKs.</strong> Why it&#x27;s real: official Python/TypeScript/Go/Java/C# clients, out-of-the-box LangChain/LlamaIndex/Haystack/Dify integrations, expressive GraphQL queries, rich docs and recipes. How far it goes / where it breaks: deeper ecosystem = tighter coupling — client and server versions move together (breaking v3→v4 client migration; new clients progressively drop old servers), so upgrades must coordinate both ends; new v4 client APIs like <code>vector_config</code> mean old code needs changes. (Client changelog; community reports)</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="吐槽清单" data-en="Complaints">吐槽清单</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>分类</th><th>吐槽</th><th>影响版本</th><th>状态</th></tr></thead>
+<tbody>
+<tr><td>资源/成本</td><td>HNSW 全量向量+图驻内存，大规模下内存账单陡峭，配小了直接 OOM 而非降级</td><td>全版本</td><td>open（HFresh Preview 中，partially-fixed）</td></tr>
+<tr><td>安全</td><td>自建无原生静态加密（TDE）与服务端原生 TLS，加密全靠基础设施层（云盘/对象存储/反向代理）</td><td>全版本</td><td>open</td></tr>
+<tr><td>运维</td><td>扩容加节点后不自动再均衡；v1.32 之前 shard replica 甚至不能在节点间移动</td><td>&lt;1.32 为甚</td><td>partially-fixed（1.32 起支持移动，但仍需手动操作）</td></tr>
+<tr><td>兼容</td><td>换 vectorizer/embedding 模型/距离度量≈重建 collection + 全量重向量化，无在线重索引</td><td>全版本</td><td>open（官方承认 re-indexing API 在 future release）</td></tr>
+<tr><td>兼容</td><td>导入数据后再加属性：旧对象不回填新属性索引，查询结果不符合预期，只能导出→重建→重导</td><td>全版本</td><td>open（官方文档明确记载该限制）</td></tr>
+<tr><td>兼容</td><td>v1.39 起自动建 collection 默认用 named vector <code>default</code>，旧客户端读 embedding 静默为空</td><td>1.39+</td><td>open（需同步升级客户端）</td></tr>
+<tr><td>兼容</td><td>Python 客户端 v3→v4 破坏性迁移；新客户端逐步放弃旧服务端（如 4.9.6 止于 v1.23/v1.24）</td><td>客户端 4.x</td><td>open</td></tr>
+<tr><td>生态</td><td><code>text2vec-contextionary</code> 被弃用、<code>*-palm</code> 更名 <code>*-google</code>，模块跟着供应商一起变</td><td>客户端 4.16.6+</td><td>fixed-in-v4.16.6（弃用已落地，迁移成本仍在）</td></tr>
+<tr><td>安全</td><td>v1.38 之前存在 RBAC 角色分配权限提升问题</td><td>&lt;1.38.0</td><td>fixed-in-v1.38</td></tr>
+<tr><td>易用</td><td><code>autoTenantCreation</code> 开启时打错 tenant 名会静默建空租户；<code>tenant not found/inactive</code> 报错对新手不友好</td><td>全版本</td><td>open</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Category</th><th>Complaint</th><th>Affected versions</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Resources/cost</td><td>HNSW keeps all vectors + graph in RAM; memory bill climbs steeply at scale, and undersizing causes OOM kills rather than graceful degradation</td><td>All versions</td><td>open (HFresh in Preview, partially-fixed)</td></tr>
+<tr><td>Security</td><td>Self-hosted has no native encryption at rest (TDE) or native server-side TLS; encryption relies entirely on infra layers (cloud disks / object storage / reverse proxy)</td><td>All versions</td><td>open</td></tr>
+<tr><td>Ops</td><td>Adding nodes doesn&#x27;t auto-rebalance; before v1.32 shard replicas couldn&#x27;t even be moved between nodes</td><td>Worst before 1.32</td><td>partially-fixed (movable since 1.32, still manual)</td></tr>
+<tr><td>Compatibility</td><td>Changing vectorizer / embedding model / distance metric ≈ rebuild collection + full re-vectorization; no online reindex</td><td>All versions</td><td>open (officially acknowledged; re-indexing API in a future release)</td></tr>
+<tr><td>Compatibility</td><td>Adding a property after import doesn&#x27;t backfill the index for pre-existing objects — queries return unexpected results; workaround is export → recreate → reimport</td><td>All versions</td><td>open (documented limitation in official docs)</td></tr>
+<tr><td>Compatibility</td><td>Since v1.39, auto-created collections default to named vector <code>default</code>; older clients silently read empty embeddings</td><td>1.39+</td><td>open (requires client upgrade in lockstep)</td></tr>
+<tr><td>Compatibility</td><td>Python client v3→v4 was a breaking migration; new clients progressively drop old servers (e.g. 4.9.6 is last for v1.23/v1.24)</td><td>Client 4.x</td><td>open</td></tr>
+<tr><td>Ecosystem</td><td><code>text2vec-contextionary</code> deprecated, <code>*-palm</code> renamed <code>*-google</code> — modules move with their vendors</td><td>Client 4.16.6+</td><td>fixed-in-v4.16.6 (deprecation shipped; migration cost remains)</td></tr>
+<tr><td>Security</td><td>RBAC role-assignment privilege escalation before v1.38</td><td>&lt;1.38.0</td><td>fixed-in-v1.38</td></tr>
+<tr><td>Usability</td><td>With <code>autoTenantCreation</code> on, a typo&#x27;d tenant name silently creates an empty tenant; <code>tenant not found</code> / <code>tenant is inactive</code> errors confuse newcomers</td><td>All versions</td><td>open</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="判决" data-en="Verdict">判决</span></h2>
+<div class="lang-block lang-zh">
+<p><strong>适合谁</strong></p>
+<ul>
+<li>要做 RAG/语义搜索/AI 搜索平台，且希望&quot;向量化→混合检索→重排→生成&quot;尽量收进一个系统、少写胶水的团队。</li>
+<li>SaaS 多租户、租户量大且活跃度长尾不均，需要 tenant 级物理隔离与冷热成本控制的场景。</li>
+<li>对数据驻留/合规敏感，需要&quot;自建与托管可切换、有 BYOC、自建退出路径&quot;的组织。</li>
+<li>有 Kubernetes + Prometheus 运维能力，愿意为 HNSW 做内存容量规划的团队。</li>
+<li>查询模式是&quot;语义+强业务过滤&quot;（电商、内容检索），能吃到 ACORN 红利的场景。</li>
+</ul>
+<p><strong>不适合谁</strong></p>
+<ul>
+<li>想把它当 ACID 事务主库、指望多对象事务与 SQL 隔离语义的系统——它没有。</li>
+<li>只想要&quot;一个零运维的向量 API&quot;，对自建运维、模块配置、调参毫无兴趣的团队（去用全托管 serverless 产品更省心）。</li>
+<li>预算卡死在内存上、数据量直奔十亿级，却要求 HFresh（Preview）立刻扛生产的项目。</li>
+<li>对&quot;数据发往外部 embedding/LLM 供应商&quot;零容忍，又不愿自建 GPU 模型服务的合规场景。</li>
+<li>强 OLAP/强关联查询：cross-reference 能表达引用关系，但它不是图数据库也不是分析引擎，复杂关联与聚合别硬上。</li>
+</ul>
+<p><strong>迁移成本</strong></p>
+<ul>
+<li><strong>从 pgvector/Postgres 来</strong>：对象与向量导出→重建 collection/schema→重建索引；事务、JOIN、复杂 SQL 留在 PG，典型形态是&quot;PG 做主库+Weaviate 做检索副库&quot;的双库架构，应用层要拆读写路径。<strong>从 Milvus/Qdrant/Chroma 来</strong>：向量可迁，但 collection schema、过滤语义、距离度量、hybrid fusion 策略、多租户（namespace/partition→tenant）映射都要重做；Qdrant 的 payload 索引调参与 Weaviate 的 inverted index/ACORN 不是一一对应。<strong>从 Pinecone（托管）来</strong>：数据可导出重建，但计费模型从&quot;按用量&quot;变成&quot;自建 infra+运维人力&quot;，成本结构完全不同。<strong>从 Elasticsearch 来</strong>：BM25 能力可部分替代，但 ES 的聚合、分词器生态、运维体系要重建；hybrid 语义与 ES 的 dense_vector 查询 DSL 差异大。<strong>换 embedding 模型</strong>（不换库）：几乎总是全量重向量化+重建索引，建议双索引并行+灰度切换，这笔成本常被低估，要在立项时就排进计划。</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<p><strong>Good fit for</strong></p>
+<ul>
+<li>Teams building RAG / semantic search / AI search platforms who want &quot;vectorize → hybrid retrieve → rerank → generate&quot; inside one system with minimal glue code.</li>
+<li>SaaS multi-tenancy with large tenant counts and long-tail, skewed activity needing tenant-level physical isolation and hot/cold cost control.</li>
+<li>Organizations sensitive to data residency/compliance that need &quot;self-hosted ↔ managed interchangeable, with BYOC and a self-hosted exit path&quot;.</li>
+<li>Teams with Kubernetes + Prometheus ops capacity willing to do HNSW memory capacity planning.</li>
+<li>Query patterns of &quot;semantic + strong business filters&quot; (e-commerce, content retrieval) that benefit from ACORN.</li>
+</ul>
+<p><strong>Not a fit for</strong></p>
+<ul>
+<li>Anyone wanting an ACID transactional system of record with multi-object transactions and SQL isolation semantics — it doesn&#x27;t have them.</li>
+<li>Teams that just want &quot;one zero-ops vector API&quot; with no interest in self-hosting ops, module configuration, or tuning (a fully managed serverless product is less work).</li>
+<li>Projects heading to billion-scale on a tight memory budget that need HFresh (Preview) to carry production today.</li>
+<li>Compliance settings with zero tolerance for &quot;data sent to external embedding/LLM vendors&quot; that won&#x27;t run their own GPU model serving.</li>
+<li>Heavy OLAP / heavy relational queries: cross-references express relationships, but this is neither a graph database nor an analytics engine — don&#x27;t force complex joins and aggregations onto it.</li>
+</ul>
+<p><strong>Migration costs</strong></p>
+<ul>
+<li><strong>From pgvector/Postgres</strong>: export objects and vectors → rebuild collections/schemas → rebuild indexes; transactions, JOINs, and complex SQL stay in Postgres — the typical shape is a dual-database architecture (&quot;Postgres as system of record + Weaviate as retrieval sidecar&quot;) with split read/write paths in the application. <strong>From Milvus/Qdrant/Chroma</strong>: vectors migrate, but collection schemas, filter semantics, distance metrics, hybrid fusion strategies, and multi-tenancy mappings (namespaces/partitions → tenants) must be redone; Qdrant payload-index tuning doesn&#x27;t map 1:1 to Weaviate&#x27;s inverted index/ACORN. <strong>From Pinecone (managed)</strong>: data can be exported and rebuilt, but the cost model flips from &quot;pay per use&quot; to &quot;self-hosted infra + ops headcount&quot; — a completely different cost structure. <strong>From Elasticsearch</strong>: BM25 capability partially substitutes, but ES aggregations, analyzer ecosystem, and ops tooling must be rebuilt; hybrid semantics differ significantly from ES dense_vector query DSL. <strong>Switching embedding models</strong> (without switching databases): almost always full re-vectorization + index rebuild — plan dual indexes with gradual cutover; this cost is routinely underestimated and belongs in the project plan from day one.</li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="来源与待验证清单" data-en="Sources & to-be-verified">来源与待验证清单</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li><code>last_reviewed: 2026-09-29</code>，评审版本：Weaviate <strong>v1.39.x</strong>（官方博客发布于 2026-08-27；Python 客户端 v4.23.1）。</li>
+<li><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（docs.weaviate.io）：认证/授权与 RBAC、审计日志、复制与一致性、集群与分片、多租户、备份、向量索引与量化、混合搜索、模块、可观测性。</li>
+<li><strong>官方发布说明</strong>：v1.36（HFresh Preview、server-side batching/Object TTL GA）、v1.39（Boost API 与 MMR GA、4-bit RQ 预览、实验性 Search REST API）。</li>
+<li><strong>厂商博客/安全文章</strong>：authn/authz 指南（含 RBAC 与审计日志）、多租户架构（2025-10）、ACORN 过滤检索（2024-11）、企业安全白皮书类文章。</li>
+<li><strong>官方仓库与客户端 changelog</strong>：weaviate/weaviate（LICENSE：BSD-3-Clause）、weaviate-python-client changelog（模块弃用/更名、客户端版本支持边界）。</li>
+<li><span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span> 第三方：replica-recall-divergence 复制分歧实测、langchain4j 集成文档（v1.39 named vector 变更）、Dify 自建迁移文档（gRPC/TLS 端口实践）、TUM edutelligence/artemis 部署文档（Traefik TLS 终止、schema 重建限制）、RedHat 系 FIPS/存储安全调研（托管云 AES-256/BYOK）、CSDN 中文教程（中文资料现状）。</li>
+<li><strong>证据等级说明</strong>：本档案每条事实标注了&quot;官方文档/厂商口径/社区实测/社区共识/待验证&quot;；厂商的性能与规模数字（如百万 tenant、ACORN 加速比）仅作厂商口径引用，未进入判决依据。</li>
+<li><strong>已知局限</strong>：自建静态加密/TLS 的&quot;查证为无&quot;基于官方文档无对应配置项；Weaviate Cloud 的具体计费单价易过期，本档案只记计量维度；HFresh、4-bit RQ、Search REST API 在评审时仍为 Preview/实验性质。</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li><code>last_reviewed: 2026-09-29</code>, reviewed version: Weaviate <strong>v1.39.x</strong> (official blog, 2026-08-27; Python client v4.23.1).</li>
+<li><strong>Official docs</strong> (docs.weaviate.io): authentication/authorization &amp; RBAC, audit logging, replication &amp; consistency, cluster &amp; sharding, multi-tenancy, backups, vector indexes &amp; quantization, hybrid search, modules, observability.</li>
+<li><strong>Official release notes</strong>: v1.36 (HFresh Preview; server-side batching / Object TTL GA), v1.39 (Boost API &amp; MMR GA, 4-bit RQ preview, experimental Search REST API).</li>
+<li><strong>Vendor blogs/security articles</strong>: authn/authz guide (RBAC + audit logging), multi-tenancy architecture (2025-10), ACORN filtered retrieval (2024-11), enterprise-security articles.</li>
+<li><strong>Official repos &amp; client changelog</strong>: weaviate/weaviate (LICENSE: BSD-3-Clause), weaviate-python-client changelog (module deprecations/renames, client version support boundaries).</li>
+<li><strong>Community tests / third parties</strong>: replica-recall-divergence replication-divergence test, langchain4j integration docs (v1.39 named-vector change), Dify self-host migration docs (gRPC/TLS port practice), TUM edutelligence/artemis deployment docs (Traefik TLS termination, schema-rebuild limits), RedHat-ecosystem FIPS/storage security survey (managed-cloud AES-256/BYOK), CSDN Chinese tutorials (Chinese-resource landscape).</li>
+<li><strong>Evidence grading</strong>: every fact in this profile carries a grade — official docs / vendor statement / community test / community consensus / to-be-verified. Vendor performance and scale numbers (e.g. million-tenant claims, ACORN speedup ratios) are cited as vendor statements only and were not used as verdict evidence.</li>
+<li><strong>Known limitations</strong>: the &quot;no evidence found&quot; on self-hosted encryption-at-rest/TLS rests on the absence of matching configuration in official docs; Weaviate Cloud unit pricing expires quickly, so only billing dimensions are recorded here; HFresh, 4-bit RQ, and the Search REST API were still Preview/experimental at review time.</li>
+</ul>
+</div>
+</section>
+</main>
+<footer class="footer">
+  <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
+</footer>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
