@@ -44,7 +44,7 @@
   <div class="howto-step"><span class="n">3</span><h4>一键跳转外部 AI</h4><p>点 ChatGPT / Grok / Claude，提示词会自动填入新对话的输入框；若未自动填入，用"复制提示词"按钮手动粘贴。</p></div>
 </div>
 <div class="neutral-note">
-  <strong>为什么这样更中立？</strong>推理发生在你自己的 AI 账号里：本站不经手你的业务信息，也不替你预设答案。每份模板都写死了几条纪律——结论标注证据等级、严格区分"查证为无"与"未找到证据"、不做综合总分与排名；信息不足时不许编造，必须先用带选项的选择题把关键问题一次性问清，而且不同模板问的方向不一样（去 O 问 Oracle 强依赖、向量库问召回率与延迟、诊断类先问诊再下结论）；候选库横跨不同领域时不许硬对比，先确认你的真实诉求。但请注意：AI 的回答仍需对照本站档案交叉验证，模型也会一本正经地编造。
+  <strong>为什么这样更中立？</strong>推理发生在你自己的 AI 账号里：本站不经手你的业务信息，也不替你预设答案。每份模板都写死了几条纪律——结论标注证据等级、严格区分"查证为无"与"未找到证据"、不做综合总分与排名；信息不足时不许编造，必须先交互式逐题提问（一次只问一个问题，每题给出带字母编号的选项，你只需回复字母即可作答），而且不同模板问的方向不一样（去 O 问 Oracle 强依赖、向量库问召回率与延迟、诊断类先问诊再下结论）；候选库横跨不同领域时不许硬对比，先确认你的真实诉求。但请注意：AI 的回答仍需对照本站档案交叉验证，模型也会一本正经地编造。
 </div>
 
 <div class="subnav">
@@ -83,7 +83,7 @@
   <div class="howto-step"><span class="n">3</span><h4>Jump to an external AI</h4><p>Click ChatGPT / Grok / Claude and the prompt is pre-filled into a new chat. If it is not pre-filled, use the "Copy prompt" button and paste it manually.</p></div>
 </div>
 <div class="neutral-note">
-  <strong>Why is this more neutral?</strong> The reasoning happens inside your own AI account: this site never sees your business details and never pre-bakes an answer for you. Every template hard-codes a set of rules — tag claims with evidence levels, strictly separate "verified absent" from "no evidence found", no aggregate scores or rankings; when information is missing the model must not invent facts but first ask you targeted multiple-choice questions covering the key questions all at once, with different question focuses per template (Oracle hard dependencies for migration assessments, recall and latency for vector DBs, a doctor-like history before diagnosing); and it must not force a comparison across different domains without first confirming what you actually need. One caution: still cross-check the AI's answer against this site's profiles. Models can hallucinate with a straight face.
+  <strong>Why is this more neutral?</strong> The reasoning happens inside your own AI account: this site never sees your business details and never pre-bakes an answer for you. Every template hard-codes a set of rules — tag claims with evidence levels, strictly separate "verified absent" from "no evidence found", no aggregate scores or rankings; when information is missing the model must not invent facts but first ask you interactive multiple-choice questions, one at a time (one key question per turn, each with lettered options you answer by simply replying with the letter), with different question focuses per template (Oracle hard dependencies for migration assessments, recall and latency for vector DBs, a doctor-like history before diagnosing); and it must not force a comparison across different domains without first confirming what you actually need. One caution: still cross-check the AI's answer against this site's profiles. Models can hallucinate with a straight face.
 </div>
 
 <div class="subnav">
@@ -114,7 +114,7 @@
   <p class="prompt-use"><span data-zh="适用：第一次选型，或在 2-4 个候选库之间做一次全面对比。" data-en="Use when: selecting for the first time, or comparing 2-4 candidates head to head.">适用：第一次选型，或在 2-4 个候选库之间做一次全面对比。</span></p>
   <pre class="prompt-text lang-zh">你是一名中立的数据库架构顾问，不代表任何厂商。请基于公开资料，帮我做一次数据库选型对比。
 
-【我的业务场景】（请填写，可删减；若留空，请你主动用选择题向我提问以明确场景）
+【我的业务场景】（请填写，可删减；若留空，请你主动用交互式选择题向我逐题提问以明确场景）
 - 业务类型与读写特征：（如电商下单、IM 消息、IoT 时序写入）
 - 数据规模与增速：（如当前 2TB，年增 50%）
 - 峰值负载：（如写 2 万 TPS，读 20 万 QPS）
@@ -130,11 +130,11 @@
 2. 每个关键结论标注证据等级：官方文档、厂商口径、社区实测、社区共识、待验证。严格区分"查证为无"和"未找到证据"，不要把没查到的写成不支持。
 3. 每款候选库给出：最适合的场景、最可能踩的三个坑（从机制层面解释，并说明在什么负载或故障下会触发）。
 4. 不做综合总分、不排名，只给带条件的判断，格式为"如果……那么……"。
-5. 信息不足以下结论时，主动向我提问：用带选项的选择题形式（每题给出 3-4 个典型选项，外加"其他，请说明"），一次性问清关键问题再开始分析。提问时优先覆盖：业务类型与读写特征、数据规模与年增速、峰值负载形态（QPS/并发/热点）、团队运维能力与值班体系、部署环境与合规要求、预算范围与一票否决项，不要编造。
+5. 信息不足以下结论时，主动向我提问：用交互式选择题逐题提问（提问时优先覆盖：业务类型与读写特征、数据规模与年增速、峰值负载形态（QPS/并发/热点）、团队运维能力与值班体系、部署环境与合规要求、预算范围与一票否决项），一次只问一个关键问题，每个问题给出 3-4 个带字母编号的选项（A/B/C/D，外加 E. 其他，请说明），我只需回复字母即可作答；等我回答后再问下一题；不要一次把所有问题都列出来。所有关键问题问完后，再开始分析，不要编造。
 6. 用中文回答。</pre>
   <pre class="prompt-text lang-en" hidden>You are a neutral database architecture advisor, not affiliated with any vendor. Help me compare candidate databases based on public information.
 
-【My scenario】(fill in, delete what does not apply; if left blank, proactively ask me multiple-choice questions to pin it down)
+【My scenario】(fill in, delete what does not apply; if left blank, proactively ask me interactive multiple-choice questions (prioritize asking about: workload type and read/write profile, data size and annual growth, peak load shape (QPS/concurrency/hotspots), team ops capacity and on-call setup, deployment environment and compliance needs, budget range and hard vetoes), one at a time, to pin it down)
 - Workload and read/write pattern: (e.g. e-commerce orders, IM messages, IoT time-series writes)
 - Data size and growth: (e.g. 2TB today, 50% yearly growth)
 - Peak load: (e.g. 20k write TPS, 200k read QPS)
@@ -150,7 +150,7 @@
 2. Tag each key claim with an evidence level: official docs, vendor claim, community-tested, community consensus, to-be-verified. Strictly distinguish "verified absent" from "no evidence found"; never present something you could not find as unsupported.
 3. For each candidate: the scenarios it fits best, and the three most likely production pitfalls, explained at the mechanism level, including the load or failure conditions that trigger them.
 4. No aggregate total score and no ranking. Give only conditional verdicts in "if ..., then ..." form.
-5. If information is insufficient for a conclusion, proactively ask me targeted multiple-choice questions (3-4 typical options per question plus an "other, please specify" option), covering the key questions all at once before starting the analysis. Prioritize asking about: workload type and read/write profile, data size and annual growth, peak load shape (QPS/concurrency/hotspots), team ops capacity and on-call setup, deployment environment and compliance needs, budget range and hard vetoes, instead of inventing facts.
+5. If information is insufficient for a conclusion, proactively ask me targeted interactive multiple-choice questions, one key question per turn: each with 3-4 lettered options (A/B/C/D plus E. Other, please specify) that I can answer by simply replying with the letter; wait for my answer before asking the next question; do not list all questions at once. Start the analysis only after all key questions are answered, instead of inventing facts.
 6. Answer in English.</pre>
   <div class="ai-btn-row">
     <button type="button" class="ai-btn ai-copy" data-act="copy"><span data-zh="复制提示词" data-en="Copy prompt">复制提示词</span></button>
@@ -164,7 +164,7 @@
   <p class="prompt-use"><span data-zh="适用：从 Oracle 迁出，评估目标库的真实兼容代价与迁移风险。" data-en="Use when: migrating off Oracle and assessing the true compatibility cost and risk of a target database.">适用：从 Oracle 迁出，评估目标库的真实兼容代价与迁移风险。</span></p>
   <pre class="prompt-text lang-zh">你是一名中立的数据库架构顾问。请帮我评估"去 O"迁移（从 Oracle 迁出）的可行性与真实成本。
 
-【现状】（请填写；若留空，请你主动用选择题向我提问以明确现状）
+【现状】（请填写；若留空，请你主动用交互式选择题向我逐题提问以明确现状）
 - Oracle 版本与部署：（如 19c RAC 两节点）
 - 强依赖特性：（如 PL/SQL 存储过程包、DBLINK、分区表、物化视图、AQ 队列、VPD）
 - 数据量与停机窗口：（如 5TB，要求停机小于 4 小时）
@@ -176,10 +176,10 @@
 1. 兼容性逐项核对：区分"语法能跑"和"语义等价"，这是两回事，必须分开写。每项标注证据等级：官方文档、厂商口径、社区实测、社区共识、待验证。
 2. 迁移风险清单，按三档输出：一定会改的代码、可能要改的代码、必须做 POC 才能确认的项。
 3. 给出数据校验策略（全量加增量对账思路）与回滚方案要点。
-4. 不做综合评分。信息不足时主动向我提问：用带选项的选择题形式（每题给出 3-4 个典型选项，外加"其他，请说明"），一次性问清关键问题再开始分析。提问时优先覆盖：Oracle 版本与部署形态（单机/RAC/ADG）、强依赖特性清单（PL/SQL、DBLINK、分区、物化视图、AQ、VPD/OLS）、数据总量与停机窗口、性能基线关键指标、回退预案要求，不要编造。用中文回答。</pre>
+4. 不做综合评分。信息不足时主动向我提问：用交互式选择题逐题提问（提问时优先覆盖：Oracle 版本与部署形态（单机/RAC/ADG）、强依赖特性清单（PL/SQL、DBLINK、分区、物化视图、AQ、VPD/OLS）、数据总量与停机窗口、性能基线关键指标、回退预案要求），一次只问一个关键问题，每个问题给出 3-4 个带字母编号的选项（A/B/C/D，外加 E. 其他，请说明），我只需回复字母即可作答；等我回答后再问下一题；不要一次把所有问题都列出来。所有关键问题问完后，再开始分析，不要编造。用中文回答。</pre>
   <pre class="prompt-text lang-en" hidden>You are a neutral database architecture advisor. Help me assess the feasibility and true cost of migrating off Oracle.
 
-【Current state】(fill in; if left blank, proactively ask me multiple-choice questions to pin it down)
+【Current state】(fill in; if left blank, proactively ask me interactive multiple-choice questions (prioritize asking about: Oracle version and topology (single-instance/RAC/ADG), hard-dependency inventory (PL/SQL, DBLINKs, partitioning, materialized views, AQ, VPD/OLS), total data size and downtime window, key performance baseline metrics, rollback requirements), one at a time, to pin it down)
 - Oracle version and topology: (e.g. 19c RAC, two nodes)
 - Hard dependencies: (e.g. PL/SQL packages, DBLINKs, partitioned tables, materialized views, AQ queues, VPD)
 - Data size and downtime budget: (e.g. 5TB, less than 4 hours of downtime)
@@ -191,7 +191,7 @@
 1. Check compatibility item by item, separating "syntax runs" from "semantically equivalent" — these are different things and must be written separately. Tag each item with an evidence level: official docs, vendor claim, community-tested, community consensus, to-be-verified.
 2. A migration risk list in three tiers: code that will definitely change, code that may need changes, items that can only be confirmed with a POC.
 3. A data-validation strategy (full plus incremental reconciliation approach) and the key points of a rollback plan.
-4. No aggregate score. When information is missing, proactively ask me targeted multiple-choice questions (3-4 typical options per question plus an "other, please specify" option), covering the key questions all at once before starting the analysis. Prioritize asking about: Oracle version and topology (single-instance/RAC/ADG), hard-dependency inventory (PL/SQL, DBLINKs, partitioning, materialized views, AQ, VPD/OLS), total data size and downtime window, key performance baseline metrics, rollback requirements, instead of inventing facts. Answer in English.</pre>
+4. No aggregate score. When information is missing, proactively ask me targeted interactive multiple-choice questions, one key question per turn: each with 3-4 lettered options (A/B/C/D plus E. Other, please specify) that I can answer by simply replying with the letter; wait for my answer before asking the next question; do not list all questions at once. Start the analysis only after all key questions are answered, instead of inventing facts. Answer in English.</pre>
   <div class="ai-btn-row">
     <button type="button" class="ai-btn ai-copy" data-act="copy"><span data-zh="复制提示词" data-en="Copy prompt">复制提示词</span></button>
     <button type="button" class="ai-btn" data-act="chatgpt">ChatGPT <span aria-hidden="true">↗</span></button>
@@ -204,7 +204,7 @@
   <p class="prompt-use"><span data-zh="适用：一写多读架构，读压力大，需要搞清复制延迟与代理行为的真实边界。" data-en="Use when: single-writer, multiple-reader architectures where read pressure is high and you need the real boundaries of replication lag and proxy behavior.">适用：一写多读架构，读压力大，需要搞清复制延迟与代理行为的真实边界。</span></p>
   <pre class="prompt-text lang-zh">你是一名中立的数据库架构顾问。请帮我设计"一写多读"的读扩展架构，并对比候选方案。
 
-【我的场景】（请填写；若留空，请你主动用选择题向我提问以明确场景）
+【我的场景】（请填写；若留空，请你主动用交互式选择题向我逐题提问以明确场景）
 - 写负载：（如主库峰值写 1 万 TPS，写放大情况）
 - 读负载：（如读 30 万 QPS，读写比）
 - 一致性要求：（如能否接受读到 1 秒前的旧数据；分布式事务是否刚需）
@@ -215,10 +215,10 @@
 1. 对比各方案的：复制延迟的真实量级与放大的条件、代理或中间件在故障与事务中的行为（连接闪断、事务粘性）、只读节点的成本构成、写天花板在哪里。
 2. 每个关键结论标注证据等级：官方文档、厂商口径、社区实测、社区共识、待验证；严格区分"查证为无"与"未找到证据"。
 3. 给出 2-3 种架构组合建议，说明各自的取舍与翻车点，不做综合评分和排名。
-4. 信息不足时主动提问：用带选项的选择题形式（每题给出 3-4 个典型选项，外加"其他，请说明"），一次性问清关键问题再开始分析。提问时优先覆盖：写负载与峰值写入量、读/写比例、读一致性容忍度（能否接受秒级延迟）、RTO/RPO 目标、现有代理/中间件与连接池形态，不要编造。用中文回答。</pre>
+4. 信息不足时主动提问：用交互式选择题逐题提问（提问时优先覆盖：写负载与峰值写入量、读/写比例、读一致性容忍度（能否接受秒级延迟）、RTO/RPO 目标、现有代理/中间件与连接池形态），一次只问一个关键问题，每个问题给出 3-4 个带字母编号的选项（A/B/C/D，外加 E. 其他，请说明），我只需回复字母即可作答；等我回答后再问下一题；不要一次把所有问题都列出来。所有关键问题问完后，再开始分析，不要编造。用中文回答。</pre>
   <pre class="prompt-text lang-en" hidden>You are a neutral database architecture advisor. Help me design a single-writer, multiple-reader architecture and compare candidate approaches.
 
-【My scenario】(fill in; if left blank, proactively ask me multiple-choice questions to pin it down)
+【My scenario】(fill in; if left blank, proactively ask me interactive multiple-choice questions (prioritize asking about: write load and peak write volume, read/write ratio, read-consistency tolerance (is seconds-level lag acceptable), RTO/RPO targets, existing proxy/middleware and connection-pooling setup), one at a time, to pin it down)
 - Write load: (e.g. 10k write TPS on the primary, write amplification)
 - Read load: (e.g. 300k read QPS, read/write ratio)
 - Consistency requirements: (e.g. is reading 1-second-stale data acceptable; are distributed transactions a hard requirement)
@@ -229,7 +229,7 @@
 1. Compare: realistic replication-lag magnitude and the conditions that amplify it, proxy/middleware behavior during failures and inside transactions (connection blips, transaction stickiness), cost structure of read nodes, and where the write ceiling is.
 2. Tag each key claim with an evidence level: official docs, vendor claim, community-tested, community consensus, to-be-verified. Strictly distinguish "verified absent" from "no evidence found".
 3. Give 2-3 architecture combinations with their trade-offs and failure modes. No aggregate score, no ranking.
-4. When information is missing, proactively ask targeted multiple-choice questions (3-4 typical options per question plus an "other, please specify" option), covering the key questions all at once before starting the analysis. Prioritize asking about: write load and peak write volume, read/write ratio, read-consistency tolerance (is seconds-level lag acceptable), RTO/RPO targets, existing proxy/middleware and connection-pooling setup, instead of inventing facts. Answer in English.</pre>
+4. When information is missing, proactively ask targeted interactive multiple-choice questions, one key question per turn: each with 3-4 lettered options (A/B/C/D plus E. Other, please specify) that I can answer by simply replying with the letter; wait for my answer before asking the next question; do not list all questions at once. Start the analysis only after all key questions are answered, instead of inventing facts. Answer in English.</pre>
   <div class="ai-btn-row">
     <button type="button" class="ai-btn ai-copy" data-act="copy"><span data-zh="复制提示词" data-en="Copy prompt">复制提示词</span></button>
     <button type="button" class="ai-btn" data-act="chatgpt">ChatGPT <span aria-hidden="true">↗</span></button>
@@ -242,7 +242,7 @@
   <p class="prompt-use"><span data-zh="适用：在 Redis、MongoDB、DynamoDB、Cassandra 等之间按访问模式选型。" data-en="Use when: choosing between Redis, MongoDB, DynamoDB, Cassandra and similar, driven by access patterns.">适用：在 Redis、MongoDB、DynamoDB、Cassandra 等之间按访问模式选型。</span></p>
   <pre class="prompt-text lang-zh">你是一名中立的数据库架构顾问。请帮我做 KV / 文档数据库选型。
 
-【我的场景】（请填写；若留空，请你主动用选择题向我提问以明确场景）
+【我的场景】（请填写；若留空，请你主动用交互式选择题向我逐题提问以明确场景）
 - 访问模式：（如高频点查、范围扫描、计数器、排行榜、会话存储、全文检索）
 - 数据结构：（如简单 KV、哈希、时序、JSON 文档）
 - 规模与性能：（如 key 数量级、峰值 QPS、P99 延迟要求）
@@ -254,10 +254,10 @@
 1. 按访问模式逐项对比候选库的匹配度，指出"能用但别扭"的地方。
 2. 重点对比：持久化与故障恢复的真实行为、大 key 与热 key 下的表现、集群扩缩容时的数据搬迁代价、托管服务的计费边界。
 3. 每个关键结论标注证据等级：官方文档、厂商口径、社区实测、社区共识、待验证。
-4. 只给带条件的判断，不做综合评分与排名；信息不足时主动提问：用带选项的选择题形式（每题给出 3-4 个典型选项，外加"其他，请说明"），一次性问清关键问题再开始分析。提问时优先覆盖：访问模式（点查/范围扫描/聚合占比）、一致性与事务需求（单文档原子 vs 多文档事务）、数据模型偏好（文档/KV/宽列）、运维偏好（托管 vs 自建）。用中文回答。</pre>
+4. 只给带条件的判断，不做综合评分与排名；信息不足时主动提问：用交互式选择题逐题提问（提问时优先覆盖：访问模式（点查/范围扫描/聚合占比）、一致性与事务需求（单文档原子 vs 多文档事务）、数据模型偏好（文档/KV/宽列）、运维偏好（托管 vs 自建）），一次只问一个关键问题，每个问题给出 3-4 个带字母编号的选项（A/B/C/D，外加 E. 其他，请说明），我只需回复字母即可作答；等我回答后再问下一题；不要一次把所有问题都列出来。所有关键问题问完后，再开始分析。用中文回答。</pre>
   <pre class="prompt-text lang-en" hidden>You are a neutral database architecture advisor. Help me select a KV or document database.
 
-【My scenario】(fill in; if left blank, proactively ask me multiple-choice questions to pin it down)
+【My scenario】(fill in; if left blank, proactively ask me interactive multiple-choice questions (prioritize asking about: access patterns (point lookup vs range scan vs aggregation mix), consistency and transaction needs (single-document atomicity vs multi-document transactions), data-model preference (document/KV/wide-column), ops preference (managed vs self-hosted)), one at a time, to pin it down)
 - Access patterns: (e.g. high-frequency point lookups, range scans, counters, leaderboards, session storage, full-text search)
 - Data structures: (e.g. plain KV, hashes, time series, JSON documents)
 - Scale and performance: (key count magnitude, peak QPS, P99 latency target)
@@ -269,7 +269,7 @@
 1. Compare each candidate against the access patterns item by item, and call out where something "works but feels wrong".
 2. Focus on: real persistence and crash-recovery behavior, behavior under big keys and hot keys, data-movement cost during cluster scale-out/in, and billing boundaries of managed services.
 3. Tag each key claim with an evidence level: official docs, vendor claim, community-tested, community consensus, to-be-verified.
-4. Conditional verdicts only, no aggregate score and no ranking. When information is missing, proactively ask targeted multiple-choice questions (3-4 typical options per question plus an "other, please specify" option), covering the key questions all at once before starting the analysis. Prioritize asking about: access patterns (point lookup vs range scan vs aggregation mix), consistency and transaction needs (single-document atomicity vs multi-document transactions), data-model preference (document/KV/wide-column), ops preference (managed vs self-hosted). Answer in English.</pre>
+4. Conditional verdicts only, no aggregate score and no ranking. When information is missing, proactively ask targeted interactive multiple-choice questions, one key question per turn: each with 3-4 lettered options (A/B/C/D plus E. Other, please specify) that I can answer by simply replying with the letter; wait for my answer before asking the next question; do not list all questions at once. Start the analysis only after all key questions are answered. Answer in English.</pre>
   <div class="ai-btn-row">
     <button type="button" class="ai-btn ai-copy" data-act="copy"><span data-zh="复制提示词" data-en="Copy prompt">复制提示词</span></button>
     <button type="button" class="ai-btn" data-act="chatgpt">ChatGPT <span aria-hidden="true">↗</span></button>
@@ -286,7 +286,7 @@
 2. 列出 3 个最可能在生产环境踩到的坑，从机制层面解释，并说明触发条件。
 3. 哪些场景是它的"甜蜜点"，哪些场景是"禁区"？为什么？
 4. 每个关键结论标注证据等级：官方文档、厂商口径、社区实测、社区共识、待验证；不确定的请明确说不知道，不要编造。
-5. 开始前先用选择题问我最关心的 3-5 个维度：从 14 维中给出典型组合（每题 3-4 个选项，外加"其他，请说明"），再针对性深挖，不面面俱到地平铺。
+5. 开始前先用一道交互式选择题问我最关心的 3-5 个维度：从 14 维中给出 3-4 组带字母编号的典型组合（A/B/C/D，外加 E. 其他，请说明），我只需回复字母即可勾选；等我回答后，再针对性深挖。不要一次抛出大段文字，也不要面面俱到地平铺。
 6. 不做综合评分。用中文回答。
 （建议：把本站该产品的档案页内容贴在下面，作为分析的起点）</pre>
   <pre class="prompt-text lang-en" hidden>You are a neutral database architecture advisor who specializes in pushing systems to their limits. Analyze {{CANDIDATES}} in depth:
@@ -295,7 +295,7 @@
 2. List the 3 most likely production pitfalls, explain them at the mechanism level, and state their trigger conditions.
 3. Which scenarios are its sweet spot, and which are no-go zones? Why?
 4. Tag each key claim with an evidence level: official docs, vendor claim, community-tested, community consensus, to-be-verified. Say "I don't know" explicitly where uncertain instead of inventing facts.
-5. Before starting, ask me which 3-5 dimensions I care about most using multiple-choice questions (typical combinations from the 14 dimensions, 3-4 options per question plus an "other, please specify" option), then go deep on those instead of covering everything shallowly.
+5. Before starting, ask me which 3-5 dimensions I care about most with one interactive multiple-choice question: offer 3-4 lettered bundles of typical dimension combinations (A/B/C/D plus E. Other, please specify) that I can answer by simply replying with the letter; go deep on those only after I answer. Do not dump a wall of text, and do not go a mile wide and an inch deep.
 6. No aggregate score. Answer in English.
 (Tip: paste this site's profile page for the product below as a starting point for the analysis.)</pre>
   <div class="ai-btn-row">
@@ -312,7 +312,7 @@
   <p class="prompt-use"><span data-zh="适用：T+1 或小时级批量 ETL，大扫描聚合为主的离线分析。" data-en="Use when: T+1 or hourly batch ETL, offline analytics dominated by large scans and aggregations.">适用：T+1 或小时级批量 ETL，大扫描聚合为主的离线分析。</span></p>
   <pre class="prompt-text lang-zh">你是一名中立的数据架构顾问。请帮我做离线数据仓库（OLAP 批处理）选型。
 
-【我的场景】（请填写；若留空，请你主动用选择题向我提问以明确场景）
+【我的场景】（请填写；若留空，请你主动用交互式选择题向我逐题提问以明确场景）
 - 数据规模与增量：（如总量 500TB，日增 2TB）
 - ETL 窗口：（如每天凌晨 4 小时内必须跑完）
 - 查询特征：（如大表扫描聚合为主，偶发多表 JOIN；并发查询数）
@@ -326,10 +326,10 @@
 2. 每个关键结论标注证据等级：官方文档、厂商口径、社区实测、社区共识、待验证；严格区分"查证为无"与"未找到证据"。
 3. 每款候选给出：甜蜜点、最可能踩的三个坑（从机制层面解释，如后台合并的写入放大、物化视图的刷新代价，并说明触发条件）。
 4. 不做综合总分、不排名，只给"如果……那么……"的条件判断。
-5. 信息不足主动向我提问：用带选项的选择题形式（每题给出 3-4 个典型选项，外加"其他，请说明"），一次性问清关键问题再开始分析。提问时优先覆盖：数据规模与年增速、ETL/调度现状与 T+1 时效要求、查询复杂度（宽表关联层数）与并发数、SQL 方言依赖（Hive/Spark SQL 等），不要编造。用中文回答。</pre>
+5. 信息不足主动向我提问：用交互式选择题逐题提问（提问时优先覆盖：数据规模与年增速、ETL/调度现状与 T+1 时效要求、查询复杂度（宽表关联层数）与并发数、SQL 方言依赖（Hive/Spark SQL 等）），一次只问一个关键问题，每个问题给出 3-4 个带字母编号的选项（A/B/C/D，外加 E. 其他，请说明），我只需回复字母即可作答；等我回答后再问下一题；不要一次把所有问题都列出来。所有关键问题问完后，再开始分析，不要编造。用中文回答。</pre>
   <pre class="prompt-text lang-en" hidden>You are a neutral data architecture advisor. Help me select an offline data warehouse (batch OLAP).
 
-【My scenario】(fill in; if left blank, proactively ask me multiple-choice questions to pin it down)
+【My scenario】(fill in; if left blank, proactively ask me interactive multiple-choice questions (prioritize asking about: data size and annual growth, current ETL/scheduling setup and T+1 SLA, query complexity (join depth) and concurrency, SQL dialect dependencies (Hive/Spark SQL etc.)), one at a time, to pin it down)
 - Data size and daily increment: (e.g. 500TB total, 2TB per day)
 - ETL window: (e.g. must finish within 4 hours every night)
 - Query pattern: (e.g. mostly large-scan aggregations, occasional multi-table JOINs; concurrent query count)
@@ -343,7 +343,7 @@
 2. Tag each key claim with an evidence level: official docs, vendor claim, community-tested, community consensus, to-be-verified. Strictly distinguish "verified absent" from "no evidence found".
 3. For each candidate: its sweet spot and the three most likely pitfalls, explained at the mechanism level (e.g. write amplification from background merges, materialized-view refresh cost), with trigger conditions.
 4. No aggregate total score and no ranking. Conditional verdicts only, in "if ..., then ..." form.
-5. When information is missing, proactively ask me targeted multiple-choice questions (3-4 typical options per question plus an "other, please specify" option), covering the key questions all at once before starting the analysis. Prioritize asking about: data size and annual growth, current ETL/scheduling setup and T+1 SLA, query complexity (join depth) and concurrency, SQL dialect dependencies (Hive/Spark SQL etc.), instead of inventing facts. Answer in English.</pre>
+5. When information is missing, proactively ask me targeted interactive multiple-choice questions, one key question per turn: each with 3-4 lettered options (A/B/C/D plus E. Other, please specify) that I can answer by simply replying with the letter; wait for my answer before asking the next question; do not list all questions at once. Start the analysis only after all key questions are answered, instead of inventing facts. Answer in English.</pre>
   <div class="ai-btn-row">
     <button type="button" class="ai-btn ai-copy" data-act="copy"><span data-zh="复制提示词" data-en="Copy prompt">复制提示词</span></button>
     <button type="button" class="ai-btn" data-act="chatgpt">ChatGPT <span aria-hidden="true">↗</span></button>
@@ -356,7 +356,7 @@
   <p class="prompt-use"><span data-zh="适用：秒级~分钟级延迟，流式写入、实时大屏、高并发查询。" data-en="Use when: seconds-to-minutes latency, streaming ingestion, real-time dashboards, high-concurrency queries.">适用：秒级~分钟级延迟，流式写入、实时大屏、高并发查询。</span></p>
   <pre class="prompt-text lang-zh">你是一名中立的数据架构顾问。请帮我做实时数仓选型（秒级~分钟级延迟）。
 
-【我的场景】（请填写；若留空，请你主动用选择题向我提问以明确场景）
+【我的场景】（请填写；若留空，请你主动用交互式选择题向我逐题提问以明确场景）
 - 数据源与写入：（如 Kafka，峰值每秒写入 50 万条）
 - 端到端延迟 SLA：（如 95% 的数据 1 分钟内可查）
 - 查询模式：（如实时大屏聚合、高并发点查、明细下钻）
@@ -369,10 +369,10 @@
 2. 每个关键结论标注证据等级：官方文档、厂商口径、社区实测、社区共识、待验证；严格区分"查证为无"与"未找到证据"。
 3. 每款候选给出：甜蜜点、最可能踩的三个坑（从机制层面解释，如写入放大的触发条件、副本同步延迟的放大路径）。
 4. 不做综合总分、不排名，只给"如果……那么……"的条件判断。
-5. 信息不足主动向我提问：用带选项的选择题形式（每题给出 3-4 个典型选项，外加"其他，请说明"），一次性问清关键问题再开始分析。提问时优先覆盖：实时性要求（秒级/分钟级）、写入吞吐（每秒行数）与数据源、查询并发与复杂度、exactly-once 语义要求，不要编造。用中文回答。</pre>
+5. 信息不足主动向我提问：用交互式选择题逐题提问（提问时优先覆盖：实时性要求（秒级/分钟级）、写入吞吐（每秒行数）与数据源、查询并发与复杂度、exactly-once 语义要求），一次只问一个关键问题，每个问题给出 3-4 个带字母编号的选项（A/B/C/D，外加 E. 其他，请说明），我只需回复字母即可作答；等我回答后再问下一题；不要一次把所有问题都列出来。所有关键问题问完后，再开始分析，不要编造。用中文回答。</pre>
   <pre class="prompt-text lang-en" hidden>You are a neutral data architecture advisor. Help me select a real-time data warehouse (seconds-to-minutes latency).
 
-【My scenario】(fill in; if left blank, proactively ask me multiple-choice questions to pin it down)
+【My scenario】(fill in; if left blank, proactively ask me interactive multiple-choice questions (prioritize asking about: freshness requirement (seconds vs minutes), write throughput (rows/sec) and data sources, query concurrency and complexity, exactly-once semantics requirements), one at a time, to pin it down)
 - Sources and ingestion: (e.g. Kafka, peak 500k rows/sec)
 - End-to-end latency SLA: (e.g. 95% of data queryable within 1 minute)
 - Query pattern: (e.g. real-time dashboard aggregations, high-concurrency point lookups, drill-down to detail rows)
@@ -385,7 +385,7 @@
 2. Tag each key claim with an evidence level: official docs, vendor claim, community-tested, community consensus, to-be-verified. Strictly distinguish "verified absent" from "no evidence found".
 3. For each candidate: its sweet spot and the three most likely pitfalls, explained at the mechanism level (e.g. trigger conditions of write amplification, amplification paths of replica-sync lag).
 4. No aggregate total score and no ranking. Conditional verdicts only, in "if ..., then ..." form.
-5. When information is missing, proactively ask me targeted multiple-choice questions (3-4 typical options per question plus an "other, please specify" option), covering the key questions all at once before starting the analysis. Prioritize asking about: freshness requirement (seconds vs minutes), write throughput (rows/sec) and data sources, query concurrency and complexity, exactly-once semantics requirements, instead of inventing facts. Answer in English.</pre>
+5. When information is missing, proactively ask me targeted interactive multiple-choice questions, one key question per turn: each with 3-4 lettered options (A/B/C/D plus E. Other, please specify) that I can answer by simply replying with the letter; wait for my answer before asking the next question; do not list all questions at once. Start the analysis only after all key questions are answered, instead of inventing facts. Answer in English.</pre>
   <div class="ai-btn-row">
     <button type="button" class="ai-btn ai-copy" data-act="copy"><span data-zh="复制提示词" data-en="Copy prompt">复制提示词</span></button>
     <button type="button" class="ai-btn" data-act="chatgpt">ChatGPT <span aria-hidden="true">↗</span></button>
@@ -398,7 +398,7 @@
   <p class="prompt-use"><span data-zh="适用：分析师即席查询、BI 报表，要求亚秒响应、高并发。" data-en="Use when: analyst ad-hoc queries and BI dashboards needing sub-second response and high concurrency.">适用：分析师即席查询、BI 报表，要求亚秒响应、高并发。</span></p>
   <pre class="prompt-text lang-zh">你是一名中立的数据架构顾问。请帮我做交互式 BI 与即席查询引擎选型。
 
-【我的场景】（请填写；若留空，请你主动用选择题向我提问以明确场景）
+【我的场景】（请填写；若留空，请你主动用交互式选择题向我逐题提问以明确场景）
 - 用户规模与并发：（如 200 名分析师，峰值并发查询 100）
 - 延迟要求：（如 P95 在 2 秒内返回）
 - 数据量级与查询复杂度：（如多维下钻、钻取明细的频率）
@@ -411,10 +411,10 @@
 2. 每个关键结论标注证据等级：官方文档、厂商口径、社区实测、社区共识、待验证；严格区分"查证为无"与"未找到证据"。
 3. 每款候选给出：甜蜜点、最可能踩的三个坑（从机制层面解释，如高并发下查询排队的触发条件、BI 生成 SQL 的方言坑）。
 4. 不做综合总分、不排名，只给"如果……那么……"的条件判断。
-5. 信息不足主动向我提问：用带选项的选择题形式（每题给出 3-4 个典型选项，外加"其他，请说明"），一次性问清关键问题再开始分析。提问时优先覆盖：并发用户/查询数、查询模式（固定报表 vs 即席探索占比）、数据新鲜度要求、现有 BI 工具，不要编造。用中文回答。</pre>
+5. 信息不足主动向我提问：用交互式选择题逐题提问（提问时优先覆盖：并发用户/查询数、查询模式（固定报表 vs 即席探索占比）、数据新鲜度要求、现有 BI 工具），一次只问一个关键问题，每个问题给出 3-4 个带字母编号的选项（A/B/C/D，外加 E. 其他，请说明），我只需回复字母即可作答；等我回答后再问下一题；不要一次把所有问题都列出来。所有关键问题问完后，再开始分析，不要编造。用中文回答。</pre>
   <pre class="prompt-text lang-en" hidden>You are a neutral data architecture advisor. Help me select an engine for interactive BI and ad-hoc queries.
 
-【My scenario】(fill in; if left blank, proactively ask me multiple-choice questions to pin it down)
+【My scenario】(fill in; if left blank, proactively ask me interactive multiple-choice questions (prioritize asking about: concurrent users/queries, query mix (canned reports vs ad-hoc exploration), data freshness needs, existing BI tools), one at a time, to pin it down)
 - Users and concurrency: (e.g. 200 analysts, 100 peak concurrent queries)
 - Latency target: (e.g. P95 under 2 seconds)
 - Data size and query complexity: (e.g. frequency of multi-dimensional drill-downs and drill-through to detail)
@@ -427,7 +427,7 @@
 2. Tag each key claim with an evidence level: official docs, vendor claim, community-tested, community consensus, to-be-verified. Strictly distinguish "verified absent" from "no evidence found".
 3. For each candidate: its sweet spot and the three most likely pitfalls, explained at the mechanism level (e.g. trigger conditions of query queuing under high concurrency, SQL-dialect pitfalls from BI-generated queries).
 4. No aggregate total score and no ranking. Conditional verdicts only, in "if ..., then ..." form.
-5. When information is missing, proactively ask me targeted multiple-choice questions (3-4 typical options per question plus an "other, please specify" option), covering the key questions all at once before starting the analysis. Prioritize asking about: concurrent users/queries, query mix (canned reports vs ad-hoc exploration), data freshness needs, existing BI tools, instead of inventing facts. Answer in English.</pre>
+5. When information is missing, proactively ask me targeted interactive multiple-choice questions, one key question per turn: each with 3-4 lettered options (A/B/C/D plus E. Other, please specify) that I can answer by simply replying with the letter; wait for my answer before asking the next question; do not list all questions at once. Start the analysis only after all key questions are answered, instead of inventing facts. Answer in English.</pre>
   <div class="ai-btn-row">
     <button type="button" class="ai-btn ai-copy" data-act="copy"><span data-zh="复制提示词" data-en="Copy prompt">复制提示词</span></button>
     <button type="button" class="ai-btn" data-act="chatgpt">ChatGPT <span aria-hidden="true">↗</span></button>
@@ -440,7 +440,7 @@
   <p class="prompt-use"><span data-zh="适用：已有数据湖，想统一批流、开放表格式、存算分离。" data-en="Use when: you have a data lake and want unified batch/streaming, open table formats, and storage-compute separation.">适用：已有数据湖，想统一批流、开放表格式、存算分离。</span></p>
   <pre class="prompt-text lang-zh">你是一名中立的数据架构顾问。请帮我做湖仓一体架构选型。
 
-【我的场景】（请填写；若留空，请你主动用选择题向我提问以明确场景）
+【我的场景】（请填写；若留空，请你主动用交互式选择题向我逐题提问以明确场景）
 - 数据湖现状：（如对象存储/HDFS，数据规模）
 - 表格式倾向：（如 Iceberg/Hudi/Delta Lake，或尚未确定）
 - 计算引擎：（如 Trino、Spark、Flink，各自承担什么负载）
@@ -453,10 +453,10 @@
 2. 每个关键结论标注证据等级：官方文档、厂商口径、社区实测、社区共识、待验证；严格区分"查证为无"与"未找到证据"。
 3. 每组候选给出：甜蜜点、最可能踩的三个坑（从机制层面解释，如小文件放大的触发条件、compaction 的资源争抢）。
 4. 不做综合总分、不排名，只给"如果……那么……"的条件判断。
-5. 信息不足主动向我提问：用带选项的选择题形式（每题给出 3-4 个典型选项，外加"其他，请说明"），一次性问清关键问题再开始分析。提问时优先覆盖：现有湖存储与表格式（Iceberg/Hudi/Delta）、批流一体需求、数据治理与权限要求、对存算分离运维的接受度，不要编造。用中文回答。</pre>
+5. 信息不足主动向我提问：用交互式选择题逐题提问（提问时优先覆盖：现有湖存储与表格式（Iceberg/Hudi/Delta）、批流一体需求、数据治理与权限要求、对存算分离运维的接受度），一次只问一个关键问题，每个问题给出 3-4 个带字母编号的选项（A/B/C/D，外加 E. 其他，请说明），我只需回复字母即可作答；等我回答后再问下一题；不要一次把所有问题都列出来。所有关键问题问完后，再开始分析，不要编造。用中文回答。</pre>
   <pre class="prompt-text lang-en" hidden>You are a neutral data architecture advisor. Help me select a lakehouse architecture.
 
-【My scenario】(fill in; if left blank, proactively ask me multiple-choice questions to pin it down)
+【My scenario】(fill in; if left blank, proactively ask me interactive multiple-choice questions (prioritize asking about: existing lake storage and table format (Iceberg/Hudi/Delta), batch-streaming unification needs, data governance and access-control requirements, appetite for storage-compute-separated operations), one at a time, to pin it down)
 - Data lake status: (e.g. object storage/HDFS, data size)
 - Table format leaning: (e.g. Iceberg/Hudi/Delta Lake, or undecided)
 - Compute engines: (e.g. Trino, Spark, Flink — what workload each serves)
@@ -469,7 +469,7 @@
 2. Tag each key claim with an evidence level: official docs, vendor claim, community-tested, community consensus, to-be-verified. Strictly distinguish "verified absent" from "no evidence found".
 3. For each candidate combination: its sweet spot and the three most likely pitfalls, explained at the mechanism level (e.g. trigger conditions of small-file amplification, resource contention from compaction).
 4. No aggregate total score and no ranking. Conditional verdicts only, in "if ..., then ..." form.
-5. When information is missing, proactively ask me targeted multiple-choice questions (3-4 typical options per question plus an "other, please specify" option), covering the key questions all at once before starting the analysis. Prioritize asking about: existing lake storage and table format (Iceberg/Hudi/Delta), batch-streaming unification needs, data governance and access-control requirements, appetite for storage-compute-separated operations, instead of inventing facts. Answer in English.</pre>
+5. When information is missing, proactively ask me targeted interactive multiple-choice questions, one key question per turn: each with 3-4 lettered options (A/B/C/D plus E. Other, please specify) that I can answer by simply replying with the letter; wait for my answer before asking the next question; do not list all questions at once. Start the analysis only after all key questions are answered, instead of inventing facts. Answer in English.</pre>
   <div class="ai-btn-row">
     <button type="button" class="ai-btn ai-copy" data-act="copy"><span data-zh="复制提示词" data-en="Copy prompt">复制提示词</span></button>
     <button type="button" class="ai-btn" data-act="chatgpt">ChatGPT <span aria-hidden="true">↗</span></button>
@@ -482,7 +482,7 @@
   <p class="prompt-use"><span data-zh="适用：笔记本/单机/边缘的零运维分析，数据量 GB 到数 TB。" data-en="Use when: zero-ops analytics on a laptop, single server, or edge, with GBs to a few TBs of data.">适用：笔记本/单机/边缘的零运维分析，数据量 GB 到数 TB。</span></p>
   <pre class="prompt-text lang-zh">你是一名中立的数据架构顾问。请帮我做嵌入式与单机 OLAP 选型。
 
-【我的场景】（请填写；若留空，请你主动用选择题向我提问以明确场景）
+【我的场景】（请填写；若留空，请你主动用交互式选择题向我逐题提问以明确场景）
 - 运行环境：（如笔记本、单机服务器、边缘节点）
 - 数据量级：（如几十 GB 到数 TB）
 - 语言生态：（如 Python/Arrow 是否刚需）
@@ -495,10 +495,10 @@
 2. 每个关键结论标注证据等级：官方文档、厂商口径、社区实测、社区共识、待验证；严格区分"查证为无"与"未找到证据"。
 3. 每款候选给出：甜蜜点、最可能踩的三个坑（从机制层面解释），以及"出现什么信号就必须换成集群架构"的判断线。
 4. 不做综合总分、不排名，只给"如果……那么……"的条件判断。
-5. 信息不足主动向我提问：用带选项的选择题形式（每题给出 3-4 个典型选项，外加"其他，请说明"），一次性问清关键问题再开始分析。提问时优先覆盖：数据规模上限、部署形态（嵌入进程/单机服务/桌面应用）、查询语言偏好（SQL/Python）、与现有系统的集成方式，不要编造。用中文回答。</pre>
+5. 信息不足主动向我提问：用交互式选择题逐题提问（提问时优先覆盖：数据规模上限、部署形态（嵌入进程/单机服务/桌面应用）、查询语言偏好（SQL/Python）、与现有系统的集成方式），一次只问一个关键问题，每个问题给出 3-4 个带字母编号的选项（A/B/C/D，外加 E. 其他，请说明），我只需回复字母即可作答；等我回答后再问下一题；不要一次把所有问题都列出来。所有关键问题问完后，再开始分析，不要编造。用中文回答。</pre>
   <pre class="prompt-text lang-en" hidden>You are a neutral data architecture advisor. Help me select an embedded or single-node OLAP engine.
 
-【My scenario】(fill in; if left blank, proactively ask me multiple-choice questions to pin it down)
+【My scenario】(fill in; if left blank, proactively ask me interactive multiple-choice questions (prioritize asking about: data size ceiling, deployment shape (embedded in-process / single-node service / desktop app), query language preference (SQL/Python), integration with existing systems), one at a time, to pin it down)
 - Environment: (e.g. laptop, single server, edge node)
 - Data size: (e.g. tens of GB to a few TB)
 - Language ecosystem: (is Python/Arrow integration a hard requirement)
@@ -511,7 +511,7 @@
 2. Tag each key claim with an evidence level: official docs, vendor claim, community-tested, community consensus, to-be-verified. Strictly distinguish "verified absent" from "no evidence found".
 3. For each candidate: its sweet spot, the three most likely pitfalls explained at the mechanism level, and the tripwire — what signals mean you must move to a cluster architecture.
 4. No aggregate total score and no ranking. Conditional verdicts only, in "if ..., then ..." form.
-5. When information is missing, proactively ask me targeted multiple-choice questions (3-4 typical options per question plus an "other, please specify" option), covering the key questions all at once before starting the analysis. Prioritize asking about: data size ceiling, deployment shape (embedded in-process / single-node service / desktop app), query language preference (SQL/Python), integration with existing systems, instead of inventing facts. Answer in English.</pre>
+5. When information is missing, proactively ask me targeted interactive multiple-choice questions, one key question per turn: each with 3-4 lettered options (A/B/C/D plus E. Other, please specify) that I can answer by simply replying with the letter; wait for my answer before asking the next question; do not list all questions at once. Start the analysis only after all key questions are answered, instead of inventing facts. Answer in English.</pre>
   <div class="ai-btn-row">
     <button type="button" class="ai-btn ai-copy" data-act="copy"><span data-zh="复制提示词" data-en="Copy prompt">复制提示词</span></button>
     <button type="button" class="ai-btn" data-act="chatgpt">ChatGPT <span aria-hidden="true">↗</span></button>
@@ -526,7 +526,7 @@
   <p class="prompt-use"><span data-zh="适用：RAG 知识库，在专用向量库与通用库 AI 扩展之间做选择。" data-en="Use when: building a RAG knowledge base and choosing between dedicated vector databases and AI extensions of general databases.">适用：RAG 知识库，在专用向量库与通用库 AI 扩展之间做选择。</span></p>
   <pre class="prompt-text lang-zh">你是一名中立的 AI 基础设施顾问。请帮我做 RAG 场景的向量数据库选型。
 
-【我的场景】（请填写；若留空，请你主动用选择题向我提问以明确场景）
+【我的场景】（请填写；若留空，请你主动用交互式选择题向我逐题提问以明确场景）
 - 向量规模：（如 5000 万条，维度 1024）
 - embedding 模型：（如 bge-m3，是否已固定）
 - 查询负载：（如峰值 2000 QPS，P99 延迟要求 100ms）
@@ -540,10 +540,10 @@
 2. 每个关键结论标注证据等级：官方文档、厂商口径、社区实测、社区共识、待验证；严格区分"查证为无"与"未找到证据"。
 3. 每款候选给出：甜蜜点、最可能踩的三个坑（从机制层面解释，如 HNSW 参数调优空间、过滤导致召回率塌陷的条件）。
 4. 不做综合总分、不排名，只给"如果……那么……"的条件判断。
-5. 信息不足主动向我提问：用带选项的选择题形式（每题给出 3-4 个典型选项，外加"其他，请说明"），一次性问清关键问题再开始分析。提问时优先覆盖：向量规模与维度、召回率硬要求、标量过滤+向量混合检索需求、数据更新频率、P99 延迟要求，不要编造。用中文回答。</pre>
+5. 信息不足主动向我提问：用交互式选择题逐题提问（提问时优先覆盖：向量规模与维度、召回率硬要求、标量过滤+向量混合检索需求、数据更新频率、P99 延迟要求），一次只问一个关键问题，每个问题给出 3-4 个带字母编号的选项（A/B/C/D，外加 E. 其他，请说明），我只需回复字母即可作答；等我回答后再问下一题；不要一次把所有问题都列出来。所有关键问题问完后，再开始分析，不要编造。用中文回答。</pre>
   <pre class="prompt-text lang-en" hidden>You are a neutral AI infrastructure advisor. Help me select a vector database for a RAG workload.
 
-【My scenario】(fill in; if left blank, proactively ask me multiple-choice questions to pin it down)
+【My scenario】(fill in; if left blank, proactively ask me interactive multiple-choice questions (prioritize asking about: vector scale and dimensions, hard recall requirements, scalar-filter plus vector hybrid search needs, data update frequency, P99 latency requirements), one at a time, to pin it down)
 - Vector scale: (e.g. 50M vectors, 1024 dimensions)
 - Embedding model: (e.g. bge-m3, fixed or not)
 - Query load: (e.g. 2k peak QPS, P99 latency target 100ms)
@@ -557,7 +557,7 @@
 2. Tag each key claim with an evidence level: official docs, vendor claim, community-tested, community consensus, to-be-verified. Strictly distinguish "verified absent" from "no evidence found".
 3. For each candidate: its sweet spot and the three most likely pitfalls, explained at the mechanism level (e.g. HNSW parameter tuning headroom, conditions under which filtering collapses recall).
 4. No aggregate total score and no ranking. Conditional verdicts only, in "if ..., then ..." form.
-5. When information is missing, proactively ask me targeted multiple-choice questions (3-4 typical options per question plus an "other, please specify" option), covering the key questions all at once before starting the analysis. Prioritize asking about: vector scale and dimensions, hard recall requirements, scalar-filter plus vector hybrid search needs, data update frequency, P99 latency requirements, instead of inventing facts. Answer in English.</pre>
+5. When information is missing, proactively ask me targeted interactive multiple-choice questions, one key question per turn: each with 3-4 lettered options (A/B/C/D plus E. Other, please specify) that I can answer by simply replying with the letter; wait for my answer before asking the next question; do not list all questions at once. Start the analysis only after all key questions are answered, instead of inventing facts. Answer in English.</pre>
   <div class="ai-btn-row">
     <button type="button" class="ai-btn ai-copy" data-act="copy"><span data-zh="复制提示词" data-en="Copy prompt">复制提示词</span></button>
     <button type="button" class="ai-btn" data-act="chatgpt">ChatGPT <span aria-hidden="true">↗</span></button>
@@ -570,7 +570,7 @@
   <p class="prompt-use"><span data-zh="适用：已有 PG/OceanBase/ES，想判断要不要引入专用向量库。" data-en="Use when: you already run PG/OceanBase/ES and need to decide whether a dedicated vector database is warranted.">适用：已有 PG/OceanBase/ES，想判断要不要引入专用向量库。</span></p>
   <pre class="prompt-text lang-zh">你是一名中立的 AI 基础设施顾问。请帮我判断：RAG 场景下，继续用现有通用数据库的 AI 扩展，还是引入专用向量数据库？
 
-【我的现状】（请填写；若留空，请你主动用选择题向我提问以明确现状）
+【我的现状】（请填写；若留空，请你主动用交互式选择题向我逐题提问以明确现状）
 - 现有数据库：{{CANDIDATES}}
 - 向量规模与增长预期
 - 当前痛点：（如召回率、延迟、过滤查询写起来别扭）
@@ -581,10 +581,10 @@
 2. 给出明确的取舍线：什么规模与什么信号出现之前，通用库的 AI 扩展够用；出现哪些信号，就必须迁到专用向量库。
 3. 如果建议迁移，给出迁移代价评估（数据迁移、双写、回滚方案）。
 4. 每个关键结论标注证据等级：官方文档、厂商口径、社区实测、社区共识、待验证；严格区分"查证为无"与"未找到证据"。
-5. 不做综合总分、不排名；信息不足主动提问：用带选项的选择题形式（每题给出 3-4 个典型选项，外加"其他，请说明"），一次性问清关键问题再开始分析。提问时优先覆盖：现有数据库与已用 AI 扩展、RAG 规模预期（向量数/增速）、团队学习意愿、是否接受多一套运维体系，不要编造。用中文回答。</pre>
+5. 不做综合总分、不排名；信息不足主动提问：用交互式选择题逐题提问（提问时优先覆盖：现有数据库与已用 AI 扩展、RAG 规模预期（向量数/增速）、团队学习意愿、是否接受多一套运维体系），一次只问一个关键问题，每个问题给出 3-4 个带字母编号的选项（A/B/C/D，外加 E. 其他，请说明），我只需回复字母即可作答；等我回答后再问下一题；不要一次把所有问题都列出来。所有关键问题问完后，再开始分析，不要编造。用中文回答。</pre>
   <pre class="prompt-text lang-en" hidden>You are a neutral AI infrastructure advisor. Help me decide: for a RAG workload, should I stay on my general-purpose database's AI extension or adopt a dedicated vector database?
 
-【Current state】(fill in; if left blank, proactively ask me multiple-choice questions to pin it down)
+【Current state】(fill in; if left blank, proactively ask me interactive multiple-choice questions (prioritize asking about: existing database and AI extensions in use, expected RAG scale (vector count/growth), team learning appetite, willingness to operate one more system), one at a time, to pin it down)
 - Existing database: {{CANDIDATES}}
 - Vector scale and growth outlook
 - Current pain points: (e.g. recall rate, latency, awkward filtered queries)
@@ -595,7 +595,7 @@
 2. Draw an explicit line: below what scale and signals the general-purpose extension is enough; which signals mean you must move to a dedicated vector database.
 3. If migration is advised, assess the migration cost (data migration, dual writes, rollback plan).
 4. Tag each key claim with an evidence level: official docs, vendor claim, community-tested, community consensus, to-be-verified. Strictly distinguish "verified absent" from "no evidence found".
-5. No aggregate total score and no ranking. When information is missing, proactively ask targeted multiple-choice questions (3-4 typical options per question plus an "other, please specify" option), covering the key questions all at once before starting the analysis. Prioritize asking about: existing database and AI extensions in use, expected RAG scale (vector count/growth), team learning appetite, willingness to operate one more system, instead of inventing facts. Answer in English.</pre>
+5. No aggregate total score and no ranking. When information is missing, proactively ask targeted interactive multiple-choice questions, one key question per turn: each with 3-4 lettered options (A/B/C/D plus E. Other, please specify) that I can answer by simply replying with the letter; wait for my answer before asking the next question; do not list all questions at once. Start the analysis only after all key questions are answered, instead of inventing facts. Answer in English.</pre>
   <div class="ai-btn-row">
     <button type="button" class="ai-btn ai-copy" data-act="copy"><span data-zh="复制提示词" data-en="Copy prompt">复制提示词</span></button>
     <button type="button" class="ai-btn" data-act="chatgpt">ChatGPT <span aria-hidden="true">↗</span></button>
@@ -608,7 +608,7 @@
   <p class="prompt-use"><span data-zh="适用：RAG 检索质量不达标，需要深水区诊断与调优。" data-en="Use when: RAG retrieval quality is below bar and you need deep diagnosis and tuning.">适用：RAG 检索质量不达标，需要深水区诊断与调优。</span></p>
   <pre class="prompt-text lang-zh">你是一名中立的 AI 基础设施顾问，专长检索质量调优。我的 RAG 检索质量不达标，请帮我做混合检索与召回质量的深水区诊断。
 
-【我的现状】（请填写；若留空，请你主动用选择题向我提问以明确现状）
+【我的现状】（请填写；若留空，请你主动用交互式选择题向我逐题提问以明确现状）
 - 当前方案：（如单一向量检索 / 向量加全文）
 - 症状：（如召回率低、相关文档排不上、过滤后无结果）
 - 数据特征：（如中英文混合、长文档、结构化字段多）
@@ -619,10 +619,10 @@
 3. 给出离线评测方法：如何构建评测集、用什么指标（召回率、MRR、nDCG）验证优化真的有效。
 4. 说明 GraphRAG 这类方案在什么条件下值得上、什么条件下是过度设计。
 5. 每个关键结论标注证据等级：官方文档、厂商口径、社区实测、社区共识、待验证；不确定的明确说不知道，不要编造。
-6. 若【我的现状】留空，像医生问诊一样先向我提问：用带选项的选择题形式（每题给出 3-4 个典型选项，外加"其他，请说明"），一次性问清关键症状再开始诊断，不要编造。问诊时优先覆盖：召回不达标的具体症状（查全/查准/排序哪个环节）、向量规模与索引类型、标量过滤复杂度、查询模式（TopK 取值）、已尝试过的优化手段。用中文回答。</pre>
+6. 若【我的现状】留空，像医生问诊一样先向我提问：交互式逐题进行，一次只问一个关键症状，每个症状给出 3-4 个带字母编号的选项（A/B/C/D，外加 E. 其他，请说明），我只需回复字母即可作答；等我回答后再问下一个，所有关键症状问完后，再开始诊断。不要一次把所有问题都列出来，也不要编造。问诊时优先覆盖：召回不达标的具体症状（查全/查准/排序哪个环节）、向量规模与索引类型、标量过滤复杂度、查询模式（TopK 取值）、已尝试过的优化手段。用中文回答。</pre>
   <pre class="prompt-text lang-en" hidden>You are a neutral AI infrastructure advisor specializing in retrieval-quality tuning. My RAG retrieval quality is below bar — help me with a deep diagnosis of hybrid search and recall quality.
 
-【Current state】(fill in; if left blank, proactively ask me multiple-choice questions to pin it down)
+【Current state】(fill in; if left blank, proactively ask me interactive multiple-choice questions, one at a time, to pin it down)
 - Current approach: (e.g. pure vector search / vector plus full-text)
 - Symptoms: (e.g. low recall, relevant docs not ranking, empty results after filtering)
 - Data characteristics: (e.g. mixed Chinese-English, long documents, many structured fields)
@@ -633,7 +633,7 @@
 3. An offline evaluation method: how to build an eval set and which metrics (recall, MRR, nDCG) prove an optimization actually worked.
 4. When GraphRAG-style approaches are worth it and when they are over-engineering.
 5. Tag each key claim with an evidence level: official docs, vendor claim, community-tested, community consensus, to-be-verified. Say explicitly where uncertain instead of inventing facts.
-6. If 【Current state】 is left blank, take a doctor-like history first: ask me targeted multiple-choice questions (3-4 typical options per question plus an "other, please specify" option), covering the key symptoms all at once before starting the diagnosis, instead of inventing facts. Prioritize asking about: which stage underperforms (recall/precision/ranking), vector scale and index type, scalar-filter complexity, query pattern (TopK value), optimizations already tried. Answer in English.</pre>
+6. If 【Current state】 is left blank, take a doctor-like history first, interactively one symptom at a time: each step ask one key symptom with 3-4 lettered options (A/B/C/D plus E. Other, please specify) that I can answer by simply replying with the letter; wait for my answer before asking the next one, and start the diagnosis only after the history is complete. Do not list all questions at once, and do not invent facts. Prioritize asking about: which stage underperforms (recall/precision/ranking), vector scale and index type, scalar-filter complexity, query pattern (TopK value), optimizations already tried. Answer in English.</pre>
   <div class="ai-btn-row">
     <button type="button" class="ai-btn ai-copy" data-act="copy"><span data-zh="复制提示词" data-en="Copy prompt">复制提示词</span></button>
     <button type="button" class="ai-btn" data-act="chatgpt">ChatGPT <span aria-hidden="true">↗</span></button>
