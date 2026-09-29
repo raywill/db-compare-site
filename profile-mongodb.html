@@ -149,6 +149,139 @@
 <li>可接 Kafka（MongoDB Kafka Connector sink/source）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>大 oplog 压力、分片集群 resume token 管理是已知坑 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL 与数据生命周期管理 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（TTL 索引原生，分钟级精度后台删）。</p>
+<ul>
+<li>TTL 索引按日期字段过期自动删文档，精度约 60 秒 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>后台线程单线程删除，大批量过期可能积压 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>capped collection 是固定容量淘汰，不是 TTL 语义 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（schemaless；索引后台构建）。</p>
+<ul>
+<li>无 schema，文档结构随时变，无 DDL 锁表问题 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>建索引后台执行，大集合耗时但不阻塞读写 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>4.2+ 支持 rolling 之外的 resharding 在线重分片 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（逻辑隔离为主；Atlas 有一定管控）。</p>
+<ul>
+<li>自建靠多库/多集群逻辑隔离，无租户资源限流 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>Atlas 有慢查询终止等运维手段，但不是租户 QoS <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> 跨地域多活 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（Atlas Global Cluster，多活写）。</p>
+<ul>
+<li>Global Cluster 按区放分片，就近写，zone 级故障自动转移 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>自建分片集群也可跨区，但运维复杂度陡增 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>跨区分片键设计决定延迟，错了难改 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> 高可用架构与 RTO/RPO <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（副本集自动选举，约 10 秒）。</p>
+<ul>
+<li>副本集主故障自动选举，通常 10 秒内 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>RPO 看 writeConcern，majority 则≈0 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>选举期间写不可用，应用需重试 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> 行级安全与数据脱敏 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（无原生RLS；视图+字段级加密）。</p>
+<ul>
+<li>MongoDB 无原生行级安全，常用视图（view）按用户过滤实现行级隔离 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Client-Side Field Level Encryption 支持字段级加密，查询密文需特定配置 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>基于角色的集合 / 字段级权限通过自定义角色实现 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>视图方案在分片集群下有聚合管道限制，需实测 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON 与半结构化能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（BSON 原生，文档模型本家）。</p>
+<ul>
+<li>BSON 文档原生，嵌套/数组一等公民 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>16MB 文档上限，深嵌套注意 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> 全文检索能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（text 索引；中文分词弱）。</p>
+<ul>
+<li>text 索引多语言，中文按标点/空格切分效果弱 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>生产中文检索多用 Atlas Search <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> 存储效率与压缩 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（WiredTiger 块压缩+前缀压缩）。</p>
+<ul>
+<li>默认存储引擎 WiredTiger 支持块压缩（snappy/zlib/zstd 可选）与索引前缀压缩。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>文档型数据字段名重复率高，压缩收益显著；zstd 在新版本中压缩比最优。<span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span></li>
+<li>分片集群下块压缩与 chunk 迁移的 CPU 开销需权衡。<span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> 开源协议与厂商锁定风险 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（SSPL 协议变更黑历史）。</p>
+<ul>
+<li>2018 年 MongoDB 将 AGPL 转为 SSPL（Server Side Public License），要求云托管者开源全部服务栈，被 OSI 拒绝认定为开源。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>SSPL 下自建使用免费，但云厂商托管受限；DocumentDB 等兼容替代存在但非完全对等。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Atlas 云服务进一步绑定 MongoDB 云平台。<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> 查询优化器与计划稳定性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（计划缓存+hint+索引过滤；8.0 改进）。</p>
+<ul>
+<li>查询计划缓存，hint() 强制索引，index filters 可冻结计划 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>8.0 查询引擎重写，复杂聚合计划质量提升 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>计划缓存失效导致的抖动仍是排查难点 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> 参数调优与自治能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（参数少；Atlas 索引推荐部分自治）。</p>
+<ul>
+<li>参数相对精简，调优核心在索引与 schema 设计 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Atlas Performance Advisor 自动推荐索引 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>分片键选错后期改造成本极高 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> 静默数据损坏防护 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（WiredTiger 块级 checksum 成熟）。</p>
+<ul>
+<li>WiredTiger 存储引擎对数据块做 checksum，读入时校验。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>副本集多节点冗余，坏节点可从主节点初始同步重建。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>validate 命令可主动校验集合完整性，但大库执行成本高。<span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> 存储过程/触发器/过程语言 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（无传统 SP；用 Trigger/Stream）。</p>
+<ul>
+<li>无传统存储过程；Atlas Trigger + Change Stream 做事件驱动 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>旧版 server-side JS 已弱化 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> 约束与数据完整性 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（无外键；schema validation 替代）。</p>
+<ul>
+<li>无外键（查证为无）；schema validation（JSON Schema）做结构约束 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>跨文档引用完整性应用层保证 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> 分析 SQL 完备性 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（聚合管道强；非 SQL）。</p>
+<ul>
+<li>聚合管道表达力强，5.0+ $setWindowFields 支持窗口 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>非 SQL，BI 需 Connector <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> 被遗忘权与数据擦除 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（手动删除；oplog/备份残留）。</p>
+<ul>
+<li>deleteOne / deleteMany 即时删除，无原生擦除证明 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>oplog、备份、Change Streams 下游会在窗口期内保留被删文档 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>字段级加密下销毁密钥可实现加密擦除，但需严格的密钥生命周期管理 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> 数据血缘与目录集成 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（无原生；Atlan/Manta 第三方集成）。</p>
+<ul>
+<li>无原生血缘，靠 Atlan/Manta 等第三方 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>Atlas Data Federation 元数据可被采集 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> 存算分离 vs 存算一体 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（默认存算一体；Atlas 有分离选项）。</p>
+<ul>
+<li>副本集/分片本地盘，经典存算一体 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Atlas 部分层级提供存算分离选项 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> 多模能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（文档+向量+全文+时序）。</p>
+<ul>
+<li>文档原生，Atlas Vector Search、Atlas Search（全文）、时序集合 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无原生图引擎 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps 成本可观测性 <span class="verdict v-neutral">不适用</span></h3><div class="dim-body"><p><strong>不适用</strong>（自建无计费，成本=硬件+人力自理）。</p>
+<ul>
+<li>开源自建无内置计费概念，成本是节点硬件、存储与运维人力。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Atlas 托管版按量计费，支持标签归因与预算告警。<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> 驱动与多语言生态 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（官方驱动最全；BI Connector 给 JDBC）。</p>
+<ul>
+<li>官方 Java/Python/Node/Go/C# 驱动业界最全之一 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>BI Connector 提供 JDBC/ODBC 给 BI 工具 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> 物化视图 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（On-Demand MV（$merge 模拟））。</p>
+<ul>
+<li>无原生 MV；On-Demand Materialized Views 用 $merge 聚合模拟 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>刷新调度与一致性自建 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> 支持跨云 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（Atlas AWS/GCP/Azure，多云标杆）。</p>
+<ul>
+<li>Atlas 横跨 AWS/GCP/Azure，可跨云部署集群 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>开源/企业版任意云自建 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>跨云分片集群延迟与费用都要评估 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
 <div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-neutral">Partial support</span></h3><div class="dim-body"><p><strong>Partial support</strong>. WiredTiger engine-level data-at-rest encryption (AES-256-GCM) is <strong>Enterprise-edition only</strong>; the Community edition is <strong>(confirmed absent)</strong> for this capability (no <code>--enableEncryption</code>-style support); key management supports KMIP (Enterprise) and local keyfile; Atlas enables at-rest encryption by default. Client-side field-level encryption via Queryable Encryption (since 7.0) is a client-side capability not split by Community/Enterprise (requires the crypt_shared library). Evidence level: <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></p></div></div>
@@ -217,6 +350,139 @@
 <li>Change Streams subscribe to collection/database/cluster changes (oplog-based) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Kafka via the MongoDB Kafka Connector (sink/source) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Oplog pressure and resume-token management on sharded clusters are known pitfalls <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL &amp; data lifecycle <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Native TTL indexes; background deletes at ~minute precision).</p>
+<ul>
+<li>TTL indexes auto-delete documents by date field, roughly 60-second precision <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>A single background thread does the deletes; massive expiries can backlog <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Capped collections are fixed-size eviction, a different mechanism <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Schemaless; background index builds).</p>
+<ul>
+<li>No schema; document shape evolves freely with no DDL locking <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Index builds run in the background; slow on huge collections but non-blocking <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>4.2+ supports online resharding <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> Multi-tenancy &amp; resource isolation <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Mostly logical isolation; Atlas adds some controls).</p>
+<ul>
+<li>Self-hosted relies on multi-database/cluster logical isolation; no tenant throttling <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Atlas offers slow-query kill and ops tooling, but not tenant QoS <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> Cross-region active-active <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Atlas Global Cluster; active-active writes).</p>
+<ul>
+<li>Global Cluster pins shards per zone for local writes with automatic zone failover <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Self-hosted sharded clusters can span regions but ops complexity jumps <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Cross-region shard-key design decides latency; hard to fix later <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> HA &amp; RTO/RPO <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Replica-set auto-election in ~10s).</p>
+<ul>
+<li>Primary failure triggers automatic election, usually within 10s <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>RPO follows writeConcern; majority means ≈0 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Writes unavailable during election; apps must retry <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> Row-level security &amp; masking <span class="verdict v-no">No native</span></h3><div class="dim-body"><p><strong>Partial</strong> (No native RLS; views + field-level encryption).</p>
+<ul>
+<li>MongoDB has no native row-level security; views filtered per user are the common row-isolation pattern <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Client-Side Field Level Encryption supports field-level encryption, with specific configuration needed to query ciphertext <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Role-based collection / field privileges are built with custom roles <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>View-based designs face aggregation-pipeline limits on sharded clusters; test in practice <code>(community tested)</code></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON &amp; semi-structured <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Native BSON, document-native).</p>
+<ul>
+<li>Native BSON documents; nesting/arrays first-class <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>16MB document cap; watch deep nesting <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> Full-text search <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Text indexes; weak CJK).</p>
+<ul>
+<li>Multi-language text indexes; weak Chinese segmentation <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Production Chinese search usually Atlas Search <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> Storage efficiency &amp; compression <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (WiredTiger block compression plus prefix compression).</p>
+<ul>
+<li>The default WiredTiger engine supports block compression (snappy/zlib/zstd selectable) and index prefix compression. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Document data has highly repetitive field names, so compression gains are significant; zstd offers the best ratios in recent versions. <code>(community tested)</code></li>
+<li>In sharded clusters, weigh block compression against chunk-migration CPU overhead. <code>(community tested)</code></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> OSS license &amp; lock-in risk <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (SSPL license-change history).</p>
+<ul>
+<li>In 2018 MongoDB moved from AGPL to SSPL (Server Side Public License), requiring cloud hosters to open-source their full service stack; the OSI declined to recognize it as open source. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Self-hosting is free under SSPL, but cloud hosting is restricted; compatible alternatives like DocumentDB exist but are not fully equivalent. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>The Atlas cloud service further binds users to MongoDB&#x27;s cloud platform. <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> Optimizer &amp; plan stability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Plan cache + hints + index filters; 8.0 rework).</p>
+<ul>
+<li>Query plan cache, hint() to force indexes, index filters to pin plans <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>8.0 query-engine rewrite improved complex aggregation plans <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Jitter from plan-cache invalidation remains a debugging pain <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> Tuning &amp; autonomy <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Few knobs; Atlas index advisor partly autonomous).</p>
+<ul>
+<li>Lean parameters; tuning centers on indexes and schema design <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Atlas Performance Advisor auto-recommends indexes <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>A wrong shard key is brutally expensive to fix later <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> Silent corruption protection <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (WiredTiger block checksums; mature).</p>
+<ul>
+<li>The WiredTiger storage engine checksums data blocks, verified on read. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Replica-set redundancy lets a bad node rebuild via initial sync from the primary. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>The validate command actively checks collection integrity but is expensive on large databases. <code>(community tested)</code></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> Stored procedures &amp; triggers <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (No classic SPs; Triggers/Streams).</p>
+<ul>
+<li>No classic procedures; Atlas Triggers + Change Streams for events <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Legacy server-side JS de-emphasized <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> Constraints &amp; integrity <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (No FKs; schema validation instead).</p>
+<ul>
+<li>No FKs (verified absent); schema validation (JSON Schema) for structure <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Cross-document integrity in app layer <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> Analytical SQL <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Strong pipeline; not SQL).</p>
+<ul>
+<li>Expressive aggregation pipeline; 5.0+ $setWindowFields windows <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Not SQL; BI needs connectors <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> Right to erasure <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Manual deletes; oplog/backup residue).</p>
+<ul>
+<li>deleteOne / deleteMany delete immediately; no native erasure attestation <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Oplog, backups, and Change Streams downstreams retain deleted documents inside their windows <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>With field-level encryption, destroying keys achieves crypto-erasure, but demands strict key lifecycle management <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> Data lineage &amp; catalog <span class="verdict v-no">No native</span></h3><div class="dim-body"><p><strong>Partial</strong> (No native; Atlan/Manta third-party integration).</p>
+<ul>
+<li>No native lineage; third parties like Atlan/Manta <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Atlas Data Federation metadata can be harvested <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> Storage-compute architecture <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Coupled by default; Atlas has separation options).</p>
+<ul>
+<li>Replica sets/sharded clusters on local disks; classically coupled <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Some Atlas tiers offer disaggregated options <code>(to be verified)</code>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> Multi-model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Document + vector + full-text + time-series).</p>
+<ul>
+<li>Native documents, Atlas Vector Search, Atlas Search (full-text), time-series collections <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No native graph engine <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps &amp; cost observability <span class="verdict v-neutral">N/A</span></h3><div class="dim-body"><p><strong>N/A</strong> (No metering; hardware plus labor).</p>
+<ul>
+<li>Self-hosted open source has no built-in metering; costs are node hardware, storage, and operations labor. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Atlas managed edition meters usage with tag attribution and budget alerts. <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> Drivers &amp; clients <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Most complete official drivers; BI Connector for JDBC).</p>
+<ul>
+<li>Among the most complete official Java/Python/Node/Go/C# drivers <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>BI Connector exposes JDBC/ODBC for BI tools <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> Materialized views <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (On-Demand MVs via $merge).</p>
+<ul>
+<li>No native MVs; On-Demand MVs simulate via $merge <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Scheduling and consistency DIY <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> Multi-cloud support <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Atlas on AWS/GCP/Azure; the multi-cloud benchmark).</p>
+<ul>
+<li>Atlas spans AWS/GCP/Azure with cross-cloud cluster deployment <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Open-source/enterprise self-hosted on any cloud <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Evaluate latency and cost for cross-cloud sharded clusters <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
 </div>
 </section>
@@ -509,7 +775,7 @@
 <footer class="footer">
   <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
 </footer>
-<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "redshift", "name": "Amazon Redshift", "domain": "olap"}, {"slug": "bigquery", "name": "Google BigQuery", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
 
 <script src="assets/app.js"></script>
 </body>

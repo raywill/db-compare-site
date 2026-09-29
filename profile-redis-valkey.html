@@ -154,6 +154,127 @@
 <li>Redis Streams 可当 append-only 日志自己实现变更流 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 <li>Debezium Redis 连接器多为 sink（写入）方向，source 侧弱 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</li>
 </ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL 与数据生命周期管理 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（EXPIRE/TTL 原生，键级精确过期）。</p>
+<ul>
+<li>EXPIRE/PEXPIRE/EXPIREAT 精确到毫秒，后台+惰性双删策略 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>大量 key 同时过期可能引发延迟毛刺，生产上打散过期时间是常识 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-neutral">不适用</span></h3><div class="dim-body"><p><strong>不适用</strong>（无 schema，无 DDL）。</p>
+<ul>
+<li>KV/数据结构无 schema，无 DDL 概念 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>RediSearch 索引 schema 变更需重建 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（db 编号逻辑隔离；无资源限流）。</p>
+<ul>
+<li>select db 编号做逻辑隔离，无 CPU/内存限流，一个租户可打满 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>生产多租户靠多实例/分片，Redis Cluster 的 db 编号还受限 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> 跨地域多活 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（企业版 Active-Active（CRDT）；开源无）。</p>
+<ul>
+<li>Redis Enterprise Active-Active 用 CRDT 做多活写，开源版无 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>开源跨区靠主从复制，写单点 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> 高可用架构与 RTO/RPO <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（Sentinel/Cluster 秒级切换）。</p>
+<ul>
+<li>Sentinel 自动故障转移秒级，Cluster 分片主从自动切 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>异步复制下切换可能丢数（RPO 非零），等 Valkey 的改进 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>脑裂时旧主写入成幽灵数据，客户端要处理 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> 行级安全与数据脱敏 <span class="verdict v-no">无</span></h3><div class="dim-body"><p><strong>无</strong>（无行列概念；靠ACL隔离）。</p>
+<ul>
+<li>Redis / Valkey 是 KV 存储，无行 / 列概念，原生无 RLS 与列级权限 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>ACL 可按 key 模式与命令做权限隔离，是唯一的原生隔离手段 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>脱敏只能在应用层做；key 命名规范决定 ACL 策略能否落地 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON 与半结构化能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（RedisJSON 模块；原生无）。</p>
+<ul>
+<li>RedisJSON（ReJSON）模块提供 JSON 类型与路径查询，Valkey 兼容 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>模块非内核，云厂商支持度不一 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> 全文检索能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（RediSearch 模块；中文分词弱）。</p>
+<ul>
+<li>RediSearch 模块全文检索+聚合 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>中文分词弱，内存占用高 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> 存储效率与压缩 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（内存型；靠紧凑对象编码省内存）。</p>
+<ul>
+<li>Redis/Valkey 为内存数据库，压缩主要靠对象编码优化：listpack、intset、ziplist 等紧凑结构。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>无通用数据压缩算法，大 value 场景内存占用高，需应用层自行压缩。<span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span></li>
+<li>RDB/AOF 持久化文件可配置压缩，但属备份范畴不计入本维度。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> 开源协议与厂商锁定风险 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（Redis 转授权；Valkey fork 承接）。</p>
+<ul>
+<li>2024 年 Redis 将 BSD 转为 RSALv2/SSPLv1 双授权，限制云厂商托管，是近年最受关注的协议变更事件。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Linux 基金会主导 fork 出 Valkey（BSD 3-Clause），AWS、Google 等背书，原 Redis 生态快速迁移。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>fork 本身即是风险缓解：Valkey 保持协议开放，但长期治理仍待观察。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> 查询优化器与计划稳定性 <span class="verdict v-neutral">不适用</span></h3><div class="dim-body"><p><strong>不适用</strong>（命令式 KV，无查询优化器）。</p>
+<ul>
+<li>命令式访问，无查询计划概念 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>RediSearch 查询有内部优化但非 CBO <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> 参数调优与自治能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（参数少；调优靠内存与持久化）。</p>
+<ul>
+<li>redis.conf 参数精简，调优核心是 maxmemory 策略与 RDB/AOF <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>大 key/慢查询是常规治理项 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> 静默数据损坏防护 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（RDB 无 checksum，AOF 有轻量校验）。</p>
+<ul>
+<li>RDB 快照文件无 checksum，损坏常在重启加载时才暴露。<span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span></li>
+<li>AOF 文件有多字节校验和，rewrite 与回放时可发现截断/损坏。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>内存损坏无页级防护，主从复制照搬内存状态，坏数据可扩散。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> 存储过程/触发器/过程语言 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（Lua/Functions；无传统 SP）。</p>
+<ul>
+<li>Lua 脚本/Functions，无传统存储过程/触发器 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>脚本长阻塞单线程，大 key 上禁用 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> 约束与数据完整性 <span class="verdict v-neutral">不适用</span></h3><div class="dim-body"><p><strong>不适用</strong>（KV 无约束概念（不适用））。</p>
+<ul>
+<li>无外键/CHECK 概念（不适用）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> 分析 SQL 完备性 <span class="verdict v-neutral">不适用</span></h3><div class="dim-body"><p><strong>不适用</strong>（RediSearch 聚合有限）。</p>
+<ul>
+<li>RediSearch 有限聚合，非分析 SQL（不适用）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> 被遗忘权与数据擦除 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（DEL即删；RDB/AOF残留）。</p>
+<ul>
+<li>DEL / UNLINK 即时删除内存数据，但 RDB 快照与 AOF 日志会保留历史副本 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>AOF 重写前被删 key 的写入历史仍在文件中，需轮转持久化文件 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>无擦除证明，合规场景需管控持久化与备份 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> 数据血缘与目录集成 <span class="verdict v-neutral">不适用</span></h3><div class="dim-body"><p><strong>不适用</strong>（KV 缓存定位，无血缘概念）。</p>
+<ul>
+<li>定位缓存/KV，无数据血缘概念 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> 存算分离 vs 存算一体 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（存算一体：内存+本地盘）。</p>
+<ul>
+<li>内存为主+本地持久化，典型存算一体 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> 多模能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（KV+JSON+向量+时序+图（模块））。</p>
+<ul>
+<li>JSON、RediSearch（全文+向量）、时序、图靠模块扩展 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Valkey 延续模块生态 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps 成本可观测性 <span class="verdict v-neutral">不适用</span></h3><div class="dim-body"><p><strong>不适用</strong>（自建无计费，成本=内存硬件+人力）。</p>
+<ul>
+<li>开源自建无内置计费概念，成本主要是内存硬件与运维人力。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>云托管版（ElastiCache/Memorystore 等）可在云账单侧做标签归因与预算告警。<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> 驱动与多语言生态 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（客户端生态最全之一）。</p>
+<ul>
+<li>redis-py、Jedis、node-redis、go-redis 等，覆盖所有主流语言 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>RESP 协议简单，客户端质量高 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> 物化视图 <span class="verdict v-neutral">不适用</span></h3><div class="dim-body"><p><strong>不适用</strong>（KV 无物化视图概念）。</p>
+<ul>
+<li>无物化视图概念（不适用）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> 支持跨云 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（开源任意云，无绑定）。</p>
+<ul>
+<li>开源版任意云可部署 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Redis Enterprise Cloud 支持多云，但那是商业版 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+</ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
 <div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-neutral">confirmed absent</span></h3><div class="dim-body"><p><strong>confirmed absent</strong> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>. No built-in TDE; cloud-managed offerings get disk-level encryption from the cloud provider <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</p></div></div>
@@ -227,6 +348,127 @@
 <li>Keyspace notifications subscribe to change events but are unreliable (fire-and-forget) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Redis Streams can serve as an append-only log for a hand-rolled change feed <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 <li>The Debezium Redis connector is mostly a sink (write) direction; source side is weak <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL &amp; data lifecycle <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Native EXPIRE/TTL; exact per-key expiry).</p>
+<ul>
+<li>EXPIRE/PEXPIRE/EXPIREAT with millisecond precision; active + lazy expiry <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Mass simultaneous expiries can cause latency spikes — scattering expiry times is standard practice <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-neutral">N/A</span></h3><div class="dim-body"><p><strong>N/A</strong> (No schema, no DDL).</p>
+<ul>
+<li>KV/data structures have no schema and no DDL concept <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>RediSearch index schema changes need rebuilds <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> Multi-tenancy &amp; resource isolation <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (DB-number logical isolation; no resource throttling).</p>
+<ul>
+<li>SELECT db-number for logical isolation; no CPU/memory throttling — one tenant can saturate <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Production multi-tenancy means multiple instances/shards; db numbers are even restricted in Redis Cluster <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> Cross-region active-active <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Enterprise Active-Active (CRDT); not in open source).</p>
+<ul>
+<li>Redis Enterprise Active-Active uses CRDTs for multi-writer; absent in open source <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>Open-source cross-region relies on primary-replica; single write point <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> HA &amp; RTO/RPO <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Sentinel/Cluster failover in seconds).</p>
+<ul>
+<li>Sentinel auto-failover in seconds; Cluster shard primaries fail over automatically <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Async replication can lose data on failover (non-zero RPO); await Valkey improvements <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Split-brain writes to the old primary become ghost data; clients must cope <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> Row-level security &amp; masking <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><p><strong>Not supported</strong> (No row/column concept; ACL isolation only).</p>
+<ul>
+<li>Redis / Valkey is a KV store with no row/column concept; natively no RLS or column privileges <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>ACLs isolate by key pattern and command; that is the only native isolation mechanism <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Masking can only happen in the app layer; key-naming discipline decides whether ACL policy is enforceable <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON &amp; semi-structured <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (RedisJSON module; not native).</p>
+<ul>
+<li>RedisJSON module for JSON types and path queries; Valkey-compatible <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Module, not core; cloud support varies <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> Full-text search <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (RediSearch module; weak CJK).</p>
+<ul>
+<li>RediSearch module for full-text + aggregations <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Weak Chinese tokenization; high memory <code>(community tested)</code>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> Storage efficiency &amp; compression <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (In-memory; saves RAM via compact object encodings).</p>
+<ul>
+<li>Redis/Valkey are in-memory databases; compression comes mainly from object-encoding optimizations: listpack, intset, ziplist and other compact structures. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>No general-purpose data compression; large-value workloads use significant RAM and need application-layer compression. <code>(community tested)</code></li>
+<li>RDB/AOF persistence files support compression, but that is backup-scope and excluded from this dimension. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> OSS license &amp; lock-in risk <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Redis moved to RSAL in 2024; Valkey fork carries on).</p>
+<ul>
+<li>In 2024 Redis moved from BSD to dual RSALv2/SSPLv1 licensing, restricting cloud-vendor hosting — the most watched license change in recent years. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>The Linux Foundation-led Valkey fork (BSD 3-Clause), backed by AWS, Google and others, absorbed the Redis ecosystem quickly. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>The fork itself is the mitigation: Valkey stays openly licensed, though long-term governance remains to be seen. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> Optimizer &amp; plan stability <span class="verdict v-neutral">N/A</span></h3><div class="dim-body"><p><strong>N/A</strong> (Imperative KV; no query optimizer).</p>
+<ul>
+<li>Imperative access; no query-plan concept <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>RediSearch queries have internal optimization but no CBO <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> Tuning &amp; autonomy <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Few knobs; tune memory and persistence).</p>
+<ul>
+<li>Lean redis.conf; tuning centers on maxmemory policy and RDB/AOF <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Big keys/slow queries are routine governance <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> Silent corruption protection <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (RDB unchecked; AOF lightly checked).</p>
+<ul>
+<li>RDB snapshot files carry no checksum; corruption often surfaces only on restart load. <code>(community tested)</code></li>
+<li>AOF files include a multi-byte checksum, catching truncation/corruption on rewrite and replay. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>No page-level guard for in-memory corruption; replication copies memory state verbatim, so bad data can spread. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> Stored procedures &amp; triggers <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Lua/Functions; no classic SPs).</p>
+<ul>
+<li>Lua scripts/Functions; no classic procedures/triggers <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Long scripts block the single thread; avoid on big keys <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> Constraints &amp; integrity <span class="verdict v-neutral">N/A</span></h3><div class="dim-body"><p><strong>N/A</strong> (No constraint concept in KV).</p>
+<ul>
+<li>No FK/CHECK concept (N/A) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> Analytical SQL <span class="verdict v-neutral">N/A</span></h3><div class="dim-body"><p><strong>N/A</strong> (Limited RediSearch aggregations).</p>
+<ul>
+<li>Limited RediSearch aggregations; not analytical SQL (N/A) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> Right to erasure <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (DEL deletes now; RDB/AOF residue).</p>
+<ul>
+<li>DEL / UNLINK removes in-memory data immediately, but RDB snapshots and AOF logs keep historical copies <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Before AOF rewrite, the write history of deleted keys remains in the file; persistence files must be rotated <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>No erasure attestation; compliance scenarios must govern persistence and backups <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> Data lineage &amp; catalog <span class="verdict v-neutral">N/A</span></h3><div class="dim-body"><p><strong>N/A</strong> (KV cache role; no lineage concept).</p>
+<ul>
+<li>Positioned as cache/KV; no data-lineage concept <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> Storage-compute architecture <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Coupled: memory + local disk).</p>
+<ul>
+<li>Memory-first with local persistence; classically coupled <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> Multi-model <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (KV + JSON + vectors + time-series + graph (modules)).</p>
+<ul>
+<li>JSON, RediSearch (full-text + vectors), time-series, and graph via modules <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Valkey continues the module ecosystem <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps &amp; cost observability <span class="verdict v-neutral">N/A</span></h3><div class="dim-body"><p><strong>N/A</strong> (No metering; memory HW plus labor).</p>
+<ul>
+<li>Self-hosted open source has no built-in metering; costs are mainly memory hardware and operations labor. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Managed cloud editions (ElastiCache, Memorystore, etc.) expose cost attribution and budget alerts on the billing side. <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> Drivers &amp; clients <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Among the fullest client ecosystems).</p>
+<ul>
+<li>redis-py, Jedis, node-redis, go-redis covering all major languages <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Simple RESP protocol; high client quality <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> Materialized views <span class="verdict v-neutral">N/A</span></h3><div class="dim-body"><p><strong>N/A</strong> (No MV concept in KV).</p>
+<ul>
+<li>No materialized-view concept (N/A) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> Multi-cloud support <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Open source on any cloud; no binding).</p>
+<ul>
+<li>Open source deploys on any cloud <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Redis Enterprise Cloud is multi-cloud, but that&#x27;s the commercial edition <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
 </ul></div></div>
 </div>
 </section>
@@ -548,7 +790,7 @@
 <footer class="footer">
   <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
 </footer>
-<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "redshift", "name": "Amazon Redshift", "domain": "olap"}, {"slug": "bigquery", "name": "Google BigQuery", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
 
 <script src="assets/app.js"></script>
 </body>

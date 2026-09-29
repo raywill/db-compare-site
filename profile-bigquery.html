@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Google BigQuery - DB 选型参考</title>
+<link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">&#9672;</span> DB <span data-zh="选型参考" data-en="Compare">选型参考</span></a>
+    <nav class="mainnav">
+<a href="index.html" class="active" data-zh="首页" data-en="Home">首页</a>
+<a href="compare.html" class="" data-zh="维度对比" data-en="Compare">维度对比</a>
+<a href="advisor.html" class="" data-zh="AI选型" data-en="AI Selection">AI选型</a>
+<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
+    </nav>
+    <div class="cmp-tray">
+      <button id="cmp-tray-btn" type="button" class="tray-btn" aria-expanded="false" aria-haspopup="true"><span data-zh="对比" data-en="Compare">对比</span> <b class="tray-count"><i id="cmp-count">0</i>/4</b></button>
+      <div id="cmp-panel" class="tray-panel" hidden>
+        <div class="tray-sec"><span data-zh="已选" data-en="Selected">已选</span></div>
+        <div id="cmp-selected" class="tray-selected"></div>
+        <div class="tray-sec"><span data-zh="全部产品（最多选 4 款）" data-en="All products (up to 4)">全部产品（最多选 4 款）</span></div>
+        <div id="cmp-list" class="tray-list"></div>
+        <div class="tray-actions"><button id="cmp-clear" type="button" class="tray-clear"><span data-zh="清空选择" data-en="Clear selection">清空选择</span></button></div>
+      </div>
+    </div>
+    <button id="lang-toggle" class="lang-btn" type="button" aria-label="switch language">EN</button>
+  </div>
+</header>
+<main class="page">
+<div class="profile-hero">
+  <a class="back" href="index.html"><span data-zh="← 返回首页" data-en="← Back to home">← 返回首页</span></a>
+  <h1>Google BigQuery</h1>
+  <div class="meta-row"><span class="cat cat-olap" data-zh="OLAP" data-en="OLAP">OLAP</span> <span class="tag">#BigQuery</span> <span class="tag">#Serverless</span> <span class="tag">#Dremel</span> <span class="tag">#Slot计费</span> <span class="tag">#BigQuery-Omni</span> <span class="tag">#BI-Engine</span> <span class="tag">#GCP</span> <span class="tag">#BigQuery-ML</span></div>
+  <p class="oneliner"><div class="lang-block lang-zh">
+<p>Google 的 Serverless 数仓标杆——Dremel 血统的存算分离架构，无节点、无集群，查询自动分配 slot：按扫描量（按需）或按 slot 小时（Editions）两种计费模式，Omni 把引擎送到 AWS/Azure 数据所在处；代价是 GCP 深度绑定、按扫描计费下&quot;一个烂 SQL 烧掉预算&quot;、slot 治理是必修课。</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<p>Google&#x27;s serverless warehouse benchmark — Dremel-blooded storage-compute separation, no nodes, no clusters, queries auto-allocated slots: two billing modes (per scanned TiB on-demand, or per slot-hour under Editions), Omni ships the engine to where AWS/Azure data lives. The price is deep GCP lock-in, &quot;one bad SQL burns the budget&quot; under scan-based billing, and slot governance as mandatory homework.</p>
+</div></p>
+  <div class="ai-dive-row" data-product="Google BigQuery">
+    <span class="ai-dive-label" data-zh="用 AI 深挖这款：" data-en="Deep-dive with AI:">用 AI 深挖这款：</span>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('chatgpt', this)">ChatGPT <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('grok', this)">Grok <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('claude', this)">Claude <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn addcmp-btn" data-addcmp="bigquery"><span class="addcmp-label">＋ 对比</span></button>
+  </div>
+  <div class="legend"><span class="legend-label" data-zh="证据等级：" data-en="Evidence levels: ">证据等级：</span><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></div>
+</div>
+<section class="doc-section">
+<h2><span data-zh="基本信息" data-en="Basics">基本信息</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>项</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td>厂商</td><td>Google Cloud；BigQuery 2010 年发布、2011 年 GA（前身为 Google 内部 Dremel 系统）</td></tr>
+<tr><td>国家</td><td>美国</td></tr>
+<tr><td>起源</td><td>Google 内部 Dremel 对外服务化；2023 年推出 Editions slot 计费体系替代旧 flat-rate</td></tr>
+<tr><td>许可证</td><td>专有商业软件（无开源版本）</td></tr>
+<tr><td>商业版说明</td><td>双模式计费：按需按扫描 TiB（每月首 1 TiB 免费）；Editions 按 slot 小时（三档：Standard/Enterprise/Enterprise Plus，支持 1/3 年承诺折扣）；存储分 active/long-term 两档；BI Engine、Omni、流式写入另计。具体价格随区域与合同变化，本档案不写绝对价格</td></tr>
+<tr><td>托管服务</td><td>GCP 全托管 Serverless；无多云部署（Omni 是跨云查询，不是跨云部署）</td></tr>
+<tr><td>主类型</td><td>云数据仓库（OLAP）</td></tr>
+<tr><td>兼具类型</td><td>库内机器学习（BigQuery ML）、BI 加速（BI Engine）、跨云分析（BigQuery Omni）</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Item</th><th>Content</th></tr></thead>
+<tbody>
+<tr><td>Vendor</td><td>Google Cloud; BigQuery launched 2010, GA 2011 (productized from Google&#x27;s internal Dremel system)</td></tr>
+<tr><td>Country</td><td>USA</td></tr>
+<tr><td>Origin</td><td>Google-internal Dremel externalized as a service; Editions slot-billing introduced in 2023 replacing legacy flat-rate</td></tr>
+<tr><td>License</td><td>Proprietary commercial software (no open-source edition)</td></tr>
+<tr><td>Commercial note</td><td>Dual billing modes: on-demand per scanned TiB (first 1 TiB/month free); Editions per slot-hour (three tiers: Standard/Enterprise/Enterprise Plus, with 1/3-year commitment discounts); storage split into active/long-term tiers; BI Engine, Omni, streaming inserts billed separately. Prices vary by region and contract — no absolute figures quoted here</td></tr>
+<tr><td>Managed service</td><td>Fully managed serverless on GCP; no multi-cloud deployment (Omni is cross-cloud querying, not cross-cloud deployment)</td></tr>
+<tr><td>Primary type</td><td>Cloud data warehouse (OLAP)</td></tr>
+<tr><td>Also covers</td><td>In-database ML (BigQuery ML), BI acceleration (BI Engine), cross-cloud analytics (BigQuery Omni)</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section"><h2><span data-zh="硬维度（19 项）" data-en="Hard dimensions (19)">硬维度（19 项）</span></h2>
+<div class="lang-block lang-zh">
+<div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>默认由 Google 管理密钥加密全部数据；支持客户管理密钥（CMEK），密钥存客户自己的 Cloud KMS <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>注意：CMEK 是高阶版本（Enterprise Plus 等）能力，Standard 版不可用，选型时看版本矩阵 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有（TLS 全链路）</span></h3><div class="dim-body"><ul>
+<li>所有 API/控制台/驱动流量走 TLS；VPC-SC（VPC Service Controls）可做私有边界隔离 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无明文回退：Serverless 架构下不存在自建式明文端口问题 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> 审计 <span class="verdict v-yes">有（Cloud Audit Logs）</span></h3><div class="dim-body"><ul>
+<li>Cloud Audit Logs 记录数据访问与管理操作，可经 Log Router 接入 SIEM <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>INFORMATION_SCHEMA.JOBS 系列视图可查作业历史、执行者、扫描字节与 slot 消耗，是&quot;谁跑了什么查询、花了多少钱&quot;的主入口 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>注意：审计日志保留与导出要自己配，长期保留有存储成本 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> 认证与权限 <span class="verdict v-yes">有（IAM + 列级/行级 + 脱敏）</span></h3><div class="dim-body"><ul>
+<li>身份：GCP IAM 统一身份体系，支持 Google Workspace/Cloud Identity SSO <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>授权：数据集/表/视图级 IAM；列级访问控制、行级安全（row-level security）、数据脱敏策略（data masking）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>政策标签（Policy Tags）做数据分类分级，是金融/医疗合规的常用姿势 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>注意：高阶治理能力（列级安全、CMEK）与版本绑定，Standard 版有功能天花板 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> 备份恢复 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>时间旅行：默认 7 天，可查询表的历史版本、恢复误删数据 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>故障安全期（fail-safe）：时间旅行窗口之外再加 7 天（Google 侧保留，需走支持恢复）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>表快照、数据集复制、跨区域数据集复制做容灾与归档 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>注意：7 天窗口比 Snowflake（企业版 90 天）短得多，长期审计/合规归档要靠快照或导出到 GCS，不能依赖时间旅行 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> 可观测性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>INFORMATION_SCHEMA.JOBS_BY_PROJECT/ORGANIZATION：查每次查询的扫描字节、slot 消耗、执行时长，是成本归因的金矿 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Cloud Monitoring 指标与告警；控制台有查询计划可视化（执行树、slot 使用）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>slot 治理靠预留用量视图 + 配额告警；Editions 下&quot;哪个预留被谁占满&quot;是日常问题 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> 连接模型 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>以 REST API 为主；官方 JDBC/ODBC 驱动、各语言客户端库齐全，BI 工具直连 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Serverless 架构下没有&quot;连接&quot;概念：无连接池打爆问题，并发瓶颈在 slot 而不在连接数 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>BI Engine：内存加速层，仪表盘类高频小查询走内存，亚秒返回 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>注意：BI Engine 按内存容量另计费，不是免费加速 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> 事务与隔离级别 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>支持多语句事务与 DML（INSERT/UPDATE/DELETE/MERGE），快照隔离语义 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>注意：这是分析型事务（ETL 修正、SCD 更新），不是 OLTP；大 DML 的 slot 与时间成本要预估，一次全表 UPDATE 可能很贵（按需模式下按扫描计费）<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> 复制与一致性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>跨区域数据集复制做容灾；存储多副本，计算无状态 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Analytics Hub：跨组织/跨项目共享实时数据集，对方订阅即用，无需复制 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无跨云主动-主动写：多活是 GCP 区域内的事，跨云靠 Omni 查询而非写入 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> 扩展方式 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>全 Serverless：查询自动分配 slot，用户无节点概念，不用调集群大小 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Editions 下可设 baseline/max 做自动扩缩，baseline 可为 0（纯按需扩缩）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>边缘真相：自动扩缩按&quot;分配&quot;而非&quot;使用&quot;计费，60 秒起步——一个 10 秒的查询也占 1 分钟 slot；slot 争抢会导致查询排队，Standard 版有 slot 上限 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> 兼容性 <span class="verdict v-yes">有（GoogleSQL + 迁移服务）</span></h3><div class="dim-body"><ul>
+<li>GoogleSQL 方言（源自 ZetaSQL），标准分析 SQL 模式（窗口函数、CTE、数组/结构体）完备 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>BigQuery Migration Service：Teradata/Oracle/Redshift/Snowflake 的迁移评估与 SQL 翻译 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>注意：方言与 PG/Oracle 有差异，迁移要改写；&quot;SQL 像&quot;不等于&quot;零改写&quot; <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> 许可证与商业模式 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>纯 GCP 商业服务，无开源/自建版本 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>计费模型（只写计量边界）：按需按扫描 TiB（每月首 1 TiB 免费，单查询 10 MB 起步）；Editions 按 slot 小时（三档费率，支持 1/3 年承诺折扣）；存储分 active/long-term（90 天未改动自动降档）；BI Engine、Omni、流式写入、ML 训练另计 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>选型铁律：波动/低频负载用按需，稳态/高频用 slot；但 Editions 自动扩缩按分配计费，短查询多的场景可能反而不如按需——POC 必须按真实 workload 测两种账 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> 中文资料丰富度 <span class="verdict v-partial">部分支持（官方有中文，社区偏少）</span></h3><div class="dim-body"><ul>
+<li>官方文档有中文版，核心概念与计费文档均已汉化 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>中文社区内容（博客、课程）明显少于 AWS 系；深度调优与 slot 治理的实战内容英文为主 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> 性能与延迟特征 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>Capacitor 列式存储 + Dremel 执行树，PB 级聚合秒到分钟级是常态 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>BI Engine 内存加速：仪表盘类查询亚秒返回 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>边界：slot 不足会排队（看 JOBS 视图的等待时间）；冷查询首次执行、跨区/Omni 查询有额外延迟；毫秒级点查不是目标 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>分区表 + 聚簇是性能与成本的双关键：分区裁剪决定扫描量，扫描量决定按需账单 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">15</span> 合规与认证 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>SOC 1/2/3、ISO/IEC 27001、HIPAA、PCI DSS、FedRAMP 等全覆盖 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>注意：高阶合规能力（CMEK、大范围审计）与 Enterprise Plus 版本绑定，合规选型要连版本一起看 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">16</span> 成熟度与社区生态 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>2011 年 GA，十余年生产验证，是 Serverless 数仓的定义者之一 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>生态：dbt-bigquery 适配器、Looker（Google 收购）/Looker Studio、Vertex AI 联动，GCP 数据栈一体 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>风险面：Google 产品线调整史（如旧 flat-rate 关停）提醒用户：计费模型会变，合同与架构要留余地 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">17</span> 标杆用户 <span class="verdict v-yes">有（GCP 公开案例）</span></h3><div class="dim-body"><ul>
+<li>公开案例包括 Spotify、The New York Times 等（以 Google Cloud 官网最新披露为准）<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>采用模式常见：BigQuery 做核心数仓 + Looker 做 BI + Vertex AI 做 ML，GCP 生态内闭环 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>具体名单以官网为准，本档案不堆砌 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">18</span> 生态工具链 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>SQL 工作流：Dataform（Google 原生）、dbt-bigquery 适配器 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>BI/ML：Looker、Vertex AI（BigQuery ML 模型可直接部署调用）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>IaC：Terraform Google Provider； ingestion 侧 Data Transfer Service、Datastream <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">19</span> 云托管与 Serverless <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>零运维是最大卖点：无集群、无节点、无补丁，开箱即查 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>仅 GCP 部署；BigQuery Omni 是&quot;跨云查询&quot;（引擎去 AWS/Azure 数据处），不是&quot;部署到别云&quot; <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>注意：Serverless 不等于零账单——slot/扫描/存储照计；&quot;免运维&quot;省的是人力，不是费用 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">20</span> 数据接入与摄入 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>批量加载（Load Job）免费：GCS/本地文件批量入表不收计算费 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Storage Write API 流式写入（每月有免费额度），exactly-once 语义；旧版 streaming insert 按量计费 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Datastream：从 MySQL/PostgreSQL/Oracle CDC 近实时同步到 BigQuery，是官方 CDC 入仓通道 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Data Transfer Service：定时从 SaaS/其他云/应用导入 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>边缘：流式写入的去重与延迟语义要显式设计；CDC 链路延迟分钟级 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">21</span> 外部数据访问 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>BigQuery Omni：在 AWS/Azure 上运行 BQ 引擎，直接查当地 S3/Blob 数据，免搬迁；支持跨云 join 与跨云物化视图 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>外部表/对象表：直查 GCS/S3/Azure 数据；BigLake 统一湖仓表格式与治理 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>新方向：cross-cloud connections（Preview）：从任意 BQ 区域直查 AWS/Azure/Salesforce，据称比 Omni 更省——Preview 状态，生产选型先观望 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>边界：Omni 查询按扫描加价 + 跨云传输费；大数据量反复查仍建议入 BQ 存储；&quot;跨云查询&quot;不等于&quot;跨云免费&quot; <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">22</span> CDC 与下游同步 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>入：Datastream 从 MySQL/PG/Oracle CDC 近实时同步，是官方推荐链路 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>出：EXPORT 到 GCS、Analytics Hub 跨组织共享、Dataflow 下游消费 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无 Snowflake Streams 式原生变更流：下游要&quot;增量跟&quot;，靠时间旅行窗口内的变更比对或导出 CDC，语义弱一档 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL 与数据生命周期管理 <span class="verdict v-yes">有（表/分区过期时间原生）</span></h3><div class="dim-body"><ul>
+<li>表级 expiration_time、数据集默认过期、分区表 partition_expiration_days <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>过期自动删且不收删除费，是成本治理常用手段 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>过期是整表/整分区粒度，无行级 TTL <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-yes">有（加列/放宽模式在线）</span></h3><div class="dim-body"><ul>
+<li>加列、放宽 required-&gt;nullable 等是在线元数据操作 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>列改名/改类型支持有限，部分需重建表 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>分区/聚簇变更代价高，建表时一次定好 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>预留 slot 按项目/团队分配，互不抢占 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>按需模式靠配额限流，隔离弱于预留 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>成本归因到项目标签，FinOps 友好 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> 跨地域多活 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>数据集跨区复制（BigQuery 跨区域复制）做容灾/就近读 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>写仍是单区语义，无多活写 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>复制产生额外存储+作业费用 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> 高可用架构与 RTO/RPO <span class="verdict v-yes">有（托管多区，用户无感知）</span></h3><div class="dim-body"><ul>
+<li>计算存储全托管多区复制，故障平台兜底 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>时间旅行 7 天可恢复误删，用户侧 RPO≈0 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> 行级安全与数据脱敏 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>BigQuery 提供 Row-level security（行级访问策略）与基于 Policy Tags 的列级动态脱敏（DLP 集成） <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>列级权限通过 Policy Tags + IAM Data Catalog 实现 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>脱敏策略依赖 Cloud DLP，跨项目配置复杂度高 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON 与半结构化能力 <span class="verdict v-yes">有（JSON 类型原生，函数丰富）</span></h3><div class="dim-body"><ul>
+<li>原生 JSON 数据类型，JSON_QUERY/JSON_VALUE 等函数丰富 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>按扫描计费，SELECT * 大 JSON 费用惊人 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> 全文检索能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>SEARCH 函数与 search index 支持全文检索 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>索引有配额与延迟，非实时 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> 存储效率与压缩 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>底层 Capacitor 列式存储格式，自动压缩与编码，用户按压缩后用量计费。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>长周期存储自动转入低成本层级，压缩与分层共同降低账单。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>压缩为平台黑盒，无用户可调参数，压缩比不公开披露。<span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> 开源协议与厂商锁定风险 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>Google BigQuery 是 GCP 专属的 serverless 数仓，无开源版本，完全绑定 Google Cloud。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Standard SQL 方言与 BQ 特有函数（ML、GIS、半结构化）深度绑定平台。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>数据以 Capacitor 列存格式存储，迁出需导出转换，超大表成本高昂。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> 查询优化器与计划稳定性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>Dremel 架构 CBO 全自动优化，EXPLAIN 可用 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无 hint 机制，用户不干预计划 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>slot 自动调度使计划翻转风险极低 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> 参数调优与自治能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>Serverless 模式零参数，autoscaling 自动扩缩 slot <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>调优转为 SQL 改写与成本（slot/字节计费）管理 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> 静默数据损坏防护 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>数据文件落 Colossus 分布式文件系统，底层校验、纠删码与冗余由 Google 内部完成。<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+<li>用户侧无页校验开关、校验命令或损坏审计视图。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>时间旅行与快照防的是逻辑损坏，静默位损坏不在用户可观测范围。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> 存储过程/触发器/过程语言 <span class="verdict v-yes">有（SQL 脚本/存储过程+调度查询）</span></h3><div class="dim-body"><ul>
+<li>多语句脚本、存储过程（procedures），scheduled queries 定时调度 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>去 O 迁移 PL/SQL 需改写 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> 约束与数据完整性 <span class="verdict v-partial">部分支持（PK/FK 信息性不强制）</span></h3><div class="dim-body"><ul>
+<li>主键/外键为 not enforced 信息性约束 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>靠上游保证，错误声明影响优化 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> 分析 SQL 完备性 <span class="verdict v-yes">有（分析 SQL 强项，函数极全）</span></h3><div class="dim-body"><ul>
+<li>窗口函数、CTE、PIVOT、ML 函数，分析 SQL 为强项 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>方言（GoogleSQL）与标准 SQL 差异，迁移注意 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> 被遗忘权与数据擦除 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>删除靠 DML DELETE，无原生擦除工作流 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Time travel（7 天）与快照使被删数据在窗口期内可恢复 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>长期备份与导出表延长残留面 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>无擦除证明 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> 数据血缘与目录集成 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>Dataplex 自动采集列级血缘，Data Catalog 统一发现 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>血缘覆盖查询/作业全链路 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> 存算分离 vs 存算一体 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>Colossus 分布式存储 + Dremel 计算，存算分离的开创者 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>计算资源按 slot 弹性，与存储完全解耦 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> 多模能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>JSON、GEOGRAPHY、BigQuery ML，VECTOR_SEARCH 有限支持 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无原生全文/图引擎 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps 成本可观测性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>dry run 可预估查询扫描量再执行，是成本可观测的标杆实践。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>INFORMATION_SCHEMA 按作业/用户归因 slot 与字节用量，custom quotas 限流，预算告警完整。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>账单可导出 BigQuery 做细粒度 FinOps 分析。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> 驱动与多语言生态 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>官方 Python/Java/Node/Go 客户端库 + REST API <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>JDBC/ODBC 靠 Simba 官方合作驱动 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>dbt 等数仓工具链完备 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> 物化视图 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>物化视图增量刷新、查询自动改写 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>需基表分区对齐等前提，不满足则不增量 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> 支持跨云 <span class="verdict v-no">无（GCP 绑定，无跨云）</span></h3><div class="dim-body"><ul>
+<li>仅 GCP，无其他云版本 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>跨云用 BigQuery Omni 读其他云数据，但计算仍在 GCP 侧 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>迁出靠导出到 GCS，无跨云复制 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Google-managed keys by default + CMEK).</p>
+<ul>
+<li>Encrypted by Google-managed keys by default; customer-managed encryption keys (CMEK) with keys in the customer&#x27;s own Cloud KMS <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Caveat: CMEK is a higher-tier (Enterprise Plus-class) capability — unavailable on Standard; check the edition matrix during selection <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / transport encryption <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (TLS end to end).</p>
+<ul>
+<li>All API/console/driver traffic over TLS; VPC Service Controls available for private-boundary isolation <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No plaintext fallback: the serverless architecture has no self-managed-style plaintext-port trap <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> Auditing <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Cloud Audit Logs).</p>
+<ul>
+<li>Cloud Audit Logs capture data-access and admin operations, routable via Log Router into a SIEM <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li><code>INFORMATION_SCHEMA.JOBS*</code> views expose job history, principals, bytes scanned and slot consumption — the primary &quot;who ran what, what did it cost&quot; surface <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Caveat: audit-log retention and export are yours to configure; long retention has storage cost <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> Authentication &amp; authorization <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (IAM + column/row-level + masking).</p>
+<ul>
+<li>Identity: unified GCP IAM identity, Google Workspace/Cloud Identity SSO supported <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Authorization: dataset/table/view-level IAM; column-level access control, row-level security, data masking policies <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Policy Tags for data classification — the standard posture for finance/healthcare compliance <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Caveat: advanced governance (column-level security, CMEK) is edition-gated — Standard has a feature ceiling <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> Backup &amp; recovery <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (7-day time travel + snapshots + cross-region copy).</p>
+<ul>
+<li>Time travel: 7 days by default — query historical table versions, recover from accidental deletes <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Fail-safe: an additional 7 days beyond the time-travel window (Google-side retention, recovery via support) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Table snapshots, dataset copy and cross-region dataset copy for DR and archiving <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Caveat: the 7-day window is far shorter than Snowflake&#x27;s (90 days on Enterprise) — long-horizon audit/compliance archiving must rely on snapshots or GCS exports, not time travel <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> Observability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (<code>INFORMATION_SCHEMA</code> + Cloud Monitoring).</p>
+<ul>
+<li><code>INFORMATION_SCHEMA.JOBS_BY_PROJECT/ORGANIZATION</code>: per-query bytes scanned, slot consumption and duration — a goldmine for cost attribution <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Cloud Monitoring metrics and alerts; visual query-plan explorer (execution tree, slot usage) in the console <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Slot governance runs on reservation-usage views plus quota alerts; &quot;which reservation is saturated by whom&quot; is a daily question under Editions <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> Connection model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (REST/JDBC/ODBC + client libraries; no connection concept).</p>
+<ul>
+<li>REST API first; official JDBC/ODBC drivers and client libraries for all major languages; BI tools connect directly <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No &quot;connection&quot; concept in the serverless architecture: no connection-pool exhaustion — concurrency bottlenecks are slots, not connections <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>BI Engine: in-memory acceleration layer giving sub-second dashboard queries <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Caveat: BI Engine bills separately by memory capacity — not a free speedup <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> Transactions &amp; isolation levels <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (snapshot isolation; analytical DML transactions).</p>
+<ul>
+<li>Multi-statement transactions and DML (<code>INSERT</code>/<code>UPDATE</code>/<code>DELETE</code>/<code>MERGE</code>) with snapshot-isolation semantics <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Caveat: these are analytical transactions (ETL corrections, SCD updates), not OLTP — big DMLs carry slot and time cost, and a full-table UPDATE under on-demand billing scans (and bills) the whole table <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> Replication &amp; consistency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (cross-region copy + Analytics Hub sharing).</p>
+<ul>
+<li>Cross-region dataset copy for DR; multi-replica storage with stateless compute <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Analytics Hub: share live datasets across organizations/projects — subscribers consume directly, no copying <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No cross-cloud active-active writes: multi-region liveness is a GCP-region affair; cross-cloud is about querying via Omni, not writing <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> Scaling <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (serverless auto-scaling; slot-reservation governance).</p>
+<ul>
+<li>Fully serverless: queries auto-allocate slots, no node concept, no cluster sizing <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Under Editions, baseline/max autoscaling is configurable with baseline allowed at 0 (pure on-demand scaling) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Edge truth: autoscaling bills on slots <em>allocated</em>, not <em>used</em>, with a 60-second minimum — a 10-second query occupies a full minute of slots; slot contention queues queries, and Standard has a slot cap <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> Compatibility <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (GoogleSQL + migration service).</p>
+<ul>
+<li>GoogleSQL dialect (from ZetaSQL) with complete analytical SQL patterns (window functions, CTEs, arrays/structs) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>BigQuery Migration Service: assessment and SQL translation for Teradata/Oracle/Redshift/Snowflake migrations <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Caveat: the dialect differs from PG/Oracle — migrations need rewriting; &quot;SQL-like&quot; ≠ &quot;zero-rewrite&quot; <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> License &amp; business model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (proprietary; per-scan / per-slot dual mode).</p>
+<ul>
+<li>Pure GCP commercial service — no open-source or self-hosted edition <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Metering boundaries only: on-demand per scanned TiB (first 1 TiB/month free, 10 MB minimum per query); Editions per slot-hour (three rate tiers with 1/3-year commitment discounts); storage split active/long-term (auto-downgrade after 90 days unmodified); BI Engine, Omni, streaming inserts and ML training billed separately <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Iron rule of selection: spiky/low-frequency loads go on-demand, steady/high-frequency go slots — but Editions autoscaling bills on allocation, so slot-heavy short-query shapes can cost <em>more</em> than on-demand. POCs must meter both bills against real workloads <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> Chinese-language resources <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (official Chinese docs, thin community).</p>
+<ul>
+<li>Official docs available in Chinese, including core concepts and pricing <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Chinese community content (blogs, courses) is notably thinner than the AWS ecosystem; deep tuning and slot-governance practice is English-first <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> Performance &amp; latency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Dremel columnar + slot parallelism; seconds-scale).</p>
+<ul>
+<li>Capacitor columnar storage + Dremel execution trees — PB-scale aggregations in seconds to minutes are routine <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>BI Engine in-memory acceleration: sub-second dashboard queries <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Boundaries: slot starvation queues queries (watch wait time in JOBS views); first-run cold queries and cross-region/Omni queries add latency; millisecond point lookups are not the target <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Partitioned + clustered tables are the twin keys to performance <em>and</em> cost: partition pruning decides bytes scanned, bytes scanned decide the on-demand bill <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">15</span> Compliance &amp; certifications <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (SOC / ISO / HIPAA / PCI / FedRAMP suite).</p>
+<ul>
+<li>SOC 1/2/3, ISO/IEC 27001, HIPAA, PCI DSS, FedRAMP and others <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Caveat: advanced compliance capabilities (CMEK, broad audit) are Enterprise Plus-gated — evaluate the edition together with compliance <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">16</span> Maturity &amp; community <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (GA since 2011; a definer of the serverless warehouse).</p>
+<ul>
+<li>GA 2011 with 10+ years of production validation — one of the definers of the serverless data warehouse <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Ecosystem: dbt-bigquery adapter, Looker (Google-acquired)/Looker Studio, Vertex AI linkage — one GCP data stack <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Risk side: Google&#x27;s product-line history (e.g., legacy flat-rate shutdown) is a reminder that billing models change — leave room in contracts and architecture <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">17</span> Notable adopters <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (public GCP cases).</p>
+<ul>
+<li>Published cases include Spotify, The New York Times and others (per latest Google Cloud disclosures) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Common pattern: BigQuery as core warehouse + Looker BI + Vertex AI for ML, closed loop inside GCP <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Customer lists per Google&#x27;s site; not enumerated here (to be verified).</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">18</span> Ecosystem tooling <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Dataform / dbt / Looker / Vertex AI / Terraform).</p>
+<ul>
+<li>SQL workflows: Dataform (Google-native), dbt-bigquery adapter <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>BI/ML: Looker, Vertex AI (BigQuery ML models deployable for direct serving) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>IaC: Terraform Google provider; ingestion-side Data Transfer Service and Datastream <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">19</span> Managed &amp; serverless <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (pure serverless; GCP only).</p>
+<ul>
+<li>Zero ops is the headline selling point: no clusters, no nodes, no patching — query out of the box <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>GCP deployment only; BigQuery Omni is &quot;cross-cloud querying&quot; (the engine goes to AWS/Azure data), not &quot;deploy to other clouds&quot; <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Caveat: serverless ≠ zero bill — slots/scans/storage all meter; &quot;no ops&quot; saves headcount, not spend <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">20</span> Data ingestion <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (free batch loads + streaming API + Datastream CDC).</p>
+<ul>
+<li>Batch loads (load jobs) are free: bulk GCS/local-file ingestion costs no compute <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Storage Write API streaming ingestion (monthly free quota) with exactly-once semantics; legacy streaming inserts metered separately <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Datastream: near-real-time CDC from MySQL/PostgreSQL/Oracle into BigQuery — the official CDC ingestion channel <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Data Transfer Service: scheduled imports from SaaS/other clouds/applications <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Edge: streaming dedup and latency semantics need explicit design; CDC pipelines run at minute-level latency <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">21</span> External data access <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Omni cross-cloud + external tables + BigLake).</p>
+<ul>
+<li>BigQuery Omni: run the BQ engine on AWS/Azure, querying S3/Blob data in place with no relocation; cross-cloud joins and cross-cloud materialized views supported <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>External/object tables query GCS/S3/Azure data directly; BigLake unifies lakehouse formats and governance <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>New direction: cross-cloud connections (Preview) — query AWS/Azure/Salesforce from any BQ region, claimed cheaper than Omni. Preview status: watch before betting production on it <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>Boundaries: Omni queries carry a scan premium plus cross-cloud transfer fees; repeatedly scanned large datasets still belong in BQ storage; &quot;cross-cloud querying&quot; ≠ &quot;cross-cloud free&quot; <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">22</span> CDC &amp; downstream <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Datastream in; export/sharing out).</p>
+<ul>
+<li>In: Datastream CDC from MySQL/PG/Oracle in near real time — the officially recommended path <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Out: EXPORT to GCS, cross-organization sharing via Analytics Hub, Dataflow for downstream consumption <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No Snowflake-Streams-style native change feed: downstream &quot;incremental follow&quot; relies on in-window change comparison via time travel or CDC exports — a weaker semantic tier <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL &amp; data lifecycle <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Native table/partition expiration; partition_expiration_days).</p>
+<ul>
+<li>Table expiration_time, dataset default expiration, partition_expiration_days <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Expiry auto-deletes at no deletion cost — a standard cost-governance lever <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Expiry is table-/partition-granular; no row-level TTL <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Online add-column / schema relaxation).</p>
+<ul>
+<li>Add-column and relaxation (required→nullable) are online metadata ops <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Renames / type changes are limited; some need table rebuilds <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Partitioning/clustering changes are costly — get them right at creation <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> Multi-tenancy &amp; resource isolation <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Slot reservations/assignments; compute isolation).</p>
+<ul>
+<li>Reserved slots assigned per project/team with no preemption <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>On-demand mode relies on quota throttling — weaker isolation than reservations <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Cost attribution via project labels is FinOps-friendly <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> Cross-region active-active <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Cross-region dataset copy; single-region writes).</p>
+<ul>
+<li>Cross-region dataset copy for DR / local reads <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Writes stay single-region; no active-active writes <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Copies incur extra storage + job costs <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> HA &amp; RTO/RPO <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Managed multi-zone; invisible to users).</p>
+<ul>
+<li>Fully managed multi-zone compute/storage replication; the platform absorbs failures <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>7-day time travel recovers accidental deletes; user-side RPO≈0 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> Row-level security &amp; masking <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Row-level security + Policy Tags masking).</p>
+<ul>
+<li>BigQuery provides row-level security and Policy Tags-based column-level dynamic masking (DLP integration) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Column privileges via Policy Tags plus IAM Data Catalog <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Masking policies depend on Cloud DLP; cross-project configuration is complex <code>(community tested)</code></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON &amp; semi-structured <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Native JSON, rich functions).</p>
+<ul>
+<li>Native JSON type with rich JSON_QUERY/JSON_VALUE functions <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Billed per scanned byte; SELECT * on big JSON is shockingly expensive <code>(community tested)</code>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> Full-text search <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (SEARCH functions + search index).</p>
+<ul>
+<li>SEARCH functions and search index for full-text <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Index has quotas and lag; not real-time <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> Storage efficiency &amp; compression <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Capacitor columnar with automatic compression).</p>
+<ul>
+<li>The underlying Capacitor columnar format compresses and encodes automatically; users are billed on post-compression usage. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Long-term storage automatically tiers to lower-cost classes; compression plus tiering lowers bills. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Compression is a platform black box with no user tunables and undisclosed ratios. <code>(to be verified)</code></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> OSS license &amp; lock-in risk <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Google Cloud exclusive; no open-source edition).</p>
+<ul>
+<li>Google BigQuery is a GCP-exclusive serverless warehouse with no open-source edition, fully bound to Google Cloud. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Its Standard SQL dialect and BQ-specific functions (ML, GIS, semi-structured) bind deeply to the platform. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Data is stored in the Capacitor columnar format; migration requires export conversion, expensive for very large tables. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> Optimizer &amp; plan stability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Fully automatic Dremel CBO; no hints).</p>
+<ul>
+<li>Dremel-architecture CBO fully automatic; EXPLAIN available <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No hint mechanism; users don&#x27;t steer plans <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Automatic slot scheduling makes plan flips extremely rare <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> Tuning &amp; autonomy <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Serverless zero-knob autonomy benchmark).</p>
+<ul>
+<li>Serverless mode has zero knobs; autoscaling scales slots automatically <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Tuning becomes SQL rewriting plus cost (slot/byte billing) management <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> Silent corruption protection <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Colossus checks underneath; no switch).</p>
+<ul>
+<li>Data files sit on the Colossus distributed file system; checks, erasure coding, and redundancy are handled internally by Google. <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+<li>No user-facing checksum switch, verification command, or corruption audit view. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Time travel and snapshots guard against logical corruption; silent bit-rot is outside user observability. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> Stored procedures &amp; triggers <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Scripting/procedures/scheduling).</p>
+<ul>
+<li>Multi-statement scripting, procedures, scheduled queries <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Oracle PL/SQL needs rewrites <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> Constraints &amp; integrity <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Informational PK/FK).</p>
+<ul>
+<li>PK/FK not enforced, informational <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Guaranteed upstream; wrong declarations affect optimization <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> Analytical SQL <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Analytical SQL strength).</p>
+<ul>
+<li>Window functions, CTEs, PIVOT, ML functions — analytical SQL is its strength <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>GoogleSQL dialect differs from standard SQL <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> Right to erasure <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (DML deletes; time travel window residue).</p>
+<ul>
+<li>Deletion is DML DELETE; no native erasure workflow <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Time travel (7 days) and snapshots keep deleted data recoverable inside the window <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Long-term backups and exported tables extend the residue surface <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>No erasure attestation <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> Data lineage &amp; catalog <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Dataplex column-level lineage + Catalog; benchmark).</p>
+<ul>
+<li>Dataplex auto-captures column-level lineage; Data Catalog unifies discovery <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Lineage spans queries and jobs end to end <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> Storage-compute architecture <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Disaggregation pioneer: Colossus + Dremel).</p>
+<ul>
+<li>Colossus distributed storage + Dremel compute; the disaggregation pioneer <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Compute scales in slots, fully decoupled from storage <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> Multi-model <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (JSON + GEOGRAPHY + ML; limited vectors).</p>
+<ul>
+<li>JSON, GEOGRAPHY, BigQuery ML, and limited VECTOR_SEARCH <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No native full-text/graph engine <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps &amp; cost observability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Benchmark: dry run, quotas, alerts).</p>
+<ul>
+<li>Dry run estimates bytes scanned before execution: a benchmark FinOps practice. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>INFORMATION_SCHEMA attributes slot and byte usage by job/user; custom quotas throttle spend, with full budget alerting. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Billing exports to BigQuery for fine-grained FinOps analysis. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> Drivers &amp; clients <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Official multi-language libs; JDBC/ODBC via Simba).</p>
+<ul>
+<li>Official Python/Java/Node/Go client libraries plus REST API <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>JDBC/ODBC via official Simba-partnered drivers <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Complete dbt-era warehouse toolchain <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> Materialized views <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Incremental + rewrite; needs alignment).</p>
+<ul>
+<li>Incremental refresh and automatic rewrite <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Requires partition alignment etc.; otherwise no incremental <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> Multi-cloud support <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><p><strong>Not supported</strong> (GCP-bound; no cross-cloud).</p>
+<ul>
+<li>GCP-only; no other-cloud offering <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>BigQuery Omni reads other clouds&#x27; data, but compute stays GCP-side <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Moving out via GCS export; no cross-cloud replication <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="杀手特性" data-en="Killer features">杀手特性</span></h2>
+<div class="lang-block lang-zh">
+<blockquote>
+<p>写法要求：每个特性 = 它是什么 + 为什么是真本事 + 推到边缘会发生什么。</p>
+</blockquote>
+<ol>
+<li><strong>Serverless 零运维：没有集群这个概念</strong> 真本事：查询来了自动分配 slot，查完释放；用户永远不用回答&quot;买多大集群&quot;这个问题。 边缘真相：免的是运维，不是账单——slot/扫描/存储三项照计；slot 争抢排队时，&quot;无集群&quot;意味着你连&quot;加机器&quot;这个选项都没有，只能调预留。</li>
+<li><strong>按扫描/slot 双计费：一种引擎两种买法</strong> 真本事：波动负载按扫描付（不用为闲置买单），稳态负载买 slot（可预测）；同一项目下可按 workload 拆分计费模式。 边缘真相：选错模式差出几倍账单；Editions 自动扩缩按分配计费，短查询密集场景可能反而不如按需；这是 BigQuery 选型中最需要 POC 实测的一环。</li>
+<li><strong>BigQuery ML：SQL 里跑机器学习</strong> 真本事：<code>CREATE MODEL</code> 一条 SQL 训练线性回归、DNN、时序预测，特征工程与 serving 都在数仓内；Vertex AI 联动做深度定制。 边缘真相：模型复杂度上限不如专用 ML 平台；大模型训练按 TiB 另计费，账单要单独建模；&quot;SQL 能跑&quot;不等于&quot;效果够用&quot;。</li>
+<li><strong>BigQuery Omni：引擎去数据所在处</strong> 真本事：在 AWS/Azure 本地跑 BQ 引擎查 S3/Blob，数据不动；跨云 join 一条 SQL 搞定。 边缘真相：Omni 扫描加价 + 跨云传输费，大扫描场景下&quot;不动数据&quot;可能比&quot;搬数据&quot;更贵；本质是查询方案，不是多云部署方案。</li>
+<li><strong>BI Engine：仪表盘的内存加速层</strong> 真本事：高频小查询走内存，亚秒返回，BI 体验质变。 边缘真相：按内存容量另计费；加速的是&quot;重复查询模式&quot;，即席探索吃不到红利；容量配小了加速命中率低，配大了浪费。</li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<ol>
+<li><strong>Serverless zero-ops: there is no cluster concept</strong> What it is: queries auto-allocate slots and release them; users never answer &quot;how big a cluster&quot; again. Edge truth: what&#x27;s eliminated is ops, not the bill — slots/scans/storage all meter; when slots queue, &quot;no cluster&quot; means you don&#x27;t even have an &quot;add machines&quot; button — only reservation tuning.</li>
+<li><strong>Dual per-scan/per-slot billing: one engine, two ways to buy</strong> What it is: spiky loads pay per scan (no paying for idle), steady loads buy slots (predictable); one org can split modes per project. Edge truth: the wrong mode costs multiples; Editions autoscaling bills on allocation, so dense short-query shapes can cost more than on-demand; this is the single most POC-worthy decision in BigQuery selection.</li>
+<li><strong>BigQuery ML: machine learning inside SQL</strong> What it is: <code>CREATE MODEL</code> trains linear regression, DNNs and time-series forecasters in one SQL statement — features and serving stay in the warehouse; Vertex AI handles deep customization. Edge truth: model-complexity ceiling below dedicated ML platforms; large-model training bills per TiB separately — model the bill on its own; &quot;runs in SQL&quot; ≠ &quot;good enough accuracy&quot;.</li>
+<li><strong>BigQuery Omni: the engine goes to the data</strong> What it is: run the BQ engine on AWS/Azure against local S3/Blob — data never moves; cross-cloud joins in one SQL statement. Edge truth: Omni scans carry a premium plus transfer fees — for repeatedly scanned large datasets, &quot;data stays put&quot; can cost more than moving it; it&#x27;s a querying solution, not a multi-cloud deployment story.</li>
+<li><strong>BI Engine: the in-memory layer for dashboards</strong> What it is: high-frequency small queries served from memory — sub-second, a qualitative BI experience change. Edge truth: billed separately by memory capacity; accelerates <em>repeated query patterns</em> — ad-hoc exploration gets no benefit; undersized capacity means low hit rates, oversized means waste.</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="深水区" data-en="Deep dives">深水区</span></h2>
+<div class="lang-block lang-zh">
+<blockquote>
+<p>以下每条 = 领域 + 机制一句话 + 推到边缘会发生什么 + 选型含义。证据类型已标注。</p>
+</blockquote>
+<p><strong>深水区一：按扫描计费——一个烂 SQL 的代价</strong></p>
+<ul>
+<li>领域：成本模型。</li>
+<li>机制一句话：按需模式按查询扫描的 TiB 计费，单查询 10 MB 起步，缓存命中与报错查询免费。</li>
+<li>边缘行为：没做分区裁剪的 <code>SELECT *</code> 扫描全表，一个查询烧掉数天预算；BI 工具自动生成的宽表查询是重灾区。分区表 + 聚簇 + 只选必要列是保命三件套。</li>
+<li>选型含义：上线第一天就建查询治理：<code>INFORMATION_SCHEMA.JOBS</code> 按用户/查询排扫描量，设配额与告警；分析师培训&quot;先 dry run 看扫描量&quot;。</li>
+<li>来源：官方文档（计费）+ 社区实践。</li>
+</ul>
+<p><strong>深水区二：slot 治理——Editions 的必修课</strong></p>
+<ul>
+<li>领域：成本与并发。</li>
+<li>机制一句话：Editions 按 slot 小时计费，自动扩缩按&quot;分配&quot;（非&quot;使用&quot;）计费，60 秒起步；三档版本功能差异大。</li>
+<li>边缘行为：10 秒的查询占 1 分钟 slot；毛刺负载下自动扩缩冲高 baseline，缩容滞后吃费用；Standard 版 slot 上限 + 无 BQML/列级安全，选错版本=功能天花板。旧 flat-rate 已关停，老用户被迁移过一次，计费模型会变是历史教训。</li>
+<li>选型含义：POC 跑真实 workload 对比按需 vs 三档 Editions；baseline 设 0 起步观察，再按稳态水位买承诺折扣。</li>
+<li>来源：官方文档 + 社区实践。</li>
+</ul>
+<p><strong>深水区三：slot 争抢排队——&quot;无集群&quot;的另一面</strong></p>
+<ul>
+<li>领域：并发。</li>
+<li>机制一句话：查询排队等 slot，无集群可加。</li>
+<li>边缘行为：月末结算/大促期间，ETL 大查询与 BI 小查询争 slot，互相排队；JOBS 视图里排队时间暴涨，但你没有&quot;加机器&quot;这个按钮，只能调预留、错峰或升级版本。</li>
+<li>选型含义：按 workload 拆预留（ETL 与 BI 隔离）；监控排队时间，POC 阶段就压测并发。</li>
+<li>来源：官方文档 + 社区共识。</li>
+</ul>
+<p><strong>深水区四：7 天时间旅行——比想象中短</strong></p>
+<ul>
+<li>领域：备份恢复。</li>
+<li>机制一句话：历史版本查询窗口 7 天，之后靠 fail-safe（7 天，需走支持）与快照。</li>
+<li>边缘行为：合规审计要查 30 天前的数据状态？时间旅行帮不上，只能靠快照/导出策略；&quot;删库跑路&quot;式误操作超过 7 天才发现，恢复路径只剩快照。</li>
+<li>选型含义：快照/导出策略是必选项，不是可选项；合规场景把归档链路设计在前。</li>
+<li>来源：官方文档 + 社区共识。</li>
+</ul>
+<p><strong>深水区五：流式写入语义——去重是你的事</strong></p>
+<ul>
+<li>领域：数据接入。</li>
+<li>机制一句话：Storage Write API 支持 exactly-once（需去重键），旧版 streaming insert 是 at-least-once。</li>
+<li>边缘行为：去重键设计不好，exactly-once 退化成&quot;看起来对&quot;；流式表的查询有短暂不可见窗口，实时仪表盘要接受分钟级延迟。</li>
+<li>选型含义：流式链路做端到端对账；延迟 SLA 写进设计文档，不要默认&quot;实时&quot;。</li>
+<li>来源：官方文档 + 社区共识。</li>
+</ul>
+<p><strong>深水区六：Omni 的真实成本——跨云不免费</strong></p>
+<ul>
+<li>领域：多云成本。</li>
+<li>机制一句话：Omni 查询在 AWS/Azure 本地执行，按扫描加价，并产生跨云传输费。</li>
+<li>边缘行为：大数据量反复扫描的场景，&quot;数据不动&quot;的优雅背后是持续加价账单；算下来可能不如定期同步到 GCP 划算。cross-cloud connections（Preview）据称更省，但 Preview 不可用于生产承诺。</li>
+<li>选型含义：Omni 适合&quot;偶发跨云探索&quot;，高频场景做 TCO 对比（Omni 加价 vs 搬数据的一次性成本 + BQ 内查询）。</li>
+<li>来源：官方文档 + 社区共识。</li>
+</ul>
+<p><strong>深水区七：GCP 锁定——出去的路</strong></p>
+<ul>
+<li>领域：厂商锁定。</li>
+<li>机制一句话：BigQuery 无开源/自建版本，GoogleSQL 方言、BQML、Omni 全是 GCP 私有能力。</li>
+<li>边缘行为：迁移出 GCP 意味着 SQL 改写（GoogleSQL→目标方言）、ML 链路重建（BQML→Vertex 外）、数据从 GCS 搬出（egress 费）；Analytics Hub 的共享关系也要重建。</li>
+<li>选型含义：选 BigQuery 就是选 GCP，决策前置问题与 Redshift 相同：未来 3–5 年是否可能多云。</li>
+<li>来源：社区共识。</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<p><strong>Deep dive 1: per-scan billing — the cost of one bad SQL</strong></p>
+<ul>
+<li>Domain: cost model.</li>
+<li>Mechanism in one line: on-demand bills per TiB scanned, 10 MB minimum per query, cached hits and failed queries free.</li>
+<li>At the edge: an unpruned <code>SELECT *</code> scans the whole table — one query burning days of budget; BI-tool-generated wide-table queries are the disaster zone. Partitioned tables + clustering + selecting only needed columns are the survival trio.</li>
+<li>Selection meaning: build query governance from day one — rank scan volume per user/query from <code>INFORMATION_SCHEMA.JOBS</code>, set quotas and alerts; train analysts to dry-run for byte estimates first.</li>
+<li>Sources: official docs (pricing) + community practice.</li>
+</ul>
+<p><strong>Deep dive 2: slot governance — the mandatory Editions course</strong></p>
+<ul>
+<li>Domain: cost and concurrency.</li>
+<li>Mechanism in one line: Editions bill per slot-hour; autoscaling bills on slots <em>allocated</em> (not used) with a 60-second minimum; the three tiers differ sharply in features.</li>
+<li>At the edge: a 10-second query occupies a full minute of slots; spiky loads spike the autoscaled baseline while scale-down lags; Standard&#x27;s slot cap plus missing BQML/column-level security means picking the wrong tier is a feature ceiling. Legacy flat-rate was shut down once before — billing models do change, a historical lesson.</li>
+<li>Selection meaning: POC real workloads across on-demand and all three Editions; start with baseline 0, observe, then buy commitment discounts at the steady-state waterline.</li>
+<li>Sources: official docs + community practice.</li>
+</ul>
+<p><strong>Deep dive 3: slot-contention queuing — the other side of &quot;no cluster&quot;</strong></p>
+<ul>
+<li>Domain: concurrency.</li>
+<li>Mechanism in one line: queries queue waiting for slots; there is no cluster to add.</li>
+<li>At the edge: month-end close or promo peaks pit giant ETL queries against tiny BI queries for slots, queueing each other; queue time explodes in the JOBS views, but you have no &quot;add machines&quot; button — only reservation tuning, staggering, or tier upgrades.</li>
+<li>Selection meaning: split reservations by workload (ETL vs BI isolation); monitor queue time; load-test concurrency during the POC.</li>
+<li>Sources: official docs + community consensus.</li>
+</ul>
+<p><strong>Deep dive 4: 7-day time travel — shorter than you&#x27;d think</strong></p>
+<ul>
+<li>Domain: backup and recovery.</li>
+<li>Mechanism in one line: historical-version queries cover 7 days; beyond that, fail-safe (7 more days, via support) and snapshots.</li>
+<li>At the edge: compliance wants the data state from 30 days ago? Time travel can&#x27;t help — only snapshot/export strategy can; a &quot;drop table&quot; discovered after 7 days leaves snapshots as the only path.</li>
+<li>Selection meaning: snapshot/export strategy is mandatory, not optional; design the archive chain up front for compliance scenarios.</li>
+<li>Sources: official docs + community consensus.</li>
+</ul>
+<p><strong>Deep dive 5: streaming-write semantics — dedup is your job</strong></p>
+<ul>
+<li>Domain: data ingestion.</li>
+<li>Mechanism in one line: the Storage Write API supports exactly-once (with dedup keys); legacy streaming inserts are at-least-once.</li>
+<li>At the edge: poorly designed dedup keys degrade exactly-once into &quot;looks right&quot;; streamed tables have a brief invisibility window — realtime dashboards must accept minute-level latency.</li>
+<li>Selection meaning: reconcile streaming pipelines end to end; write the latency SLA into the design doc instead of assuming &quot;realtime&quot;.</li>
+<li>Sources: official docs + community consensus.</li>
+</ul>
+<p><strong>Deep dive 6: Omni&#x27;s true cost — cross-cloud isn&#x27;t free</strong></p>
+<ul>
+<li>Domain: multi-cloud cost.</li>
+<li>Mechanism in one line: Omni queries execute on AWS/Azure with a scan premium plus cross-cloud transfer fees.</li>
+<li>At the edge: for repeatedly scanned large datasets, the elegance of &quot;data stays put&quot; hides a persistent premium bill — periodic syncing into GCP can pencil out cheaper. Cross-cloud connections (Preview) claim savings but Preview can&#x27;t anchor production commitments.</li>
+<li>Selection meaning: Omni fits &quot;occasional cross-cloud exploration&quot;; for high-frequency shapes, run the TCO comparison (Omni premium vs one-time move cost + in-BQ queries).</li>
+<li>Sources: official docs + community consensus.</li>
+</ul>
+<p><strong>Deep dive 7: GCP lock-in — the way out</strong></p>
+<ul>
+<li>Domain: vendor lock-in.</li>
+<li>Mechanism in one line: BigQuery has no open-source/self-hosted edition — GoogleSQL dialect, BQML and Omni are all GCP-proprietary.</li>
+<li>At the edge: leaving GCP means SQL rewrites (GoogleSQL→target dialect), ML pipeline rebuilds (BQML→outside Vertex), data egress out of GCS (transfer fees); Analytics Hub sharing relationships must be rebuilt too.</li>
+<li>Selection meaning: choosing BigQuery is choosing GCP — same up-front question as Redshift: could we go multi-cloud in 3–5 years.</li>
+<li>Sources: community consensus.</li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="用户最买账的 5 点" data-en="What users love most">用户最买账的 5 点</span></h2>
+<div class="lang-block lang-zh">
+<ol>
+<li><strong>零运维：开箱即查 PB</strong> 为什么是真的：无集群概念，SQL 提交即跑；Dremel 架构下 PB 级聚合秒到分钟。 边缘与失效条件：免的是运维不是账单；slot 排队时无&quot;加机器&quot;选项。 来源：官方文档 + 社区共识。观察版本：滚动发布（2026-09）。</li>
+<li><strong>双计费模式：波动与稳态各取所需</strong> 为什么是真的：按需适合探索，slot 适合稳态；同一组织可按项目拆分。 边缘与失效条件：选错模式差几倍；Editions 治理是持续功课。 来源：官方文档 + 社区实践。观察版本：滚动发布（2026-09）。</li>
+<li><strong>BigQuery ML：数据不动就建模</strong> 为什么是真的：SQL 建模，特征与数据同处，免搬运；Vertex AI 接力深度场景。 边缘与失效条件：复杂模型上限不如专用平台；训练计费单独建模。 来源：官方文档。观察版本：滚动发布（2026-09）。</li>
+<li><strong>GCP 生态一体：从 ingestion 到 AI</strong> 为什么是真的：Datastream/Data Transfer 进、BQ 算、Looker 出、Vertex AI 做 ML，IAM 一套身份。 边缘与失效条件：闭环=锁定；非 GCP 主力组织拿不到红利。 来源：官方文档 + 社区共识。观察版本：滚动发布（2026-09）。</li>
+<li><strong>免费额度：上手零门槛</strong> 为什么是真的：每月 1 TiB 查询 + 10 GiB 存储免费，学习/POC 零成本。 边缘与失效条件：免费额度只够&quot;学习&quot;，生产 workload 下第一天就超；别用免费额度推算生产账单。 来源：官方文档。观察版本：滚动发布（2026-09）。</li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<ol>
+<li><strong>Zero ops: PB-scale queries out of the box</strong> Why it&#x27;s real: no cluster concept — SQL runs immediately; Dremel architecture delivers PB-scale aggregations in seconds to minutes. Edge and failure conditions: what&#x27;s eliminated is ops, not the bill; slot queuing offers no &quot;add machines&quot; option. Sources: official docs + community consensus. Observed: rolling release (2026-09).</li>
+<li><strong>Dual billing modes: spiky and steady each get their fit</strong> Why it&#x27;s real: on-demand for exploration, slots for steady state; one org can split by project. Edge and failure conditions: the wrong mode costs multiples; Editions governance is ongoing homework. Sources: official docs + community practice. Observed: rolling release (2026-09).</li>
+<li><strong>BigQuery ML: modeling without moving data</strong> Why it&#x27;s real: SQL-based modeling with features and data co-located — no hauling; Vertex AI takes over for deep scenarios. Edge and failure conditions: complexity ceiling below dedicated platforms; training billed separately — model it. Sources: official docs. Observed: rolling release (2026-09).</li>
+<li><strong>One GCP stack: ingestion to AI</strong> Why it&#x27;s real: Datastream/Data Transfer in, BQ compute, Looker out, Vertex AI for ML — one IAM identity. Edge and failure conditions: closed loop = lock-in; non-GCP-centric orgs capture none of it. Sources: official docs + community consensus. Observed: rolling release (2026-09).</li>
+<li><strong>Free tier: zero-barrier onboarding</strong> Why it&#x27;s real: 1 TiB queries + 10 GiB storage free monthly — learning/POC at zero cost. Edge and failure conditions: the free tier covers &quot;learning&quot; only — production workloads exceed it on day one; don&#x27;t extrapolate production bills from it. Sources: official docs. Observed: rolling release (2026-09).</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="吐槽清单" data-en="Complaints">吐槽清单</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>分类</th><th>吐槽</th><th>影响版本</th><th>状态</th></tr></thead>
+<tbody>
+<tr><td>成本</td><td>按需模式下一次没做分区裁剪的大查询烧掉数天预算</td><td>全版本</td><td>open</td></tr>
+<tr><td>成本</td><td>Editions 自动扩缩按分配计费，短查询密集场景可能贵过按需</td><td>全版本</td><td>open</td></tr>
+<tr><td>成本</td><td>BI Engine、Omni、流式写入、ML 训练都是账单外单项，不知情=惊喜</td><td>全版本</td><td>open</td></tr>
+<tr><td>并发</td><td>slot 争抢导致查询排队，且无&quot;加机器&quot;选项，只能调预留/错峰</td><td>全版本</td><td>open</td></tr>
+<tr><td>恢复</td><td>时间旅行仅 7 天，长期审计要靠快照/导出策略</td><td>全版本</td><td>open</td></tr>
+<tr><td>治理</td><td>列级安全、CMEK 等高阶能力与 Enterprise Plus 版本绑定</td><td>全版本</td><td>open</td></tr>
+<tr><td>锁定</td><td>无开源/自建版本，深度绑定 GCP，多云组织慎选</td><td>全版本</td><td>open</td></tr>
+<tr><td>资料</td><td>中文社区内容少，深度调优与 slot 治理实战以英文为主</td><td>全版本</td><td>open</td></tr>
+<tr><td>查询</td><td>毫秒级点查、高并发小查询不是目标（BI Engine 只覆盖重复模式）</td><td>全版本</td><td>open</td></tr>
+<tr><td>流式</td><td>流式写入去重与延迟语义要显式设计，默认不&quot;实时&quot;</td><td>全版本</td><td>open</td></tr>
+<tr><td>历史</td><td>旧 flat-rate 关停迁移过一次，计费模型会变，架构要留余地</td><td>历史事件</td><td>open</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Category</th><th>Complaint</th><th>Affected</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Cost</td><td>One unpruned large query under on-demand burns days of budget</td><td>All versions</td><td>open</td></tr>
+<tr><td>Cost</td><td>Editions autoscaling bills on allocation — dense short-query shapes can exceed on-demand</td><td>All versions</td><td>open</td></tr>
+<tr><td>Cost</td><td>BI Engine, Omni, streaming inserts, ML training are all separate line items — unknown = surprise</td><td>All versions</td><td>open</td></tr>
+<tr><td>Concurrency</td><td>Slot contention queues queries with no &quot;add machines&quot; option — only reservation tuning/staggering</td><td>All versions</td><td>open</td></tr>
+<tr><td>Recovery</td><td>Time travel only 7 days — long-horizon audit needs snapshot/export strategy</td><td>All versions</td><td>open</td></tr>
+<tr><td>Governance</td><td>Column-level security, CMEK and other advanced features gated behind Enterprise Plus</td><td>All versions</td><td>open</td></tr>
+<tr><td>Lock-in</td><td>No open-source/self-hosted edition — deep GCP binding, multi-cloud orgs beware</td><td>All versions</td><td>open</td></tr>
+<tr><td>Resources</td><td>Thin Chinese community — deep tuning and slot-governance practice is English-first</td><td>All versions</td><td>open</td></tr>
+<tr><td>Queries</td><td>Millisecond point lookups and high-concurrency tiny queries are not the target (BI Engine covers repeated patterns only)</td><td>All versions</td><td>open</td></tr>
+<tr><td>Streaming</td><td>Streaming dedup and latency semantics need explicit design — not &quot;realtime&quot; by default</td><td>All versions</td><td>open</td></tr>
+<tr><td>History</td><td>Legacy flat-rate was shut down and migrated once — billing models change, keep architectural slack</td><td>Historical event</td><td>open</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="判决" data-en="Verdict">判决</span></h2>
+<div class="lang-block lang-zh">
+<p><strong>适合谁</strong>：GCP 主力用户——已有 GCS 数据湖、GCP 生态闭环需求；负载波动大（按需模式免容量规划）；SQL 即席分析为主；想&quot;数据不动就建模&quot;（BigQuery ML）；能接受 slot/扫描账单治理的团队。</p>
+<p><strong>不适合谁</strong>：多云/跨云部署组织；毫秒级点查、高并发 OLTP 式查询；&quot;开了就行&quot;不想做查询治理与 slot 规划的团队；对&quot;账单可预测性&quot;要求极高且不愿投入 FinOps 的组织；强监管要求本地化部署。</p>
+<p><strong>迁移成本</strong>：中等。从其他云数仓迁来，SQL 方言改写（GoogleSQL）+ ETL 链路重建是主要工作；Datastream/Transfer Service 覆盖主流源。从 Hadoop/Spark 迁来范式差异大。长期成本在查询治理与 slot 规划，不在迁移本身。</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<p><strong>Good for</strong>: GCP-centric users — existing GCS data lakes, closed-loop GCP needs; spiky workloads (on-demand needs no capacity planning); SQL-first ad-hoc analytics; &quot;model without moving data&quot; (BigQuery ML); teams that accept slot/scan bill governance.</p>
+<p><strong>Not for</strong>: multi-cloud deployment organizations; millisecond point lookups and OLTP-style high-concurrency queries; teams wanting &quot;turn it on and forget it&quot; without query governance or slot planning; organizations demanding extreme bill predictability without FinOps investment; strict on-premises regulatory requirements.</p>
+<p><strong>Migration cost</strong>: Medium. From other cloud warehouses: GoogleSQL dialect rewriting + ETL chain rebuild is the main work; Datastream/Transfer Service cover mainstream sources. From Hadoop/Spark the paradigm gap is large. Long-term cost sits in query governance and slot planning, not in migration itself.</p>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="来源与待验证清单" data-en="Sources & to-be-verified">来源与待验证清单</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li>官方文档：Google Cloud BigQuery 文档（计费、Editions、Omni、BI Engine、时间旅行、Datastream、配额）。</li>
+<li>第三方分析：BigQuery release notes 镜像（2026-08 cross-cloud connections Preview）、社区成本优化实践（slot/扫描模型描述）。</li>
+<li>本轮明确未覆盖：各区域具体 slot/扫描目录价（易变，未引用绝对价格）、cross-cloud connections GA 时间——标待验证，未写入结论。</li>
+<li>v1.0（2026-09-29）：首版建档。<code>last_reviewed: 2026-09-29</code>，评审对象为 BigQuery 滚动发布版本。</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li>Official docs: Google Cloud BigQuery documentation (pricing, Editions, Omni, BI Engine, time travel, Datastream, quotas).</li>
+<li>Third-party: BigQuery release-notes mirror (2026-08 cross-cloud connections Preview), community cost-optimization practice (slot/scan model descriptions).</li>
+<li>Explicitly not covered this round: per-region slot/scan list prices (volatile, no absolute figures quoted), cross-cloud connections GA timeline — marked to be verified, not written into conclusions.</li>
+<li>v1.0 (2026-09-29): first profile. <code>last_reviewed: 2026-09-29</code>, reviewing the BigQuery rolling release.</li>
+</ul>
+</div>
+</section>
+</main>
+<footer class="footer">
+  <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
+</footer>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "redshift", "name": "Amazon Redshift", "domain": "olap"}, {"slug": "bigquery", "name": "Google BigQuery", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

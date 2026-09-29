@@ -148,6 +148,131 @@
 <li>支持精确一次语义的数据流处理 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>保留期与分区拆分是设计要点 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL 与数据生命周期管理 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（无原生 TTL；靠定时删或分区设计）。</p>
+<ul>
+<li>无原生行级 TTL，需应用定时批量删 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>交错表/分区键设计可让过期删除更高效 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（schema 更新后台长操作）。</p>
+<ul>
+<li>schema 更新是在线长操作，后台分阶段执行不阻塞读写 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>大表加二级索引回填耗时，期间注意资源 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（实例/库级隔离为主）。</p>
+<ul>
+<li>租户隔离靠多实例/多库，单实例内无租户资源组 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>托管自动扩缩部分缓解 noisy neighbor <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> 跨地域多活 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（全球多活，原生强项）。</p>
+<ul>
+<li>TrueTime 下全球多活写，外部一致性，region 故障自动 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>跨区延迟是物理下限， schema 设计（交错表）可优化 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>多区实例成本显著高于单区 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> 高可用架构与 RTO/RPO <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（托管全球多活，用户无感知）。</p>
+<ul>
+<li>Paxos 多副本跨区，故障自动，RTO 秒级 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>RPO=0，外部一致性 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> 行级安全与数据脱敏 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（无原生RLS；靠IAM与应用层）。</p>
+<ul>
+<li>Spanner 无原生行级安全，细粒度访问靠 IAM 条件、应用层过滤或视图 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>列级权限粒度有限，强隔离场景需应用层实现 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>动态脱敏无内置能力 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON 与半结构化能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（JSON 类型；PG 方言 jsonb）。</p>
+<ul>
+<li>GoogleSQL JSON 类型，PG 接口 jsonb <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>JSON 查询下推有限，复杂嵌套注意性能 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> 全文检索能力 <span class="verdict v-no">无</span></h3><div class="dim-body"><p><strong>无</strong>（查证为无全文索引；外挂检索）。</p>
+<ul>
+<li>无全文索引（查证为无）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>全文场景外挂 Elasticsearch <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> 存储效率与压缩 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（分布式存储层自动压缩）。</p>
+<ul>
+<li>底层 Colossus 分布式文件系统与存储层自动压缩去重，用户按量付费。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>交错表（interleaved tables）等 schema 设计可减少存储冗余。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>压缩为平台黑盒能力，无用户可调参数，压缩比不公开。<span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> 开源协议与厂商锁定风险 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（Google Cloud 专属；无开源实现）。</p>
+<ul>
+<li>Spanner 是 Google Cloud 专属的全球分布式数据库，无开源版本，完全绑定 GCP。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>TrueTime、全球时钟同步等核心能力依赖 Google 基础设施，无法自建复现。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>迁出需重写全球一致性假设与 schema 设计，成本极高。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> 查询优化器与计划稳定性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（分布式 CBO；优化器版本化）。</p>
+<ul>
+<li>分布式 CBO，查询优化器版本化可控升级 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>hint 有限（JOIN 方法/顺序）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>计划翻转多与 interleaved 表设计相关 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> 参数调优与自治能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（自治标杆：自动分片，零调参）。</p>
+<ul>
+<li>自动分片、自动 rebalance，几乎无调参 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>性能问题多源于 schema 设计而非参数 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> 静默数据损坏防护 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（云厂商底层兜底，用户无可见校验开关）。</p>
+<ul>
+<li>多区域同步复制与底层校验由 Google 内部完成，用户无页校验开关。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>损坏检测与自愈完全依赖云厂商内部机制，用户无法配置或审计。<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+<li>真值查询（TrueTime）保障一致性，但不覆盖静默位损坏场景。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> 存储过程/触发器/过程语言 <span class="verdict v-no">无</span></h3><div class="dim-body"><p><strong>无</strong>（查证为无存储过程/触发器）。</p>
+<ul>
+<li>无存储过程、触发器（查证为无）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>逻辑在应用层 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> 约束与数据完整性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（FK/CHECK+交错表强制）。</p>
+<ul>
+<li>外键、CHECK 强制，交错表（interleaved）物理共置 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>跨 split 外键有延迟代价，建模建议共置 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> 分析 SQL 完备性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（GoogleSQL 窗口函数）。</p>
+<ul>
+<li>GoogleSQL 窗口函数、CTE 可用 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>非 OLAP 定位，重分析用 BigQuery <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> 被遗忘权与数据擦除 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（手动DELETE；版本保留窗口残留）。</p>
+<ul>
+<li>Spanner 保留版本历史用于 stale read，被删数据在版本保留窗口内仍可读 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>备份与导出构成额外残留面 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>TrueTime 多版本架构下“立即物理擦除”不可行，需接受窗口期 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> 数据血缘与目录集成 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（Dataplex/Datastream 血缘集成）。</p>
+<ul>
+<li>与 Dataplex 数据血缘、Data Catalog 集成 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> 存算分离 vs 存算一体 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（存算分离：Colossus+分布式计算）。</p>
+<ul>
+<li>存储（Colossus）与计算分离的全球分布式架构 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> 多模能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（关系+JSON+全文；向量待验证）。</p>
+<ul>
+<li>JSON 类型、全文搜索（2023+）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>向量检索能力待验证 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps 成本可观测性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（按处理单元计费，标签+预算告警完备）。</p>
+<ul>
+<li>按处理单元/节点小时与存储计量，支持 labels 做实例级成本归因。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Cloud Billing budgets 支持阈值告警，账单可导出 BigQuery 分析。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> 驱动与多语言生态 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（官方多语言客户端；JDBC 靠 Simba）。</p>
+<ul>
+<li>官方 Java/Python/Node/Go 客户端 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>JDBC/ODBC 靠 Simba 第三方 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> 物化视图 <span class="verdict v-no">无</span></h3><div class="dim-body"><p><strong>无</strong>（查证为无物化视图能力）。</p>
+<ul>
+<li>无物化视图（查证为无）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>预聚合在应用层或 BigQuery 侧 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> 支持跨云 <span class="verdict v-no">无</span></h3><div class="dim-body"><p><strong>无</strong>（GCP 绑定，无跨云）。</p>
+<ul>
+<li>仅 GCP，无其他云版本 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>迁出需导出重建，无跨云复制 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
 <div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-yes">supported</span></h3><div class="dim-body"><p>supported All data at rest is encrypted by default with Google-managed keys (Google default encryption), no user configuration needed; optional <strong>CMEK</strong> (Cloud KMS customer-managed keys, supporting manual creation and Autokey, external key management EKM); backups are encrypted as well. Enabling CMEK has &quot;no impact&quot; on performance and SLA <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. Keys can be rotated, disabled, destroyed; KMS API operations go into audit logs.</p></div></div>
@@ -215,6 +340,131 @@
 <li>Change streams capture per-table/database changes, feeding Dataflow then Kafka/BigQuery <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Exactly-once stream processing supported <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Retention period and partition splits are key design points <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL &amp; data lifecycle <span class="verdict v-no">No native</span></h3><div class="dim-body"><p><strong>Partial</strong> (No native TTL; scheduled deletes or partitioning).</p>
+<ul>
+<li>No native row-level TTL; application-scheduled batch deletes <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Interleaved tables/partition-key design can make expiry deletes cheaper <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Schema updates as background long operations).</p>
+<ul>
+<li>Schema updates are online long-running operations executed in staged background phases <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Secondary-index backfills on huge tables take time; watch resources <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> Multi-tenancy &amp; resource isolation <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Mostly instance/database-level isolation).</p>
+<ul>
+<li>Tenant isolation via multiple instances/databases; no in-instance tenant resource groups <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Managed auto-scaling partly mitigates noisy neighbors <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> Cross-region active-active <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Global active-active; native strength).</p>
+<ul>
+<li>TrueTime-backed global active writes with external consistency and automatic region failover <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Cross-region latency is a physics floor; schema design (interleaved tables) helps <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Multi-region instances cost notably more than single-region <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> HA &amp; RTO/RPO <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Managed global active-active; invisible to users).</p>
+<ul>
+<li>Paxos multi-replica across regions with automatic failover in seconds <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>RPO=0 with external consistency <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> Row-level security &amp; masking <span class="verdict v-no">No native</span></h3><div class="dim-body"><p><strong>Partial</strong> (No native RLS; IAM and app layer instead).</p>
+<ul>
+<li>Spanner has no native row-level security; fine-grained access relies on IAM conditions, app-layer filtering, or views <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Column-level privilege granularity is limited; strong isolation needs the app layer <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>No built-in dynamic masking capability <code>(to be verified)</code></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON &amp; semi-structured <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (JSON type; jsonb on PG dialect).</p>
+<ul>
+<li>GoogleSQL JSON type; jsonb on PG interface <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Limited JSON pushdown; watch nested-query perf <code>(to be verified)</code>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> Full-text search <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><p><strong>Not supported</strong> (Verified absent; external search).</p>
+<ul>
+<li>No full-text indexes (verified absent) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Full-text via external Elasticsearch <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> Storage efficiency &amp; compression <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Automatic distributed-storage compression).</p>
+<ul>
+<li>The underlying Colossus distributed filesystem and storage layer compress and dedupe automatically with usage-based billing. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Schema design features like interleaved tables reduce storage redundancy. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Compression is a platform black box with no user tunables and undisclosed ratios. <code>(to be verified)</code></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> OSS license &amp; lock-in risk <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Google Cloud exclusive; no open-source implementation).</p>
+<ul>
+<li>Spanner is a Google Cloud-exclusive globally distributed database with no open-source edition, fully bound to GCP. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Core capabilities (TrueTime, global clock sync) depend on Google infrastructure and cannot be self-hosted. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Migrating out requires rewriting global-consistency assumptions and schema design — extremely costly. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> Optimizer &amp; plan stability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Distributed CBO; versioned optimizer; limited hints).</p>
+<ul>
+<li>Distributed CBO with versioned query optimizer for controlled upgrades <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Limited hints (JOIN methods/order) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Flips often trace to interleaved-table design <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> Tuning &amp; autonomy <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Autonomy benchmark: auto-sharding, zero knobs).</p>
+<ul>
+<li>Automatic sharding and rebalancing; near-zero knobs <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Performance issues stem from schema design, not parameters <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> Silent corruption protection <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Cloud checks; no user controls).</p>
+<ul>
+<li>Multi-region synchronous replication and low-level checks are handled internally by Google; no user page-checksum switch. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Detection and self-healing depend entirely on internal provider mechanisms users cannot configure or audit. <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+<li>TrueTime guarantees consistency but does not cover silent bit-rot scenarios. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> Stored procedures &amp; triggers <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><p><strong>Not supported</strong> (Verified: no stored procedures).</p>
+<ul>
+<li>No stored procedures or triggers (verified absent) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Logic in app layer <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> Constraints &amp; integrity <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Enforced FK/CHECK + interleaving).</p>
+<ul>
+<li>Enforced FK and CHECK; interleaved tables co-locate <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Cross-split FKs cost latency; model for co-location <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> Analytical SQL <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (GoogleSQL window functions).</p>
+<ul>
+<li>GoogleSQL window functions and CTEs <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Not OLAP; heavy analytics belong in BigQuery <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> Right to erasure <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Manual DELETE; version-retention window residue).</p>
+<ul>
+<li>Spanner keeps version history for stale reads; deleted data stays readable inside the version-retention window <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Backups and exports add to the residue surface <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Under the TrueTime multi-version architecture, immediate physical erasure is not possible; accept the window <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> Data lineage &amp; catalog <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Dataplex/Datastream lineage integration).</p>
+<ul>
+<li>Integrates with Dataplex data lineage and Data Catalog <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> Storage-compute architecture <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Disaggregated: Colossus + distributed compute).</p>
+<ul>
+<li>Globally distributed architecture separating Colossus storage from compute <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> Multi-model <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Relational + JSON + full-text; vectors TBD).</p>
+<ul>
+<li>JSON type and full-text search (2023+) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Vector search capability to be verified <code>(to be verified)</code>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps &amp; cost observability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Per-unit billing; labels plus budgets).</p>
+<ul>
+<li>Metered by processing units/node-hours and storage, with labels for instance-level cost attribution. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Cloud Billing budgets support threshold alerts; billing exports to BigQuery for analysis. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> Drivers &amp; clients <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Official multi-language clients; JDBC/ODBC via Simba).</p>
+<ul>
+<li>Official Java/Python/Node/Go clients <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>JDBC/ODBC via third-party Simba <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> Materialized views <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><p><strong>Not supported</strong> (Verified: no materialized views).</p>
+<ul>
+<li>No materialized views (verified absent) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Pre-aggregate in app or BigQuery <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> Multi-cloud support <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><p><strong>Not supported</strong> (GCP-bound; no cross-cloud).</p>
+<ul>
+<li>GCP-only; no other-cloud offering <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Moving out needs export-and-rebuild; no cross-cloud replication <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
 </div>
 </section>
@@ -520,7 +770,7 @@
 <footer class="footer">
   <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
 </footer>
-<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "redshift", "name": "Amazon Redshift", "domain": "olap"}, {"slug": "bigquery", "name": "Google BigQuery", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
 
 <script src="assets/app.js"></script>
 </body>

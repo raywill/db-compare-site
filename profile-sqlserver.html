@@ -151,6 +151,140 @@
 <li>Debezium SQL Server 连接器成熟 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 <li>CDC 作业延迟与清理策略是运维点 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL 与数据生命周期管理 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（分区切换+SQL Agent；Stretch 已弃用）。</p>
+<ul>
+<li>分区切换（SWITCH）实现快速过期，SQL Agent 定时作业 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Stretch Database（冷热分层到 Azure）已弃用，不要再规划 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无原生行级 TTL <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（企业版在线索引；部分 DDL 在线）。</p>
+<ul>
+<li>企业版支持在线建索引/重建（ONLINE=ON），部分版本/操作受限 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>在线操作仍需短暂锁（Sch-M），高并发下可能排队 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>标准版在线能力弱，版本差异大 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（Resource Governor，租户级管控）。</p>
+<ul>
+<li>Resource Governor 按 workload group 限 CPU/内存/IO <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>配合 Resource Pool，租户 QoS 能力完整 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>配置复杂，调优门槛高 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> 跨地域多活 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（Always On AG 跨区可配）。</p>
+<ul>
+<li>AG 可跨子网/跨区，异步提交做容灾 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>同步提交跨区延迟高，生产多用异步 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>分布式 AG 可做多写，复杂 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> 高可用架构与 RTO/RPO <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（Always On AG，自动切换成熟）。</p>
+<ul>
+<li>AG 自动故障转移，RTO 秒到分钟 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>同步提交 RPO=0，异步有延迟 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>见证/仲裁配错会脑裂或无法切换 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> 行级安全与数据脱敏 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（原生RLS+动态数据脱敏）。</p>
+<ul>
+<li>SQL Server 2016+ 提供原生行级安全（CREATE SECURITY POLICY + 谓词函数） <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Dynamic Data Masking 支持列级脱敏（default / email / partial / random 四类掩码），可对特权用户配置豁免 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>列级权限通过 GRANT / DENY 到列实现；Always Encrypted 属客户端加密，是另一维度能力 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>DDM 的绕过面：db_owner 等高权限默认可见原文，应用须用低权限账号连接才有意义 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON 与半结构化能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（JSON 函数层；无原生类型）。</p>
+<ul>
+<li>2016+ JSON 函数（FOR JSON/OPENJSON），存 nvarchar，无原生 JSON 类型 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>计算列+索引可加速路径查询 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> 全文检索能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（Full-Text Search；中文分词器）。</p>
+<ul>
+<li>Full-Text Search，中文 word breaker <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>全文目录维护与备份恢复联动，运维注意 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> 存储效率与压缩 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（行/页压缩+列存索引+备份压缩）。</p>
+<ul>
+<li>内置行级与页级压缩（ROW/PAGE），以及 Unicode 压缩；备份压缩为标准功能。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>列存储索引（Columnstore）提供分析负载下的高压缩比与向量化执行。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>压缩为数据库级/表级选项，开启后对 CPU 有可度量的额外开销。<span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> 开源协议与厂商锁定风险 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（微软商业闭源；T-SQL 生态绑定深）。</p>
+<ul>
+<li>SQL Server 为微软商业闭源产品，按核心数授权，版本间功能差异与授权绑定。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>T-SQL、SSIS/SSRS、Always On 等专有生态使迁移出成本高。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Azure SQL 系列进一步绑定 Azure 云；Linux 版与容器版存在但仍是商业授权。<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> 查询优化器与计划稳定性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（CBO+Query Store 强制；自动修正）。</p>
+<ul>
+<li>CBO + hint（OPTION/USE PLAN），Query Store 可强制/冻结计划 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Automatic Plan Correction 自动回退退化计划 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>计划翻转治理在商业库中最成熟一档 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> 参数调优与自治能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（参数精简；自动调优可建索引）。</p>
+<ul>
+<li>参数相对精简，automatic tuning 可自动创建/删除索引 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Query Store+扩展事件诊断完善 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>深度调优仍需 DBA <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> 静默数据损坏防护 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（CHECKSUM 页校验+DBCC 完备）。</p>
+<ul>
+<li>页校验选项 CHECKSUM 在页写入时生成校验值、读入时验证。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>DBCC CHECKDB 可主动全库校验逻辑与物理完整性，是标准运维动作。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>损坏页可从备份做页级还原，无需整库恢复。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> 存储过程/触发器/过程语言 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（T-SQL 完备，SSMS 调试）。</p>
+<ul>
+<li>T-SQL 存储过程、触发器、CLR 完备，SSMS 调试 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>去 O 迁移 T-SQL 与 PL/SQL 双向改写成本都高 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> 约束与数据完整性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（外键/CHECK/唯一/默认完备）。</p>
+<ul>
+<li>外键、CHECK、唯一、默认约束完备 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>大表加约束注意锁与在线操作 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> 分析 SQL 完备性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（T-SQL 分析函数完备）。</p>
+<ul>
+<li>窗口函数、CTE、GROUPING SETS 完备 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>列存索引（columnstore）加持分析性能 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> 被遗忘权与数据擦除 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（手动DELETE；事务日志/备份残留）。</p>
+<ul>
+<li>删除靠 DELETE / TRUNCATE，无原生被遗忘权工作流或擦除证明 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>事务日志备份、完整备份、temporal table（系统版本化表）的历史行都会保留被删数据，temporal 表需单独清理历史 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Always Encrypted 下销毁列主密钥可实现“加密擦除”，但这是密钥管理手段而非标准流程 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> 数据血缘与目录集成 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（Purview 集成；原生有限）。</p>
+<ul>
+<li>Microsoft Purview 做血缘与目录 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>数据库原生血缘能力有限 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> 存算分离 vs 存算一体 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（传统存算一体；Hyperscale 分离）。</p>
+<ul>
+<li>传统部署本地盘存算一体 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Azure Hyperscale 采用存算分离 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> 多模能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（关系+JSON+全文+空间+图；向量待验证）。</p>
+<ul>
+<li>JSON、全文、空间、图（2017+）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>原生向量支持待验证 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps 成本可观测性 <span class="verdict v-neutral">不适用</span></h3><div class="dim-body"><p><strong>不适用</strong>（许可证采购模式，无按量计费概念）。</p>
+<ul>
+<li>传统按核心/ CAL 许可证采购，成本是采购费+硬件+DBA 人力，无云式按量账单。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Azure SQL 等云托管版按量计费，支持标签归因与预算告警。<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> 驱动与多语言生态 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（mssql-jdbc/ODBC/SqlClient 完备）。</p>
+<ul>
+<li>官方 JDBC、ODBC、SqlClient（.NET）完备 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>微软生态驱动质量高 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> 物化视图 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（索引视图自动维护+改写）。</p>
+<ul>
+<li>索引视图（indexed views）自动维护、查询自动改写 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>限制多（SCHEMABINDING、确定性函数），滥用拖慢写入 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> 支持跨云 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（自建版任意云；Azure SQL 绑定 Azure）。</p>
+<ul>
+<li>自建 SQL Server 任意云/本地可部署 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Azure SQL Database/Managed Instance 绑定 Azure <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>授权跨云（License Mobility）规则复杂 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
 <div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes</strong>. TDE encrypts data files and transaction log files; if any database on the instance enables TDE, tempdb is automatically encrypted; backups of TDE-enabled databases are inherently encrypted. Key management: master-database certificate/asymmetric key → DMK → SMK hierarchy; EKM providers or Azure Key Vault (BYOK) supported. Also Always Encrypted (client-side column-level encryption — even DBAs can&#x27;t see plaintext; secure enclave supports limited computation on ciphertext), backup encryption, dynamic data masking. Evidence: official docs</p></div></div>
@@ -219,6 +353,140 @@
 <li>Built-in CDC (log-reader jobs) plus Change Tracking <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>The Debezium SQL Server connector is mature <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 <li>CDC job latency and cleanup policy are ops concerns <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL &amp; data lifecycle <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Partition switching + SQL Agent; Stretch deprecated).</p>
+<ul>
+<li>Partition SWITCH for fast expiry with SQL Agent jobs <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Stretch Database (tiering to Azure) is deprecated — do not plan on it <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No native row-level TTL <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Online indexing on Enterprise; partial online DDL).</p>
+<ul>
+<li>Enterprise supports online index create/rebuild (ONLINE=ON), with version/operation limits <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Online ops still need brief Sch-M locks and can queue under high concurrency <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Standard Edition is much weaker; big version skew <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> Multi-tenancy &amp; resource isolation <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Resource Governor for tenant-level control).</p>
+<ul>
+<li>Resource Governor throttles CPU/memory/IO per workload group <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Combined with resource pools, tenant QoS is complete <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Complex to configure; high tuning bar <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> Cross-region active-active <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Always On AG across regions).</p>
+<ul>
+<li>AGs span subnets/regions; async commit for DR <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Sync commit across regions is high-latency; production favors async <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Distributed AGs allow multi-write; complex <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> HA &amp; RTO/RPO <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Always On AG; mature automatic failover).</p>
+<ul>
+<li>AG automatic failover in seconds-to-minutes <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Sync commit gives RPO=0; async lags <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Misconfigured witness/quorum causes split-brain or failed failover <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> Row-level security &amp; masking <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Native RLS + Dynamic Data Masking).</p>
+<ul>
+<li>SQL Server 2016+ ships native row-level security (CREATE SECURITY POLICY plus predicate functions) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Dynamic Data Masking offers column-level masking (default / email / partial / random) with exemptions for privileged users <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Column privileges via GRANT / DENY on columns; Always Encrypted is client-side encryption, a separate dimension <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>DDM bypass surface: db_owner and similar high privileges see plaintext by default, so apps must connect with low-privilege accounts <code>(community tested)</code></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON &amp; semi-structured <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (JSON functions; no native type).</p>
+<ul>
+<li>2016+ JSON functions (FOR JSON/OPENJSON) over nvarchar; no native type <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Computed columns + indexes accelerate path queries <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> Full-text search <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Full-Text Search with CJK breaker).</p>
+<ul>
+<li>Full-Text Search with Chinese word breaker <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Catalog maintenance ties into backup/restore ops <code>(community tested)</code>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> Storage efficiency &amp; compression <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Row/page compression plus columnstore and backup compression).</p>
+<ul>
+<li>Built-in row-level and page-level compression (ROW/PAGE) plus Unicode compression; backup compression is standard. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Columnstore indexes deliver high compression ratios and vectorized execution for analytics. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Compression is a database/table-level option with measurable CPU overhead once enabled. <code>(community tested)</code></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> OSS license &amp; lock-in risk <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Microsoft commercial closed source; deep T-SQL binding).</p>
+<ul>
+<li>SQL Server is Microsoft&#x27;s commercial closed-source product, licensed per core with features tied to editions. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>The proprietary ecosystem (T-SQL, SSIS/SSRS, Always On) makes migration out expensive. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>The Azure SQL family further binds users to Azure; Linux and container editions exist but remain commercially licensed. <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> Optimizer &amp; plan stability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (CBO + Query Store plan forcing; auto correction).</p>
+<ul>
+<li>CBO + hints (OPTION/USE PLAN); Query Store can force/freeze plans <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Automatic Plan Correction regresses degraded plans automatically <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Among the most mature plan-flip controls in commercial DBs <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> Tuning &amp; autonomy <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Lean params; auto-tuning can build indexes).</p>
+<ul>
+<li>Relatively lean parameters; automatic tuning can create/drop indexes <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Query Store + Extended Events diagnostics are complete <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Deep tuning still needs DBAs <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> Silent corruption protection <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (CHECKSUM pages plus DBCC CHECKDB).</p>
+<ul>
+<li>The CHECKSUM page verification option stamps checksums on write and validates on read. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>DBCC CHECKDB proactively verifies logical and physical integrity database-wide; a standard operational practice. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Corrupt pages can be restored at page level from backups without full database recovery. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> Stored procedures &amp; triggers <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Complete T-SQL, SSMS debugging).</p>
+<ul>
+<li>Complete T-SQL procedures, triggers, CLR with SSMS debugging <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Oracle migration rewrites costly both ways <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> Constraints &amp; integrity <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Complete constraints).</p>
+<ul>
+<li>Full FK, CHECK, unique, default constraints <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Mind locks and online ops adding constraints on huge tables <code>(community tested)</code>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> Analytical SQL <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Complete T-SQL analytics).</p>
+<ul>
+<li>Complete window functions, CTEs, GROUPING SETS <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Columnstore indexes boost analytics <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> Right to erasure <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Manual DELETE; log/backup residue).</p>
+<ul>
+<li>Deletion is DELETE / TRUNCATE; no native right-to-erasure workflow or attestation <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Transaction log backups, full backups, and temporal table history rows all retain deleted data; temporal tables need separate history cleanup <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>With Always Encrypted, destroying the column master key achieves crypto-erasure, but that is key management, not a standard erasure flow <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> Data lineage &amp; catalog <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Purview integration; limited native).</p>
+<ul>
+<li>Microsoft Purview covers lineage and catalog <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Limited native database lineage <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> Storage-compute architecture <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Traditional coupled; Hyperscale split).</p>
+<ul>
+<li>Traditional deployments are local-disk coupled <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Azure Hyperscale uses disaggregated storage <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> Multi-model <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Relational + JSON + FTS + spatial + graph; vectors TBD).</p>
+<ul>
+<li>JSON, full-text, spatial, graph (2017+) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Native vector support to be verified <code>(to be verified)</code>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps &amp; cost observability <span class="verdict v-neutral">N/A</span></h3><div class="dim-body"><p><strong>N/A</strong> (License model; no usage metering).</p>
+<ul>
+<li>Traditionally licensed per core/CAL; costs are license fees plus hardware plus DBA labor, with no cloud-style usage bill. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Azure SQL and other managed editions meter usage with tag attribution and budget alerts. <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> Drivers &amp; clients <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Complete mssql-jdbc/ODBC/SqlClient).</p>
+<ul>
+<li>Complete official JDBC, ODBC, SqlClient (.NET) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>High driver quality in the Microsoft ecosystem <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> Materialized views <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Indexed views, auto-maintained).</p>
+<ul>
+<li>Indexed views auto-maintained with automatic rewrite <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Many limits (SCHEMABINDING, deterministic funcs); abuse slows writes <code>(community tested)</code>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> Multi-cloud support <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Self-hosted on any cloud; Azure SQL binds to Azure).</p>
+<ul>
+<li>Self-hosted SQL Server deploys on any cloud/on-prem <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Azure SQL Database / Managed Instance bind to Azure <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Cross-cloud licensing (License Mobility) rules are complex <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
 </div>
 </section>
@@ -531,7 +799,7 @@
 <footer class="footer">
   <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
 </footer>
-<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "redshift", "name": "Amazon Redshift", "domain": "olap"}, {"slug": "bigquery", "name": "Google BigQuery", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
 
 <script src="assets/app.js"></script>
 </body>

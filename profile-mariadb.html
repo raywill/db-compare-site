@@ -153,6 +153,131 @@
 <li>Debezium、Maxwell 均可消费 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 <li>Galera 集群下 CDC 建议从单节点取 binlog <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL 与数据生命周期管理 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（分区+event；无原生行级 TTL）。</p>
+<ul>
+<li>分区表 + event scheduler 定时清理是标准做法 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>与 MySQL 同源限制，无原生行级 TTL <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（在线 DDL 有限，大表仍有风险）。</p>
+<ul>
+<li>InnoDB online DDL 覆盖加列等常见操作，但部分仍锁表/重建 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>大表生产上常用 pt-osc/gh-ost 做无锁变更 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（无原生资源组；线程池有限缓解）。</p>
+<ul>
+<li>无 CPU/内存/IO 租户限流 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>线程池可缓解连接风暴，但不是 QoS <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> 跨地域多活 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（Galera/主从跨区可配；延迟敏感）。</p>
+<ul>
+<li>Galera 多写跨区对延迟极敏感，生产少用 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>主从跨区是常规容灾，无多活写 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> 高可用架构与 RTO/RPO <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（主从/MHA/Galera，方案散）。</p>
+<ul>
+<li>MHA/MMM/主从手动切，RTO 分钟级，脑裂风险看方案 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>Galera 多主同步，节点故障自动，但写放大 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无一键托管 HA，自建拼装 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> 行级安全与数据脱敏 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（无原生RLS；靠视图与角色）。</p>
+<ul>
+<li>MariaDB 无原生行级安全，行级隔离靠视图 + DEFINER 或应用层实现 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>支持列级 GRANT 与角色（roles），但无动态脱敏引擎 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>MaxScale 等中间件可在查询改写层面做脱敏，但属外部组件 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>与 MySQL 企业版脱敏组件不对等，从 MySQL 企业版迁移时需重新评估 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON 与半结构化能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（JSON 为 LONGTEXT 别名，函数兼容）。</p>
+<ul>
+<li>JSON 为 LONGTEXT 别名（非二进制），JSON 函数与 MySQL 兼容 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无原生二进制存储与 JSON 路径索引，虚拟列可部分弥补 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> 全文检索能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（FULLTEXT+Mroonga 中文分词）。</p>
+<ul>
+<li>FULLTEXT 索引，Mroonga 引擎提供中文分词 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Mroonga 为外部引擎，运维与主从复制需额外注意 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> 存储效率与压缩 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（InnoDB 页压缩+Aria 引擎+列存引擎）。</p>
+<ul>
+<li>继承 InnoDB 页压缩与透明压缩能力（与 MySQL 同源）。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Aria 存储引擎支持数据页压缩；ColumnStore 引擎提供列式存储与高压缩比。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>多引擎并存带来选型复杂度，压缩收益因引擎而异。<span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> 开源协议与厂商锁定风险 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（核心 GPL 开源；MaxScale 曾转 BSL）。</p>
+<ul>
+<li>MariaDB Server 核心采用 GPLv2 开源，由 MariaDB 基金会治理，协议变更黑历史较少。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>配套代理 MaxScale 曾从 GPL 转为 BSL（Business Source License），存在商业使用限制，后续生态出现替代方案。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>与 MySQL 高度兼容，跨两者迁移成本低，协议风险有实质缓解。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> 查询优化器与计划稳定性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（MySQL 衍生 CBO；hint 兼容）。</p>
+<ul>
+<li>优化器源自 MySQL 并独立演进，EXPLAIN/hint 兼容 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>统计信息引擎是差异点 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无计划冻结机制 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> 参数调优与自治能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（参数多；调优复杂度同 MySQL）。</p>
+<ul>
+<li>参数体系庞大，调优经验与 MySQL 通用 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>自治能力弱 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> 静默数据损坏防护 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（InnoDB 页校验成熟，Aria 亦有页检查）。</p>
+<ul>
+<li>InnoDB 数据页内置 checksum，读入校验，损坏页拒绝载入；doublewrite 防写撕裂。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Aria 存储引擎同样带页检查机制。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>复制链路无内容校验，静默损坏可扩散，需外部校验工具定期检查。<span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> 存储过程/触发器/过程语言 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（SP/触发器/事件；Oracle 模式）。</p>
+<ul>
+<li>存储过程、触发器、事件完整，Oracle 模式兼容 PL/SQL 子集 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Oracle 模式兼容有限，复杂包改写仍重 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> 约束与数据完整性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（FK/CHECK 完整（10.2+））。</p>
+<ul>
+<li>InnoDB 外键，10.2+ CHECK 约束 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>外键级联大批量操作同样注意锁与写放大 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> 分析 SQL 完备性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（窗口/CTE（10.2+））。</p>
+<ul>
+<li>10.2+ 窗口函数、CTE <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>分析函数完备度弱于 PG/Oracle <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> 被遗忘权与数据擦除 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（手动DELETE；binlog/备份残留）。</p>
+<ul>
+<li>与 MySQL 同源：DELETE 为逻辑标记 + 空间回收，无擦除证明 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>binlog、mariabackup 备份、Galera 节点间 SST 都会复制被删数据的历史状态 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>分区交换 / 删除是批量擦除的常用手段 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> 数据血缘与目录集成 <span class="verdict v-no">无</span></h3><div class="dim-body"><p><strong>无</strong>（查证为无原生血缘）。</p>
+<ul>
+<li>无原生血缘 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> 存算分离 vs 存算一体 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（存算一体：本地盘架构）。</p>
+<ul>
+<li>经典存算一体本地盘架构 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> 多模能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（JSON 别名+全文；无向量）。</p>
+<ul>
+<li>JSON 为 LONGTEXT 别名，全文索引可用 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无原生向量/图 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps 成本可观测性 <span class="verdict v-neutral">不适用</span></h3><div class="dim-body"><p><strong>不适用</strong>（自建无计费，成本=硬件+人力自理）。</p>
+<ul>
+<li>开源自建无内置计费概念，成本是服务器、存储与运维人力。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>SkySQL 等托管版可在云账单侧做标签归因与预算告警。<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> 驱动与多语言生态 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（MySQL 协议兼容，驱动通用）。</p>
+<ul>
+<li>MySQL 线协议兼容，Connector/J 等驱动通用 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> 物化视图 <span class="verdict v-no">无</span></h3><div class="dim-body"><p><strong>无</strong>（查证为无原生；Flexviews 非内置）。</p>
+<ul>
+<li>无原生（查证为无），Flexviews 等外部方案非内置 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>汇总表+事件调度模拟 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> 支持跨云 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（开源任意云；SkySQL 多云）。</p>
+<ul>
+<li>开源版任意云可部署 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>SkySQL 支持多云 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+</ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
 <div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> — instance-level encryption since 10.1: InnoDB tablespaces (<code>innodb_encrypt_tables</code>), redo log (<code>innodb_encrypt_log</code>), temporary files, binlog (<code>encrypt_binlog</code>, 10.5+); plugin-based key management: file_key_management (bundled with the community edition, keys stored in a local file, weak compliance posture) / AWS KMS plugin (Enterprise-only; not distributed in community binaries due to the GPL vs AWS SDK license conflict). <strong>No evidence found for encryption of backup files themselves</strong> — treat as requiring external measures.</p></div></div>
@@ -221,6 +346,131 @@
 <li>Row-format binlog + GTID, compatible with MySQL ecosystem tools <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Debezium and Maxwell both consume it <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 <li>On Galera clusters, take binlog from a single node <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL &amp; data lifecycle <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Partitions + events; no native row-level TTL).</p>
+<ul>
+<li>Partitioned tables + event scheduler is the standard expiry pattern <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Same lineage limits as MySQL; no native row-level TTL <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Limited online DDL; risky on huge tables).</p>
+<ul>
+<li>InnoDB online DDL covers common add-column cases, but some ops still lock/rebuild <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>pt-osc/gh-ost remain the production choice for lock-free changes on huge tables <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> Multi-tenancy &amp; resource isolation <span class="verdict v-no">No native</span></h3><div class="dim-body"><p><strong>Partial</strong> (No native resource groups; thread pool helps only partly).</p>
+<ul>
+<li>No per-tenant CPU/memory/IO throttling <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Thread pool mitigates connection storms but is not QoS <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> Cross-region active-active <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Galera/primary-replica across regions; latency-sensitive).</p>
+<ul>
+<li>Galera multi-writer across regions is extremely latency-sensitive; rarely used in production <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Cross-region primary-replica is standard DR; no active-active writes <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> HA &amp; RTO/RPO <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Primary-replica / MHA / Galera; fragmented options).</p>
+<ul>
+<li>MHA/MMM/manual primary-replica cutover: minutes of RTO, split-brain risk varies <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Galera multi-primary syncs with automatic node handling but write amplification <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No one-click managed HA; self-assembled <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> Row-level security &amp; masking <span class="verdict v-no">No native</span></h3><div class="dim-body"><p><strong>Partial</strong> (No native RLS; views and roles instead).</p>
+<ul>
+<li>MariaDB has no native row-level security; row isolation relies on views with DEFINER or the app layer <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Column-level GRANT and roles are supported, but there is no dynamic masking engine <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Proxies like MaxScale can mask at the query-rewrite layer, but that is an external component <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Not equivalent to MySQL Enterprise masking; re-evaluate when migrating from MySQL Enterprise <code>(to be verified)</code></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON &amp; semi-structured <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (JSON as LONGTEXT alias).</p>
+<ul>
+<li>JSON is a LONGTEXT alias (not binary); functions MySQL-compatible <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No native binary storage or JSON path indexes; virtual columns partly help <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> Full-text search <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (FULLTEXT + Mroonga CJK).</p>
+<ul>
+<li>FULLTEXT indexes; Mroonga engine for Chinese tokenization <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Mroonga is external; mind ops and replication <code>(community tested)</code>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> Storage efficiency &amp; compression <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (InnoDB page compression plus Aria and columnar engines).</p>
+<ul>
+<li>Inherits InnoDB page compression and transparent compression (same lineage as MySQL). <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>The Aria engine supports data-page compression; the ColumnStore engine provides columnar storage with high compression ratios. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Multiple engines add selection complexity; compression benefits vary by engine. <code>(community tested)</code></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> OSS license &amp; lock-in risk <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (GPL open core; MaxScale once moved to BSL).</p>
+<ul>
+<li>MariaDB Server core is open source under GPLv2 and governed by the MariaDB Foundation, with little license-change history. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>The companion proxy MaxScale moved from GPL to BSL (Business Source License) with commercial-use restrictions; community alternatives later emerged. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>High MySQL compatibility keeps cross-migration cost low, materially mitigating license risk. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> Optimizer &amp; plan stability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (MySQL-derived CBO; compatible hints).</p>
+<ul>
+<li>Optimizer forked from MySQL and evolved independently; EXPLAIN/hints compatible <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Engine-independent statistics is a differentiator <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No plan-freeze mechanism <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> Tuning &amp; autonomy <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Many parameters; MySQL-like tuning burden).</p>
+<ul>
+<li>Large parameter surface; tuning knowledge transfers from MySQL <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Weak autonomy <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> Silent corruption protection <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (InnoDB page checks; Aria checks too).</p>
+<ul>
+<li>InnoDB data pages carry checksums verified on read; corrupt pages are rejected, and doublewrite prevents torn pages. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>The Aria storage engine also includes page check mechanisms. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Replication has no content verification, so silent corruption can spread; external checksum tools are needed periodically. <code>(community tested)</code></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> Stored procedures &amp; triggers <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (SPs/triggers/events; Oracle mode).</p>
+<ul>
+<li>Full procedures, triggers, events; Oracle mode covers a PL/SQL subset <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Oracle-mode compatibility is limited; complex packages still heavy rewrites <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> Constraints &amp; integrity <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Full FK/CHECK (10.2+)).</p>
+<ul>
+<li>InnoDB FKs, CHECK constraints (10.2+) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Same lock and write-amplification caution on FK cascades <code>(community tested)</code>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> Analytical SQL <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Windows/CTEs (10.2+)).</p>
+<ul>
+<li>Window functions, CTEs (10.2+) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Less complete than PG/Oracle analytics <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> Right to erasure <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Manual DELETE; binlog/backup residue).</p>
+<ul>
+<li>Same lineage as MySQL: DELETE is a logical mark plus space reclamation, with no erasure attestation <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Binlog, mariabackup backups, and Galera SST between nodes all replicate historical states of deleted rows <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Partition exchange / drop is the common bulk-erasure technique <code>(community tested)</code></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> Data lineage &amp; catalog <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><p><strong>Not supported</strong> (Verified: no native lineage).</p>
+<ul>
+<li>No native lineage <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> Storage-compute architecture <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Coupled: local-disk architecture).</p>
+<ul>
+<li>Classic coupled local-disk architecture <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> Multi-model <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (JSON alias + full-text; no vectors).</p>
+<ul>
+<li>JSON is a LONGTEXT alias; full-text indexes available <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No native vector/graph <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps &amp; cost observability <span class="verdict v-neutral">N/A</span></h3><div class="dim-body"><p><strong>N/A</strong> (No metering; hardware plus labor).</p>
+<ul>
+<li>Self-hosted open source has no built-in metering; costs are servers, storage, and operations labor. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Managed editions (e.g. SkySQL) expose cost attribution and budget alerts on the billing side. <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> Drivers &amp; clients <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (MySQL-protocol compatible; shared drivers).</p>
+<ul>
+<li>MySQL wire-protocol compatible; Connector/J and friends work <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> Materialized views <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><p><strong>Not supported</strong> (Verified absent; Flexviews external).</p>
+<ul>
+<li>No native MVs (verified absent); Flexviews is external <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Simulate with summary tables + event scheduler <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> Multi-cloud support <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Open source on any cloud; SkySQL multi-cloud).</p>
+<ul>
+<li>Open source deploys on any cloud <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>SkySQL supports multiple clouds <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
 </ul></div></div>
 </div>
 </section>
@@ -477,7 +727,7 @@
 <footer class="footer">
   <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
 </footer>
-<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "redshift", "name": "Amazon Redshift", "domain": "olap"}, {"slug": "bigquery", "name": "Google BigQuery", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
 
 <script src="assets/app.js"></script>
 </body>

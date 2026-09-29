@@ -146,6 +146,132 @@
 <li>单进程嵌入式引擎，无变更日志/复制槽概念 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>数据同步靠重新导入文件或上层应用处理 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL 与数据生命周期管理 <span class="verdict v-no">无</span></h3><div class="dim-body"><p><strong>无</strong>（嵌入式单机，无 TTL 机制）。</p>
+<ul>
+<li>无原生 TTL/分区过期，需应用层 WHERE 过滤或定期 DELETE <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>定位是嵌入式分析引擎，数据生命周期由宿主应用管理 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>大删后需 VACUUM/重写回收空间 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-neutral">不适用</span></h3><div class="dim-body"><p><strong>不适用</strong>（嵌入式单机，无并发 DDL 问题）。</p>
+<ul>
+<li>单进程嵌入式，DDL 直接执行，无锁表/在线概念 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>大文件加列是重写，耗时看 IO <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-neutral">不适用</span></h3><div class="dim-body"><p><strong>不适用</strong>（嵌入式单进程，无多租户场景）。</p>
+<ul>
+<li>嵌入式单进程，资源隔离无意义 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>单库单用户是典型用法，多租户请用服务端数据库 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> 跨地域多活 <span class="verdict v-neutral">不适用</span></h3><div class="dim-body"><p><strong>不适用</strong>（嵌入式单机，无地域概念）。</p>
+<ul>
+<li>单进程嵌入式，多活无意义 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>文件级复制可做异地备份，但不是多活语义 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> 高可用架构与 RTO/RPO <span class="verdict v-neutral">不适用</span></h3><div class="dim-body"><p><strong>不适用</strong>（嵌入式单机，无 HA 语义）。</p>
+<ul>
+<li>单进程嵌入式，HA 靠宿主应用/文件备份 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>进程崩溃靠宿主重启，单文件数据易备份 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> 行级安全与数据脱敏 <span class="verdict v-no">无</span></h3><div class="dim-body"><p><strong>无</strong>（嵌入式分析库，无访问控制）。</p>
+<ul>
+<li>DuckDB 是嵌入式 OLAP 库，无用户 / 权限体系，原生无 RLS、列级权限与脱敏 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>安全完全依赖宿主应用：文件权限、应用层过滤 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>脱敏靠 SQL 视图或查询改写 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON 与半结构化能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（JSON 扩展，自动推断）。</p>
+<ul>
+<li>JSON 扩展，JSON 类型，-&gt;&gt; 提取，自动 schema 推断 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>嵌入式分析定位，超大半结构化文件注意内存 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> 全文检索能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（FTS 扩展尚实验性）。</p>
+<ul>
+<li>官方 FTS 扩展提供全文检索，尚实验性 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>生产关键词检索多靠 LIKE/正则或前置处理 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> 存储效率与压缩 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（列存+轻量编码自动压缩）。</p>
+<ul>
+<li>列式存储格式，对每列自动选择轻量压缩编码（RLE、字典、位-packed、FSST 等）。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>压缩为默认自动行为，无需配置，Parquet 读写同样高效。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>嵌入式场景下压缩比表现优秀，是其单文件分析的核心优势之一。<span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> 开源协议与厂商锁定风险 <span class="verdict v-no">无</span></h3><div class="dim-body"><p><strong>无</strong>（MIT 开源；嵌入式无锁定）。</p>
+<ul>
+<li>DuckDB 采用 MIT 协议开源，是最宽松的主流开源协议之一。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>嵌入式进程内数据库，无服务端、无云绑定，从设计上不存在厂商锁定。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>无协议变更黑历史，基金会治理模式清晰。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> 查询优化器与计划稳定性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（向量化 CBO；自动优化好，无 hint）。</p>
+<ul>
+<li>向量化执行 + CBO，EXPLAIN 完备，小查询优化出色 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无 hint 机制，计划干预手段少 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>嵌入式场景计划翻转风险低 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> 参数调优与自治能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（零配置自治：PRAGMA 少量参数）。</p>
+<ul>
+<li>开箱即用，PRAGMA 参数少且有合理默认 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>内存/线程自动感知，自治程度在嵌入式库中突出 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> 静默数据损坏防护 <span class="verdict v-tbd">未找到证据</span></h3><div class="dim-body"><p><strong>未找到证据</strong>（未见公开的页校验或损坏自愈机制）。</p>
+<ul>
+<li>未找到官方文档描述页 checksum、损坏检测或自愈流程。<span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></li>
+<li>作为嵌入式 OLAP 引擎，文件损坏多靠上层应用或备份策略兜底。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> 存储过程/触发器/过程语言 <span class="verdict v-no">无</span></h3><div class="dim-body"><p><strong>无</strong>（查证为无存储过程/触发器）。</p>
+<ul>
+<li>无存储过程、触发器（查证为无）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>逻辑在宿主语言（Python/R）中 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> 约束与数据完整性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（单机主键/外键/CHECK 完整）。</p>
+<ul>
+<li>主键、外键、CHECK、唯一约束完整（单机）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>分析场景常关闭约束以提速，约束主要起语义作用 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> 分析 SQL 完备性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（分析 SQL 强项，窗口完备）。</p>
+<ul>
+<li>窗口函数、CTE、PIVOT 等分析 SQL 为强项 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>单机内存/磁盘上限是天花板 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> 被遗忘权与数据擦除 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（DELETE即删；文件残留靠VACUUM）。</p>
+<ul>
+<li>DELETE 删除行，但数据库文件历史页可能残留，需 VACUUM / 重写文件 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>嵌入式场景下“擦除”等价于文件级管控：删文件最彻底 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span></li>
+<li>无擦除证明 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> 数据血缘与目录集成 <span class="verdict v-no">无</span></h3><div class="dim-body"><p><strong>无</strong>（嵌入式场景无血缘，查证为无）。</p>
+<ul>
+<li>无原生血缘；嵌入式定位通常不需要 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>可通过上层工具链补齐 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> 存算分离 vs 存算一体 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（存算一体：进程内嵌入式）。</p>
+<ul>
+<li>进程内嵌入式，存储即本地文件，存算一体 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无网络开销，但无法独立扩展计算/存储 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> 多模能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（关系+JSON+FTS/VSS 扩展）。</p>
+<ul>
+<li>JSON 类型，FTS（全文）、VSS（向量）为官方扩展 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无图引擎 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps 成本可观测性 <span class="verdict v-neutral">不适用</span></h3><div class="dim-body"><p><strong>不适用</strong>（嵌入式无计费，成本并入宿主应用）。</p>
+<ul>
+<li>嵌入式进程内运行，无独立计费概念，成本并入宿主应用的硬件与人力。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>母公司 MotherDuck 的云托管版另有按量计费。<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> 驱动与多语言生态 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（嵌入式驱动全：Python/R/JDBC/ODBC）。</p>
+<ul>
+<li>Python/R/Node/Java/JDBC/ODBC 官方驱动完备 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>零依赖安装是开发体验优势 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> 物化视图 <span class="verdict v-no">无</span></h3><div class="dim-body"><p><strong>无</strong>（查证为无；CTAS 模拟）。</p>
+<ul>
+<li>无物化视图（查证为无）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>用 CREATE TABLE AS + 定时重建模拟 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> 支持跨云 <span class="verdict v-neutral">不适用</span></h3><div class="dim-body"><p><strong>不适用</strong>（嵌入式，无云绑定）。</p>
+<ul>
+<li>嵌入式库，跑在哪里由宿主决定，无云厂商绑定 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>跨云概念不适用，文件拷到哪里算哪里 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
 <div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — since v1.4.0: <code>ATTACH &#x27;f.db&#x27; AS d (ENCRYPTION_KEY &#x27;...&#x27;)</code>, AES-256-GCM (default) / AES-CTR-256, covering the main file, WAL, and spilled temp files; a lost key means unrecoverable data; no in-place encrypt/decrypt/re-key (copy to a new database instead); officially not yet NIST-compliant (tracked in issue #20162). Evidence: official docs (1.4.0 release notes, encryption blog).</p></div></div>
@@ -211,6 +337,132 @@
 <ul>
 <li>Single-process embedded engine; no change log or replication slots <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Sync by re-importing files or handling it in the application layer <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL &amp; data lifecycle <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><p><strong>Not supported</strong> (Embedded single-node; no TTL mechanism).</p>
+<ul>
+<li>No native TTL or partition expiry; filter in the app layer or run periodic DELETEs <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>As an embedded engine, lifecycle is owned by the host application <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Reclaim space after big deletes via VACUUM/rewrite <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-neutral">N/A</span></h3><div class="dim-body"><p><strong>N/A</strong> (Embedded single-process; no concurrent-DDL concern).</p>
+<ul>
+<li>Single-process embedded; DDL runs directly with no locking/online distinction <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Add-column on huge files rewrites data; time depends on IO <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> Multi-tenancy &amp; resource isolation <span class="verdict v-neutral">N/A</span></h3><div class="dim-body"><p><strong>N/A</strong> (Embedded single-process; no multi-tenancy scenario).</p>
+<ul>
+<li>Embedded single process; resource isolation is meaningless <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Single-database single-user is the typical use; use a server database for multi-tenancy <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> Cross-region active-active <span class="verdict v-neutral">N/A</span></h3><div class="dim-body"><p><strong>N/A</strong> (Embedded single-node; no region concept).</p>
+<ul>
+<li>Single-process embedded; active-active is meaningless <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>File-level copies work for offsite backup, not active-active semantics <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> HA &amp; RTO/RPO <span class="verdict v-neutral">N/A</span></h3><div class="dim-body"><p><strong>N/A</strong> (Embedded single-node; no HA semantics).</p>
+<ul>
+<li>Single-process embedded; HA is the host app&#x27;s / file backups&#x27; job <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Process crashes are the host&#x27;s restart concern; the single-file data is easy to back up <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> Row-level security &amp; masking <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><p><strong>Not supported</strong> (Embedded analytics; no access control).</p>
+<ul>
+<li>DuckDB is an embedded OLAP library with no user / privilege system; natively no RLS, column privileges, or masking <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Security depends entirely on the host app: file permissions and app-layer filtering <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Masking via SQL views or query rewriting <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON &amp; semi-structured <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (JSON extension, auto inference).</p>
+<ul>
+<li>JSON extension with JSON type, -&gt;&gt; extraction, auto schema inference <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Embedded analytics; watch memory on huge semi-structured files <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> Full-text search <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Experimental FTS extension).</p>
+<ul>
+<li>Official FTS extension offers full-text, still experimental <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Production keyword search often LIKE/regex or preprocessing <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> Storage efficiency &amp; compression <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Columnar with lightweight encoding compression).</p>
+<ul>
+<li>Columnar storage format with automatic per-column lightweight encodings (RLE, dictionary, bit-packed, FSST, etc.). <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Compression is default automatic behavior requiring no configuration; Parquet I/O is equally efficient. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Excellent ratios in embedded scenarios — a core advantage of its single-file analytics story. <code>(community tested)</code></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> OSS license &amp; lock-in risk <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><p><strong>Not supported</strong> (MIT open source; embedded, no lock-in).</p>
+<ul>
+<li>DuckDB is open source under the MIT license, one of the most permissive mainstream licenses. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>An embedded in-process database with no server and no cloud binding — vendor lock-in is impossible by design. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>No license-change history; foundation governance is clear. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> Optimizer &amp; plan stability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Vectorized CBO; great auto-optimization, no hints).</p>
+<ul>
+<li>Vectorized execution + CBO, full EXPLAIN, excellent small-query optimization <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No hint mechanism; few plan-steering levers <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Low plan-flip risk in embedded scenarios <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> Tuning &amp; autonomy <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Zero-config autonomy; few PRAGMAs).</p>
+<ul>
+<li>Works out of the box; few PRAGMAs with sane defaults <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Auto-detects memory/threads; notably autonomous among embedded DBs <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> Silent corruption protection <span class="verdict v-no">No evidence found</span></h3><div class="dim-body"><p><strong>No evidence found</strong> (No public check/self-heal mechanism).</p>
+<ul>
+<li>No official documentation found describing page checksums, corruption detection, or self-healing. <code>(to be verified)</code></li>
+<li>As an embedded OLAP engine, file corruption is mostly left to the host application or backup strategy. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> Stored procedures &amp; triggers <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><p><strong>Not supported</strong> (Verified: no procedures/triggers).</p>
+<ul>
+<li>No stored procedures or triggers (verified absent) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Logic in host language (Python/R) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> Constraints &amp; integrity <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Full single-node constraints).</p>
+<ul>
+<li>Full PK, FK, CHECK, unique constraints (single-node) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Often disabled for speed in analytics; mainly semantic <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> Analytical SQL <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Analytical SQL is its strength).</p>
+<ul>
+<li>Window functions, CTEs, PIVOT — analytical SQL is its strength <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Single-node memory/disk is the ceiling <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> Right to erasure <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (DELETE removes rows; file residue needs VACUUM).</p>
+<ul>
+<li>DELETE removes rows, but database file history pages may retain data; VACUUM / file rewrite is needed <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>In embedded scenarios erasure equals file-level control: deleting the file is the most thorough option <code>(community tested)</code></li>
+<li>No erasure attestation <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> Data lineage &amp; catalog <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><p><strong>Not supported</strong> (Verified none; embedded scope needs none).</p>
+<ul>
+<li>No native lineage; embedded positioning rarely needs it <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Upper toolchains can fill the gap <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> Storage-compute architecture <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Coupled: in-process embedded).</p>
+<ul>
+<li>In-process embedded; storage is local files; coupled <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No network overhead, but compute/storage can&#x27;t scale independently <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> Multi-model <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Relational + JSON + FTS/VSS extensions).</p>
+<ul>
+<li>JSON type; FTS (full-text) and VSS (vector) as official extensions <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No graph engine <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps &amp; cost observability <span class="verdict v-neutral">N/A</span></h3><div class="dim-body"><p><strong>N/A</strong> (No metering; cost folds into host).</p>
+<ul>
+<li>Runs embedded in-process with no independent metering; cost folds into the host application&#x27;s hardware and labor. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>MotherDuck&#x27;s hosted cloud edition has separate usage-based billing. <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> Drivers &amp; clients <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Full embedded drivers: Python/R/JDBC/ODBC).</p>
+<ul>
+<li>Complete official Python/R/Node/Java/JDBC/ODBC drivers <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Zero-dependency install is a DX win <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> Materialized views <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><p><strong>Not supported</strong> (Verified absent; CTAS instead).</p>
+<ul>
+<li>No materialized views (verified absent) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Simulate with CREATE TABLE AS + scheduled rebuilds <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> Multi-cloud support <span class="verdict v-neutral">N/A</span></h3><div class="dim-body"><p><strong>N/A</strong> (Embedded; no cloud binding).</p>
+<ul>
+<li>Embedded library; the host decides where it runs — no cloud binding <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Cross-cloud is N/A; the file runs wherever you copy it <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
 </div>
 </section>
@@ -486,7 +738,7 @@
 <footer class="footer">
   <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
 </footer>
-<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "redshift", "name": "Amazon Redshift", "domain": "olap"}, {"slug": "bigquery", "name": "Google BigQuery", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
 
 <script src="assets/app.js"></script>
 </body>

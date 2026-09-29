@@ -155,6 +155,131 @@
 <li>PG 版逻辑复制可用 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>DTS 持续同步是云上标准链路 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 </ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL 与数据生命周期管理 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（同源分区+定时任务；无原生行级 TTL）。</p>
+<ul>
+<li>MySQL/PG 版继承各自生态的分区过期做法 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无原生行级 TTL <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（同源在线 DDL 能力）。</p>
+<ul>
+<li>MySQL 版同 InnoDB online DDL 限制，大表建议 gh-ost <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>PG 版同 PG 原生在线 DDL <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（集群级隔离为主，无资源组）。</p>
+<ul>
+<li>租户隔离靠多集群，单集群内无细粒度资源组 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>读写分离+代理可做业务级分流 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> 跨地域多活 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（全球多活网络（GDN））。</p>
+<ul>
+<li>PolarDB GDN 支持跨地域集群，写单主、读就近 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>跨区延迟 &lt;100ms 场景可用，延迟高则体验下降 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>多活写仍是单主语义 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> 高可用架构与 RTO/RPO <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（一写多读快速切换）。</p>
+<ul>
+<li>共享存储一写多读，主故障只读节点快速提升，RTO 秒级 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>RPO≈0（Redo 日志共享）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>切换对长连接有闪断，应用需重连 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> 行级安全与数据脱敏 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（继承PG/MySQL生态；云上管控增强）。</p>
+<ul>
+<li>PolarDB PostgreSQL 版继承 PG 原生 RLS；MySQL 版与 MySQL 企业版脱敏组件的对应关系需按版本确认 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>阿里云侧提供 DAS / SQL 审计与敏感数据保护（数据脱敏）等管控面能力 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+<li>云管控脱敏多作用于控制台 / DMS 查询链路，不等同于引擎内策略 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON 与半结构化能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（MySQL/PG 版各自继承）。</p>
+<ul>
+<li>MySQL 版原生 JSON；PG 版 jsonb <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>能力与上游对齐，无额外增强 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> 全文检索能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（FULLTEXT/tsvector 继承）。</p>
+<ul>
+<li>MySQL 版 FULLTEXT+ngram；PG 版 tsvector <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>大规模检索同样建议外挂 OpenSearch <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> 存储效率与压缩 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（共享存储+PolarStore 数据压缩）。</p>
+<ul>
+<li>底层 PolarStore 分布式共享存储支持数据压缩与快照克隆，存储按量计费。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>MySQL 版继承 InnoDB 压缩能力；PG 版继承 TOAST 压缩。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>存储层压缩细节不完全公开，压缩比以云账单口径体现，用户侧可观测性有限。<span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> 开源协议与厂商锁定风险 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（阿里云绑定；开源版功能受限）。</p>
+<ul>
+<li>PolarDB 是阿里云托管数据库服务，存储计算分离架构深度绑定阿里云基础设施，无法迁出该云。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>存在开源版本（PolarDB for PostgreSQL/MySQL），但云上高级特性（极速扩展、HTAP 等）不完全对等。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>迁移出需重构存储层，TDSQL 同理为腾讯云绑定。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> 查询优化器与计划稳定性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（MySQL/PG 衍生+并行/HTAP 增强）。</p>
+<ul>
+<li>继承引擎优化器，PolarDB 增加并行查询、IMCI 列存索引的优化器适配 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>hint 行为同原生引擎 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> 参数调优与自治能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（DAS 自动诊断：索引推荐+SQL 优化）。</p>
+<ul>
+<li>阿里云 DAS 提供自动 SQL 优化、索引推荐、空间分析 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>参数组可调，自治能力在国产云库中突出 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> 静默数据损坏防护 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（云厂商底层兜底，用户无可见校验开关）。</p>
+<ul>
+<li>存储计算分离架构下，分布式存储层做多副本冗余与底层校验，用户无页校验开关。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>MySQL 版继承 InnoDB 页 checksum，但存储卸载后部分语义由云层接管。<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+<li>损坏审计与主动全库校验能力对用户不可见。<span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> 存储过程/触发器/过程语言 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（SP/触发器继承；PG 版 plpgsql）。</p>
+<ul>
+<li>MySQL 版 SP/触发器/事件；PG 版 plpgsql 完整 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>去 O 改写成本与上游一致 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> 约束与数据完整性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（外键/CHECK 完整继承上游）。</p>
+<ul>
+<li>外键、CHECK 等约束与上游一致 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>云上大表加约束注意主从延迟与锁 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> 分析 SQL 完备性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（分析 SQL 完整继承）。</p>
+<ul>
+<li>MySQL 版 8.0 窗口/CTE；PG 版分析 SQL 完整 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>HTAP 场景可搭配 PolarDB-X/IMCI 列存 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> 被遗忘权与数据擦除 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（手动DELETE；云备份快照残留）。</p>
+<ul>
+<li>引擎层删除语义与 PG / MySQL 一致，无原生擦除证明 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>PolarDB 的共享存储快照与备份集保留策略决定历史副本存活期，合规删除需联动调整备份保留期 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> 数据血缘与目录集成 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（DataWorks 数据地图集成）。</p>
+<ul>
+<li>通过 DataWorks 数据地图做血缘 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无数据库原生列级血缘 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> 存算分离 vs 存算一体 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（存算分离：PolarStore 共享存储）。</p>
+<ul>
+<li>计算与 PolarStore 分布式共享存储分离，一写多读 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>只读节点秒级扩展不搬数据 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> 多模能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（随引擎：JSON/PG 向量生态）。</p>
+<ul>
+<li>PolarDB-PG 支持 pgvector 等 PG 生态 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无原生图/全文独立引擎 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps 成本可观测性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（阿里云账单标签+费用中心+预算告警）。</p>
+<ul>
+<li>支持费用标签与资源组归因，费用中心可做多账号分账。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>按存储与计算规格计费，预算告警支持阈值通知。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> 驱动与多语言生态 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（MySQL/PG 协议兼容）。</p>
+<ul>
+<li>完全兼容 MySQL/PG 协议与驱动 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> 物化视图 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（PG 版手动物化视图；MySQL 版无）。</p>
+<ul>
+<li>PG 版：物化视图手动 REFRESH <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>MySQL 版：无，汇总表模拟 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> 支持跨云 <span class="verdict v-no">无</span></h3><div class="dim-body"><p><strong>无</strong>（阿里云绑定，无跨云）。</p>
+<ul>
+<li>仅阿里云提供 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>迁出靠逻辑迁移，无跨云复制 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
 <div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. MySQL edition: instance-level TDE (enabled via console/API <code>UpdateDBInstanceTDE</code>); the 8.0 engine supports &quot;auto-encryption for newly created tables&quot; from 8.0.1.1.15; per-tablespace transparent encryption, keys generated and managed by Alibaba Cloud KMS, transparent to applications — data files are encrypted on disk and decrypted when read into memory, with no change to data file size. PG/Oracle edition: can only be enabled <strong>when the cluster is created</strong> and cannot be disabled afterward; performs real-time I/O encryption on data files; KMS key management, <strong>supports both Alibaba Cloud auto-generated keys and BYOK (bring your own key material, then authorize PolarDB to use it)</strong>. Limitation: source RDS instances with TDE/SSL enabled cannot use &quot;one-click upgrade to PolarDB&quot; (official docs prerequisite). <strong>To-be-verified</strong>: BYOK support for the MySQL edition (no evidence found); encryption scope for WAL/redo, temp files, and backup files (no official evidence found); performance impact on I/O-intensive PG workloads (official notes mention it, quantification to-be-verified).</p></div></div>
@@ -223,6 +348,131 @@
 <li>MySQL edition binlog is community-compatible; works with Canal/Debezium <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>PG edition logical replication available <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>DTS ongoing sync is the standard cloud path <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL &amp; data lifecycle <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Same-lineage partition expiry; no native row-level TTL).</p>
+<ul>
+<li>MySQL/PG flavors inherit their ecosystems&#x27; partition-expiry patterns <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No native row-level TTL <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Same-lineage online DDL capabilities).</p>
+<ul>
+<li>MySQL flavor shares InnoDB online-DDL limits; gh-ost advised for huge tables <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>PG flavor has native PG online DDL <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> Multi-tenancy &amp; resource isolation <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Mostly cluster-level isolation).</p>
+<ul>
+<li>Tenant isolation via multiple clusters; no fine-grained in-cluster resource groups <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Read/write splitting + proxy can separate workload classes <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> Cross-region active-active <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Global active network (GDN)).</p>
+<ul>
+<li>PolarDB GDN supports cross-region clusters: single writer, local reads <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Works where cross-region latency is &lt;100ms; degrades beyond <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Multi-active is still single-writer semantics <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> HA &amp; RTO/RPO <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Single-writer multi-reader fast failover).</p>
+<ul>
+<li>Shared-storage single-writer multi-reader; readers promote in seconds on primary failure <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>RPO≈0 (shared redo log) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Long connections flap on failover; apps must reconnect <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> Row-level security &amp; masking <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Inherits PG/MySQL; cloud controls added).</p>
+<ul>
+<li>PolarDB for PostgreSQL inherits native PG RLS; the MySQL edition&#x27;s parity with MySQL Enterprise masking must be confirmed per version <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Alibaba Cloud adds control-plane capabilities such as DAS / SQL audit and sensitive-data masking <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+<li>Cloud-side masking mostly applies to console / DMS query paths, not engine-internal policies <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON &amp; semi-structured <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Inherited per engine).</p>
+<ul>
+<li>MySQL flavor native JSON; PG flavor jsonb <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Aligned with upstream, no extra enhancements <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> Full-text search <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Inherited FULLTEXT/tsvector).</p>
+<ul>
+<li>MySQL flavor FULLTEXT+ngram; PG flavor tsvector <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Large-scale search still wants OpenSearch <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> Storage efficiency &amp; compression <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Shared storage plus PolarStore data compression).</p>
+<ul>
+<li>The underlying PolarStore distributed shared storage supports data compression and snapshot cloning with usage-based storage billing. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>The MySQL edition inherits InnoDB compression; the PostgreSQL edition inherits TOAST compression. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Storage-layer compression details are not fully public; ratios surface through cloud billing with limited user-side observability. <code>(to be verified)</code></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> OSS license &amp; lock-in risk <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Alibaba Cloud-bound; open edition feature-limited).</p>
+<ul>
+<li>PolarDB is an Alibaba Cloud managed database service; its storage-compute-separated architecture is deeply bound to Alibaba Cloud infrastructure and cannot leave that cloud. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Open-source editions exist (PolarDB for PostgreSQL/MySQL) but are not fully equivalent to cloud-only features like instant scaling and HTAP. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Migrating out requires re-architecting the storage layer; TDSQL is similarly Tencent Cloud-bound. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> Optimizer &amp; plan stability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (MySQL/PG-derived + parallel/HTAP boosts).</p>
+<ul>
+<li>Inherits engine optimizers; PolarDB adds parallel query and IMCI columnar-index optimizer support <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Hint behavior matches native engines <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> Tuning &amp; autonomy <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (DAS auto-diagnosis: index advisor + SQL tuning).</p>
+<ul>
+<li>Alibaba DAS offers automatic SQL tuning, index recommendations, space analysis <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Tunable parameter groups; notably autonomous among China cloud DBs <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> Silent corruption protection <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Cloud checks; no user controls).</p>
+<ul>
+<li>In the disaggregated storage-compute architecture, the distributed storage layer handles replication and low-level checks; no user page-checksum switch. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>The MySQL edition inherits InnoDB page checksums, partly superseded by the offloaded storage layer. <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+<li>Corruption auditing and proactive full-database verification are not visible to users. <code>(to be verified)</code></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> Stored procedures &amp; triggers <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Inherited SPs; plpgsql on PG).</p>
+<ul>
+<li>MySQL flavor procedures/triggers/events; PG flavor full plpgsql <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Oracle-migration rewrite cost same as upstream <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> Constraints &amp; integrity <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Fully inherited constraints).</p>
+<ul>
+<li>FK, CHECK consistent with upstream <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Mind replica lag and locks adding constraints on huge cloud tables <code>(community tested)</code>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> Analytical SQL <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Inherited analytical SQL).</p>
+<ul>
+<li>MySQL flavor 8.0 windows/CTEs; PG flavor complete <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>HTAP via PolarDB-X/IMCI columnar <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> Right to erasure <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Manual DELETE; cloud snapshot residue).</p>
+<ul>
+<li>Engine-level delete semantics match PG / MySQL; no native erasure attestation <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Shared-storage snapshots and backup-set retention policies decide how long historical copies live; compliant deletion must coordinate backup retention <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> Data lineage &amp; catalog <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (DataWorks data-map integration).</p>
+<ul>
+<li>Lineage via DataWorks data map <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No native database column-level lineage <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> Storage-compute architecture <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Disaggregated: PolarStore shared storage).</p>
+<ul>
+<li>Compute separated from PolarStore distributed shared storage; single-write multi-read <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Read replicas scale in seconds without data movement <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> Multi-model <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Engine-dependent: JSON/PG vector ecosystem).</p>
+<ul>
+<li>PolarDB-PG supports pgvector and the PG ecosystem <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No standalone native graph/full-text engine <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps &amp; cost observability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Alibaba tags, cost center, budgets).</p>
+<ul>
+<li>Cost tags and resource groups enable attribution; the cost center supports multi-account chargeback. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Billed by storage and compute specification, with threshold-based budget alerts. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> Drivers &amp; clients <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (MySQL/PG protocol compatible).</p>
+<ul>
+<li>Fully compatible with MySQL/PG protocols and drivers <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> Materialized views <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Manual MVs on PG; none on MySQL).</p>
+<ul>
+<li>PG flavor: manual-REFRESH materialized views <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>MySQL flavor: none; summary tables instead <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> Multi-cloud support <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><p><strong>Not supported</strong> (Alibaba Cloud-bound; no cross-cloud).</p>
+<ul>
+<li>Alibaba Cloud only <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Moving out via logical migration; no cross-cloud replication <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
 </div>
 </section>
@@ -481,7 +731,7 @@
 <footer class="footer">
   <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
 </footer>
-<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "redshift", "name": "Amazon Redshift", "domain": "olap"}, {"slug": "bigquery", "name": "Google BigQuery", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
 
 <script src="assets/app.js"></script>
 </body>

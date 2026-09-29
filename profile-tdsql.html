@@ -145,6 +145,128 @@
 <li>binlog 与 MySQL 兼容，可接 Canal/Debezium <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>DTS 持续同步是云上标准链路 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 </ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL 与数据生命周期管理 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（同源分区过期；无原生行级 TTL）。</p>
+<ul>
+<li>MySQL 版分区 + event，PG 版分区 + 定时任务 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>无原生行级 TTL <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（同源在线 DDL）。</p>
+<ul>
+<li>MySQL 版同 InnoDB online DDL 限制 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>PG 版同 PG 原生在线 DDL <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（实例/分片级隔离为主）。</p>
+<ul>
+<li>租户隔离靠多实例/分片，细粒度资源组能力有限 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>分布式版按分片打散天然有一定隔离 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> 跨地域多活 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（多中心架构，跨区容灾/多活）。</p>
+<ul>
+<li>分布式版支持跨中心部署，强同步多活可配 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>跨中心延迟要求高，选型看网络 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> 高可用架构与 RTO/RPO <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（强同步多副本自动切换）。</p>
+<ul>
+<li>强同步复制多副本，主故障自动切换 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>RPO=0，RTO 秒级 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> 行级安全与数据脱敏 <span class="verdict v-tbd">未找到证据</span></h3><div class="dim-body"><p><strong>未找到证据</strong>（未见原生RLS公开说明）。</p>
+<ul>
+<li>未找到 TDSQL 原生行级安全的公开官方文档 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></li>
+<li>MySQL 协议兼容，权限模型沿用 GRANT；脱敏多靠应用层或腾讯云数据安全产品 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></li>
+<li>强合规场景选型前需向官方求证 RLS / 脱敏路线图 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON 与半结构化能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（MySQL 版 JSON 继承）。</p>
+<ul>
+<li>MySQL 版原生 JSON 类型与函数 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>能力与上游 MySQL 对齐 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> 全文检索能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（FULLTEXT 继承）。</p>
+<ul>
+<li>MySQL 版 FULLTEXT 索引 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>大规模检索同样建议外挂 ES <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> 存储效率与压缩 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（列存引擎+压缩，细节披露有限）。</p>
+<ul>
+<li>支持列存引擎与数据压缩，面向 HTAP 负载优化存储。<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+<li>具体压缩算法、压缩比等技术细节公开资料较少，以官方白皮书口径为主。<span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></li>
+<li>云上存储按量计费，压缩收益直接体现在账单而非用户可调参数。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> 开源协议与厂商锁定风险 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（腾讯云绑定；金融级特性云专属）。</p>
+<ul>
+<li>TDSQL 为腾讯云托管分布式数据库，架构与运维深度绑定腾讯云，无法迁出。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>开源版本功能与云上企业版存在差距，强一致、多地多活等能力云专属。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>从 TDSQL 迁出需重写分片键设计与强一致依赖，成本高。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> 查询优化器与计划稳定性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（MySQL 衍生+分布式优化器）。</p>
+<ul>
+<li>基于 MySQL 优化器扩展分布式计划 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>hint 兼容 MySQL <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> 参数调优与自治能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（DBbrain 自动诊断：索引推荐+限流）。</p>
+<ul>
+<li>腾讯云 DBbrain 提供 SQL 诊断、索引推荐、自治限流 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>参数组可调 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> 静默数据损坏防护 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（继承 InnoDB 校验，云层多副本兜底）。</p>
+<ul>
+<li>MySQL 版基于 InnoDB，继承页 checksum 与 doublewrite 防写撕裂。<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+<li>腾讯云底层做多副本冗余与存储层校验，单副本损坏可自动修复。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>用户侧无独立的全库校验命令，损坏审计依赖云厂商。<span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> 存储过程/触发器/过程语言 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（SP/触发器继承 MySQL）。</p>
+<ul>
+<li>存储过程、触发器、事件与 MySQL 一致 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>去 O 改写成本与 MySQL 一致 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> 约束与数据完整性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（FK/CHECK 继承）。</p>
+<ul>
+<li>外键、CHECK 与 MySQL 一致 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>分布式下外键使用注意 shard 键对齐 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> 分析 SQL 完备性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（窗口函数/CTE 完整继承）。</p>
+<ul>
+<li>8.0 窗口函数、CTE <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>复杂分析非其主场景 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> 被遗忘权与数据擦除 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（手动DELETE；binlog/备份残留）。</p>
+<ul>
+<li>删除靠标准 DML，无公开的原生擦除工作流 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></li>
+<li>binlog、备份集、异地灾备实例构成残留面，与 MySQL 生态一致 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> 数据血缘与目录集成 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（WeData 数据地图集成）。</p>
+<ul>
+<li>通过 WeData 数据地图做血缘 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无原生列级血缘 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> 存算分离 vs 存算一体 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（存算分离架构）。</p>
+<ul>
+<li>计算与存储分离设计 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> 多模能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（随 MySQL：JSON+全文）。</p>
+<ul>
+<li>JSON、全文索引随 MySQL 引擎 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无向量/图 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps 成本可观测性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（腾讯云按实例规格计费，标签+预算告警）。</p>
+<ul>
+<li>按实例规格与存储按量/包年计费，支持费用标签做业务归因。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>费用中心支持预算设置与超支告警。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> 驱动与多语言生态 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（MySQL 协议兼容）。</p>
+<ul>
+<li>MySQL 线协议兼容 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> 物化视图 <span class="verdict v-no">无</span></h3><div class="dim-body"><p><strong>无</strong>（查证为无物化视图能力）。</p>
+<ul>
+<li>无物化视图（查证为无）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>汇总表模拟 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> 支持跨云 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（腾讯云为主；私有化可出云）。</p>
+<ul>
+<li>主力是腾讯云 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>有私有化/本地部署版本，可出云但非多云原生 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+</ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
 <div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. Supports transparent tablespace encryption and column-level encryption; keys integrate with Tencent Cloud KMS by default (keys are not stored in the database), with a built-in keyring for non-KMS scenarios; supports Chinese national cryptographic standards (国密, GM/T) SM2/SM3/SM4 (vendor claim: national-crypto is a value-added component, not configured by default). Version scope: per the official whitepaper, &quot;private cloud and MySQL 5.7 or higher kernels&quot;.</p></div></div>
@@ -211,6 +333,128 @@
 <ul>
 <li>MySQL-compatible binlog works with Canal/Debezium <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>DTS ongoing sync is the standard cloud path <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL &amp; data lifecycle <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Same-lineage partition expiry; no native row-level TTL).</p>
+<ul>
+<li>MySQL flavor: partitions + events; PG flavor: partitions + scheduled jobs <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>No native row-level TTL <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Same-lineage online DDL).</p>
+<ul>
+<li>MySQL flavor shares InnoDB online-DDL limits <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>PG flavor has native PG online DDL <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> Multi-tenancy &amp; resource isolation <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Mostly instance/shard-level isolation).</p>
+<ul>
+<li>Tenant isolation via multiple instances/shards; limited fine-grained resource groups <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>The sharded edition&#x27;s scattering gives some natural isolation <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> Cross-region active-active <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Multi-center architecture; cross-region DR/active-active).</p>
+<ul>
+<li>The distributed edition supports cross-center deployment with configurable strongly-sync active-active <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Demands low cross-center latency; network decides <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> HA &amp; RTO/RPO <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Strong-sync multi-replica automatic failover).</p>
+<ul>
+<li>Strongly-synchronous multi-replica with automatic primary failover <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>RPO=0; RTO in seconds <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> Row-level security &amp; masking <span class="verdict v-no">No evidence found</span></h3><div class="dim-body"><p><strong>No evidence found</strong> (No public statement on native RLS).</p>
+<ul>
+<li>No public official documentation on native row-level security in TDSQL was found <code>(to be verified)</code></li>
+<li>MySQL-protocol compatible with GRANT-based privileges; masking mostly via the app layer or Tencent Cloud data-security products <code>(to be verified)</code></li>
+<li>For strict compliance scenarios, verify the RLS / masking roadmap with the vendor before selecting <code>(to be verified)</code></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON &amp; semi-structured <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Inherited MySQL JSON).</p>
+<ul>
+<li>MySQL flavor native JSON types and functions <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Aligned with upstream MySQL <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> Full-text search <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Inherited FULLTEXT).</p>
+<ul>
+<li>MySQL flavor FULLTEXT indexes <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Large-scale search still wants ES <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> Storage efficiency &amp; compression <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Columnar engine plus compression; limited public detail).</p>
+<ul>
+<li>Supports a columnar engine and data compression, optimized for HTAP workloads. <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+<li>Technical details such as algorithms and ratios are sparsely documented; mostly official whitepaper claims. <code>(to be verified)</code></li>
+<li>Cloud storage is usage-billed, so compression benefits show up in the bill rather than in user-tunable parameters. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> OSS license &amp; lock-in risk <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Tencent Cloud-bound; flagship features cloud-only).</p>
+<ul>
+<li>TDSQL is Tencent Cloud&#x27;s managed distributed database; architecture and operations are deeply bound to Tencent Cloud and cannot leave it. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>The open-source edition lags the cloud enterprise edition; strong consistency and multi-region active-active capabilities are cloud-only. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Migrating out requires redesigning sharding keys and strong-consistency dependencies — costly. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> Optimizer &amp; plan stability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (MySQL-derived + distributed optimizer).</p>
+<ul>
+<li>Extends the MySQL optimizer with distributed plans <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>MySQL-compatible hints <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> Tuning &amp; autonomy <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (DBbrain auto-diagnosis: index advisor + throttling).</p>
+<ul>
+<li>Tencent DBbrain offers SQL diagnosis, index recommendations, autonomous throttling <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Tunable parameter groups <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> Silent corruption protection <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (InnoDB checks; cloud replicas).</p>
+<ul>
+<li>The MySQL edition is InnoDB-based, inheriting page checksums and doublewrite against torn pages. <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+<li>Tencent Cloud&#x27;s underlying layer provides multi-copy redundancy and storage-level checks with automatic repair of single-copy corruption. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>No standalone user-facing full-database verification command; corruption auditing depends on the provider. <code>(to be verified)</code></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> Stored procedures &amp; triggers <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Inherited MySQL SPs).</p>
+<ul>
+<li>Procedures, triggers, events same as MySQL <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Oracle-migration cost same as MySQL <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> Constraints &amp; integrity <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Inherited FK/CHECK).</p>
+<ul>
+<li>FK, CHECK same as MySQL <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Mind shard-key alignment for FKs when distributed <code>(community tested)</code>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> Analytical SQL <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Inherited windows/CTEs).</p>
+<ul>
+<li>8.0 window functions, CTEs <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Complex analytics not its main scene <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> Right to erasure <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Manual DELETE; binlog/backup residue).</p>
+<ul>
+<li>Deletion is standard DML; no public native erasure workflow <code>(to be verified)</code></li>
+<li>Binlog, backup sets, and geo-disaster-recovery instances form the residue surface, same as the MySQL ecosystem <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> Data lineage &amp; catalog <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (WeData data-map integration).</p>
+<ul>
+<li>Lineage via WeData data map <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No native column-level lineage <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> Storage-compute architecture <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Disaggregated architecture).</p>
+<ul>
+<li>Compute/storage separated by design <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> Multi-model <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (As MySQL: JSON + full-text).</p>
+<ul>
+<li>JSON and full-text follow the MySQL engine <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No vector/graph <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps &amp; cost observability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Tencent billing; tags plus budgets).</p>
+<ul>
+<li>Billed by instance specification and storage (pay-as-you-go or subscription), with cost tags for business attribution. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>The billing center supports budget setup and overspend alerts. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> Drivers &amp; clients <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (MySQL-protocol compatible).</p>
+<ul>
+<li>MySQL wire-protocol compatible <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> Materialized views <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><p><strong>Not supported</strong> (Verified: no materialized views).</p>
+<ul>
+<li>No materialized views (verified absent) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Summary tables instead <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> Multi-cloud support <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Tencent Cloud-first; on-prem edition can leave the cloud).</p>
+<ul>
+<li>Primarily Tencent Cloud <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>An on-prem edition exists — can leave the cloud but not multi-cloud native <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
 </ul></div></div>
 </div>
 </section>
@@ -486,7 +730,7 @@
 <footer class="footer">
   <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
 </footer>
-<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "redshift", "name": "Amazon Redshift", "domain": "olap"}, {"slug": "bigquery", "name": "Google BigQuery", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
 
 <script src="assets/app.js"></script>
 </body>

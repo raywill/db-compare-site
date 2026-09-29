@@ -151,6 +151,137 @@
 <li>支持 Avro/JSON 信封，可做下游流处理 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>大事务变更 feed 延迟与内存是已知调优点 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL 与数据生命周期管理 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（无原生 TTL；靠 scheduled job 定时删）。</p>
+<ul>
+<li>无原生行级 TTL，需用 scheduled job 机制跑定时 DELETE <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>大表定时删注意拆批，避免长事务拖慢 MVCC GC <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>原生 TTL 的 feature request 长期 open，短期别指望 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（声明式在线 schema 变更，并发友好）。</p>
+<ul>
+<li>schema 变更是在线声明式的，多语句可并发执行不阻塞读写 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>大表加索引是后台分布式回填，前台无感 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>极端场景下 schema 变更仍可能排队，变更期间避免混用 DDL+DML 大事务 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（admission control 有限；无租户资源组）。</p>
+<ul>
+<li>admission control 做过载保护，但不是租户级 QoS <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>多租户靠多集群/多 database 逻辑隔离 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> 跨地域多活 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（多 region 生存目标，原生多活）。</p>
+<ul>
+<li>REGIONAL BY ROW 等生存目标，数据放离用户近的 region <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>多 region 写原生支持，follower 读降低跨区读延迟 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>跨区事务延迟是物理上限，设计表时要分区裁剪 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> 高可用架构与 RTO/RPO <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（Raft 自愈，RTO 秒级）。</p>
+<ul>
+<li>Raft 多副本，节点故障自动选主，RTO 秒级 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>RPO=0（多数派提交），脑裂靠 Raft 任期防护 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>多活架构下单节点故障业务几乎无感 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> 行级安全与数据脱敏 <span class="verdict v-tbd">未找到证据</span></h3><div class="dim-body"><p><strong>未找到证据</strong>（RLS支持不完整，待官方确认）。</p>
+<ul>
+<li>CockroachDB 曾实验行级安全相关能力，但官方文档中 RLS 的支持状态不明确 / 不完整 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></li>
+<li>当前行级隔离主要靠视图与应用层，或利用多租户 / 分区做隔离 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>无内置动态脱敏引擎的公开说明 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON 与半结构化能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（JSONB 类型，PG 算子兼容）。</p>
+<ul>
+<li>JSONB 类型，-&gt;/-&gt;&gt;/@&gt; 等 PG 兼容算子 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>GIN 索引支持弱于 PG，复杂 jsonb 查询性能注意 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> 全文检索能力 <span class="verdict v-no">无</span></h3><div class="dim-body"><p><strong>无</strong>（查证为无，生产外挂检索）。</p>
+<ul>
+<li>无全文索引（查证为无）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>全文场景需外挂 ES/Typesense <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> 存储效率与压缩 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（Pebble LSM+Snappy 压缩）。</p>
+<ul>
+<li>存储引擎 Pebble（RocksDB 系）采用 LSM 结构，默认 Snappy 压缩，支持块级压缩配置。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>多副本（默认 3 副本）带来 3 倍存储放大，压缩可部分抵消但无法消除。<span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span></li>
+<li>备份与导入导出支持压缩，属运维层面能力。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> 开源协议与厂商锁定风险 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（曾从 Apache 2.0 转 BSL）。</p>
+<ul>
+<li>CockroachDB 2019 年将核心从 Apache 2.0 转为 BSL（Business Source License），限制云厂商托管竞争，是明确的协议变更黑历史。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>BSL 条款下自建使用仍免费，但二次分发与云托管受限。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>CockroachDB Dedicated/Serverless 云版本进一步绑定其云平台。<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> 查询优化器与计划稳定性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（自研 CBO；EXPLAIN 完备；hint 有限）。</p>
+<ul>
+<li>自研分布式 CBO，支持 EXPLAIN (OPT/VERBOSE) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>hint 能力有限（不如 PG/Oracle），计划控制手段少 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>统计信息自动收集，计划翻转多与统计过期相关 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> 参数调优与自治能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（参数精简哲学；自动 rebalance）。</p>
+<ul>
+<li>参数数量刻意精简，大量行为自动（副本 rebalance、range 分裂）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>DB Console 诊断完善，但深度调优点少 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> 静默数据损坏防护 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（存储引擎块级校验+三副本，用户侧无开关）。</p>
+<ul>
+<li>底层 Pebble 存储引擎带块级 checksum，读路径可发现损坏块。<span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></li>
+<li>Range 三副本 + Raft，单副本损坏可被多数派掩盖并修复。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>无用户可见的页校验开关或全库校验命令，损坏审计能力有限。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> 存储过程/触发器/过程语言 <span class="verdict v-no">无</span></h3><div class="dim-body"><p><strong>无</strong>（查证为无存储过程/触发器）。</p>
+<ul>
+<li>无存储过程、触发器（查证为无）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>逻辑放应用层；去 O 迁移时 PL/SQL 需整体重写 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> 约束与数据完整性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（FK/CHECK 有，分布式下慎用）。</p>
+<ul>
+<li>支持外键、CHECK、唯一约束 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>跨 range 外键检查有分布式代价，高吞吐写入建议应用层保证 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> 分析 SQL 完备性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（窗口/CTE 有；递归有限）。</p>
+<ul>
+<li>窗口函数、CTE 可用，PG 兼容度高 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>递归 CTE 与复杂分析性能弱于专用 OLAP <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> 被遗忘权与数据擦除 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（手动DELETE；MVCC历史+备份残留）。</p>
+<ul>
+<li>MVCC 下 DELETE 产生墓碑标记，GC 前旧版本可读；企业版备份保留历史 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>无原生擦除证明，GDPR 删除需应用层编排“删行 + 轮转备份 + 审计” <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> 数据血缘与目录集成 <span class="verdict v-no">无</span></h3><div class="dim-body"><p><strong>无</strong>（查证为无原生血缘）。</p>
+<ul>
+<li>无原生数据血缘/目录 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>依赖第三方治理平台 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> 存算分离 vs 存算一体 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（存算一体：Pebble 本地盘）。</p>
+<ul>
+<li>每节点 Pebble（RocksDB 衍生）本地存储，存算一体 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>扩缩容自动 rebalance，但数据搬迁耗时 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> 多模能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（PG 兼容多模：JSONB+全文+向量）。</p>
+<ul>
+<li>JSONB、全文检索、pgvector 兼容（PG 生态）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无原生图引擎 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps 成本可观测性 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（云版按量计费，标签与预算能力有限）。</p>
+<ul>
+<li>CockroachDB Cloud 按请求/计算单元计量，提供用量视图。<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+<li>成本标签与预算告警能力弱于主流云数仓，细粒度归因有限。<span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></li>
+<li>自建版无计费概念，成本=硬件+运维人力自理。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> 驱动与多语言生态 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（PG 协议兼容，驱动直接复用）。</p>
+<ul>
+<li>PG 线协议兼容，pgjdbc/psqlODBC/libpq 直接可用 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>部分 PG 高级特性驱动层需注意兼容 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> 物化视图 <span class="verdict v-no">无</span></h3><div class="dim-body"><p><strong>无</strong>（查证为无物化视图能力）。</p>
+<ul>
+<li>无物化视图（查证为无）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>预聚合靠应用层或下游 OLAP <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> 支持跨云 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（自建任意云；CockroachDB Cloud 多云）。</p>
+<ul>
+<li>开源/企业自建版任意云可部署 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>CockroachDB Cloud 支持 AWS/GCP <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>跨云多活理论可行，延迟与成本是现实门槛 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
 <div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong>. On-disk data-file encryption has an in-engine mechanism (<code>--enterprise-encryption</code> startup flag, must be configured per store for multi-store setups; a storage-layer RFC shows file state recorded in <code>COCKROACHDB_REGISTRY</code>); backups can be encrypted with passphrase / KMS. But coverage boundaries for WAL / temp files, key rotation, and the KMS matrix need verification against v26.3 docs. Evidence level: official docs (older versions) + to-be-verified</p></div></div>
@@ -219,6 +350,137 @@
 <li>CHANGEFEED streams row changes to Kafka, cloud storage (Parquet/CSV) and webhooks <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Avro/JSON envelopes for downstream stream processing <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Changefeed lag and memory on huge transactions are known tuning points <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL &amp; data lifecycle <span class="verdict v-no">No native</span></h3><div class="dim-body"><p><strong>Partial</strong> (No native TTL; scheduled jobs for periodic deletes).</p>
+<ul>
+<li>No native row-level TTL; use scheduled jobs running periodic DELETEs <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Batch large deletes to avoid long transactions slowing MVCC GC <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>The native-TTL feature request has been open for years; don&#x27;t count on it soon <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Declarative online schema changes; concurrency-friendly).</p>
+<ul>
+<li>Schema changes are declarative and online; multiple statements run concurrently without blocking reads/writes <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Index backfills on huge tables are distributed background work, invisible to foreground traffic <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>In edge cases schema changes can queue; avoid mixing DDL with huge DML transactions during changes <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> Multi-tenancy &amp; resource isolation <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Limited admission control; no tenant resource groups).</p>
+<ul>
+<li>Admission control guards against overload, but it is not tenant-level QoS <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Multi-tenancy via multiple clusters/databases for logical isolation <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> Cross-region active-active <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Multi-region survival goals; native active-active).</p>
+<ul>
+<li>Survival goals like REGIONAL BY ROW pin data near users <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Native multi-region writes; follower reads cut cross-region read latency <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Cross-region transaction latency is a physics limit — design tables for partition pruning <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> HA &amp; RTO/RPO <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Raft self-healing; seconds of RTO).</p>
+<ul>
+<li>Raft multi-replica; failed nodes trigger automatic re-election in seconds <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>RPO=0 (majority commit); Raft terms guard against split-brain <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>In active-active setups single-node failure is nearly invisible to traffic <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> Row-level security &amp; masking <span class="verdict v-no">No evidence found</span></h3><div class="dim-body"><p><strong>No evidence found</strong> (RLS support incomplete; confirm with vendor).</p>
+<ul>
+<li>CockroachDB has experimented with row-level security, but its support status in official docs is unclear / incomplete <code>(to be verified)</code></li>
+<li>Row isolation today relies on views and the app layer, or on multi-tenancy / partitioning <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>No public description of a built-in dynamic masking engine <code>(to be verified)</code></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON &amp; semi-structured <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (JSONB with PG-compatible operators).</p>
+<ul>
+<li>JSONB type with PG-compatible -&gt;/-&gt;&gt;/@&gt; operators <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>GIN indexing weaker than PG; watch complex jsonb query performance <code>(to be verified)</code>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> Full-text search <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><p><strong>Not supported</strong> (Verified absent; use external search).</p>
+<ul>
+<li>No full-text indexes (verified absent) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Full-text needs external ES/Typesense <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> Storage efficiency &amp; compression <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Pebble LSM with Snappy compression).</p>
+<ul>
+<li>The Pebble storage engine (RocksDB lineage) uses LSM structure with default Snappy compression and configurable block compression. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Default 3-way replication means 3x storage amplification; compression offsets it only partially. <code>(community tested)</code></li>
+<li>Backup and import/export support compression as an operational capability. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> OSS license &amp; lock-in risk <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Moved from Apache 2.0 to BSL).</p>
+<ul>
+<li>In 2019 CockroachDB moved its core from Apache 2.0 to BSL (Business Source License), restricting competing cloud hosting — a clear license-change history. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Self-hosting remains free under BSL, but redistribution and cloud hosting are restricted. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>CockroachDB Dedicated/Serverless editions further bind users to its cloud platform. <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> Optimizer &amp; plan stability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Homegrown CBO; full EXPLAIN; limited hints).</p>
+<ul>
+<li>Homegrown distributed CBO with EXPLAIN (OPT/VERBOSE) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Limited hint support (weaker than PG/Oracle), few plan-control levers <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Statistics auto-collected; flips usually trace to stale stats <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> Tuning &amp; autonomy <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Lean-parameter philosophy; strong auto-rebalance).</p>
+<ul>
+<li>Deliberately few parameters; much is automatic (replica rebalance, range splits) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>DB Console diagnostics are solid, but deep tuning levers are few <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> Silent corruption protection <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Block checks plus 3x replication).</p>
+<ul>
+<li>The underlying Pebble storage engine carries block-level checksums detectable on the read path. <code>(to be verified)</code></li>
+<li>Triple-replicated ranges with Raft mask and repair single-copy corruption via quorum. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>No user-visible page checksum switch or full-database verification command; audit capability is limited. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> Stored procedures &amp; triggers <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><p><strong>Not supported</strong> (Verified: no stored procedures).</p>
+<ul>
+<li>No stored procedures or triggers (verified absent) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Logic in app layer; Oracle PL/SQL must be fully rewritten <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> Constraints &amp; integrity <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (FK/CHECK; careful when distributed).</p>
+<ul>
+<li>FK, CHECK, unique constraints supported <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Cross-range FK checks cost; high-throughput writes better enforced in app <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> Analytical SQL <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Windows/CTEs; limited recursion).</p>
+<ul>
+<li>Window functions and CTEs with high PG compatibility <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Recursive CTEs and heavy analytics lag dedicated OLAP <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> Right to erasure <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Manual DELETE; MVCC history + backup residue).</p>
+<ul>
+<li>Under MVCC, DELETE writes tombstone markers and old versions stay readable until GC; enterprise backups retain history <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>No native erasure attestation; GDPR deletion needs app-layer orchestration of delete plus backup rotation plus audit <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> Data lineage &amp; catalog <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><p><strong>Not supported</strong> (Verified: no native lineage).</p>
+<ul>
+<li>No native data lineage/catalog <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Depends on third-party governance platforms <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> Storage-compute architecture <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Coupled: Pebble local disks).</p>
+<ul>
+<li>Each node stores on local Pebble (RocksDB-derived); coupled <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Scaling auto-rebalances, but data movement takes time <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> Multi-model <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (PG-compatible multi-model: JSONB+full-text+vectors).</p>
+<ul>
+<li>JSONB, full-text, pgvector-compatible (PG ecosystem) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No native graph engine <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps &amp; cost observability <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Cloud metering; weak tagging/budgets).</p>
+<ul>
+<li>CockroachDB Cloud meters requests/compute units with usage views. <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+<li>Cost tagging and budget-alert capabilities lag mainstream cloud warehouses; fine-grained attribution is limited. <code>(to be verified)</code></li>
+<li>Self-hosted edition has no metering; cost is hardware plus operations labor. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> Drivers &amp; clients <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (PG-protocol compatible; reuse drivers).</p>
+<ul>
+<li>PG wire-protocol compatible; pgjdbc/psqlODBC/libpq work directly <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Some advanced PG features need driver-level compatibility care <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> Materialized views <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><p><strong>Not supported</strong> (Verified: no materialized views).</p>
+<ul>
+<li>No materialized views (verified absent) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Pre-aggregation via app layer or downstream OLAP <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> Multi-cloud support <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Self-hosted on any cloud; CockroachDB Cloud multi-cloud).</p>
+<ul>
+<li>Open-source/enterprise self-hosted deploys on any cloud <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>CockroachDB Cloud supports AWS/GCP <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Cross-cloud active-active is theoretically possible; latency and cost are the real gates <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
 </div>
 </section>
@@ -523,7 +785,7 @@
 <footer class="footer">
   <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
 </footer>
-<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "redshift", "name": "Amazon Redshift", "domain": "olap"}, {"slug": "bigquery", "name": "Google BigQuery", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
 
 <script src="assets/app.js"></script>
 </body>

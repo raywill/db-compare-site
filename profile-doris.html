@@ -142,6 +142,138 @@
 <li>出：Doris 无行级变更日志，对外靠 Binlog（版本覆盖有限）或定期导出 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</li>
 <li>常见替代：用 Routine Load 消费上游 Kafka 而不是从 Doris 抽变更 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL 与数据生命周期管理 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（动态分区+分区过期；无行级 TTL）。</p>
+<ul>
+<li>动态分区按时间自动建分区，配分区保留个数实现滚动过期 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无原生行级 TTL，行级过期走 DELETE（Doris 的 DELETE 走导入链路，代价高）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>冷热分层（storage policy）可把老分区沉到对象存储降成本 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（Light schema change 加列轻量）。</p>
+<ul>
+<li>Light schema change 让加列/加分区走轻量路径，不阻塞导入 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>改列类型、改 key 列等仍需重写 tablet，大表代价高 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>建 rollup/物化视图是异步 job，不影响前台 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（workload group 资源组限流）。</p>
+<ul>
+<li>workload group 可按用户/查询限 CPU/内存/IO，做租户 QoS <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>2.x 后资源组能力持续增强，是官方推荐的多租户方案 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>配置不当仍可能互相影响，需压测调参 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> 跨地域多活 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（可手工跨区部署；无原生多活）。</p>
+<ul>
+<li>FE/BE 可跨区部署，但无原生多 region 写入协调 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>跨区副本同步延迟影响写，生产多用单区+容灾 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> 高可用架构与 RTO/RPO <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（FE/BE 多副本，master 自动切换）。</p>
+<ul>
+<li>FE 多节点（master 自动选），BE 多副本，单点故障自动容错 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>RPO≈0（多数派写成功），RTO 分钟级内 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>FE 元数据依赖 bdbje 高可用，部署要注意 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> 行级安全与数据脱敏 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（行级权限靠Row Policy，待验证）。</p>
+<ul>
+<li>Doris 提供 Row Policy（行级权限策略）并支持列级权限，公开文档中有说明 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>动态脱敏能力的公开说明不完整 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></li>
+<li>企业级安全特性的版本差异需按版本核对 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON 与半结构化能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（JSONB/Variant+倒排索引）。</p>
+<ul>
+<li>JSON/JSONB 类型，2.x Variant 半结构化，倒排索引加速 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Variant 动态列过多膨胀 tablet，生产需设限 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> 全文检索能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（倒排索引全文检索，中文 ngram）。</p>
+<ul>
+<li>倒排索引支持全文检索，中文 ngram 分词 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>相关性排序能力弱于 ES，MATCH 语义简单 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> 存储效率与压缩 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（列存+ZSTD/LZ4，压缩比高）。</p>
+<ul>
+<li>列式存储引擎，支持 ZSTD、LZ4、Snappy 等压缩算法，segment 级压缩。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>支持多种数据模型（Aggregate/Unique/Duplicate），聚合模型天然减少存储。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>官方宣称压缩比可达 5-10 倍，社区实测在日志/行为数据上接近该水平。<span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> 开源协议与厂商锁定风险 <span class="verdict v-no">无</span></h3><div class="dim-body"><p><strong>无</strong>（Apache 2.0；已捐赠 Apache 基金会）。</p>
+<ul>
+<li>Apache Doris 为 Apache 基金会顶级项目，Apache 2.0 协议，社区治理。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>无协议变更黑历史；SelectDB Cloud 为商业托管版，但开源版功能完整。<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+<li>与 StarRocks 系出同源但已分化，生态独立，迁移路径清晰。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> 查询优化器与计划稳定性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（Nereids 新 CBO；hint 可用）。</p>
+<ul>
+<li>Nereids 新优化器替代旧 planner，CBO 能力持续增强 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>支持 leading/shuffle hint 等干预 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>老版本 planner 计划质量弱，升级 Nereids 是常规建议 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> 参数调优与自治能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（参数可调；调优靠建模与分桶）。</p>
+<ul>
+<li>BE/FE 参数可调，核心调优点在建表（分区分桶、物化）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>自治能力中等，无自动索引推荐 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> 静默数据损坏防护 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（BE 数据文件带校验，多副本可重建）。</p>
+<ul>
+<li>BE 存储层对数据文件做校验，损坏文件可被发现并隔离。<span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></li>
+<li>多副本机制下坏副本可从健康副本重建，属副本级自愈而非页级。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>无用户可配的常驻页校验开关，校验覆盖细节缺少公开文档。<span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> 存储过程/触发器/过程语言 <span class="verdict v-no">无</span></h3><div class="dim-body"><p><strong>无</strong>（查证为无存储过程/触发器）。</p>
+<ul>
+<li>无存储过程、触发器（查证为无）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>逻辑在 ETL/应用层 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> 约束与数据完整性 <span class="verdict v-no">无</span></h3><div class="dim-body"><p><strong>无</strong>（OLAP 无外键/CHECK）。</p>
+<ul>
+<li>无外键、CHECK（查证为无）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>数据质量靠 Stream Load/Routine Load 前置校验 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> 分析 SQL 完备性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（窗口/GROUPING SETS 完备）。</p>
+<ul>
+<li>窗口函数、GROUPING SETS/CUBE/ROLLUP 完备 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>高基数精确去重等场景注意性能 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> 被遗忘权与数据擦除 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（手动DELETE；tablet多版本残留）。</p>
+<ul>
+<li>删除靠 DELETE / DROP PARTITION，无原生擦除证明 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Doris 的 tablet 多版本机制下旧版本在 compaction 前残留 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>备份与快照延长残留期 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> 数据血缘与目录集成 <span class="verdict v-no">无</span></h3><div class="dim-body"><p><strong>无</strong>（查证为无原生血缘）。</p>
+<ul>
+<li>无原生数据血缘/目录 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>需第三方治理平台 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> 存算分离 vs 存算一体 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（2.x 起存算分离；默认存算一体）。</p>
+<ul>
+<li>默认存算一体（本地盘）；2.x 起支持存算分离架构 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>分离架构下计算节点无状态，弹性更好 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>存算分离版本生态与稳定性待生产验证 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> 多模能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（关系+JSON+倒排全文+向量）。</p>
+<ul>
+<li>JSON 类型、倒排索引（全文）、向量索引均已支持 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无图引擎 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps 成本可观测性 <span class="verdict v-neutral">不适用</span></h3><div class="dim-body"><p><strong>不适用</strong>（自建无计费，成本=硬件+运维人力自理）。</p>
+<ul>
+<li>开源自建无内置计费概念，成本是节点硬件、存储与运维人力。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>云托管版可在云账单侧做标签归因与预算告警。<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> 驱动与多语言生态 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（MySQL 协议兼容）。</p>
+<ul>
+<li>MySQL 线协议兼容，MySQL 驱动/JDBC/ODBC 直接可用 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Flink/Spark Connector 生态成熟 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> 物化视图 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（同步/异步物化视图，自动改写）。</p>
+<ul>
+<li>同步/异步物化视图，查询自动透明改写 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>同步物化视图放大写入，宽表多 MV 注意导入性能 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> 支持跨云 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（开源任意云；SelectDB Cloud 多云）。</p>
+<ul>
+<li>开源版任意云/自建可部署 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>SelectDB Cloud 支持多雲 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>存算分离架构下对象存储跨云是主要 friction <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
 <div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-no">No evidence found</span></h3><div class="dim-body"><p><strong>No evidence found</strong> — this round of research found no reliable evidence of native TDE (transparent data-at-rest encryption) in the Apache Doris community edition, in official docs or community materials. Object-storage server-side encryption or disk-layer encryption are infrastructure capabilities, not Doris kernel TDE. An <code>enable_tde</code> parameter in <code>be.conf</code> claimed by one Chinese blog has no official corroboration and must not be treated as fact. (Evidence: medium; leaning toward &quot;verified absent&quot;, but recorded as &quot;no evidence found&quot; since no explicit official statement of non-support was located.)</p></div></div>
@@ -209,6 +341,138 @@
 <li>In: Flink CDC → Doris is the standard path <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 <li>Out: Doris has no row-level change log; export relies on binlog (limited version coverage) or periodic dumps <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>.</li>
 <li>Common alternative: Routine Load consumes upstream Kafka instead of extracting changes from Doris <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL &amp; data lifecycle <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Dynamic partitions with retention; no row-level TTL).</p>
+<ul>
+<li>Dynamic partitions auto-create time partitions; a retention count gives rolling expiry <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No native row-level TTL; row deletes go through the load path and are expensive <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Tiered storage policies can sink old partitions to object storage to cut cost <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Light schema change for lightweight add-column).</p>
+<ul>
+<li>Light schema change puts add-column/add-partition on a lightweight path without blocking loads <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Type changes / key-column changes still rewrite tablets — expensive on huge tables <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Building rollups/materialized views runs as async jobs, invisible to foreground <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> Multi-tenancy &amp; resource isolation <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Workload-group resource throttling).</p>
+<ul>
+<li>Workload groups throttle CPU/memory/IO per user/query for tenant QoS <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Steadily improved since 2.x; the officially recommended multi-tenancy approach <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Misconfiguration can still cause interference; load-test the tuning <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> Cross-region active-active <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Manual cross-region deployment; no native active-active).</p>
+<ul>
+<li>FE/BE can span regions, but no native multi-region write coordination <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Cross-region replica lag affects writes; production usually single-region + DR <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> HA &amp; RTO/RPO <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Multi-replica FE/BE; automatic master election).</p>
+<ul>
+<li>Multi-node FE (auto-elected master) and multi-replica BE tolerate single-point failures <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>RPO≈0 (majority writes); RTO within minutes <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>FE metadata relies on bdbje HA — deploy it carefully <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> Row-level security &amp; masking <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Row-level via Row Policy; to be verified).</p>
+<ul>
+<li>Doris provides Row Policy (row-level privilege policies) and column-level privileges, described in public docs <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Public documentation on dynamic masking capability is incomplete <code>(to be verified)</code></li>
+<li>Enterprise security features vary by version; verify per version <code>(to be verified)</code></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON &amp; semi-structured <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (JSONB/Variant + inverted index).</p>
+<ul>
+<li>JSON/JSONB types, 2.x Variant semi-structured, inverted-index acceleration <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Too many Variant dynamic columns bloat tablets; cap them <code>(community tested)</code>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> Full-text search <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Inverted-index FTS, CJK ngram).</p>
+<ul>
+<li>Inverted index full-text with Chinese ngram tokenization <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Relevance ranking weaker than ES; simple MATCH semantics <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> Storage efficiency &amp; compression <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Columnar with ZSTD/LZ4; high ratios).</p>
+<ul>
+<li>Columnar storage engine with ZSTD, LZ4, Snappy and other codecs at segment level. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Multiple data models (Aggregate/Unique/Duplicate); the aggregate model inherently reduces storage. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Official claims cite 5-10x ratios; community measurements on log/behavioral data approach that level. <code>(community tested)</code></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> OSS license &amp; lock-in risk <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><p><strong>Not supported</strong> (Apache 2.0; donated to the Apache Foundation).</p>
+<ul>
+<li>Apache Doris is an Apache Software Foundation top-level project under Apache 2.0 with community governance. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>No license-change history; SelectDB Cloud is the commercial managed edition, while the open-source edition is feature-complete. <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+<li>Shares lineage with StarRocks but has diverged; the ecosystem is independent with clear migration paths. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> Optimizer &amp; plan stability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (New Nereids CBO; hints available).</p>
+<ul>
+<li>New Nereids optimizer replaces the legacy planner; CBO keeps improving <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Supports leading/shuffle hints and similar steering <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Legacy planner plans were weak; upgrading to Nereids is routine advice <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> Tuning &amp; autonomy <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Tunable params; tuning lives in modeling).</p>
+<ul>
+<li>BE/FE parameters tunable, but real levers are table design (partitioning, bucketing, materialization) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Middling autonomy; no auto index advisor <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> Silent corruption protection <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (BE file checks; replica rebuild).</p>
+<ul>
+<li>The BE storage layer checks data files; corrupt files can be detected and quarantined. <code>(to be verified)</code></li>
+<li>Multi-replica setups rebuild bad copies from healthy ones: replica-level, not page-level, self-healing. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>No user-configurable always-on page checksum switch; coverage details lack public documentation. <code>(to be verified)</code></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> Stored procedures &amp; triggers <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><p><strong>Not supported</strong> (Verified: no procedures/triggers).</p>
+<ul>
+<li>No stored procedures or triggers (verified absent) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Logic in ETL/app layer <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> Constraints &amp; integrity <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><p><strong>Not supported</strong> (No FK/CHECK in OLAP).</p>
+<ul>
+<li>No FK or CHECK (verified absent) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Quality enforced before Stream/Routine Load <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> Analytical SQL <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Complete windows/GROUPING SETS).</p>
+<ul>
+<li>Complete window functions, GROUPING SETS/CUBE/ROLLUP <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Watch performance on high-cardinality exact distinct counts <code>(community tested)</code>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> Right to erasure <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Manual DELETE; tablet multi-version residue).</p>
+<ul>
+<li>Deletion is DELETE / DROP PARTITION; no native erasure attestation <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Under Doris tablet multi-versioning, old versions persist until compaction <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Backups and snapshots extend the residue window <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> Data lineage &amp; catalog <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><p><strong>Not supported</strong> (Verified: no native lineage).</p>
+<ul>
+<li>No native data lineage/catalog <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Requires third-party governance platforms <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> Storage-compute architecture <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Disaggregated since 2.x; coupled by default).</p>
+<ul>
+<li>Coupled by default (local disks); disaggregated architecture since 2.x <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Stateless compute nodes under disaggregation improve elasticity <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Disaggregated edition&#x27;s production maturity awaits validation <code>(to be verified)</code>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> Multi-model <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Relational + JSON + inverted full-text + vectors).</p>
+<ul>
+<li>JSON type, inverted indexes (full-text), and vector indexes supported <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No graph engine <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps &amp; cost observability <span class="verdict v-neutral">N/A</span></h3><div class="dim-body"><p><strong>N/A</strong> (No metering; hardware plus labor).</p>
+<ul>
+<li>Self-hosted open source has no built-in metering; costs are node hardware, storage, and operations labor. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Managed cloud editions expose cost attribution and budget alerts on the billing side. <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> Drivers &amp; clients <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (MySQL-protocol compatible).</p>
+<ul>
+<li>MySQL wire-protocol compatible; MySQL drivers/JDBC/ODBC work directly <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Mature Flink/Spark connector ecosystem <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> Materialized views <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Sync/async MVs, auto rewrite).</p>
+<ul>
+<li>Sync/async materialized views with transparent query rewrite <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Sync MVs amplify writes; many MVs on wide tables hurt load speed <code>(community tested)</code>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> Multi-cloud support <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Open source on any cloud; SelectDB Cloud multi-cloud).</p>
+<ul>
+<li>Open source deploys on any cloud/self-hosted <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>SelectDB Cloud supports multiple clouds <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>With decoupled storage/compute, cross-cloud object storage is the main friction <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
 </div>
 </section>
@@ -372,7 +636,7 @@
 <footer class="footer">
   <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
 </footer>
-<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "redshift", "name": "Amazon Redshift", "domain": "olap"}, {"slug": "bigquery", "name": "Google BigQuery", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
 
 <script src="assets/app.js"></script>
 </body>

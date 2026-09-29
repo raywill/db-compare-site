@@ -151,6 +151,140 @@
 <li>常见做法：物化视图 + Kafka 表引擎把结果推下游 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
 <li>上游变更一般靠 Debezium→Kafka→Kafka 引擎链路解决 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL 与数据生命周期管理 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（TTL 表达式（列级/表级），后台自动清理）。</p>
+<ul>
+<li>建表时 TTL datetime_col + INTERVAL，后台线程自动删过期分区/行 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>可配到列级（只删某列）或整行，TO DISK/VOLUME 支持冷热分层 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>清理依赖 merge，不能保证精确时刻删除，延迟分钟到小时级 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（ALTER 元数据轻量；mutation 重写代价高）。</p>
+<ul>
+<li>ADD COLUMN 等是元数据操作，瞬间完成 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>ALTER UPDATE/DELETE（mutation）是后台重写 parts，大表极慢且耗资源 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>建索引（skip index）需物化 projection，重建代价看数据量 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（quota/用户级限流；隔离较粗）。</p>
+<ul>
+<li>用户级 quota 可限查询数/执行时间/结果行数 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无 CPU/内存硬隔离，大查询仍可能挤占资源 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>多租户生产上多用多集群，少用单集群混布 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> 跨地域多活 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（分片复制可跨区部署；无原生多活）。</p>
+<ul>
+<li>分片+副本可手工跨区部署，无原生多 region 协调 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>跨区写放大，ON CLUSTER DDL 跨区延迟高 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> 高可用架构与 RTO/RPO <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（副本+keeper；无自动主切换语义）。</p>
+<ul>
+<li>分片副本 + ClickHouse Keeper 做协调，副本故障可切 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无传统主从自动切换语义，故障处理靠副本冗余+客户端重试 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>Keeper 本身要高可用部署，否则成单点 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> 行级安全与数据脱敏 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（原生CREATE ROW POLICY）。</p>
+<ul>
+<li>ClickHouse 提供 CREATE ROW POLICY 实现行级过滤，可按用户 / 角色绑定 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>列级权限通过 GRANT SELECT(col) 实现 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>动态脱敏无内置掩码函数体系，通常靠视图 + 函数（如 substring / concat 构造）实现 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Row policy 与物化视图、分布式表交互时行为需实测，绕过面大 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON 与半结构化能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（JSON/Object/Dynamic 类型强）。</p>
+<ul>
+<li>JSON/Object 类型 + JSONEachRow，Dynamic JSON 推断子列并可索引 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>半结构化子列过多会导致 part 膨胀，生产需限制动态列数量 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> 全文检索能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（ngrambf/tokenbf 跳数索引）。</p>
+<ul>
+<li>ngrambf_v1/tokenbf_v1 跳数索引加速 LIKE/分词匹配 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无相关性排序、中文分词器等完整全文检索语义，重检索场景仍需 ES <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> 存储效率与压缩 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（列存+多编码+ZSTD，高压缩比）。</p>
+<ul>
+<li>列式存储 + 按列类型自适应编码（Delta、Gorilla、T64 等）+ 通用压缩（ZSTD/LZ4），压缩比常达 5-10 倍。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>MergeTree 引擎的压缩为表级可配置，支持按列指定压缩算法。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>高压缩比是其核心卖点之一，社区实测与官方口径基本一致。<span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> 开源协议与厂商锁定风险 <span class="verdict v-no">无</span></h3><div class="dim-body"><p><strong>无</strong>（Apache 2.0 开源；云版闭源）。</p>
+<ul>
+<li>ClickHouse 核心采用 Apache 2.0 开源，GitHub 公开，无协议变更黑历史。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>ClickHouse Cloud 为闭源托管服务，存在云绑定，但自建版功能对等。<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+<li>生态工具（驱动、可视化）多为开放实现，迁出成本低。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> 查询优化器与计划稳定性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（CBO 持续增强；SETTINGS 调优无 hint）。</p>
+<ul>
+<li>24.x 起 CBO 大幅增强，EXPLAIN 完备 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无传统 hint 语法，靠 SETTINGS 逐查询调优 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>分析场景计划翻转少，但 JOIN 顺序选错仍是慢查询主因 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> 参数调优与自治能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（上百 settings；调优靠建模）。</p>
+<ul>
+<li>settings 上百，核心在建表（排序键、分区、TTL）而非运行时参数 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>parts 合并、内存配额是常规调优点，自治能力弱 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> 静默数据损坏防护 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（MergeTree 自带校验文件，合并时验证）。</p>
+<ul>
+<li>MergeTree 数据 part 目录含 checksums.txt，加载与合并时校验数据文件完整性。<span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span></li>
+<li>无用户可配的常驻页校验开关；副本间一致性靠 ZooKeeper/keeper 协调与重建。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>损坏的 part 可被隔离丢弃，但自动检测覆盖范围不如页级校验完整。<span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> 存储过程/触发器/过程语言 <span class="verdict v-no">无</span></h3><div class="dim-body"><p><strong>无</strong>（查证为无存储过程/触发器）。</p>
+<ul>
+<li>无存储过程、触发器（查证为无）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>逻辑放在 ETL/应用层，物化视图承担部分预计算 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> 约束与数据完整性 <span class="verdict v-no">无</span></h3><div class="dim-body"><p><strong>无</strong>（MergeTree 无外键/CHECK）。</p>
+<ul>
+<li>无外键、CHECK、唯一约束（查证为无）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>数据质量靠写入链路（Kafka/ETL）保证 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> 分析 SQL 完备性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（窗口/GROUPING SETS 完备）。</p>
+<ul>
+<li>窗口函数、GROUPING SETS/CUBE/ROLLUP、数组/元组函数完备 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>方言与标准 SQL 有差异，迁移时函数需适配 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> 被遗忘权与数据擦除 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（轻量DELETE；分区DROP最彻底）。</p>
+<ul>
+<li>ClickHouse 的 DELETE 是“变异”（mutation），异步重写 part，大表代价高 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>ALTER TABLE ... DROP PARTITION 是最高效彻底的批量擦除 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span></li>
+<li>旧 part 在 mutation 完成前残留；备份与 S3 归档延长残留期 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>无擦除证明 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> 数据血缘与目录集成 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（无原生；OpenLineage 第三方集成）。</p>
+<ul>
+<li>无原生血缘，需 OpenLineage/Marquez 等第三方集成 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>query_log 可作为血缘采集的数据源 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> 存算分离 vs 存算一体 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（开源存算一体；Cloud 版存算分离）。</p>
+<ul>
+<li>开源版经典存算一体：本地盘 MergeTree，高吞吐 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>ClickHouse Cloud 采用存算分离（对象存储）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>自建分离存储方案成熟度不如云版 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> 多模能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（列存+JSON+倒排全文+向量索引）。</p>
+<ul>
+<li>JSON/Object 类型、倒排索引（全文）、向量索引（ANN）均已支持 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无图引擎；超大规模向量检索仍不如专用库 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps 成本可观测性 <span class="verdict v-neutral">不适用</span></h3><div class="dim-body"><p><strong>不适用</strong>（自建无计费，成本=硬件+运维人力自理）。</p>
+<ul>
+<li>开源自建无内置计费概念，成本是节点硬件、存储与运维人力。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>ClickHouse Cloud 等托管版可在云账单侧做标签归因与预算告警。<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> 驱动与多语言生态 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（HTTP 原生+JDBC/ODBC+各语言客户端）。</p>
+<ul>
+<li>HTTP 接口是一等公民，clickhouse-jdbc/ODBC 完备 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Python/Go/Node/JS 官方或社区客户端成熟 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> 物化视图 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（触发器式物化视图，语义特殊）。</p>
+<ul>
+<li>物化视图为增量触发器语义（TO 内表），聚合预计算强大 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>语义与传统 MV 差异大（无查询自动改写、写入即触发），误用易出错 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> 支持跨云 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（开源任意云；ClickHouse Cloud 多云）。</p>
+<ul>
+<li>开源版任意云可部署 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>ClickHouse Cloud 支持 AWS/GCP/Azure <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>跨云用 remote 表函数/复制表可配，无一键方案 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
 <div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — an <code>encrypted</code> virtual disk (storage-policy layer) can wrap local disks, S3 and other underlying disks, encrypting written data files with AES-CTR, selectable per table/storage policy; not a traditional &quot;one switch encrypts the whole data directory&quot; full-database TDE. ClickHouse Operator docs are explicit: encryption covers MergeTree data parts, but server metadata and logs are not covered — those still need LUKS, CSI or cloud-disk encryption; losing the key makes encrypted parts unreadable. Evidence: official docs (operator storage guide, storing-data).</p></div></div>
@@ -219,6 +353,140 @@
 <li>ClickHouse keeps no row-level change log; no official CDC output <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 <li>Common pattern: materialized views + Kafka table engine push results downstream <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>.</li>
 <li>Upstream changes usually arrive via Debezium → Kafka → Kafka engine <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL &amp; data lifecycle <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (TTL expressions (column-/table-level), cleaned in background).</p>
+<ul>
+<li>TTL datetime_col + INTERVAL at CREATE TABLE; a background thread removes expired parts/rows <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Column-level (drop one column) or row-level TTL, plus TO DISK/VOLUME for hot-cold tiering <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Cleanup rides on merges, so expiry is not exact — minutes to hours of lag <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Lightweight ALTER metadata ops; costly mutation rewrites).</p>
+<ul>
+<li>ADD COLUMN and friends are metadata ops, instant <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>ALTER UPDATE/DELETE (mutations) rewrite parts in the background — very slow and resource-hungry on huge tables <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Skip indexes need materialized projections; rebuild cost scales with data <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> Multi-tenancy &amp; resource isolation <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Quota/user-level throttling; coarse isolation).</p>
+<ul>
+<li>Per-user quotas cap query count, execution time, result rows <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No hard CPU/memory isolation; huge queries can still hog resources <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Production multi-tenancy usually means multiple clusters, not mixed workloads <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> Cross-region active-active <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Sharded replication can span regions; no native active-active).</p>
+<ul>
+<li>Shards + replicas can be hand-deployed across regions; no native multi-region coordination <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Cross-region write amplification; ON CLUSTER DDL is slow across regions <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> HA &amp; RTO/RPO <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Replicas + Keeper; no automatic primary failover semantics).</p>
+<ul>
+<li>Shard replicas + ClickHouse Keeper for coordination; failed replicas can be cut over <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No traditional primary-failover semantics; HA relies on replica redundancy + client retries <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Keeper itself needs an HA deployment or it becomes the single point <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> Row-level security &amp; masking <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Native CREATE ROW POLICY).</p>
+<ul>
+<li>ClickHouse provides CREATE ROW POLICY for row filtering, bindable per user / role <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Column privileges via GRANT SELECT(col) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>No built-in masking function suite; masking is typically done with views plus functions (e.g. substring / concat constructions) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Row policy behavior with materialized views and distributed tables needs real testing; the bypass surface is large <code>(community tested)</code></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON &amp; semi-structured <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Strong JSON/Object/Dynamic types).</p>
+<ul>
+<li>JSON/Object types + JSONEachRow; Dynamic JSON infers subcolumns and indexes them <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Too many dynamic subcolumns bloat parts; bound them in production <code>(community tested)</code>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> Full-text search <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Skip indexes; not a search engine).</p>
+<ul>
+<li>ngrambf_v1/tokenbf_v1 skip indexes accelerate LIKE/token matching <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No relevance ranking or CJK analyzers; heavy search still wants ES <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> Storage efficiency &amp; compression <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Columnar with multi-encoding plus ZSTD; high ratios).</p>
+<ul>
+<li>Columnar storage with per-type adaptive encodings (Delta, Gorilla, T64, etc.) plus general compression (ZSTD/LZ4) routinely reaches 5-10x ratios. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>MergeTree compression is table-level configurable with per-column codec selection. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>High compression ratio is a core selling point; community measurements largely match official claims. <code>(community tested)</code></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> OSS license &amp; lock-in risk <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><p><strong>Not supported</strong> (Apache 2.0 open source; cloud edition closed).</p>
+<ul>
+<li>The ClickHouse core is open source under Apache 2.0 with a public GitHub repo and no license-change history. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>ClickHouse Cloud is a closed-source managed service with cloud binding, but the self-hosted edition is feature-equivalent. <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+<li>Ecosystem tooling (drivers, visualization) is mostly open, keeping migration-out cost low. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> Optimizer &amp; plan stability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Growing CBO; SETTINGS-based tuning, no classic hints).</p>
+<ul>
+<li>CBO greatly improved since 24.x; full EXPLAIN <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No classic hint syntax; per-query tuning via SETTINGS <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Plan flips are rare in analytics, but bad JOIN order still tops slow-query causes <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> Tuning &amp; autonomy <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (100+ settings; tuning lives in modeling).</p>
+<ul>
+<li>100+ settings, but the real tuning is table design (sorting key, partitioning, TTL) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Part merges and memory quotas are routine tuning; weak autonomy <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> Silent corruption protection <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (MergeTree checksums.txt verified on merge).</p>
+<ul>
+<li>MergeTree data parts include checksums.txt, verified when parts load and merge. <code>(community tested)</code></li>
+<li>No user-configurable always-on page checksum switch; replica consistency relies on ZooKeeper/keeper coordination and rebuilds. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Corrupt parts can be quarantined and dropped, but automatic detection coverage is less complete than page-level checks. <code>(to be verified)</code></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> Stored procedures &amp; triggers <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><p><strong>Not supported</strong> (Verified: no procedures/triggers).</p>
+<ul>
+<li>No stored procedures or triggers (verified absent) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Logic lives in ETL/app; materialized views cover some precomputation <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> Constraints &amp; integrity <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><p><strong>Not supported</strong> (No FK/CHECK on MergeTree).</p>
+<ul>
+<li>No FK, CHECK, or unique constraints (verified absent) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Data quality enforced in the ingestion path (Kafka/ETL) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> Analytical SQL <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Strong windows/GROUPING SETS).</p>
+<ul>
+<li>Strong window functions, GROUPING SETS/CUBE/ROLLUP, array/tuple functions <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Dialect differs from standard SQL; functions need porting <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> Right to erasure <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Lightweight DELETE; partition DROP is cleanest).</p>
+<ul>
+<li>ClickHouse DELETE is a mutation that asynchronously rewrites parts, expensive on large tables <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>ALTER TABLE ... DROP PARTITION is the most efficient and thorough bulk erasure <code>(community tested)</code></li>
+<li>Old parts persist until the mutation completes; backups and S3 archives extend the residue window <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>No erasure attestation <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> Data lineage &amp; catalog <span class="verdict v-no">No native</span></h3><div class="dim-body"><p><strong>Partial</strong> (No native; third-party OpenLineage integration).</p>
+<ul>
+<li>No native lineage; integrate OpenLineage/Marquez via third parties <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>query_log can serve as a lineage data source <code>(community tested)</code>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> Storage-compute architecture <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (OSS coupled; Cloud disaggregated).</p>
+<ul>
+<li>OSS is classic coupled: local-disk MergeTree, high throughput <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>ClickHouse Cloud uses disaggregated object storage <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Self-hosted disaggregated setups lag the cloud edition in maturity <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> Multi-model <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Columnar + JSON + inverted full-text + vector index).</p>
+<ul>
+<li>JSON/Object types, inverted indexes (full-text), and vector (ANN) indexes all supported <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No graph engine; hyperscale vector search still favors dedicated stores <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps &amp; cost observability <span class="verdict v-neutral">N/A</span></h3><div class="dim-body"><p><strong>N/A</strong> (No metering; hardware plus labor).</p>
+<ul>
+<li>Self-hosted open source has no built-in metering; costs are node hardware, storage, and operations labor. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Managed editions (e.g. ClickHouse Cloud) expose cost attribution and budget alerts on the billing side. <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> Drivers &amp; clients <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Native HTTP + JDBC/ODBC + language clients).</p>
+<ul>
+<li>HTTP interface is first-class; clickhouse-jdbc/ODBC complete <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Mature Python/Go/Node/JS official or community clients <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> Materialized views <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Trigger-style MVs, special semantics).</p>
+<ul>
+<li>Trigger-style incremental MVs (TO inner table), strong for pre-aggregation <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Semantics differ from classic MVs (no auto rewrite); misuse is error-prone <code>(community tested)</code>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> Multi-cloud support <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Open source on any cloud; ClickHouse Cloud multi-cloud).</p>
+<ul>
+<li>Open source deploys on any cloud <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>ClickHouse Cloud supports AWS/GCP/Azure <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Cross-cloud via remote table functions / replicated tables; no one-click story <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
 </div>
 </section>
@@ -480,7 +748,7 @@
 <footer class="footer">
   <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
 </footer>
-<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "redshift", "name": "Amazon Redshift", "domain": "olap"}, {"slug": "bigquery", "name": "Google BigQuery", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
 
 <script src="assets/app.js"></script>
 </body>

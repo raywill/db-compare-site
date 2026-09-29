@@ -149,6 +149,133 @@
 <li>EDB Postgres Distributed（PGD）内部用逻辑复制做多主 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>Debezium 可直接消费 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL 与数据生命周期管理 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（PG 分区+pg_cron；无原生行级 TTL）。</p>
+<ul>
+<li>继承 PG 生态：分区表 + pg_partman/pg_cron 做滚动过期 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无原生行级 TTL，大表逐行删同样面临膨胀问题 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（PG 原生在线 DDL）。</p>
+<ul>
+<li>同 PG：加列元数据操作，并发建索引不阻塞 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>EDB 工具链（Migration Portal）辅助 Oracle 迁移时的 DDL 改写 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（PG 生态资源组能力有限）。</p>
+<ul>
+<li>同 PG：无原生资源组，靠 cgroup/扩展有限管控 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>EDB 的 Kubernetes 部署可借 K8s 做资源限额 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> 跨地域多活 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（PG 流复制/逻辑复制跨区可配）。</p>
+<ul>
+<li>流复制/逻辑复制可跨区，无原生多活写 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>冲突解决靠应用层，双写是禁区 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> 高可用架构与 RTO/RPO <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（同 PG，需外部高可用组件）。</p>
+<ul>
+<li>靠 Patroni/repmgr 等做自动切换，RTO 分钟级 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>脑裂防护靠 fencing/多数派，需正确配置 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>EDB 托管/工具链可简化，但自建仍要 DBA 功力 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> 行级安全与数据脱敏 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（继承PG的RLS；企业版加固）。</p>
+<ul>
+<li>EDB Postgres Advanced Server 继承 PostgreSQL 原生 RLS 与列级权限 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>企业版提供 SQL/Protect 等安全工具集，官方强调合规场景加固 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+<li>与社区 PG 相同的绕过面：BYPASSRLS、超级用户、COPY 等路径需配套审计 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>脱敏函数集的版本差异较大，选型时需按版本逐项核对 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON 与半结构化能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（PG jsonb 完整继承）。</p>
+<ul>
+<li>jsonb、GIN、jsonpath 完整继承 PG <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Oracle 兼容层对 JSON 语义以 PG 为准 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> 全文检索能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（tsvector 完整；中文需插件）。</p>
+<ul>
+<li>tsvector/tsquery 全文检索完整 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>中文分词需第三方插件 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> 存储效率与压缩 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（继承 PG 的 TOAST/压缩能力）。</p>
+<ul>
+<li>完全继承 PostgreSQL 的 TOAST 压缩与列级压缩算法选择能力。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>商业版未公开超出社区 PG 的额外压缩机制，存储效率基本等同于社区 PG。<span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></li>
+<li>Oracle 兼容模式下的数据类型映射可能影响存储密度，需按实际 schema 评估。<span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> 开源协议与厂商锁定风险 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（PG 开源核心+商业扩展双轨）。</p>
+<ul>
+<li>底层为开源 PostgreSQL 核心，协议风险与 PG 一致（无）。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>EDB Postgres Advanced Server 的 Oracle 兼容层、TDE 等为商业扩展，深度使用后迁移到社区 PG 需改造成本。<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+<li>BigAnimal 等云托管版本存在云绑定，但自建版可回归开源路线。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> 查询优化器与计划稳定性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（PG 优化器+EDB 增强；Oracle 兼容 hint）。</p>
+<ul>
+<li>继承 PG CBO，EDB 增加优化器增强与 Oracle 风格 hint 支持 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Oracle 兼容模式下 hint 生态更丰富 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>计划翻转治理仍依赖统计信息与 DBA 经验 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> 参数调优与自治能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（PG 参数体系+EDB 工具；自治中等）。</p>
+<ul>
+<li>参数体系同 PG，EDB 提供 Postgres Enterprise Manager 诊断 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无全自治能力，调优仍需 DBA <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> 静默数据损坏防护 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（继承 PG 页校验，企业版同样可选开启）。</p>
+<ul>
+<li>EDB Postgres 基于 PostgreSQL 内核，支持 data checksums，同样需初始化时开启、默认关闭。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>开启后读页即校验，损坏报错不自愈，恢复依赖备份或逻辑复制重建。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>EDB 托管/云版底层另有云厂商冗余与校验兜底。<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> 存储过程/触发器/过程语言 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（EPAS PL/SQL 高兼容，去 O 利器）。</p>
+<ul>
+<li>EPAS 兼容 Oracle PL/SQL（包、异常、自治事务），去 O 改写成本低是其卖点 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>兼容非 100%，复杂包仍需逐个验证 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> 约束与数据完整性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（PG 约束完整+Oracle 兼容）。</p>
+<ul>
+<li>外键、CHECK、deferrable 等 PG 约束完整，Oracle 语法兼容 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>大表加约束同样注意锁表 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> 分析 SQL 完备性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（PG 分析 SQL 完整）。</p>
+<ul>
+<li>窗口函数、CTE、GROUPING SETS 完整 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>复杂分析优化器成熟 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> 被遗忘权与数据擦除 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（与PG一致；无原生擦除证明）。</p>
+<ul>
+<li>底层存储与 PG 一致：DELETE 后需 VACUUM，WAL 与备份残留问题同样存在 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>企业版备份工具（如 Barman）的保留策略决定历史副本存活期，擦除需联动备份保留期 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+<li>无 certified 擦除流程，GDPR 删除权靠应用层实现与审计 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> 数据血缘与目录集成 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（随 PG；第三方血缘集成）。</p>
+<ul>
+<li>无原生血缘，靠 DataHub/Atlan 等第三方采集 PG 元数据 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> 存算分离 vs 存算一体 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（自建存算一体；BigAnimal 云版分离）。</p>
+<ul>
+<li>自建部署经典存算一体 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>EDB BigAnimal 云版采用存算分离 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> 多模能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（随 PG：jsonb+全文+PostGIS+pgvector）。</p>
+<ul>
+<li>完整继承 PG 多模生态 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Oracle 兼容模式不改变多模能力边界 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps 成本可观测性 <span class="verdict v-neutral">不适用</span></h3><div class="dim-body"><p><strong>不适用</strong>（许可证采购模式，无云按量计费概念）。</p>
+<ul>
+<li>商业版按订阅/许可证采购，成本是采购费+硬件+运维人力，无云式按量账单。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>EDB 托管云版可在云账单侧做标签归因与预算告警。<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> 驱动与多语言生态 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（PG 驱动兼容+Oracle 兼容驱动）。</p>
+<ul>
+<li>PG 协议驱动全兼容，另提供 Oracle 兼容连接方式 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>JDBC/ODBC 完备 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> 物化视图 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（PG 物化视图手动刷新）。</p>
+<ul>
+<li>物化视图手动 REFRESH（含 CONCURRENTLY）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无自动增量刷新 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> 支持跨云 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（任意云/自建可部署）。</p>
+<ul>
+<li>软件形态，AWS/Azure/GCP/自建均可部署 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无云厂商绑定，迁移自由度高于云原生绑定产品 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
 <div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — EPAS/PGE 15+ kernel-level TDE (data files + WAL + query temp files, transparent to applications; keys can integrate with external KMS via PGDATAKEYWRAPCMD/UNWRAPCMD); decided at initdb time, hard to change afterwards. Evidence: official docs (reviewed 2026-09-28).</p></div></div>
@@ -217,6 +344,133 @@
 <li>Logical decoding + publication/subscription, same as community PG <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>EDB Postgres Distributed (PGD) uses logical replication internally for multi-master <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Debezium consumes directly <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL &amp; data lifecycle <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (PG partitioning + pg_cron; no native row-level TTL).</p>
+<ul>
+<li>Inherits the PG ecosystem: partitioned tables with pg_partman/pg_cron for rolling expiry <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No native row-level TTL; row-by-row deletes on huge tables bloat the same way <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Native PG online DDL).</p>
+<ul>
+<li>Same as PG: metadata-only add-column; concurrent index builds don&#x27;t block <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>EDB tooling (Migration Portal) assists DDL rewriting in Oracle migrations <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> Multi-tenancy &amp; resource isolation <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Limited resource-group capability in the PG ecosystem).</p>
+<ul>
+<li>Same as PG: no native resource groups; limited control via cgroups/extensions <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>EDB Kubernetes deployments can lean on K8s resource limits <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> Cross-region active-active <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (PG streaming/logical replication across regions).</p>
+<ul>
+<li>Streaming/logical replication can span regions; no native active-active writes <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Conflict resolution is app-layer; dual-write is off-limits <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> HA &amp; RTO/RPO <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Same as PG; external HA components needed).</p>
+<ul>
+<li>Automatic failover via Patroni/repmgr; minutes of RTO <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Split-brain protection via fencing/quorum needs correct setup <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>EDB managed/tooling simplifies, but self-hosted still demands DBA skill <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> Row-level security &amp; masking <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Inherits PG RLS; enterprise hardening).</p>
+<ul>
+<li>EDB Postgres Advanced Server inherits PostgreSQL native RLS and column-level privileges <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>The enterprise edition adds security tooling such as SQL/Protect, marketed for compliance hardening <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+<li>Same bypass surface as community PG: BYPASSRLS, superusers, and COPY paths need companion auditing <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Masking function sets vary significantly by version; verify item by item during selection <code>(to be verified)</code></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON &amp; semi-structured <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Full PG jsonb inheritance).</p>
+<ul>
+<li>Full PG jsonb, GIN, jsonpath inheritance <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>JSON semantics follow PG even in Oracle-compat mode <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> Full-text search <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Full tsvector; CJK needs plugins).</p>
+<ul>
+<li>Full tsvector/tsquery search <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Chinese tokenization needs third-party plugins <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> Storage efficiency &amp; compression <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Inherits PostgreSQL&#x27;s TOAST/compression capabilities).</p>
+<ul>
+<li>Fully inherits PostgreSQL&#x27;s TOAST compression and per-column compression algorithm selection. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>The commercial edition discloses no compression mechanisms beyond community PostgreSQL; storage efficiency is effectively equivalent. <code>(to be verified)</code></li>
+<li>Data-type mappings in Oracle compatibility mode may affect storage density; assess against the actual schema. <code>(community tested)</code></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> OSS license &amp; lock-in risk <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Open PG core with commercial extensions).</p>
+<ul>
+<li>Built on the open-source PostgreSQL core, so base license risk is the same as PostgreSQL (none). <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>EDB Postgres Advanced Server&#x27;s Oracle compatibility layer, TDE and similar features are commercial extensions; heavy reliance on them raises migration cost back to community PostgreSQL. <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+<li>Managed offerings like BigAnimal carry cloud binding, though self-hosted editions allow returning to the open route. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> Optimizer &amp; plan stability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (PG optimizer + EDB boosts; Oracle-style hints).</p>
+<ul>
+<li>Inherits PG CBO plus EDB optimizer enhancements and Oracle-style hint support <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Richer hint ecosystem in Oracle-compatibility mode <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Plan-flip control still relies on statistics and DBA expertise <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> Tuning &amp; autonomy <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (PG parameters + EDB tooling; middling autonomy).</p>
+<ul>
+<li>Same parameter system as PG, plus Postgres Enterprise Manager diagnostics <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No full autonomy; tuning still needs DBAs <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> Silent corruption protection <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Inherits PG page checks; opt-in at init).</p>
+<ul>
+<li>EDB Postgres is built on the PostgreSQL engine and supports data checksums, likewise opt-in at init and off by default. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Once enabled, pages are verified on read; corruption raises errors without self-healing, recovery needs backups or logical rebuild. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>EDB managed/cloud editions add provider-level redundancy and checks underneath. <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> Stored procedures &amp; triggers <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (EPAS PL/SQL compatible).</p>
+<ul>
+<li>EPAS Oracle PL/SQL compatible (packages, exceptions, autonomous txn); low rewrite cost is its pitch <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Compatibility is not 100%; complex packages still need case-by-case validation <code>(community tested)</code>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> Constraints &amp; integrity <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Full PG constraints + Oracle compat).</p>
+<ul>
+<li>Full PG constraints (FK, CHECK, deferrable) with Oracle syntax compat <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Same table-lock caution when adding constraints on huge tables <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> Analytical SQL <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Complete PG analytical SQL).</p>
+<ul>
+<li>Complete window functions, CTEs, GROUPING SETS <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Mature optimizer for complex analytics <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> Right to erasure <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Same as PG; no native attestation).</p>
+<ul>
+<li>Storage internals match PG: DELETE needs VACUUM, and WAL/backup residue behaves the same <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Enterprise backup tooling (e.g. Barman) retention policies decide how long historical copies live; erasure must coordinate with backup retention <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+<li>No certified erasure flow; GDPR deletion is an app-layer implementation plus auditing <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> Data lineage &amp; catalog <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (As PG; third-party lineage integration).</p>
+<ul>
+<li>No native lineage; relies on DataHub/Atlan harvesting PG metadata <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> Storage-compute architecture <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Self-hosted coupled; BigAnimal cloud disaggregated).</p>
+<ul>
+<li>Self-hosted is classic coupled <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>EDB BigAnimal cloud uses disaggregated storage <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> Multi-model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (As PG: jsonb + full-text + PostGIS + pgvector).</p>
+<ul>
+<li>Fully inherits PG&#x27;s multi-model ecosystem <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Oracle-compatibility mode doesn&#x27;t change multi-model boundaries <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps &amp; cost observability <span class="verdict v-neutral">N/A</span></h3><div class="dim-body"><p><strong>N/A</strong> (License model; no cloud metering).</p>
+<ul>
+<li>Commercial editions are subscription/license purchases; cost is license fees plus hardware plus operations labor, with no cloud-style usage bill. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>EDB&#x27;s managed cloud edition exposes cost attribution and budget alerts on the billing side. <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> Drivers &amp; clients <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (PG-compatible + Oracle-compatible drivers).</p>
+<ul>
+<li>Full PG-protocol driver compatibility plus Oracle-compatible connectivity <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Complete JDBC/ODBC <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> Materialized views <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Manual-refresh PG MVs).</p>
+<ul>
+<li>Manual-REFRESH materialized views (incl. CONCURRENTLY) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No automatic incremental refresh <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> Multi-cloud support <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Deployable on any cloud / self-hosted).</p>
+<ul>
+<li>Software form; deploys on AWS/Azure/GCP/self-hosted <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No cloud-vendor binding; freer to move than cloud-tied products <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
 </div>
 </section>
@@ -590,7 +844,7 @@
 <footer class="footer">
   <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
 </footer>
-<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "redshift", "name": "Amazon Redshift", "domain": "olap"}, {"slug": "bigquery", "name": "Google BigQuery", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
 
 <script src="assets/app.js"></script>
 </body>

@@ -154,6 +154,137 @@
 <li>Debezium PG 连接器是事实标准 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 <li>大事务解码延迟、slot 堆积涨 WAL 是已知运维点 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL 与数据生命周期管理 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（声明式分区+pg_cron；无原生行级 TTL）。</p>
+<ul>
+<li>声明式分区 + pg_partman/pg_cron 滚动删分区是标准答案 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>无原生行级 TTL；pg_cron 需装扩展，托管版一般自带 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（原生在线 DDL，加列/并发建索引）。</p>
+<ul>
+<li>加 nullable 列是元数据操作（PG11+ 带默认值也快），CREATE INDEX CONCURRENTLY 不阻塞写 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>改列类型需 ACCESS EXCLUSIVE 锁重写，大表是经典痛点 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>pg_repack 等工具可做在线重组 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（无原生资源组，靠外部手段）。</p>
+<ul>
+<li>无原生 CPU/内存/IO 租户限流，statement_timeout 等是单查询保护 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>靠 cgroup、连接池、多实例做隔离，方案散 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> 跨地域多活 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（逻辑复制/流复制跨区可配）。</p>
+<ul>
+<li>流复制/逻辑复制可跨区，无原生多活写 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>双向逻辑复制冲突解决弱，生产慎用 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> 高可用架构与 RTO/RPO <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（需 Patroni 等外部组件）。</p>
+<ul>
+<li>原生无自动切换，靠 Patroni/Stolon，RTO 分钟级 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>同步备库可保 RPO=0，异步有丢数窗口 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>脑裂防护靠 fencing，配错会双主 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> 行级安全与数据脱敏 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（原生RLS+列级权限，脱敏靠扩展）。</p>
+<ul>
+<li>PostgreSQL 9.5+ 提供原生行级安全：CREATE POLICY 绑定表，按 current_user 等会话变量做行过滤 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>支持列级权限 GRANT SELECT(col) 与 SECURITY DEFINER 视图封装；BYPASSRLS 权限须严格管控，否则策略被绕过 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>动态脱敏无内置组件，通常靠 pg_anonymizer 扩展、视图 CASE 表达式或应用层实现 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>RLS 与分区表、外键、物化视图交互有坑：策略表达式性能差会拖慢查询，需实测 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON 与半结构化能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（jsonb 本家，GIN/jsonpath）。</p>
+<ul>
+<li>jsonb 二进制、GIN（含 jsonb_path_ops）、SQL/JSON 路径语言 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>大 jsonb 局部更新整行重写，写放大注意 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> 全文检索能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（tsvector 本家；中文需插件）。</p>
+<ul>
+<li>tsvector/tsquery/GIN，排名高亮完备 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>中文分词需 zhparser 等插件 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> 存储效率与压缩 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（TOAST 大对象压缩+列存扩展可选）。</p>
+<ul>
+<li>TOAST 机制对大字段自动压缩（pglz）与行外存储，默认开启。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>表级/列级压缩方法可选（pglz、lz4），PG14+ 支持自定义压缩算法。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>行存架构在分析型负载下天然不如列存；可通过 Citus 列存、CStore_FDW 等扩展补足。<span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> 开源协议与厂商锁定风险 <span class="verdict v-no">无</span></h3><div class="dim-body"><p><strong>无</strong>（社区持有的 permissive 协议，无锁定）。</p>
+<ul>
+<li>PostgreSQL 许可证是类 BSD 的宽松协议，由全球开发者社区持有，无单一商业公司控制权。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>无协议变更黑历史；任何厂商发行版（包括云托管版）底层都是同一开源核心，可随时自建迁移。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>商业扩展（如 EDB 的 Oracle 兼容层）属附加组件，不改变核心的开放属性。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> 查询优化器与计划稳定性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（CBO+GEQO；hint 需扩展；无冻结）。</p>
+<ul>
+<li>CBO 完备（GEQO 处理多表 JOIN），EXPLAIN (ANALYZE/BUFFERS) 业界标杆 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>hint 需 pg_hint_plan 扩展，非官方内置 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>无计划冻结机制，统计信息过期致翻转是常见问题 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> 参数调优与自治能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（参数约 350；autovacuum+诊断强）。</p>
+<ul>
+<li>参数约 350 个，autovacuum 自动维护是亮点 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>pg_stat_statements、auto_explain 诊断生态完善 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>无自动索引，自治弱于商业库 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> 静默数据损坏防护 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（data checksums 须初始化开启）。</p>
+<ul>
+<li>data checksums 只能在 initdb --data-checksums 时开启，运行中无法追加；默认关闭是最大陷阱。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>开启后读页即校验，损坏只报错不自愈，修复靠备份或逻辑复制重建。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>云托管版（RDS/Aurora/AlloyDB）底层由云厂商校验，用户无开关可见。<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> 存储过程/触发器/过程语言 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（plpgsql 成熟，多过程语言）。</p>
+<ul>
+<li>plpgsql 异常处理、调试成熟，plpython/plperl 等多语言 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>去 O 迁移：包/自治事务需改写，EDB/ora2pg 辅助 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> 约束与数据完整性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（约束最完备：EXCLUDE/deferrable）。</p>
+<ul>
+<li>FK、CHECK、EXCLUDE、deferrable，语义最完备 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>大表加带验证约束锁表是在线 DDL 话题 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> 分析 SQL 完备性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（分析 SQL 完备标杆）。</p>
+<ul>
+<li>窗口函数、CTE（含递归）、GROUPING SETS 完备 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>复杂分析优化器成熟 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> 被遗忘权与数据擦除 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（手动DELETE为主；VACUUM前页内残留）。</p>
+<ul>
+<li>DELETE 只标记 dead tuple，VACUUM 之前旧版本仍在数据文件中，可被取证恢复；VACUUM FULL / CLUSTER 可物理重写 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>WAL 归档、流复制从库、基础备份都会保留被删行的历史副本，擦除需全链路轮转 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>无原生“擦除证明”或 GDPR 工作流，合规靠应用层审计日志记录删除动作 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>分区表 DROP 分区是最高效的批量擦除手段，但粒度只到分区 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> 数据血缘与目录集成 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（无原生；DataHub 采集 PG 元数据）。</p>
+<ul>
+<li>无原生血缘，DataHub/Atlan 可采集 PG 元数据 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>pg_stat_statements 可作为血缘推断数据源 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> 存算分离 vs 存算一体 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（开源版存算一体；云托管多分离）。</p>
+<ul>
+<li>开源版经典本地盘存算一体 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>云托管版（RDS/Aurora/AlloyDB）多为存算分离 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> 多模能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（一库多用标杆：jsonb+全文+GIS+向量）。</p>
+<ul>
+<li>jsonb(GIN)、全文检索、PostGIS、pgvector，扩展生态最强 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>多模能力是 PG 护城河 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps 成本可观测性 <span class="verdict v-neutral">不适用</span></h3><div class="dim-body"><p><strong>不适用</strong>（自建无计费，成本=硬件+调优人力自理）。</p>
+<ul>
+<li>PostgreSQL 无内置计费概念，成本是硬件与运维/调优人力。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>云托管版可用云账单标签与预算告警做成本归因。<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> 驱动与多语言生态 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（libpq/pgjdbc/psqlODBC 完备）。</p>
+<ul>
+<li>libpq、pgjdbc、psqlODBC 官方完备 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>各语言驱动质量高 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> 物化视图 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（手动 REFRESH 为主）。</p>
+<ul>
+<li>物化视图 REFRESH（含 CONCURRENTLY）手动 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无自动增量刷新/改写，pg_ivm 等扩展非官方 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> 支持跨云 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（开源任意云，无绑定）。</p>
+<ul>
+<li>开源版任意云/自建可部署，是跨云自由度最高的数据库之一 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>各云托管 PG 差异小，迁云成本低 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
 <div class="dims-intro"><blockquote>
@@ -225,6 +356,137 @@
 <li>Logical replication slots + pgoutput; wal2json/test_decoding as options <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>The Debezium PG connector is the de-facto standard <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 <li>Decode lag on huge transactions and WAL growth from lagging slots are known ops concerns <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL &amp; data lifecycle <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Declarative partitioning + pg_cron; no native row-level TTL).</p>
+<ul>
+<li>Declarative partitioning with pg_partman/pg_cron for rolling drops is the standard answer <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>No native row-level TTL; pg_cron needs the extension (usually bundled in managed offerings) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Native online DDL; add-column / concurrent index builds).</p>
+<ul>
+<li>Adding a nullable column is a metadata op (fast even with defaults since PG11); CREATE INDEX CONCURRENTLY doesn&#x27;t block writes <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Type changes take ACCESS EXCLUSIVE and rewrite — the classic huge-table pain <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Tools like pg_repack do online reorganization <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> Multi-tenancy &amp; resource isolation <span class="verdict v-no">No native</span></h3><div class="dim-body"><p><strong>Partial</strong> (No native resource groups; external measures only).</p>
+<ul>
+<li>No native per-tenant CPU/memory/IO throttling; statement_timeout only guards single queries <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Isolation via cgroups, pooling, multiple instances — fragmented approaches <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> Cross-region active-active <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Logical/streaming replication across regions).</p>
+<ul>
+<li>Streaming/logical replication can span regions; no native active-active writes <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Bidirectional logical replication has weak conflict handling; use cautiously <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> HA &amp; RTO/RPO <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Needs external components like Patroni).</p>
+<ul>
+<li>No native auto-failover; Patroni/Stolon give minutes of RTO <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Sync standbys keep RPO=0; async has a loss window <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Split-brain protection via fencing; misconfiguration yields dual primaries <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> Row-level security &amp; masking <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Native RLS + column grants; masking via extensions).</p>
+<ul>
+<li>PostgreSQL 9.5+ ships native row-level security: CREATE POLICY on tables filters rows by session variables like current_user <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Column-level GRANT SELECT(col) and SECURITY DEFINER views are supported; the BYPASSRLS privilege must be locked down or policies are bypassed <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>No built-in dynamic masking; typically done with the pg_anonymizer extension, CASE expressions in views, or the app layer <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>RLS interacts poorly with partitioned tables, foreign keys, and materialized views; slow policy expressions drag down queries, so test in practice <code>(community tested)</code></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON &amp; semi-structured <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (jsonb native, GIN/jsonpath).</p>
+<ul>
+<li>Native jsonb, GIN (incl. jsonb_path_ops), SQL/JSON path <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Partial updates rewrite whole row; write amplification <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> Full-text search <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (tsvector native; CJK via plugins).</p>
+<ul>
+<li>tsvector/tsquery/GIN with ranking and highlighting <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Chinese needs zhparser-class plugins <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> Storage efficiency &amp; compression <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (TOAST large-object compression plus optional columnar extensions).</p>
+<ul>
+<li>TOAST automatically compresses (pglz) and out-of-line-stores large values; enabled by default. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Per-table/per-column compression methods are selectable (pglz, lz4); PG14+ supports custom compression methods. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Row storage is inherently less efficient than columnar for analytics; extensions like Citus columnar or CStore_FDW close the gap. <code>(community tested)</code></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> OSS license &amp; lock-in risk <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><p><strong>Not supported</strong> (Community-held permissive license, no lock-in).</p>
+<ul>
+<li>The PostgreSQL License is a BSD-style permissive license held by the global developer community, with no single commercial owner. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>No license-change history; every vendor or cloud distribution is built on the same open core, so self-hosting migration is always an option. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Commercial add-ons (e.g. EDB&#x27;s Oracle compatibility layer) are optional components and do not change the core&#x27;s openness. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> Optimizer &amp; plan stability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (CBO + GEQO; hints need pg_hint_plan; no freeze).</p>
+<ul>
+<li>Complete CBO (GEQO for many-table JOINs); EXPLAIN (ANALYZE/BUFFERS) is a benchmark <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Hints need the pg_hint_plan extension, not built-in <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>No plan-freeze mechanism; stale statistics flips are common <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> Tuning &amp; autonomy <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (~350 params; autovacuum + strong diagnostics).</p>
+<ul>
+<li>~350 parameters; autovacuum auto-maintenance is a highlight <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>pg_stat_statements and auto_explain give a complete diagnostic ecosystem <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>No auto-indexing; less autonomous than commercial DBs <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> Silent corruption protection <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Checksums opt-in at init; off by default).</p>
+<ul>
+<li>Data checksums can only be enabled with initdb --data-checksums and are off by default: the biggest gotcha. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Once enabled, pages are verified on read; corruption raises errors without self-healing, and recovery needs backups or logical rebuild. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Managed cloud editions (RDS, Aurora, AlloyDB) add provider-level checks invisible to users. <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> Stored procedures &amp; triggers <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Mature plpgsql, many languages).</p>
+<ul>
+<li>Mature plpgsql with exceptions/debugging; plpython/plperl etc. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Oracle migration: packages/autonomous txn need rewrites; EDB/ora2pg help <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> Constraints &amp; integrity <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Most complete: EXCLUDE/deferrable).</p>
+<ul>
+<li>FK, CHECK, EXCLUDE, deferrable — most complete semantics <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Validated constraints on huge tables lock; an online-DDL topic <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> Analytical SQL <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Analytical SQL benchmark).</p>
+<ul>
+<li>Window functions, CTEs (incl. recursive), GROUPING SETS <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Mature optimizer for complex analytics <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> Right to erasure <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Manual DELETE; residue until VACUUM).</p>
+<ul>
+<li>DELETE only marks dead tuples; before VACUUM the old row versions remain in data files and are forensically recoverable; VACUUM FULL / CLUSTER rewrites physically <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>WAL archives, streaming replicas, and base backups all retain historical copies of deleted rows; erasure needs full-pipeline rotation <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>No native erasure attestation or GDPR workflow; compliance relies on app-layer audit logging of deletes <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>DROP PARTITION is the most efficient bulk erasure, but granularity stops at the partition <code>(community tested)</code></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> Data lineage &amp; catalog <span class="verdict v-no">No native</span></h3><div class="dim-body"><p><strong>Partial</strong> (No native; DataHub harvests PG metadata).</p>
+<ul>
+<li>No native lineage; DataHub/Atlan can harvest PG metadata <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>pg_stat_statements can feed lineage inference <code>(community tested)</code>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> Storage-compute architecture <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (OSS coupled; cloud-hosted mostly split).</p>
+<ul>
+<li>OSS edition is classic local-disk coupled <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Cloud-hosted editions (RDS/Aurora/AlloyDB) are mostly disaggregated <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> Multi-model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Multi-model benchmark: jsonb + FTS + PostGIS + vectors).</p>
+<ul>
+<li>jsonb (GIN), full-text, PostGIS, pgvector; strongest extension ecosystem <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Multi-model breadth is PG&#x27;s moat <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps &amp; cost observability <span class="verdict v-neutral">N/A</span></h3><div class="dim-body"><p><strong>N/A</strong> (No metering; hardware plus labor).</p>
+<ul>
+<li>PostgreSQL has no built-in metering; costs are hardware and operations/tuning labor. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Managed cloud editions support cost attribution via cloud billing tags and budget alerts. <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> Drivers &amp; clients <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (libpq/pgjdbc/psqlODBC; complete per-language).</p>
+<ul>
+<li>Complete official libpq, pgjdbc, psqlODBC <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>High-quality drivers across languages <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> Materialized views <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Manual REFRESH mainly).</p>
+<ul>
+<li>Manual REFRESH (incl. CONCURRENTLY) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No auto incremental refresh/rewrite; pg_ivm is third-party <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> Multi-cloud support <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Open source on any cloud; no binding).</p>
+<ul>
+<li>Open source deploys on any cloud/self-hosted — among the freest databases for cross-cloud <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Managed PG offerings differ little; moving clouds is cheap <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
 </div>
 </section>
@@ -554,7 +816,7 @@
 <footer class="footer">
   <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
 </footer>
-<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "redshift", "name": "Amazon Redshift", "domain": "olap"}, {"slug": "bigquery", "name": "Google BigQuery", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
 
 <script src="assets/app.js"></script>
 </body>

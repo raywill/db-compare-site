@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Amazon Redshift - DB 选型参考</title>
+<link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">&#9672;</span> DB <span data-zh="选型参考" data-en="Compare">选型参考</span></a>
+    <nav class="mainnav">
+<a href="index.html" class="active" data-zh="首页" data-en="Home">首页</a>
+<a href="compare.html" class="" data-zh="维度对比" data-en="Compare">维度对比</a>
+<a href="advisor.html" class="" data-zh="AI选型" data-en="AI Selection">AI选型</a>
+<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
+    </nav>
+    <div class="cmp-tray">
+      <button id="cmp-tray-btn" type="button" class="tray-btn" aria-expanded="false" aria-haspopup="true"><span data-zh="对比" data-en="Compare">对比</span> <b class="tray-count"><i id="cmp-count">0</i>/4</b></button>
+      <div id="cmp-panel" class="tray-panel" hidden>
+        <div class="tray-sec"><span data-zh="已选" data-en="Selected">已选</span></div>
+        <div id="cmp-selected" class="tray-selected"></div>
+        <div class="tray-sec"><span data-zh="全部产品（最多选 4 款）" data-en="All products (up to 4)">全部产品（最多选 4 款）</span></div>
+        <div id="cmp-list" class="tray-list"></div>
+        <div class="tray-actions"><button id="cmp-clear" type="button" class="tray-clear"><span data-zh="清空选择" data-en="Clear selection">清空选择</span></button></div>
+      </div>
+    </div>
+    <button id="lang-toggle" class="lang-btn" type="button" aria-label="switch language">EN</button>
+  </div>
+</header>
+<main class="page">
+<div class="profile-hero">
+  <a class="back" href="index.html"><span data-zh="← 返回首页" data-en="← Back to home">← 返回首页</span></a>
+  <h1>Amazon Redshift</h1>
+  <div class="meta-row"><span class="cat cat-olap" data-zh="OLAP" data-en="OLAP">OLAP</span> <span class="tag">#Redshift</span> <span class="tag">#RA3</span> <span class="tag">#Serverless</span> <span class="tag">#Spectrum</span> <span class="tag">#Zero-ETL</span> <span class="tag">#MPP</span> <span class="tag">#列存</span> <span class="tag">#AWS</span></div>
+  <p class="oneliner"><div class="lang-block lang-zh">
+<p>AWS 的云数仓老将——从 ParAccel 列式 MPP 内核起家，2019 年 RA3 实现存算分离、2022 年 Serverless GA：Spectrum 直查 S3 数据湖、Zero-ETL 对接 Aurora/DynamoDB、数据共享跨集群读实时数据；代价是 AWS 深度绑定、传统 MPP 物理设计心智（distkey/sortkey/vacuum 三件套）、Serverless RPU 账单同样需要治理。</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<p>AWS&#x27;s veteran cloud data warehouse — born from the ParAccel columnar MPP engine, disaggregated storage and compute with RA3 in 2019, Serverless GA in 2022: Spectrum queries S3 data lakes directly, Zero-ETL streams from Aurora/DynamoDB, data sharing serves live data across clusters. The price is deep AWS lock-in, the traditional MPP physical-design mindset (distkey/sortkey/vacuum), and a Serverless RPU bill that still needs governance.</p>
+</div></p>
+  <div class="ai-dive-row" data-product="Amazon Redshift">
+    <span class="ai-dive-label" data-zh="用 AI 深挖这款：" data-en="Deep-dive with AI:">用 AI 深挖这款：</span>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('chatgpt', this)">ChatGPT <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('grok', this)">Grok <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('claude', this)">Claude <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn addcmp-btn" data-addcmp="redshift"><span class="addcmp-label">＋ 对比</span></button>
+  </div>
+  <div class="legend"><span class="legend-label" data-zh="证据等级：" data-en="Evidence levels: ">证据等级：</span><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></div>
+</div>
+<section class="doc-section">
+<h2><span data-zh="基本信息" data-en="Basics">基本信息</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>项</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td>厂商</td><td>Amazon Web Services（AWS）；Redshift 于 2012 年 re:Invent 发布、2013 年 GA</td></tr>
+<tr><td>国家</td><td>美国</td></tr>
+<tr><td>起源</td><td>内核源自 ParAccel（后被 AWS 收购）的列式 MPP 引擎；2019 年推出 RA3 存算分离节点，2022 年 Redshift Serverless 正式可用</td></tr>
+<tr><td>许可证</td><td>专有商业软件（无开源版本、无自建安装包）</td></tr>
+<tr><td>商业版说明</td><td>双形态计费：预置集群按节点类型×小时 + RA3 托管存储按量；Serverless 按 RPU（Redshift Processing Unit）小时 + 存储按量；Spectrum 按扫描量、并发扩展按秒、快照存储按量。具体价格随区域与合同变化，本档案不写绝对价格</td></tr>
+<tr><td>托管服务</td><td>AWS 全托管（仅 AWS 云），覆盖主要区域；无多云/私有化部署选项</td></tr>
+<tr><td>主类型</td><td>云数据仓库（OLAP）</td></tr>
+<tr><td>兼具类型</td><td>数据湖查询（Spectrum）、流式摄入、库内机器学习（Redshift ML）</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Item</th><th>Content</th></tr></thead>
+<tbody>
+<tr><td>Vendor</td><td>Amazon Web Services (AWS); Redshift announced at re:Invent 2012, GA 2013</td></tr>
+<tr><td>Country</td><td>USA</td></tr>
+<tr><td>Origin</td><td>Kernel derived from ParAccel (later acquired by AWS); RA3 storage-compute separation in 2019; Redshift Serverless GA in 2022</td></tr>
+<tr><td>License</td><td>Proprietary commercial software (no open-source edition, no self-hosted installer)</td></tr>
+<tr><td>Commercial note</td><td>Two billing shapes: provisioned clusters billed per node-type-hour plus RA3 managed storage by usage; Serverless billed per RPU (Redshift Processing Unit) hour plus storage. Spectrum billed per scanned volume, concurrency scaling per second, snapshot storage by usage. Prices vary by region and contract — no absolute figures quoted here</td></tr>
+<tr><td>Managed service</td><td>Fully managed on AWS (AWS cloud only); no multi-cloud or on-premises option</td></tr>
+<tr><td>Primary type</td><td>Cloud data warehouse (OLAP)</td></tr>
+<tr><td>Also covers</td><td>Data-lake querying (Spectrum), streaming ingestion, in-database ML (Redshift ML)</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section"><h2><span data-zh="硬维度（19 项）" data-en="Hard dimensions (19)">硬维度（19 项）</span></h2>
+<div class="lang-block lang-zh">
+<div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>默认 AES-256 加密全部数据；可用 AWS KMS 的客户管理密钥（CMK），也可接 CloudHSM 自管密钥 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>RA3 托管存储、自动快照、Spectrum 查询结果落盘均走加密；集群间数据共享走加密通道 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>注意：KMS 做跨账号/跨区快照复制时，密钥策略与授权要显式配置，否则恢复会卡住 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有（TLS 全链路）</span></h3><div class="dim-body"><ul>
+<li>客户端到集群的 JDBC/ODBC 连接支持 SSL/TLS，可强制要求加密连接 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>集群内节点间通信加密；Redshift Data API 全程 HTTPS <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无明文回退陷阱：加密是集群级默认行为，不存在&quot;开了 TLS 还留明文端口&quot;的自建式坑 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> 审计 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>CloudTrail 记录所有 Redshift API 操作（建集群、改参数、快照管理）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>数据库审计日志记录连接、查询、DDL 等事件，可投递到 S3 或 CloudWatch Logs 再接入 SIEM <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>SYS_QUERY_HISTORY 等系统视图可直接 SQL 查历史查询、执行时长与执行计划，是慢查询治理的主入口 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>注意：审计日志本身占存储与 S3 费用，保留策略与生命周期要配，否则越积越多 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> 认证与权限 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>身份：IAM 深度集成——IAM 角色直连、临时凭证、IdP 联邦 SSO；Data API 可用 IAM 签名调用 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>库内授权：用户/组/角色三级 RBAC，schema 级、表级、列级权限；支持行级安全（RLS）与动态数据脱敏（dynamic data masking）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>注意：IAM 策略（管&quot;能不能连集群&quot;）与库内权限（管&quot;能查哪张表&quot;）是两套体系，新手最容易在这里配出&quot;连得上但查不了&quot;或反过来的问题 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> 备份恢复 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>自动快照（保留期可配）+ 手动快照；可从快照恢复整个集群或恢复到某个时间点 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>快照可复制到其他区域做异地容灾；RA3 架构下恢复主要是重建计算节点（数据已在托管存储/S3 侧），比 DC2 时代快 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Redshift Serverless 有自动恢复点，无需手动管快照 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>注意：快照存储按量计费，保留期设得过长会变成隐形账单；恢复演练要定期做，不要等到真出事 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> 可观测性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>SYS/SVL/STL 三代系统视图：查查询历史、执行计划、WLM 队列等待、锁等待、表倾斜，一应俱全 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>CloudWatch 指标：CPU、磁盘、查询延迟、并发数；可配告警 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>SYS_QUERY_HISTORY 支持按 query_label 打标，是做成本归因（哪个业务烧的 RPU）的主入口 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>边缘：系统视图本身查询也有成本意识问题——高频轮询 STL 大表在繁忙集群上会加重负担 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> 连接模型 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>标准 JDBC/ODBC，BI 工具直连无门槛；psql 可连（方言兼容层）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Redshift Data API：HTTPS 接口，无需维护长连接池，适合 Lambda/无服务器应用与 CI 任务 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>网络：VPC 部署，支持 VPC 终端私有访问；查询编辑器 v2 浏览器直查 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>注意：预置集群有并发连接上限与 WLM 队列，高并发小查询场景要规划队列；Serverless 在弹性上更省心 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> 事务与隔离级别 <span class="verdict v-yes">有（ACID，可串行化语义）</span></h3><div class="dim-body"><ul>
+<li>支持完整 ACID 事务；Redshift 的事务隔离语义为可串行化（serializable）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>ETL 标准姿势是&quot;事务包裹批量写&quot;，保证一批次要么全进要么全回滚 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>注意：长事务持有表锁会阻塞 VACUUM 与 DDL，是生产常见故障根因；这是分析型事务，不是 OLTP 行级锁语义，高频小事务写入性能差 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> 复制与一致性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>数据共享（Data Sharing）：生产者集群的实时数据可被多个消费者集群/账号直接查询，无需复制数据，是&quot;一份数据多团队用&quot;的主方案 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>RA3 支持跨 AZ 集群重定位（Cluster Relocation）：AZ 故障时自动把计算节点搬到健康 AZ，数据在托管存储侧不受影响 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无内置跨区主动-主动写：多 Region 写入要靠快照复制 + 应用层设计，一致性窗口分钟级 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> 扩展方式 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>RA3：计算节点数与托管存储容量独立扩展——数据涨到 PB 级不用加节点，只为性能加节点 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Redshift Serverless：8–512 RPU 自动扩缩，按秒计费（60 秒起步），负载波动场景免容量规划 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>并发扩展（Concurrency Scaling）：突发读查询自动拉起临时集群分担，按秒计费，适合报表高峰 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>边缘真相：预置集群的节点增减仍是分钟级操作且要计划窗口；Serverless 有 RPU 下限常驻成本，&quot;弹性&quot;不等于&quot;零待机费用&quot;；并发扩展的账单如果不设上限，毛刺查询可能烧出惊喜 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> 兼容性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>内核源自 PostgreSQL 8.0.2，大量 SQL 语法、psql、JDBC 驱动可直接沿用，PG 用户学习成本低 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>注意&quot;像而不全&quot;：只是方言像，不是 PG——部分 PG 函数/特性不支持，存储过程是 PL/pgSQL 子集，分区、索引语义与 PG 差异大；把 Redshift 当 PG 用的团队会在迁移时踩坑 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>AWS SCT 做异构迁移评估与 SQL 转换，DMS 做数据迁移 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> 许可证与商业模式 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>纯 AWS 商业服务，无开源版本、无自建选项，锁定在 AWS 生态内 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>计费模型（只写计量边界）：预置集群按节点类型×小时 + 托管存储按 GB·月；Serverless 按 RPU 小时 + 存储；Spectrum 按扫描 TB；并发扩展按秒；快照存储按量 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>降本主路径：稳态负载用预留节点（1/3 年期折扣力度大）；波动负载用 Serverless；Spectrum 查询先做分区裁剪 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> 中文资料丰富度 <span class="verdict v-yes">有（AWS 中文文档完整）</span></h3><div class="dim-body"><ul>
+<li>AWS 官方文档有完整中文版，Redshift 管理指南、开发指南均已汉化 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>中文社区（AWS 官方博客中文版、知乎、CSDN）有大量实战案例；英文深度内容（re:Invent 分享、AWS Database Blog 性能调优系列）仍多一个身位 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> 性能与延迟特征 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>列式存储 + MPP 并行 + 结果缓存；RA3 的 AQUA 硬件加速层对扫描/过滤/聚合类查询有显著加速（RA3 专属，DC2 无）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>典型延迟：TB 级聚合查询秒到分钟级；毫秒级点查、高并发小查询不是设计目标 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>核心真相：distkey（分布键）与 sortkey（排序键）选错，性能差一个数量级；AZ64 编码对数值列压缩率高，选对编码省存储又提速 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>VACUUM（回收删除空间）与 ANALYZE（更新统计信息）是常规运维，不做的话查询计划会逐步劣化 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">15</span> 合规与认证 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>SOC 1/2/3、ISO/IEC 27001、HIPAA eligible、PCI DSS、FedRAMP 等主流认证全覆盖 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>注意：合规覆盖与区域、配置相关——跨区快照复制、KMS 密钥管理方式会影响合规边界，金融/政务场景要按区域逐项确认 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">16</span> 成熟度与社区生态 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>2012 年发布、2013 年 GA，是最早的云数仓之一，十余年超大规模生产验证 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>生态成熟：Tableau/Power BI/QuickSight 全兼容，dbt-redshift 适配器、Airflow Provider 都是标准件 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>风险面：AWS 迭代快，老节点类型（DS2 已退役、DC2 逐步边缘化）用户要跟进升级；Serverless 是战略方向，预置集群新特性增速放缓 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">17</span> 标杆用户 <span class="verdict v-yes">有（AWS 公开案例）</span></h3><div class="dim-body"><ul>
+<li>AWS 官网公开案例包括 Nasdaq、NTT DOCOMO、Yelp 等（以 AWS 官网最新披露为准）<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>采用模式常见：Redshift 做核心数仓 + Spectrum 查 S3 冷数据 + QuickSight/Tableau 做 BI，AWS 生态内闭环 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>具体客户名单以 AWS 官网为准，本档案不堆砌 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">18</span> 生态工具链 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>迁移：SCT（Schema Conversion Tool）做异构评估转换，DMS 做数据迁移 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>ETL/编排：Glue、Airflow Provider、dbt-redshift 适配器；IaC 用 CloudFormation/Terraform <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>监控：CloudWatch + 系统视图是标配组合 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">19</span> 云托管与 Serverless <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>预置集群全托管：打补丁、备份、监控 AWS 全包，用户只管 SQL 与物理设计 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Redshift Serverless：免集群管理、自动扩缩，是 2022 年后新用户的主推形态 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>边界：仅 AWS 云，无多云/私有化选项；Serverless 有 RPU 下限（8 RPU 起），&quot;Serverless&quot;不等于&quot;零待机账单&quot;，常驻费用要算进 TCO <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">20</span> 数据接入与摄入 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>COPY：从 S3 并行批量加载是标准通道，远快于逐行 INSERT（数量级差异是常识）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Zero-ETL：Aurora MySQL/PostgreSQL、DynamoDB 到 Redshift 的近实时同步，免建 ETL 管道，不收额外集成费 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>流式：Kinesis Data Firehose 直写、Redshift Streaming Ingestion（经物化视图落地流数据）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>边缘：流式摄入经物化视图刷新，延迟在秒到分钟级；Zero-ETL 初始同步大表要预留时间窗口 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">21</span> 外部数据访问 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>Redshift Spectrum：直接用 SQL 查 S3 数据湖（Parquet/ORC/CSV/JSON），按扫描量计费，是&quot;冷数据不进仓&quot;的标准方案 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>联邦查询（Federated Query）：直查 RDS/Aurora PostgreSQL/MySQL，谓词下推到源端执行 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>数据共享（Data Sharing）：跨集群/跨账号实时读生产者数据，不复制 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>边界：Spectrum 适合即席探索与冷数据；高频、大扫描的生产查询仍建议 COPY 入仓（延迟与扫描费双输）；跨区 S3 访问有延迟与流量费 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">22</span> CDC 与下游同步 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>入：Zero-ETL 把 Aurora/DynamoDB 的变更近实时同步进来，是官方 CDC 通道 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>出：UNLOAD 导出到 S3（Parquet 格式）供下游消费；数据共享把实时数据直接开放给下游 Redshift 集群 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无原生&quot;Redshift 作为 CDC 源&quot;的变更捕获机制：下游要实时跟，需靠 DMS 抽取或应用层双写 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL 与数据生命周期管理 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>无原生 TTL/分区过期，需定时 DELETE + VACUUM 回收 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>大表 DELETE 代价高，设计时多用时间序分区表轮换 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>Spectrum 外表生命周期由 S3 生命周期策略管 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>ADD COLUMN 等轻量，但 DISTKEY/SORTKEY 变更需建新表+导数据 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>DDL 期间拿表锁，并发查询排队，大表变更要规划窗口 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>无 gh-ost 类生态，靠&#x27;建新表切换&#x27;手工操作 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-yes">有（WLM 查询队列，查询级资源管理）</span></h3><div class="dim-body"><ul>
+<li>WLM 按队列分配内存/并发，业务按队列隔离 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>自动 WLM 简化配置，手动 WLM 可精细调 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>是查询级 QoS，不是租户级硬隔离，超大查询仍可挤占 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> 跨地域多活 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>跨区快照复制做容灾，RTO 看恢复时间 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>写单区，无多活语义 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> 高可用架构与 RTO/RPO <span class="verdict v-yes">有（托管多 AZ，故障自动恢复）</span></h3><div class="dim-body"><ul>
+<li>托管多 AZ，节点故障自动替换恢复 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>快照可恢复到任意时间点，RPO 看快照频率 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>恢复期间集群只读或不可用，大集群恢复慢 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> 行级安全与数据脱敏 <span class="verdict v-yes">有（RLS策略+动态脱敏(2023)）</span></h3><div class="dim-body"><ul>
+<li>Redshift 提供行级安全（CREATE RLS POLICY，2021）与 Dynamic Data Masking（2023），列级脱敏策略可绑定角色 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>支持列级 GRANT <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>RLS 策略与 late-binding 视图、存储过程交互有约束，需实测 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON 与半结构化能力 <span class="verdict v-yes">有（SUPER 类型半结构化原生）</span></h3><div class="dim-body"><ul>
+<li>SUPER 类型原生半结构化，PartiQL 导航查询 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>SUPER 列无统计信息时查询规划弱，热点路径建议规整化 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> 全文检索能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>无原生全文索引（查证为无），靠文本函数/模糊匹配 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>全文场景集成 OpenSearch <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> 存储效率与压缩 <span class="verdict v-yes">有（列存+按列编码可选压缩）</span></h3><div class="dim-body"><ul>
+<li>列式存储，每列可指定压缩编码（AZ64、ZSTD、Delta、RLE 等），COPY 时可自动分析选择。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>AZ64 为 Redshift 自研编码，在数值列上压缩比与解压速度俱佳。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>压缩为表设计的一部分，编码选择不当会显著影响存储与查询性能。<span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> 开源协议与厂商锁定风险 <span class="verdict v-yes">有（AWS 专属闭源数仓）</span></h3><div class="dim-body"><ul>
+<li>Amazon Redshift 是 AWS 专属的云数仓服务，无开源版本，完全绑定 AWS。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>基于 Parallax/Postgres 8 遗留架构，SQL 方言与运维深度绑定 Redshift 平台。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>迁出需重写分布键/排序键设计与 Redshift 特有函数，成本高。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> 查询优化器与计划稳定性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>基于 PG8 的 CBO，EXPLAIN 可用 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无 hint 机制，计划干预靠改写 SQL 与表设计 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>统计信息过期+错误的 distkey/sortkey 是计划劣化的主因 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> 参数调优与自治能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>WLM 队列是核心调优点，参数组可调 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Automatic Table Optimization、自动 vacuum、并发扩展部分自治 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>深度调优仍依赖分布键/排序键设计 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> 静默数据损坏防护 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>存储层多副本冗余与底层校验由 AWS 内部完成，用户无页校验开关。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>自动备份与快照防的是逻辑损坏，静默位损坏不在用户可观测范围。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>用户侧无校验命令或损坏审计视图。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> 存储过程/触发器/过程语言 <span class="verdict v-yes">有（存储过程（PL/pgSQL 子集）</span></h3><div class="dim-body"><ul>
+<li>支持存储过程（PL/pgSQL 子集），游标/异常处理有限 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>与 PG/Oracle 过程语言差异大，迁移需改写 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> 约束与数据完整性 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>主键/外键/唯一为信息性约束，不强制执行 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>用于查询优化，错误声明误导优化器 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> 分析 SQL 完备性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>窗口函数、GROUPING SETS 等分析 SQL 完备 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>基于 PG 8 系，部分新语法缺失 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> 被遗忘权与数据擦除 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>删除靠标准 DML，无原生擦除工作流或证明 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>自动 / 手动快照保留被删数据的历史状态，需管理快照保留期 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Redshift Serverless 的快照与恢复点同样构成残留面 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> 数据血缘与目录集成 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>表元数据可进 Glue Data Catalog <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>列级血缘靠 Atlan/Alation 等第三方 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> 存算分离 vs 存算一体 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>RA3 节点+Redshift Managed Storage：存算分离 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>DC2 节点本地 SSD：存算一体 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>选型时节点类型决定架构范式 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> 多模能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>SUPER 类型支持半结构化（JSON/Parquet）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无原生向量、全文、图能力 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps 成本可观测性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>Serverless 按 RPU（Redshift 处理单元）计量；预置集群 RA3 按节点与托管存储计费。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>成本分配标签 + Cost Explorer + AWS Budgets，归因与告警链路完整。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> 驱动与多语言生态 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>官方 JDBC/ODBC 驱动，redshift-connector（Python）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>PG 驱动部分兼容但有差异，不建议混用 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> 物化视图 <span class="verdict v-yes">有（自动增量刷新+自动改写）</span></h3><div class="dim-body"><ul>
+<li>物化视图自动增量刷新、查询自动改写 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>仅支持部分增量场景，基表大变更回退全量 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> 支持跨云 <span class="verdict v-no">无（AWS 绑定，无跨云）</span></h3><div class="dim-body"><ul>
+<li>仅 AWS，无其他云版本 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>迁出靠 unload 到 S3 + 重建，无跨云复制 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (AES-256 + KMS, optional CloudHSM).</p>
+<ul>
+<li>AES-256 encryption of all data by default; customer-managed keys via AWS KMS, or self-managed keys via CloudHSM <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>RA3 managed storage, automated snapshots and Spectrum result staging are all encrypted; cross-cluster data sharing runs over encrypted channels <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Caveat: cross-account / cross-region snapshot restores require explicit key-policy configuration, or restores get stuck <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / transport encryption <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (TLS end to end).</p>
+<ul>
+<li>SSL/TLS supported for client JDBC/ODBC connections, enforceable as required <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Inter-node traffic inside the cluster is encrypted; the Redshift Data API is HTTPS throughout <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No plaintext-fallback trap: encryption is a cluster-level default, not the self-managed &quot;TLS on but plaintext ports left open&quot; pitfall <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> Auditing <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (CloudTrail + database audit logging).</p>
+<ul>
+<li>CloudTrail captures all Redshift API operations (cluster creation, parameter changes, snapshot management) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Database audit logs capture connections, queries and DDL, deliverable to S3 or CloudWatch Logs and onward to a SIEM <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li><code>SYS_QUERY_HISTORY</code> and related system views answer &quot;what ran, how long, what plan&quot; directly in SQL — the primary slow-query governance surface <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Caveat: audit logs themselves consume storage and S3 spend — set retention/lifecycle policies or they accumulate forever <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> Authentication &amp; authorization <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (IAM + in-database RBAC + RLS/masking).</p>
+<ul>
+<li>Identity: deep IAM integration — IAM roles for direct connections, temporary credentials, IdP-federated SSO; the Data API accepts IAM-signed calls <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>In-database grants: user/group/role RBAC at schema, table and column level; row-level security (RLS) and dynamic data masking supported <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Caveat: IAM policies (&quot;can you reach the cluster&quot;) and in-database grants (&quot;which tables can you read&quot;) are two separate systems — misconfiguring the boundary is the most common newcomer failure <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> Backup &amp; recovery <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (automated snapshots + cross-region copy + point-in-time restore).</p>
+<ul>
+<li>Automated snapshots (configurable retention) plus manual snapshots; restore a whole cluster or to a point in time <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Snapshots can be copied to other regions for DR; under RA3, recovery is mostly about rebuilding compute nodes (data already sits in managed storage), faster than the DC2 era <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Redshift Serverless keeps automatic recovery points — no manual snapshot management <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Caveat: snapshot storage is metered — over-long retention becomes a stealth line item; rehearse restores regularly, not during a real incident <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> Observability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (system views + CloudWatch).</p>
+<ul>
+<li>Three generations of system views (SYS/SVL/STL): query history, execution plans, WLM queue waits, lock waits, table skew — the full DBA toolkit <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>CloudWatch metrics (CPU, disk, query latency, concurrency) with alarming <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li><code>SYS_QUERY_HISTORY</code> with <code>query_label</code> tagging is the main cost-attribution surface (&quot;which business burned the RPUs&quot;) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Edge: the system views themselves need cost awareness — high-frequency polling of big STL tables on a busy cluster adds load <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> Connection model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (JDBC/ODBC + Data API + private endpoints).</p>
+<ul>
+<li>Standard JDBC/ODBC — BI tools connect with zero friction; psql works through the dialect-compatibility layer <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Redshift Data API: HTTPS interface with no persistent connection pool to maintain — ideal for Lambda/serverless apps and CI jobs <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Networking: VPC deployment with VPC-endpoint private access; Query Editor v2 for browser-based querying <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Caveat: provisioned clusters have concurrency/connection limits managed by WLM queues — plan queues for high-concurrency small-query workloads; Serverless is more carefree here <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> Transactions &amp; isolation levels <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (ACID, serializable semantics).</p>
+<ul>
+<li>Full ACID transactions; Redshift&#x27;s isolation semantics are serializable <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>The standard ETL posture is &quot;wrap the batch write in a transaction&quot; so a batch lands atomically <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Caveat: long transactions hold table locks that block VACUUM and DDL — a classic production failure root cause; these are analytical transactions, not OLTP row-lock semantics, and high-frequency tiny writes perform poorly <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> Replication &amp; consistency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (data sharing + cross-AZ relocation; no cross-region active-active writes).</p>
+<ul>
+<li>Data Sharing: live data on a producer cluster is directly queryable by multiple consumer clusters/accounts with zero copying — the standard &quot;one dataset, many teams&quot; pattern <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>RA3 cross-AZ cluster relocation: on AZ failure, compute nodes are automatically moved to a healthy AZ while data in managed storage is unaffected <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No built-in cross-region active-active writes: multi-region writers need snapshot copies plus application-layer design, with minute-level consistency windows <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> Scaling <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (RA3 storage-compute separation + Serverless elasticity + concurrency scaling).</p>
+<ul>
+<li>RA3: compute node count scales independently of managed-storage capacity — grow to PB without adding nodes; add nodes only for performance <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Redshift Serverless: 8–512 RPU auto-scaling, billed per second (60-second minimum), no capacity planning for spiky workloads <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Concurrency Scaling: burst read queries automatically get temporary clusters, billed per second — built for reporting peaks <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Edge truth: provisioned-cluster resizing is still a minutes-long planned operation; Serverless has a baseline RPU floor (&quot;elastic&quot; ≠ &quot;zero standby cost&quot;); uncapped concurrency scaling can turn a query spike into a billing surprise <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> Compatibility <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (PostgreSQL 8 dialect + SCT/DMS migration tooling).</p>
+<ul>
+<li>Kernel derived from PostgreSQL 8.0.2 — much PG-8 syntax, psql and JDBC tooling carry over, so PG users ramp up fast <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>&quot;Resembles, not equals&quot;: it is a dialect resemblance, not PostgreSQL — some PG functions/features unsupported, stored procedures are a PL/pgSQL subset, partitioning and index semantics differ substantially from PG; teams treating Redshift as PG hit this during migrations <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>AWS SCT assesses and converts heterogeneous migrations; DMS moves the data <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> License &amp; business model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (proprietary; node-hour / RPU dual shape).</p>
+<ul>
+<li>Pure AWS commercial service — no open-source edition, no self-hosting, locked inside the AWS ecosystem <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Metering boundaries only: provisioned clusters per node-type-hour + managed storage per GB-month; Serverless per RPU-hour + storage; Spectrum per scanned TB; concurrency scaling per second; snapshot storage metered <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Main cost-down paths: reserved nodes (1/3-year terms, steep discounts) for steady loads; Serverless for spiky loads; partition pruning before Spectrum queries <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> Chinese-language resources <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (complete AWS Chinese documentation).</p>
+<ul>
+<li>AWS docs are fully available in Chinese, including the Redshift management and developer guides <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>The Chinese community (AWS Chinese blog, Zhihu, CSDN) has abundant hands-on cases; English deep content (re:Invent talks, the AWS Database Blog tuning series) still leads by a step <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> Performance &amp; latency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (columnar MPP, seconds-to-minutes; physical design decides everything).</p>
+<ul>
+<li>Columnar storage + MPP parallelism + result caching; RA3&#x27;s AQUA hardware-accelerated layer materially speeds scan/filter/aggregation queries (RA3-only — DC2 has no AQUA) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Typical latency: TB-scale aggregations in seconds to minutes; millisecond point lookups and high-concurrency tiny queries are not the design target <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Core truth: a wrong distkey/sortkey choice costs an order of magnitude; AZ64 encoding gives high compression on numeric columns — the right encoding saves storage and speeds scans <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>VACUUM (reclaiming deleted space) and ANALYZE (refreshing statistics) are routine ops — skip them and query plans degrade over time <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">15</span> Compliance &amp; certifications <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (SOC / ISO / HIPAA / PCI / FedRAMP suite).</p>
+<ul>
+<li>SOC 1/2/3, ISO/IEC 27001, HIPAA-eligible, PCI DSS, FedRAMP and other mainstream certifications <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Caveat: coverage is region- and configuration-dependent — cross-region snapshot copies and KMS key-management choices affect the compliance boundary; regulated industries should confirm per region <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">16</span> Maturity &amp; community <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (GA since 2013; one of the original cloud warehouses).</p>
+<ul>
+<li>Announced 2012, GA 2013 — one of the first cloud data warehouses, with 10+ years of hyperscale production validation <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Mature ecosystem: Tableau/Power BI/QuickSight all compatible; dbt-redshift adapter and Airflow provider are standard parts <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Risk side: AWS iterates fast — legacy node types (DS2 retired, DC2 being marginalized) force upgrades; Serverless is the strategic direction while new provisioned-cluster features slow down <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">17</span> Notable adopters <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (public AWS cases).</p>
+<ul>
+<li>AWS-published cases include Nasdaq, NTT DOCOMO, Yelp and others (per latest AWS disclosures) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Common pattern: Redshift as the core warehouse + Spectrum over S3 cold data + QuickSight/Tableau BI, closed loop inside AWS <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Customer lists per AWS&#x27;s site; not enumerated here (to be verified).</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">18</span> Ecosystem tooling <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (SCT / DMS / Glue / dbt / Airflow).</p>
+<ul>
+<li>Migration: SCT (Schema Conversion Tool) for heterogeneous assessment/conversion, DMS for data movement <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>ETL/orchestration: Glue, Airflow provider, dbt-redshift adapter; IaC via CloudFormation/Terraform <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Monitoring: CloudWatch + system views is the standard combo <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">19</span> Managed &amp; serverless <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (fully managed on AWS; Serverless GA).</p>
+<ul>
+<li>Provisioned clusters fully managed: patching, backups and monitoring are AWS&#x27;s job — users own SQL and physical design <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Redshift Serverless: no cluster management, auto-scaling — the recommended shape for new users since 2022 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Boundaries: AWS cloud only — no multi-cloud or on-premises; Serverless has an RPU floor (from 8 RPU), so &quot;serverless&quot; ≠ &quot;zero standby bill&quot; — model the baseline into TCO <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">20</span> Data ingestion <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (COPY + Zero-ETL + streaming trio).</p>
+<ul>
+<li>COPY: parallel bulk load from S3 is the standard channel — orders of magnitude faster than row-by-row INSERT (common knowledge) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Zero-ETL: near-real-time sync from Aurora MySQL/PostgreSQL and DynamoDB into Redshift, no ETL pipeline to build or run, no extra integration fee <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Streaming: Kinesis Data Firehose direct writes, Redshift Streaming Ingestion (landing stream data via materialized views) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Edge: streaming ingestion lands through materialized-view refreshes with seconds-to-minutes latency; Zero-ETL initial sync of large tables needs a window <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">21</span> External data access <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Spectrum over S3 + federated queries + data sharing).</p>
+<ul>
+<li>Redshift Spectrum: query S3 data lakes directly in SQL (Parquet/ORC/CSV/JSON), billed per scanned volume — the standard &quot;cold data stays out of the warehouse&quot; pattern <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Federated Query: query RDS/Aurora PostgreSQL/MySQL directly with predicate pushdown to the source <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Data Sharing: real-time reads of producer data across clusters/accounts with no copying <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Boundaries: Spectrum suits ad-hoc exploration and cold data; high-frequency, large-scan production queries should still be COPY-loaded (losing on both latency and scan cost otherwise); cross-region S3 access adds latency and transfer fees <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">22</span> CDC &amp; downstream <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (Zero-ETL in; UNLOAD/sharing out).</p>
+<ul>
+<li>In: Zero-ETL brings Aurora/DynamoDB changes in near real time — the official CDC channel <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Out: UNLOAD exports to S3 (Parquet) for downstream consumption; data sharing exposes live data directly to downstream Redshift clusters <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No native &quot;Redshift as a CDC source&quot; change-capture: real-time downstream needs DMS extraction or application-level dual writes <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL &amp; data lifecycle <span class="verdict v-no">No native</span></h3><div class="dim-body"><p><strong>Partial</strong> (No native TTL; scheduled DELETE + VACUUM).</p>
+<ul>
+<li>No native TTL or partition expiry; scheduled DELETE + VACUUM to reclaim <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Big-table DELETEs are costly — design time-ordered table rotation instead <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Spectrum external-table lifecycle is governed by S3 lifecycle policies <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Some ALTERs lock tables; costly on huge tables).</p>
+<ul>
+<li>ADD COLUMN is light, but DISTKEY/SORTKEY changes need new-table + data copy <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>DDL takes table locks; concurrent queries queue — plan windows for huge-table changes <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>No gh-ost-like ecosystem; manual new-table cutover is the norm <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> Multi-tenancy &amp; resource isolation <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (WLM query queues; query-level resource management).</p>
+<ul>
+<li>WLM assigns memory/concurrency per queue; workloads isolate by queue <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Auto WLM simplifies setup; manual WLM allows fine tuning <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>It&#x27;s query-level QoS, not hard tenant isolation — huge queries can still crowd out <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> Cross-region active-active <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Cross-region snapshot copy; no active-active writes).</p>
+<ul>
+<li>Cross-region snapshot copy for DR; RTO follows restore time <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Single-region writes; no active-active semantics <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> HA &amp; RTO/RPO <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Managed multi-AZ; automatic recovery).</p>
+<ul>
+<li>Managed multi-AZ with automatic node replacement <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Snapshots restore to any point; RPO follows snapshot frequency <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Clusters go read-only/unavailable during restore; big clusters restore slowly <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> Row-level security &amp; masking <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (RLS policies + dynamic masking (2023)).</p>
+<ul>
+<li>Redshift provides row-level security (CREATE RLS POLICY, 2021) and Dynamic Data Masking (2023), with column masking policies bindable to roles <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Column-level GRANT is supported <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>RLS policies have constraints interacting with late-binding views and stored procedures; test in practice <code>(community tested)</code></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON &amp; semi-structured <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Native SUPER semi-structured).</p>
+<ul>
+<li>Native SUPER semi-structured type with PartiQL navigation <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Weak stats on SUPER columns hurt planning; normalize hot paths <code>(community tested)</code>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> Full-text search <span class="verdict v-no">No native</span></h3><div class="dim-body"><p><strong>Partial</strong> (No native FTS; text functions).</p>
+<ul>
+<li>No native full-text indexes (verified absent); text functions/fuzzy matching <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Full-text via OpenSearch integration <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> Storage efficiency &amp; compression <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Columnar with per-column encoding compression).</p>
+<ul>
+<li>Columnar storage with per-column compression encodings (AZ64, ZSTD, Delta, RLE, etc.); COPY can auto-analyze and choose. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>AZ64 is Redshift&#x27;s homegrown encoding with strong ratio and decompression speed on numeric columns. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Compression is part of table design; poor encoding choices materially hurt storage and query performance. <code>(community tested)</code></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> OSS license &amp; lock-in risk <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (AWS-exclusive closed-source warehouse).</p>
+<ul>
+<li>Amazon Redshift is an AWS-exclusive cloud warehouse service with no open-source edition, fully bound to AWS. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Built on the legacy Parallax/Postgres 8 architecture; SQL dialect and operations bind deeply to the Redshift platform. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Migrating out requires rewriting distribution/sort key design and Redshift-specific functions — costly. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> Optimizer &amp; plan stability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (PG8-derived CBO; no hints; stats + distkeys rule).</p>
+<ul>
+<li>PG8-based CBO with EXPLAIN <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No hint mechanism; steer plans by rewriting SQL and table design <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Stale statistics plus wrong distkey/sortkey are the top plan-degradation causes <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> Tuning &amp; autonomy <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (WLM queue tuning; ATO partly autonomous).</p>
+<ul>
+<li>WLM queues are the core lever; parameter groups tunable <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Automatic Table Optimization, auto vacuum, and concurrency scaling are partly autonomous <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Deep tuning still hinges on distkey/sortkey design <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> Silent corruption protection <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Cloud checks; no user controls).</p>
+<ul>
+<li>Multi-copy storage redundancy and low-level checks are handled internally by AWS; no user page-checksum switch. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Automatic backups and snapshots guard against logical corruption; silent bit-rot is outside user observability. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>No user-facing verification command or corruption audit view. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> Stored procedures &amp; triggers <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Procedures (PL/pgSQL subset)).</p>
+<ul>
+<li>Stored procedures (PL/pgSQL subset) with limited cursors/exceptions <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Differs a lot from PG/Oracle; migrations need rewrites <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> Constraints &amp; integrity <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Informational PK/FK/UNIQUE).</p>
+<ul>
+<li>PK/FK/UNIQUE informational, not enforced <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Used for optimization; wrong declarations mislead the planner <code>(community tested)</code>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> Analytical SQL <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Complete windows/GROUPING SETS).</p>
+<ul>
+<li>Complete window functions, GROUPING SETS <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>PG 8-based; some newer syntax missing <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> Right to erasure <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (DML deletes; snapshot residue).</p>
+<ul>
+<li>Deletion is standard DML; no native erasure workflow or attestation <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Automated / manual snapshots retain historical states of deleted data; snapshot retention must be managed <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Redshift Serverless snapshots and recovery points form the same residue surface <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> Data lineage &amp; catalog <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Glue Catalog integration; third-party lineage).</p>
+<ul>
+<li>Table metadata can flow into Glue Data Catalog <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Column-level lineage via third parties like Atlan/Alation <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> Storage-compute architecture <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (RA3+RMS disaggregated; DC2 coupled).</p>
+<ul>
+<li>RA3 nodes + Redshift Managed Storage: disaggregated <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>DC2 nodes with local SSDs: coupled <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Node type decides the architecture paradigm <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> Multi-model <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (SUPER semi-structured; no vector/FTS/graph).</p>
+<ul>
+<li>SUPER type for semi-structured (JSON/Parquet) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No native vector, full-text, or graph <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps &amp; cost observability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (RPU metering; tag attribution).</p>
+<ul>
+<li>Serverless is metered in RPUs (Redshift Processing Units); provisioned RA3 clusters bill by node and managed storage. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Cost allocation tags plus Cost Explorer plus AWS Budgets give a complete attribution and alerting chain. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> Drivers &amp; clients <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Official JDBC/ODBC + Python connector).</p>
+<ul>
+<li>Official JDBC/ODBC drivers and redshift-connector (Python) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>PG drivers are partly compatible but differ; mixing not advised <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> Materialized views <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Auto incremental refresh + rewrite).</p>
+<ul>
+<li>Automatic incremental refresh and query rewrite <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Only some incremental cases; big base changes fall back to full <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> Multi-cloud support <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><p><strong>Not supported</strong> (AWS-bound; no cross-cloud).</p>
+<ul>
+<li>AWS-only; no other-cloud offering <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Moving out via UNLOAD to S3 + rebuild; no cross-cloud replication <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="杀手特性" data-en="Killer features">杀手特性</span></h2>
+<div class="lang-block lang-zh">
+<blockquote>
+<p>写法要求：每个特性 = 它是什么 + 为什么是真本事 + 推到边缘会发生什么。</p>
+</blockquote>
+<ol>
+<li><strong>RA3 存算分离：计算与存储独立扩展</strong> 真本事：托管存储（RMS）自动扩展到 PB 级，加节点只为性能、不为容量；跨 AZ 重定位、数据共享等新特性只在 RA3 上有。 边缘真相：RA3 计算单价高于 DC2，小数据量场景总账可能更贵；托管存储按量计费，VACUUM 不及时的话删除数据的&quot;幽灵存储&quot;也在烧钱。</li>
+<li><strong>Redshift Spectrum：数仓 SQL 直查 S3 数据湖</strong> 真本事：冷数据不用 COPY 进仓就能查，一份 S3 数据同时服务 Athena/EMR/Redshift；分区裁剪 + 列式格式下扫描费可控。 边缘真相：按扫描量计费，一个没做分区裁剪的 <code>SELECT *</code> 就是账单事故；高频大扫描的生产查询，延迟与费用双输于入仓方案。</li>
+<li><strong>Zero-ETL：Aurora/DynamoDB 近实时同步</strong> 真本事：操作库变更分钟级同步到数仓，免建、免运维 ETL 管道，不收额外集成费。 边缘真相：初始同步大表要窗口期；同步延迟是分钟级不是秒级；只覆盖 AWS 自家源，异构源还得 DMS。</li>
+<li><strong>数据共享（Data Sharing）：一份数据多集群读</strong> 真本事：生产者集群的实时数据被多个消费者集群/账号直接查询，零复制、零延迟（读的是实时数据）。 边缘真相：消费者查询消耗的是消费者集群的计算资源，跨团队成本归属要约定；重度共享下生产者与消费者的 WLM 规划要协同。</li>
+<li><strong>AZ64 编码 + AQUA：存储与计算的硬件级优化</strong> 真本事：AZ64 对数值/时间列压缩率高（省存储、提扫描）；AQUA 用 FPGA/SSD 加速层把扫描/过滤/聚合推到存储侧。 边缘真相：AQUA 仅 RA3 可用；编码选错（比如对高基数字符串硬上 AZ64）收益为负；编码调优是建表时的决策，事后改要重建表。</li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<ol>
+<li><strong>RA3 storage-compute separation: scale compute and storage independently</strong> What it is: managed storage (RMS) auto-scales to PB; add nodes for performance, not capacity; cross-AZ relocation and data sharing are RA3-only. Edge truth: RA3 compute unit pricing is higher than DC2 — small datasets can cost more overall; metered managed storage means un-VACUUMed &quot;ghost&quot; deleted data still burns money.</li>
+<li><strong>Redshift Spectrum: warehouse SQL straight at the S3 data lake</strong> What it is: cold data queryable without COPY-loading; one S3 dataset serves Athena/EMR/Redshift; partition pruning plus columnar formats keep scan spend controllable. Edge truth: billed per scanned volume — one unpruned <code>SELECT *</code> is a billing incident; high-frequency large-scan production queries lose to in-warehouse tables on both latency and cost.</li>
+<li><strong>Zero-ETL: near-real-time sync from Aurora/DynamoDB</strong> What it is: operational-database changes land in the warehouse in minutes, no pipeline to build or operate, no extra integration fee. Edge truth: minute-level latency, not seconds; initial sync of large tables needs a window; covers AWS-native sources only — heterogeneous sources still need DMS.</li>
+<li><strong>Data Sharing: one dataset read by many clusters</strong> What it is: live producer data directly queryable by multiple consumer clusters/accounts — zero copy, zero staleness. Edge truth: consumer queries burn the consumer cluster&#x27;s compute — cross-team cost attribution needs agreement; heavy sharing requires coordinated WLM planning between producers and consumers.</li>
+<li><strong>AZ64 encoding + AQUA: hardware-level storage and compute optimization</strong> What it is: AZ64 gives high compression on numeric/time columns (saving storage, speeding scans); AQUA pushes scan/filter/aggregation to an FPGA/SSD accelerated layer. Edge truth: AQUA is RA3-only; wrong encoding choices (e.g., forcing AZ64 on high-cardinality strings) backfire; encoding is a table-creation-time decision — changing it later means rebuilding the table.</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="深水区" data-en="Deep dives">深水区</span></h2>
+<div class="lang-block lang-zh">
+<blockquote>
+<p>以下每条 = 领域 + 机制一句话 + 推到边缘会发生什么 + 选型含义。证据类型已标注。</p>
+</blockquote>
+<p><strong>深水区一：distkey/sortkey——物理设计决定生死</strong></p>
+<ul>
+<li>领域：查询性能。</li>
+<li>机制一句话：distkey 决定行分布在哪些节点（避免广播与倾斜），sortkey 决定块内有序（zone map 跳块）。</li>
+<li>边缘行为：distkey 选错导致数据倾斜，单个节点成为瓶颈，MPP 退化成单机；无 sortkey 的表每次查询全表扫描，TB 级表就是分钟级起步。更糟的是：建表时选错，改要重建表（<code>ALTER</code> 改分布方式代价高）。</li>
+<li>选型含义：上线前必须做 workload 建模；<code>SVV_TABLE_INFO</code> 的倾斜度（skew）是日常巡检项；这是 Redshift 区别于 Serverless 数仓的最大心智负担。</li>
+<li>来源：官方文档（物理设计指南）+ 社区共识。</li>
+</ul>
+<p><strong>深水区二：VACUUM/ANALYZE——不做就慢性死亡</strong></p>
+<ul>
+<li>领域：运维。</li>
+<li>机制一句话：Redshift 的删除是标记删除，VACUUM 回收空间并重排序；ANALYZE 更新统计信息供优化器。</li>
+<li>边缘行为：长期不 VACUUM 的表，存储膨胀、扫描变慢（读大量死行）；统计信息过期导致优化器选错计划（比如该 broadcast 的走了 shuffle）。长事务持有锁还会阻塞 VACUUM，形成&quot;越忙越没法维护&quot;的死锁。</li>
+<li>选型含义：Auto VACUUM/ANALYZE 默认开着但别全信，大表要在低峰期手动跑；把 <code>STL_VACUUM</code> 监控纳入巡检。</li>
+<li>来源：官方文档 + 社区共识。</li>
+</ul>
+<p><strong>深水区三：Serverless RPU 账单——弹性不等于便宜</strong></p>
+<ul>
+<li>领域：成本模型。</li>
+<li>机制一句话：Serverless 按 RPU 小时计费（8–512 RPU 自动扩缩，按秒计、60 秒起步），另有 RPU 下限常驻成本。</li>
+<li>边缘行为：RPU 下限意味着&quot;不用也有基础账单&quot;；自动扩缩在毛刺负载下冲高 RPU，而缩容有滞后；7×24 稳态重载场景下，Serverless 总账常常贵过预留的 RA3 集群——&quot;省心&quot;不等于&quot;省钱&quot;。</li>
+<li>选型含义：POC 必须跑真实 workload 对比两种形态；<code>SYS_SERVERLESS_USAGE</code> 按 query_label 做归因；稳态负载优先算预留 RA3 的账。</li>
+<li>来源：官方文档（Serverless 计费）+ 社区实践。</li>
+</ul>
+<p><strong>深水区四：Spectrum 扫描费——<code>SELECT *</code> 的代价</strong></p>
+<ul>
+<li>领域：成本模型。</li>
+<li>机制一句话：Spectrum 按扫描 TB 计费，查询 S3 数据湖不经过 Redshift 计算资源。</li>
+<li>边缘行为：没做分区裁剪、选了全列的即席查询，一次扫描几十 TB；分析师在 BI 工具里拖个&quot;全表&quot;就是一次账单事故。Parquet/ORC 列式 + 分区是省钱的唯一正道，CSV/JSON 裸查是烧钱。</li>
+<li>选型含义：S3 数据湖必须按查询模式做分区与格式治理；给分析师的 Spectrum 权限配好扫描量告警。</li>
+<li>来源：官方文档（Spectrum 计费）+ 社区共识。</li>
+</ul>
+<p><strong>深水区五：WLM 队列与并发——MPP 的排队艺术</strong></p>
+<ul>
+<li>领域：并发管理。</li>
+<li>机制一句话：Workload Management（WLM）把查询分到不同队列，配并发数、内存占比与超时。</li>
+<li>边缘行为：默认队列下，大 ETL 查询与 BI 小查询混跑，互相排队；内存配少了查询 spill 到磁盘慢一个数量级；配错了就是&quot;集群很空但查询排队&quot;的玄学故障。并发扩展（Concurrency Scaling）能救急，但按秒计费。</li>
+<li>选型含义：按 workload 画像分队列（ETL/BI/即席隔离）；<code>STV_WLM_QUERY_STATE</code> 看排队是日常动作。</li>
+<li>来源：官方文档 + 社区共识。</li>
+</ul>
+<p><strong>深水区六：DC2→RA3 迁移——老用户的必答题</strong></p>
+<ul>
+<li>领域：升级迁移。</li>
+<li>机制一句话：DC2 是本地盘架构（存算一体），RA3 是存算分离；快照恢复可跨节点类型迁移。</li>
+<li>边缘行为：DC2 集群数据量涨到本地盘上限后，只能加节点（贵且慢）；迁移到 RA3 要做快照恢复演练，验证 distkey/sortkey 在新架构下的表现；DS2 已退役，DC2 也在逐步边缘化，拖延=技术债。</li>
+<li>选型含义：新上直接 RA3 或 Serverless；老 DC2 用户把迁移排进路线图。</li>
+<li>来源：官方文档 + 社区共识。</li>
+</ul>
+<p><strong>深水区七：AWS 锁定——出得去吗</strong></p>
+<ul>
+<li>领域：厂商锁定。</li>
+<li>机制一句话：Redshift 无开源/自建版本，SQL 方言、Spectrum、Zero-ETL、数据共享全是 AWS 私有能力。</li>
+<li>边缘行为：迁移出 AWS 意味着重写 ETL（Glue→别家）、重建 BI 连接、数据从 S3 搬出还有 egress 费；&quot;PG 方言像&quot;降低的是学习成本，不是迁移成本。</li>
+<li>选型含义：选 Redshift 就是选 AWS，决策时把&quot;未来 3–5 年是否可能多云&quot;作为前置问题。</li>
+<li>来源：社区共识。</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<p><strong>Deep dive 1: distkey/sortkey — physical design decides life or death</strong></p>
+<ul>
+<li>Domain: query performance.</li>
+<li>Mechanism in one line: distkey decides which nodes hold which rows (avoiding broadcasts and skew); sortkey orders blocks so zone maps can skip.</li>
+<li>At the edge: a wrong distkey skews data onto one node and MPP degrades to single-node; tables without sortkeys get full-scanned every query — minutes minimum on TB tables. Worse: a bad choice at CREATE TABLE time is expensive to fix later (rebuilding the table).</li>
+<li>Selection meaning: model the workload before go-live; <code>SVV_TABLE_INFO</code> skew readings are a routine health check; this is Redshift&#x27;s biggest mindset tax versus serverless warehouses.</li>
+<li>Sources: official docs (physical design guide) + community consensus.</li>
+</ul>
+<p><strong>Deep dive 2: VACUUM/ANALYZE — skip it and die slowly</strong></p>
+<ul>
+<li>Domain: operations.</li>
+<li>Mechanism in one line: Redshift deletes are mark-deletes — VACUUM reclaims space and re-sorts; ANALYZE refreshes optimizer statistics.</li>
+<li>At the edge: long-unvacuumed tables bloat storage and slow scans (reading masses of dead rows); stale statistics make the optimizer pick wrong plans (shuffle where broadcast belonged). Long transactions holding locks can block VACUUM — a &quot;too busy to maintain&quot; deadlock.</li>
+<li>Selection meaning: auto-VACUUM/ANALYZE are on by default but don&#x27;t fully trust them — run big tables manually in off-peak windows; put <code>STL_VACUUM</code> monitoring on the checklist.</li>
+<li>Sources: official docs + community consensus.</li>
+</ul>
+<p><strong>Deep dive 3: Serverless RPU billing — elastic doesn&#x27;t mean cheap</strong></p>
+<ul>
+<li>Domain: cost model.</li>
+<li>Mechanism in one line: Serverless bills per RPU-hour (8–512 RPU auto-scaling, per-second billing with 60-second minimum) plus a baseline RPU floor cost.</li>
+<li>At the edge: the floor means &quot;a baseline bill even at zero usage&quot;; auto-scaling spikes RPUs on spiky loads while scale-down lags; for 7×24 heavy steady loads, Serverless often totals more than reserved RA3 clusters — &quot;carefree&quot; ≠ &quot;cheap&quot;.</li>
+<li>Selection meaning: POCs must run real workloads against both shapes; use <code>SYS_SERVERLESS_USAGE</code> with query labels for attribution; price reserved RA3 first for steady loads.</li>
+<li>Sources: official docs (Serverless pricing) + community practice.</li>
+</ul>
+<p><strong>Deep dive 4: Spectrum scan billing — the cost of <code>SELECT *</code></strong></p>
+<ul>
+<li>Domain: cost model.</li>
+<li>Mechanism in one line: Spectrum bills per TB scanned — S3-lake queries bypass Redshift compute resources.</li>
+<li>At the edge: an unpruned, select-all ad-hoc query scans tens of TB; an analyst dragging &quot;the whole table&quot; in a BI tool is a billing incident. Parquet/ORC columnar + partitioning is the only legitimate way to save money; raw CSV/JSON scans burn it.</li>
+<li>Selection meaning: the S3 lake must be governed by partition and format discipline per query patterns; put scan-volume alerts on analysts&#x27; Spectrum access.</li>
+<li>Sources: official docs (Spectrum pricing) + community consensus.</li>
+</ul>
+<p><strong>Deep dive 5: WLM queues and concurrency — the art of queuing in MPP</strong></p>
+<ul>
+<li>Domain: concurrency management.</li>
+<li>Mechanism in one line: Workload Management (WLM) routes queries into queues with configured concurrency, memory share and timeouts.</li>
+<li>At the edge: with the default queue, giant ETL queries and tiny BI queries queue against each other; under-provisioned memory spills queries to disk (10× slower); misconfiguration produces the classic &quot;cluster is idle but queries are queuing&quot; mystery. Concurrency Scaling rescues, but bills per second.</li>
+<li>Selection meaning: isolate queues by workload profile (ETL/BI/ad-hoc); watching <code>STV_WLM_QUERY_STATE</code> for queuing is a daily habit.</li>
+<li>Sources: official docs + community consensus.</li>
+</ul>
+<p><strong>Deep dive 6: DC2→RA3 migration — the mandatory question for legacy users</strong></p>
+<ul>
+<li>Domain: upgrade migration.</li>
+<li>Mechanism in one line: DC2 is local-disk (coupled) architecture, RA3 is disaggregated; snapshot restore migrates across node types.</li>
+<li>At the edge: DC2 clusters hitting local-disk ceilings can only add nodes (expensive and slow); migrating to RA3 needs snapshot-restore rehearsals and re-validation of distkey/sortkey behavior on the new architecture; DS2 is retired and DC2 is being marginalized — delay is tech debt.</li>
+<li>Selection meaning: new deployments go straight to RA3 or Serverless; legacy DC2 users should put migration on the roadmap.</li>
+<li>Sources: official docs + community consensus.</li>
+</ul>
+<p><strong>Deep dive 7: AWS lock-in — can you ever leave</strong></p>
+<ul>
+<li>Domain: vendor lock-in.</li>
+<li>Mechanism in one line: Redshift has no open-source/self-hosted edition — the SQL dialect, Spectrum, Zero-ETL and data sharing are all AWS-proprietary capabilities.</li>
+<li>At the edge: leaving AWS means rewriting ETL (Glue→alternatives), rebuilding BI connections, and paying egress to move data out of S3; &quot;PG-like dialect&quot; lowers learning cost, not migration cost.</li>
+<li>Selection meaning: choosing Redshift is choosing AWS — make &quot;could we go multi-cloud in 3–5 years&quot; an up-front question.</li>
+<li>Sources: community consensus.</li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="用户最买账的 5 点" data-en="What users love most">用户最买账的 5 点</span></h2>
+<div class="lang-block lang-zh">
+<ol>
+<li><strong>Spectrum：冷数据不进仓也能查</strong> 为什么是真的：S3 数据湖一份数据，Athena/EMR/Redshift 都能查；分区裁剪 + 列式格式下即席查询又快又省。 边缘与失效条件：不做分区与格式治理就是账单黑洞；高频生产查询仍要入仓。 来源：官方文档 + 社区共识。观察版本：滚动发布（2026-09）。</li>
+<li><strong>Zero-ETL：Aurora/DynamoDB 分钟级同步</strong> 为什么是真的：免建管道、免运维，操作库变更自动流进数仓，不收额外集成费。 边缘与失效条件：分钟级延迟，不是实时；只覆盖 AWS 自家源；初始同步大表要窗口。 来源：官方文档。观察版本：滚动发布（2026-09）。</li>
+<li><strong>PG 方言：学习成本低</strong> 为什么是真的：PG 8 语法、psql、JDBC 工具链直接沿用，DBA 上手快。 边缘与失效条件：&quot;像而不全&quot;——部分 PG 特性不支持，迁移与开发时要按 Redshift 文档逐项确认。 来源：官方文档 + 社区共识。观察版本：滚动发布（2026-09）。</li>
+<li><strong>Serverless：免集群运维</strong> 为什么是真的：不用管节点、补丁、扩缩容，RPU 自动伸缩，波动负载场景开箱即用。 边缘与失效条件：RPU 下限常驻成本；稳态重载总账可能贵过预留 RA3；仍要做 RPU 归因治理。 来源：官方文档 + 社区实践。观察版本：滚动发布（2026-09）。</li>
+<li><strong>AWS 生态闭环：从 ingestion 到 BI 一条龙</strong> 为什么是真的：Glue/Firehose 进、Redshift 算、QuickSight/Tableau 出，IAM 一套身份，CloudTrail 一套审计。 边缘与失效条件：闭环=锁定；跨云/多云组织拿不到这部分红利。 来源：官方文档 + 社区共识。观察版本：滚动发布（2026-09）。</li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<ol>
+<li><strong>Spectrum: cold data queryable without loading</strong> Why it&#x27;s real: one S3 dataset serves Athena/EMR/Redshift; with partition pruning and columnar formats, ad-hoc queries are fast and cheap. Edge and failure conditions: without partition/format governance it&#x27;s a billing black hole; high-frequency production queries still belong in the warehouse. Sources: official docs + community consensus. Observed: rolling release (2026-09).</li>
+<li><strong>Zero-ETL: minute-level sync from Aurora/DynamoDB</strong> Why it&#x27;s real: no pipeline to build or operate; operational changes flow into the warehouse automatically at no extra integration fee. Edge and failure conditions: minute-level latency, not real-time; AWS-native sources only; large-table initial syncs need a window. Sources: official docs. Observed: rolling release (2026-09).</li>
+<li><strong>PG dialect: low learning curve</strong> Why it&#x27;s real: PG-8 syntax, psql and JDBC tooling carry over; DBAs ramp up fast. Edge and failure conditions: &quot;resembles, not equals&quot; — some PG features unsupported; verify against Redshift docs item by item during migration and development. Sources: official docs + community consensus. Observed: rolling release (2026-09).</li>
+<li><strong>Serverless: no cluster ops</strong> Why it&#x27;s real: no nodes, patches or scaling to manage; RPUs auto-scale; spiky workloads work out of the box. Edge and failure conditions: baseline RPU floor cost; heavy steady loads may total more than reserved RA3; RPU attribution governance still required. Sources: official docs + community practice. Observed: rolling release (2026-09).</li>
+<li><strong>AWS closed loop: ingestion to BI in one ecosystem</strong> Why it&#x27;s real: Glue/Firehose in, Redshift compute, QuickSight/Tableau out — one IAM identity, one CloudTrail audit trail. Edge and failure conditions: closed loop = lock-in; multi-cloud organizations capture none of this benefit. Sources: official docs + community consensus. Observed: rolling release (2026-09).</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="吐槽清单" data-en="Complaints">吐槽清单</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>分类</th><th>吐槽</th><th>影响版本</th><th>状态</th></tr></thead>
+<tbody>
+<tr><td>成本</td><td>Serverless RPU 账单难预测，RPU 下限常驻 + 扩缩滞后，稳态重载可能贵过预留 RA3</td><td>全版本</td><td>open</td></tr>
+<tr><td>成本</td><td>Spectrum 按扫描计费，一次没做分区裁剪的大查询就是账单事故</td><td>全版本</td><td>open</td></tr>
+<tr><td>成本</td><td>快照存储按量计费，保留期过长成隐形账单</td><td>全版本</td><td>open</td></tr>
+<tr><td>运维</td><td>VACUUM/ANALYZE 是必修课，不做查询逐步劣化；长事务阻塞 VACUUM 是常见故障</td><td>全版本</td><td>open</td></tr>
+<tr><td>运维</td><td>distkey/sortkey 建表时选错，事后改代价高（重建表）</td><td>全版本</td><td>open</td></tr>
+<tr><td>并发</td><td>WLM 队列配错导致&quot;集群很空但查询排队&quot;的玄学问题</td><td>全版本</td><td>open</td></tr>
+<tr><td>兼容</td><td>PG&quot;像而不全&quot;，部分函数/特性不支持，迁移时要逐项核对</td><td>全版本</td><td>open</td></tr>
+<tr><td>升级</td><td>DC2 老用户面临迁移 RA3/Serverless，DS2 已退役，拖延=技术债</td><td>迁移期</td><td>open</td></tr>
+<tr><td>锁定</td><td>无开源/自建版本，深度绑定 AWS，多云组织慎选</td><td>全版本</td><td>open</td></tr>
+<tr><td>网络</td><td>跨区 S3 访问、快照跨区复制有延迟与流量费</td><td>全版本</td><td>open</td></tr>
+<tr><td>连接</td><td>预置集群并发连接上限，高并发小查询场景要规划</td><td>全版本</td><td>open</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Category</th><th>Complaint</th><th>Affected</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Cost</td><td>Serverless RPU bills are hard to predict — baseline floor plus scale-up lag; heavy steady loads can exceed reserved RA3</td><td>All versions</td><td>open</td></tr>
+<tr><td>Cost</td><td>Spectrum per-scan billing — one unpruned large query is a billing incident</td><td>All versions</td><td>open</td></tr>
+<tr><td>Cost</td><td>Snapshot storage metered — over-long retention becomes a stealth line item</td><td>All versions</td><td>open</td></tr>
+<tr><td>Ops</td><td>VACUUM/ANALYZE are mandatory homework — skipped maintenance degrades queries; long transactions blocking VACUUM is a classic failure</td><td>All versions</td><td>open</td></tr>
+<tr><td>Ops</td><td>Wrong distkey/sortkey at CREATE TABLE time is expensive to fix later (table rebuild)</td><td>All versions</td><td>open</td></tr>
+<tr><td>Concurrency</td><td>Misconfigured WLM queues produce &quot;cluster idle but queries queuing&quot; mysteries</td><td>All versions</td><td>open</td></tr>
+<tr><td>Compatibility</td><td>PG &quot;resembles but not equal&quot; — some functions/features unsupported, verify item by item</td><td>All versions</td><td>open</td></tr>
+<tr><td>Upgrade</td><td>DC2 legacy users face RA3/Serverless migration; DS2 retired; delay is tech debt</td><td>Migration period</td><td>open</td></tr>
+<tr><td>Lock-in</td><td>No open-source/self-hosted edition — deep AWS binding, multi-cloud orgs beware</td><td>All versions</td><td>open</td></tr>
+<tr><td>Network</td><td>Cross-region S3 access and cross-region snapshot copies add latency and transfer fees</td><td>All versions</td><td>open</td></tr>
+<tr><td>Connections</td><td>Provisioned-cluster concurrency/connection limits need planning for high-concurrency small-query workloads</td><td>All versions</td><td>open</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="判决" data-en="Verdict">判决</span></h2>
+<div class="lang-block lang-zh">
+<p><strong>适合谁</strong>：AWS 重度用户——已有 S3 数据湖、Aurora/DynamoDB 操作库，想&quot;AWS 生态内闭环&quot;；PB 级批处理分析；能接受 MPP 物理设计心智（或直接用 Serverless）；有 FinOps 意识管 RPU/扫描账单的团队。</p>
+<p><strong>不适合谁</strong>：多云/跨云组织；毫秒级点查、高并发小查询；&quot;开了就行&quot;不想做物理设计与运维、也不想治理账单的团队；强监管要求本地化部署；预算刚性、对&quot;账单可预测性&quot;要求高于弹性的组织。</p>
+<p><strong>迁移成本</strong>：中等。从传统数仓（Teradata/Oracle）迁来，SCT 评估 + SQL 改写是主要工作；从 Hadoop/Spark 迁来，范式差异大（MPP vs 分布式计算），ETL 要重写。真正的长期成本不在迁移，在持续的物理设计调优与账单治理。</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<p><strong>Good for</strong>: heavy AWS users — existing S3 data lakes, Aurora/DynamoDB operational stores, wanting an &quot;inside-AWS closed loop&quot;; PB-scale batch analytics; teams that accept the MPP physical-design mindset (or go straight to Serverless); teams with FinOps discipline for RPU/scan bills.</p>
+<p><strong>Not for</strong>: multi-cloud organizations; millisecond point lookups and high-concurrency tiny queries; teams wanting &quot;turn it on and forget it&quot; without physical-design tuning or bill governance; strict regulatory on-premises requirements; organizations where bill predictability matters more than elasticity.</p>
+<p><strong>Migration cost</strong>: Medium. From legacy warehouses (Teradata/Oracle), SCT assessment plus SQL rewriting is the main work; from Hadoop/Spark, the paradigm gap (MPP vs distributed compute) is large and ETL needs rewriting. The real long-term cost isn&#x27;t migration — it&#x27;s ongoing physical-design tuning and bill governance.</p>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="来源与待验证清单" data-en="Sources & to-be-verified">来源与待验证清单</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li>官方文档：AWS Redshift 管理指南/开发指南（RA3、Serverless、Spectrum、Zero-ETL、数据共享、WLM、VACUUM）。</li>
+<li>第三方分析：AWS 官方博客、re:Invent 分享、社区成本优化实践（RPU/Spectrum 计费模型描述）。</li>
+<li>本轮明确未覆盖：各区域具体 RPU/节点目录价（易变，未引用绝对价格）、Serverless 各区域 RPU 下限差异——标待验证，未写入结论。</li>
+<li>v1.0（2026-09-29）：首版建档。<code>last_reviewed: 2026-09-29</code>，评审对象为 Redshift 滚动发布版本。</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li>Official docs: AWS Redshift management/developer guides (RA3, Serverless, Spectrum, Zero-ETL, data sharing, WLM, VACUUM).</li>
+<li>Third-party: AWS official blog, re:Invent talks, community cost-optimization practice (RPU/Spectrum metering-model descriptions).</li>
+<li>Explicitly not covered this round: per-region RPU/node list prices (volatile, no absolute figures quoted), per-region Serverless RPU floor differences — marked to be verified, not written into conclusions.</li>
+<li>v1.0 (2026-09-29): first profile. <code>last_reviewed: 2026-09-29</code>, reviewing the Redshift rolling release.</li>
+</ul>
+</div>
+</section>
+</main>
+<footer class="footer">
+  <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
+</footer>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "redshift", "name": "Amazon Redshift", "domain": "olap"}, {"slug": "bigquery", "name": "Google BigQuery", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

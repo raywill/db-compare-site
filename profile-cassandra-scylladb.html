@@ -173,6 +173,140 @@
 <li>Cassandra 4.0+：cdc_enabled 提交日志式 CDC，需自行消费 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>Debezium 有 Cassandra/Scylla 连接器（社区成熟度不一）<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL 与数据生命周期管理 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（列级/表级原生 TTL，写入时指定）。</p>
+<ul>
+<li>INSERT/UPDATE 可带 USING TTL（列级过期），表级 default_time_to_live <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>过期数据靠 compaction 回收，墓碑（tombstone）堆积会拖慢读 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>TTL 重度场景建议调小 gc_grace_seconds 并监控 tombstone 比例 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（加列轻量但 schema 变更最终一致）。</p>
+<ul>
+<li>加列是轻量元数据操作，但 schema 变更在集群内最终一致，混合版本期读写可能异常 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>不支持删列后重建同名列等操作，schema 演进约束多 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>ScyllaDB 的 schema 变更做了 Raft 化改进，一致性更好 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（keyspace 逻辑隔离；无资源限流）。</p>
+<ul>
+<li>keyspace 做逻辑隔离，但无 CPU/IO 限流，一个租户可拖慢全集群 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>ScyllaDB 有 workload 优先级调度，比开源 Cassandra 好一些 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> 跨地域多活 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（多 DC 原生，副本策略跨机房）。</p>
+<ul>
+<li>NetworkTopologyStrategy 按 DC 放副本，天然跨地域 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>LOCAL_QUORUM 就近读写，EACH_QUORUM 强一致但延迟高 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>跨区延迟直接加到写路径，机房间网络质量决定体验 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> 高可用架构与 RTO/RPO <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（无单点；节点故障自动绕过）。</p>
+<ul>
+<li>对等架构无主节点，单节点故障客户端自动绕过，RTO≈0（读/写按一致性级别降级）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>RPO 取决于一致性级别，ONE 级别可能丢数 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>hinted handoff + 修复保障最终一致 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> 行级安全与数据脱敏 <span class="verdict v-no">无</span></h3><div class="dim-body"><p><strong>无</strong>（无原生行级安全与脱敏）。</p>
+<ul>
+<li>Cassandra / ScyllaDB 无原生行级安全与动态脱敏 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>权限只到 keyspace / table 级，无列级权限 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>行级隔离靠应用层或不同 keyspace 物理隔离 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON 与半结构化能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（集合类型；JSON 文本存取）。</p>
+<ul>
+<li>CQL 有 map/list/set 集合类型，可表达嵌套结构 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无原生 JSON 类型；ScyllaDB 支持 INSERT/SELECT JSON 语法糖，底层仍为文本/集合 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>集合过大导致分区膨胀，生产建议控制元素数量 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> 全文检索能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（SASI 非分词；生产多外挂 ES）。</p>
+<ul>
+<li>SASI 二级索引支持前缀/contains 匹配，但非分词全文检索 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>生产全文场景普遍外挂 ES/Solr，数据双写一致性自负 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> 存储效率与压缩 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（LSM+SSTable 压缩；写放大显著）。</p>
+<ul>
+<li>LSM 架构下 SSTable 支持多种压缩（LZ4/Snappy/Deflate/ZSTD），压缩比高。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>LSM 写放大（compaction 反复重写）是存储效率的主要损耗，需调优压缩策略与 compaction。<span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span></li>
+<li>ScyllaDB 的分片-per-core 架构减少 compaction 抖动，压缩效率更稳定。<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> 开源协议与厂商锁定风险 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（Cassandra 开源；ScyllaDB 双版本）。</p>
+<ul>
+<li>Apache Cassandra 为 Apache 2.0 社区开源，无协议变更黑历史。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>ScyllaDB 采用开源/企业双版本策略，企业版部分高级特性闭源，存在功能分层。<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+<li>两者协议兼容（CQL），生态可互替，锁定风险低。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> 查询优化器与计划稳定性 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（无 CBO：靠建模，计划简单可预测）。</p>
+<ul>
+<li>Cassandra 无代价优化器，查询性能由数据建模（分区键设计）决定，计划可预测但无自动优化 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>ALLOW FILTERING 全表扫描是经典生产事故源 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>ScyllaDB 保持 CQL 兼容，同样无 CBO <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> 参数调优与自治能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（Cassandra 参数上百；ScyllaDB 自调优）。</p>
+<ul>
+<li>cassandra.yaml 上百参数，调优高度依赖建模与 compaction 策略 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>ScyllaDB 按分片自动调优，运维负担明显更低 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>诊断靠 nodetool/JMX，自治能力弱 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> 静默数据损坏防护 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（SSTable 读写压缩时校验，无页级自愈）。</p>
+<ul>
+<li>SSTable 在压缩与读写路径带校验，发现损坏可丢弃坏文件并从副本重建。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>无 InnoDB 式的常驻页 checksum 开关；副本间分歧靠 repair / read-repair 收敛。<span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span></li>
+<li>静默损坏若恰好落在所有副本同一位置，可能长期潜伏。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> 存储过程/触发器/过程语言 <span class="verdict v-no">无</span></h3><div class="dim-body"><p><strong>无</strong>（查证为无存储过程/触发器）。</p>
+<ul>
+<li>CQL 无存储过程、触发器、过程语言（查证为无）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>逻辑只能放在应用层或 Spark/DSE Analytics 侧 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> 约束与数据完整性 <span class="verdict v-no">无</span></h3><div class="dim-body"><p><strong>无</strong>（无外键/CHECK；应用层保证）。</p>
+<ul>
+<li>无外键、CHECK、唯一约束（轻量事务仅条件写入）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>完整性靠应用层与反范式数据建模保证 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> 分析 SQL 完备性 <span class="verdict v-no">无</span></h3><div class="dim-body"><p><strong>无</strong>（CQL 无窗口函数/CTE）。</p>
+<ul>
+<li>CQL 无窗口函数、CTE、JOIN（查证为无）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>分析靠 Spark 连接器或 DSE Analytics <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> 被遗忘权与数据擦除 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（墓碑残留；gc_grace_seconds窗口）。</p>
+<ul>
+<li>DELETE 写墓碑（tombstone），在 gc_grace_seconds（默认 10 天）内物理残留，压缩后才彻底消失 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>墓碑堆积会引发读放大与“僵尸数据”复活风险，是运维与合规的双重坑 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span></li>
+<li>快照、增量备份、repair 流转的数据都会延长残留期 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>无擦除证明，GDPR 场景需编排“删除 + 等待 GC + 清理快照” <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> 数据血缘与目录集成 <span class="verdict v-no">无</span></h3><div class="dim-body"><p><strong>无</strong>（查证为无原生血缘）。</p>
+<ul>
+<li>无原生数据血缘/目录功能 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>需第三方数据治理平台对接 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> 存算分离 vs 存算一体 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（存算一体：本地盘 LSM）。</p>
+<ul>
+<li>经典存算一体：每节点本地盘存 SSTable，扩缩容需数据重分布 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>本地盘带来高吞吐与低延迟，但弹性差 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> 多模能力 <span class="verdict v-no">无</span></h3><div class="dim-body"><p><strong>无</strong>（宽列+集合类型，无向量/全文/图）。</p>
+<ul>
+<li>模型限宽列、集合/UDT，无原生向量、全文、图能力 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Stargate 等网关可转协议但不改变模型 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps 成本可观测性 <span class="verdict v-neutral">不适用</span></h3><div class="dim-body"><p><strong>不适用</strong>（自建无计费，成本=硬件+运维人力自理）。</p>
+<ul>
+<li>开源自建无内置计费概念，成本是节点硬件、存储与运维人力。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>托管版（如 Astra DB）可在云账单侧做标签归因。<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> 驱动与多语言生态 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（DataStax 驱动矩阵全；JDBC 靠 Simba）。</p>
+<ul>
+<li>DataStax 官方 Java/Python/Node/Go/C# 驱动成熟 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>JDBC/ODBC 靠 Simba 等第三方驱动 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> 物化视图 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（物化视图限制多，运维负担重）。</p>
+<ul>
+<li>支持物化视图，但基表写入放大、修复运维负担重，限制多 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>社区普遍建议用应用层双写宽表替代 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> 支持跨云 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（开源任意云；ScyllaDB Cloud 多云）。</p>
+<ul>
+<li>开源版任意云/自建可部署，无厂商绑定 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>ScyllaDB Cloud 支持 AWS/GCP，跨云靠自建集群 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>跨云延迟进 gossip/复制路径，网络质量关键 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
 <div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><ul>
@@ -261,6 +395,140 @@
 <li>ScyllaDB: per-table CDC writes changes to dedicated log tables for consumption <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Cassandra 4.0+: commitlog-based CDC via cdc_enabled, self-consumed <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Debezium has Cassandra/Scylla connectors (community maturity varies) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL &amp; data lifecycle <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Native column-/table-level TTL set at write time).</p>
+<ul>
+<li>INSERT/UPDATE accept USING TTL per column; default_time_to_live per table <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Expired data is reclaimed by compaction; tombstone buildup hurts read performance <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>For TTL-heavy workloads lower gc_grace_seconds and watch tombstone ratios <code>(community tested)</code>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Lightweight add-column but eventually-consistent schema changes).</p>
+<ul>
+<li>Adding a column is a lightweight metadata op, but schema changes propagate eventually — mixed-version reads/writes can misbehave <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Many restrictions (e.g. no re-adding a dropped column name); schema evolution is constrained <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>ScyllaDB Raft-ified schema changes for better consistency <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> Multi-tenancy &amp; resource isolation <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Keyspace logical isolation; no resource throttling).</p>
+<ul>
+<li>Keyspaces isolate logically, but with no CPU/IO throttling one tenant can slow the whole cluster <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>ScyllaDB adds workload-priority scheduling, better than open-source Cassandra <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> Cross-region active-active <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Native multi-DC; replica strategy spans sites).</p>
+<ul>
+<li>NetworkTopologyStrategy places replicas per DC — cross-region by design <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>LOCAL_QUORUM for local reads/writes; EACH_QUORUM for strong consistency at high latency <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Cross-region latency lands directly on the write path; inter-DC network quality decides the experience <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> HA &amp; RTO/RPO <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (No single point; failed nodes bypassed automatically).</p>
+<ul>
+<li>Peer architecture has no primary; clients bypass failed nodes automatically — RTO≈0 (reads/writes degrade per consistency level) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>RPO follows the consistency level; ONE can lose data <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Hinted handoff + repair ensure eventual consistency <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> Row-level security &amp; masking <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><p><strong>Not supported</strong> (No native RLS/masking).</p>
+<ul>
+<li>Cassandra / ScyllaDB has no native row-level security or dynamic masking <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Privileges stop at keyspace / table level; no column-level privileges <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Row isolation relies on the app layer or physical isolation across keyspaces <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON &amp; semi-structured <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Collections; JSON as text).</p>
+<ul>
+<li>CQL map/list/set collections express nested structures <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No native JSON type; ScyllaDB offers INSERT/SELECT JSON syntax over text/collections <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Oversized collections bloat partitions; keep element counts bounded <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> Full-text search <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (SASI is not tokenized; ES common).</p>
+<ul>
+<li>SASI secondary indexes do prefix/contains matching, not tokenized full-text <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Production full-text usually offloads to ES/Solr; dual-write consistency is on you <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> Storage efficiency &amp; compression <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (LSM plus SSTable compression; notable write amplification).</p>
+<ul>
+<li>Under LSM architecture, SSTables support multiple compressors (LZ4/Snappy/Deflate/ZSTD) with high ratios. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>LSM write amplification (compaction repeatedly rewriting data) is the main storage-efficiency cost; compression strategy and compaction need tuning. <code>(community tested)</code></li>
+<li>ScyllaDB&#x27;s shard-per-core architecture reduces compaction jitter for more stable compression efficiency. <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> OSS license &amp; lock-in risk <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Cassandra open; ScyllaDB dual-edition).</p>
+<ul>
+<li>Apache Cassandra is community open source under Apache 2.0 with no license-change history. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>ScyllaDB uses an open-source/enterprise dual-edition strategy, with some advanced features closed in the enterprise edition — a feature-tier split. <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+<li>Both speak CQL and are ecosystem-interchangeable, keeping lock-in risk low. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> Optimizer &amp; plan stability <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (No CBO: modeling decides; simple predictable plans).</p>
+<ul>
+<li>Cassandra has no cost-based optimizer; performance comes from data modeling (partition keys) — predictable but not auto-optimized <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>ALLOW FILTERING full scans are a classic production incident source <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>ScyllaDB stays CQL-compatible, likewise no CBO <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> Tuning &amp; autonomy <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Cassandra: 100+ params; ScyllaDB self-tuning).</p>
+<ul>
+<li>cassandra.yaml holds 100+ parameters; tuning hinges on modeling and compaction strategy <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>ScyllaDB self-tunes per shard, much lower ops burden <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Diagnostics via nodetool/JMX; weak autonomy <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> Silent corruption protection <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (SSTable checks on read/compact).</p>
+<ul>
+<li>SSTables carry checks along read and compaction paths; corrupt files can be dropped and rebuilt from replicas. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>No always-on page checksum switch like InnoDB; replica divergence converges via repair / read-repair. <code>(community tested)</code></li>
+<li>Silent corruption landing on the same spot in all replicas can lurk undetected for a long time. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> Stored procedures &amp; triggers <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><p><strong>Not supported</strong> (Verified: no procedures/triggers).</p>
+<ul>
+<li>No stored procedures, triggers, or procedural language in CQL (verified absent) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Logic lives in the app layer or Spark/DSE Analytics side <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> Constraints &amp; integrity <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><p><strong>Not supported</strong> (No FK/CHECK; app-enforced).</p>
+<ul>
+<li>No FK, CHECK, or unique constraints (LWT is conditional write only) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Integrity via app layer and denormalized modeling <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> Analytical SQL <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><p><strong>Not supported</strong> (No windows/CTEs in CQL).</p>
+<ul>
+<li>No window functions, CTEs, or JOINs in CQL (verified absent) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Analytics via Spark connector or DSE Analytics <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> Right to erasure <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Tombstone residue; gc_grace_seconds window).</p>
+<ul>
+<li>DELETE writes tombstones that physically persist through gc_grace_seconds (default 10 days) until compaction removes them <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Tombstone buildup causes read amplification and zombie-data resurrection risk, a double pitfall for ops and compliance <code>(community tested)</code></li>
+<li>Snapshots, incremental backups, and repair-streamed data all extend the residue window <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>No erasure attestation; GDPR scenarios must orchestrate delete plus GC wait plus snapshot cleanup <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> Data lineage &amp; catalog <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><p><strong>Not supported</strong> (Verified: no native lineage).</p>
+<ul>
+<li>No native data lineage/catalog features <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Requires third-party data governance platforms <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> Storage-compute architecture <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Coupled: local-disk LSM).</p>
+<ul>
+<li>Classic coupled design: each node keeps SSTables on local disks; scaling reshuffles data <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Local disks give high throughput/low latency but poor elasticity <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> Multi-model <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><p><strong>Not supported</strong> (Wide-column + collections only).</p>
+<ul>
+<li>Model limited to wide-column, collections/UDTs; no native vector, full-text, or graph <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Gateways like Stargate translate protocols without changing the model <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps &amp; cost observability <span class="verdict v-neutral">N/A</span></h3><div class="dim-body"><p><strong>N/A</strong> (No metering; hardware plus labor).</p>
+<ul>
+<li>Self-hosted open source has no built-in metering; costs are node hardware, storage, and operations labor. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Managed editions (e.g. Astra DB) expose cost attribution on the cloud billing side. <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> Drivers &amp; clients <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Full DataStax driver matrix; JDBC/ODBC via Simba).</p>
+<ul>
+<li>Mature official Java/Python/Node/Go/C# drivers from DataStax <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>JDBC/ODBC rely on third-party drivers like Simba <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> Materialized views <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (MVs with many limits).</p>
+<ul>
+<li>Materialized views exist but amplify writes and burden repairs, with many limits <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Community often prefers app-level dual-written wide tables <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> Multi-cloud support <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Open source on any cloud; ScyllaDB Cloud multi-cloud).</p>
+<ul>
+<li>Open source deploys on any cloud/self-hosted; no vendor lock <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>ScyllaDB Cloud covers AWS/GCP; cross-cloud via self-hosted clusters <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Cross-cloud latency hits gossip/replication; network quality is key <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
 </div>
 </section>
@@ -548,7 +816,7 @@
 <footer class="footer">
   <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
 </footer>
-<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "redshift", "name": "Amazon Redshift", "domain": "olap"}, {"slug": "bigquery", "name": "Google BigQuery", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
 
 <script src="assets/app.js"></script>
 </body>

@@ -196,6 +196,118 @@
 <li>新方向：Lakebase（Databricks 的 Postgres 兼容 OLTP）→ Delta 的 Lakehouse Sync 原生 CDC，无需外部作业即可把操作库变更流进数仓 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
 <li>下游：出湖仓可经 Delta Sharing、JDBC/ODBC、或写回 Kafka/对象存储；CDC 链路延迟通常在秒到分钟级，不是毫秒级同步 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL 与数据生命周期管理 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>Delta 表可设保留期，VACUUM 按保留期清理旧文件版本 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>流式表/物化视图的增量过期逻辑需自己写清理任务 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>VACUUM 默认 7 天保留期防并发读写冲突，调小有风险 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>Delta Lake 支持 schema 自动演进与 mergeSchema，流批写入加列不中断 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>列改名/改类型需 overwrite 或 column mapping，有代价 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Unity Catalog 下表结构变更可审计 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>工作区、集群/ SQL Warehouse 按团队隔离，Unity Catalog 做数据权限 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>计算资源按集群/仓库隔离，noisy neighbor 天然规避 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>成本归因到工作区/集群标签，FinOps 友好 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> 跨地域多活 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>Delta Sharing 可跨区/跨云共享数据读 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>写仍是单工作区/单区，无多活写入语义 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>region 容灾靠工作区备份重建，RTO 看数据量 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> 高可用架构与 RTO/RPO <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>控制平面托管高可用，计算集群故障可重建恢复 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Delta Lake 的 ACID 让任务重跑不脏数据，RPO 靠检查点 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>SLA 是平台级，具体 RTO 看集群重建时间 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> 行级安全与数据脱敏 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>Databricks Unity Catalog 提供 Row Filters（行过滤）与 Column Masks（列掩码），SQL 定义、集中治理 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>支持列级权限与动态视图 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>仅 Unity Catalog 治理的表生效；外部表 / 旧 Hive metastore 路径是绕过面 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON 与半结构化能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>VARIANT 半结构化类型（Photon），schema-on-read，自动演进 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>VARIANT 查询性能弱于规整列，热点路径建议规整化 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> 全文检索能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>Databricks SQL 无传统全文索引 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>文本检索靠向量搜索/AI 检索，关键词精确检索弱 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> 存储效率与压缩 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>Delta Lake 基于 Parquet 列存，默认 ZSTD/Snappy 压缩，压缩比高。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Photon 引擎与自动 OPTIMIZE（Z-Order、自动压缩）进一步提升存储与查询效率。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>开放格式下压缩参数用户可调，透明度高于纯黑盒云数仓。<span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> 开源协议与厂商锁定风险 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>Delta Lake、Spark 等核心技术开源（Apache 2.0），数据以开放格式（Delta/Parquet）存储，可迁出。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Databricks 平台（Runtime 优化、Unity Catalog、AI 功能）为闭源，深度使用后存在平台绑定。<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+<li>开放格式是实质缓解：数据本身不被锁定，锁定的是计算与治理层。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> 查询优化器与计划稳定性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>Photon 引擎 + Spark CBO，自适应查询执行（AQE）运行时调优 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>支持 Spark SQL hint 干预计划 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>计划翻转少于传统数仓，但 AQE 行为不透明难排查 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> 参数调优与自治能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>Photon 自动向量化，Liquid Clustering 自动数据布局，调参极少 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>自动优化（auto optimize/compaction）后台进行 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>集群规格选择仍是成本主因 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> 静默数据损坏防护 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>数据文件落云对象存储，完整性依赖云厂商底层校验与冗余。<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+<li>Delta Lake 提供事务日志与版本化，逻辑损坏可回滚版本，但非静默位损坏检测。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>无用户可配的页/块校验开关，损坏审计依赖云厂商。<span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> 存储过程/触发器/过程语言 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>无传统存储过程；靠 Notebooks/Workflows 编排，DBSQL 有脚本能力 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>去 O 迁移时 PL/SQL 逻辑需重写为作业流 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> 约束与数据完整性 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>Delta 支持 NOT NULL/CHECK（有限），主键/外键为信息性不强制 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>完整性靠写入链路（DLT expectations）保证 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> 分析 SQL 完备性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>Spark SQL 窗口函数、CTE 完备，分析函数丰富 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>递归 CTE 支持有限，复杂递归改写为迭代作业 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> 被遗忘权与数据擦除 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>Delta Lake 的 Time Travel 使被删数据在保留期（默认 7 天）内可恢复；VACUUM 可清旧文件但有最小保留限制 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>VACUUM 默认阻止删除 7 天内的文件，“立即擦除”需调参并承担破坏并发读取的风险 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>备份、Delta Sharing 共享副本延长残留面 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>无原生擦除证明 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> 数据血缘与目录集成 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>Unity Catalog 提供表/列级血缘、数据发现，自动采集 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>血缘覆盖 notebook/作业/SQL 全链路 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> 存算分离 vs 存算一体 <span class="verdict v-yes">有（存算分离：云存储+弹性集群）</span></h3><div class="dim-body"><ul>
+<li>数据存云对象存储，计算集群弹性启停、独立扩缩 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Serverless SQL 仓库进一步解耦 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>跨云账户存储访问需网络配置 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> 多模能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>Delta Lake：结构化、半结构化 JSON、Vector Search、MLflow 模型 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无原生图/全文检索引擎 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps 成本可观测性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>按 DBU（Databricks Unit）计量，支持按工作区/集群/作业归因用量。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>预算策略（budget policies）可限自定义标签的支出上限，超限告警。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>账单可导出做 FinOps 分析，是湖仓场景的成本可观测标杆之一。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> 驱动与多语言生态 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>官方 JDBC/ODBC（Simba）、databricks-sql-connector（Python）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>BI 工具生态（dbt/PowerBI/Tableau）完备 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> 物化视图 <span class="verdict v-yes">有（物化视图+DLT，增量自动刷新）</span></h3><div class="dim-body"><ul>
+<li>Databricks SQL 物化视图与 DLT 管道，增量刷新、查询自动改写 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>刷新按计算资源计费，频繁刷新小表注意成本 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> 支持跨云 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>同一平台横跨 AWS/Azure/GCP，是其核心卖点 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Delta Sharing 可跨云共享数据 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>跨云有数据传输费，大表要算账 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
 <div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (cloud SSE + optional customer-managed keys).</p>
@@ -331,6 +443,142 @@
 <li>DLT/Lakeflow pipelines: <code>APPLY CHANGES INTO</code> consumes upstream CDC directly into SCD Type 1/2 historization <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>New direction: Lakebase (Databricks&#x27; Postgres-compatible OLTP) to Delta via Lakehouse Sync — native CDC streaming operational changes into the warehouse with no external jobs <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
 <li>Downstream: exit via Delta Sharing, JDBC/ODBC, or write-back to Kafka/object storage; CDC pipeline latency is typically seconds to minutes, not millisecond sync <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL &amp; data lifecycle <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Delta retention + VACUUM; custom cleanup for streaming).</p>
+<ul>
+<li>Delta tables support retention periods; VACUUM reclaims old file versions per retention <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Streaming tables/materialized views need custom cleanup jobs for expiry logic <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>VACUUM defaults to 7-day retention to protect concurrent readers; lowering it is risky <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Delta schema evolution / mergeSchema).</p>
+<ul>
+<li>Delta Lake supports automatic schema evolution and mergeSchema; streaming/batch writes tolerate new columns <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Renames / type changes need overwrite or column mapping, at a cost <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Schema changes are auditable under Unity Catalog <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> Multi-tenancy &amp; resource isolation <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Workspace/cluster isolation + Unity Catalog).</p>
+<ul>
+<li>Workspaces, clusters / SQL warehouses isolate teams; Unity Catalog governs data access <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Compute is isolated per cluster/warehouse, sidestepping noisy neighbors <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Cost attribution via workspace/cluster tags is FinOps-friendly <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> Cross-region active-active <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Delta Sharing cross-region reads; no cross-region writes).</p>
+<ul>
+<li>Delta Sharing shares data for reads across regions/clouds <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Writes stay single-workspace/single-region; no active-active write semantics <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Region DR means rebuilding workspaces; RTO scales with data <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> HA &amp; RTO/RPO <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Managed control plane; compute clusters rebuildable).</p>
+<ul>
+<li>Managed control plane is HA; failed compute clusters rebuild <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Delta Lake ACID keeps retries clean; RPO follows checkpoints <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>SLA is platform-level; actual RTO follows cluster rebuild time <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> Row-level security &amp; masking <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Unity Catalog row filters + column masks).</p>
+<ul>
+<li>Databricks Unity Catalog provides Row Filters and Column Masks, defined in SQL and centrally governed <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Column-level privileges and dynamic views are supported <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Only effective on Unity Catalog-governed tables; external tables / legacy Hive metastore paths are a bypass surface <code>(community tested)</code></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON &amp; semi-structured <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (VARIANT type, schema-on-read).</p>
+<ul>
+<li>VARIANT semi-structured type (Photon) with schema-on-read and auto-evolution <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>VARIANT queries slower than regular columns; normalize hot paths <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> Full-text search <span class="verdict v-no">No native</span></h3><div class="dim-body"><p><strong>Partial</strong> (No native FTS; AI search separate).</p>
+<ul>
+<li>No classic full-text indexes in Databricks SQL <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Text search via vector/AI retrieval; keyword-exact search is weak <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> Storage efficiency &amp; compression <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Delta columnar with ZSTD plus auto-optimization).</p>
+<ul>
+<li>Delta Lake is Parquet-based columnar with default ZSTD/Snappy compression and high ratios. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>The Photon engine and auto-OPTIMIZE (Z-Order, auto-compaction) further improve storage and query efficiency. <code>(community tested)</code></li>
+<li>With open formats, compression parameters are user-tunable — more transparent than black-box cloud warehouses. <code>(community tested)</code></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> OSS license &amp; lock-in risk <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Delta/Spark open; platform closed).</p>
+<ul>
+<li>Core technologies (Delta Lake, Spark) are open source (Apache 2.0); data lives in open formats (Delta/Parquet) and can leave. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>The Databricks platform (Runtime optimizations, Unity Catalog, AI features) is closed source; deep use creates platform binding. <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+<li>Open formats are real mitigation: the data itself is not locked in — the compute and governance layers are. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> Optimizer &amp; plan stability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Photon + CBO + AQE; Spark hints available).</p>
+<ul>
+<li>Photon engine + Spark CBO with adaptive query execution (AQE) runtime tuning <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Spark SQL hints can steer plans <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Fewer flips than legacy warehouses, but opaque AQE behavior is hard to debug <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> Tuning &amp; autonomy <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Strong autonomy: Photon + auto liquid clustering).</p>
+<ul>
+<li>Photon auto-vectorizes; Liquid Clustering auto-manages layout; minimal knobs <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Auto-optimize/compaction runs in the background <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Cluster sizing remains the main cost lever <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> Silent corruption protection <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Cloud storage checks; no user switch).</p>
+<ul>
+<li>Data files sit on cloud object storage; integrity depends on provider-level checks and redundancy. <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+<li>Delta Lake provides transaction logs and versioning, so logical corruption can roll back, but silent bit-rot detection is not its job. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>No user-configurable page/block checksum switch; corruption auditing depends on the provider. <code>(to be verified)</code></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> Stored procedures &amp; triggers <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Scripts/workflows; no classic SPs).</p>
+<ul>
+<li>No classic stored procedures; orchestration via Notebooks/Workflows <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Oracle PL/SQL logic must be rewritten as job flows <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> Constraints &amp; integrity <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Limited Delta constraints).</p>
+<ul>
+<li>Delta has limited NOT NULL/CHECK; PK/FK informational, not enforced <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Integrity via ingestion (DLT expectations) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> Analytical SQL <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Strong Spark SQL windows/CTEs).</p>
+<ul>
+<li>Strong Spark SQL window functions and CTEs <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Recursive CTEs limited; rewrite complex recursion as iterative jobs <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> Right to erasure <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Delta Time Travel keeps deleted history).</p>
+<ul>
+<li>Delta Lake Time Travel keeps deleted data recoverable within retention (default 7 days); VACUUM clears old files but has minimum-retention guards <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>VACUUM refuses to remove files newer than 7 days by default; immediate erasure needs tuning and risks breaking concurrent readers <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Backups and Delta Sharing shared copies extend the residue surface <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>No native erasure attestation <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> Data lineage &amp; catalog <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Unity Catalog native column-level lineage).</p>
+<ul>
+<li>Unity Catalog provides table/column-level lineage and discovery, auto-captured <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Lineage spans notebooks, jobs, and SQL end to end <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> Storage-compute architecture <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Disaggregated: cloud storage + elastic clusters).</p>
+<ul>
+<li>Data on cloud object storage; compute clusters start/stop and scale independently <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Serverless SQL warehouses decouple further <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Cross-account storage access needs network setup <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> Multi-model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Delta multi-model: relational + JSON + vectors + ML).</p>
+<ul>
+<li>Delta Lake: structured, semi-structured JSON, Vector Search, MLflow models <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No native graph/full-text engine <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps &amp; cost observability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (DBU metering, budget policies, tags).</p>
+<ul>
+<li>Metered in DBUs (Databricks Units) with usage attribution by workspace, cluster, and job. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Budget policies cap spend on custom tags with over-limit alerts. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Exportable billing supports FinOps analysis; a cost-observability benchmark for lakehouse workloads. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> Drivers &amp; clients <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (JDBC/ODBC + Python connector + Spark).</p>
+<ul>
+<li>Official JDBC/ODBC (Simba), databricks-sql-connector (Python) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Full BI ecosystem (dbt/PowerBI/Tableau) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> Materialized views <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (MVs + DLT, incremental refresh).</p>
+<ul>
+<li>SQL materialized views and DLT pipelines with incremental refresh and auto rewrite <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Refresh billed on compute; watch cost on frequently refreshed small tables <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> Multi-cloud support <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Native on AWS/Azure/GCP).</p>
+<ul>
+<li>One platform spanning AWS/Azure/GCP — a core selling point <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Delta Sharing shares data across clouds <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Cross-cloud transfer fees apply; do the math on huge tables <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
 </div>
 </section>
@@ -584,7 +832,7 @@
 <footer class="footer">
   <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
 </footer>
-<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "redshift", "name": "Amazon Redshift", "domain": "olap"}, {"slug": "bigquery", "name": "Google BigQuery", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
 
 <script src="assets/app.js"></script>
 </body>

@@ -147,6 +147,138 @@
 <li>DMS 做持续复制到下游 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>只读副本延迟与主库 binlog 保留期是常见坑 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL 与数据生命周期管理 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（分区+event 定时清理；无原生行级TTL）。</p>
+<ul>
+<li>MySQL 版：分区表 + event scheduler 定时删过期分区 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>PG 版：pg_cron + 分区裁剪，沿用 PG 生态做法 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无原生行级 TTL；大表逐行 DELETE 又慢又胀 undo <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（MySQL 版在线 DDL 有限；PG 版原生）。</p>
+<ul>
+<li>Aurora MySQL：InnoDB online DDL，加列多可在线，但改主键/列类型仍重建，大表用 gh-ost 更稳 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>Aurora PG：同 PG 原生在线 DDL <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>快照恢复/回溯（backtrack）可作为 DDL 翻车后的兜底 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（集群级隔离；Serverless v2 自动扩缩）。</p>
+<ul>
+<li>租户隔离靠多集群/实例，单集群内无资源组限流 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>Serverless v2 按负载自动扩缩，部分缓解 noisy neighbor <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> 跨地域多活 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（Global Database 跨区读；写单主）。</p>
+<ul>
+<li>Global Database：一写多读跨区，读延迟低，写仍单 region <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>跨区故障转移分钟级，有数据丢失窗口（RPO 非零）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>写多活需应用层分片，无原生方案 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> 高可用架构与 RTO/RPO <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（存储 6 副本，故障切换 15 秒级）。</p>
+<ul>
+<li>存储层 6 副本跨 3AZ，计算故障切换通常 15-30 秒 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>RPO≈0（存储层复制），是其 HA 核心优势 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>切换期间连接闪断，应用需重试逻辑 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> 行级安全与数据脱敏 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（随引擎版本；PG版有RLS）。</p>
+<ul>
+<li>Aurora PostgreSQL 兼容版继承 PG 原生 RLS；MySQL 兼容版无原生 RLS <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>脱敏可叠加 AWS Glue 数据目录敏感数据识别等云上工具，但属管控面 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+<li>跨可用区存储复制不改变引擎层语义 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON 与半结构化能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（MySQL 版 JSON；PG 版 jsonb）。</p>
+<ul>
+<li>Aurora MySQL：原生 JSON 二进制类型，虚拟生成列+索引，JSON_TABLE 可用 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Aurora PG：jsonb 完整；两引擎 JSON 互不兼容，选型时按引擎看 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> 全文检索能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（ngram 中文分词；PG tsvector）。</p>
+<ul>
+<li>MySQL 版：FULLTEXT 索引 + ngram parser 中文分词 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>相关性排序弱于专业检索引擎，大规模检索仍建议外挂 OpenSearch <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> 存储效率与压缩 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（存储层压缩+按量计费自动优化）。</p>
+<ul>
+<li>Aurora 存储层自动压缩与去重，存储按实际使用量计费，用户无需管理。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>MySQL 兼容版继承 InnoDB 压缩；PG 兼容版继承 TOAST 压缩。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>压缩为黑盒自动能力，用户侧无调优参数，压缩比不公开披露。<span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> 开源协议与厂商锁定风险 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（AWS 深度绑定；存储层无法迁出）。</p>
+<ul>
+<li>Aurora 是 AWS 托管服务，存储层（6 副本 quorum）与计算深度绑定 AWS，无法在 AWS 之外运行。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>虽兼容 MySQL/PG 协议可降低应用层迁移成本，但存储与高可用架构必须重构。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>无开源版本，协议风险即云锁定风险。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> 查询优化器与计划稳定性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（引擎优化器同 MySQL/PG；存储层透明）。</p>
+<ul>
+<li>查询优化器与对应引擎（MySQL 8 / PG）一致，hint、EXPLAIN 行为相同 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Aurora 的存储层优化对优化器透明，不改变计划选择逻辑 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>计划翻转的根因（统计信息、参数）与原生引擎相同 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> 参数调优与自治能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（参数组可调；Performance Insights 强）。</p>
+<ul>
+<li>通过参数组调参，常用参数与原生引擎一致 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Performance Insights、Enhanced Monitoring 诊断能力强 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无自动索引/自动重写，自治能力弱于 AlloyDB 等 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> 静默数据损坏防护 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（存储层 6 副本仲裁写，底层校验用户不可见）。</p>
+<ul>
+<li>存储层 6 副本跨 AZ、quorum 写，单副本损坏可被仲裁掩盖，用户无可见校验开关。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>MySQL 兼容版继承 InnoDB 页 checksum 与 doublewrite，但存储卸载后部分语义由云层接管。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>用户无法主动触发全库校验或查看底层修复记录。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> 存储过程/触发器/过程语言 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（SP/触发器/事件完整）。</p>
+<ul>
+<li>MySQL 版支持存储过程、触发器、事件调度；PG 版 plpgsql 完整 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>MySQL 过程语言无包、调试弱，去 O 迁移改写成本高 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> 约束与数据完整性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（InnoDB 约束完整）。</p>
+<ul>
+<li>InnoDB 外键、CHECK（8.0.16+ 强制）、唯一约束完整 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>外键级联大批量删除易放大写入与锁等待 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> 分析 SQL 完备性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（MySQL 8 窗口/CTE；PG 完整）。</p>
+<ul>
+<li>MySQL 版：8.0 窗口函数、CTE（含递归）可用 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>复杂分析性能弱于 OLAP 引擎，大宽表关联仍是短板 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> 被遗忘权与数据擦除 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（手动DELETE；连续备份35天残留）。</p>
+<ul>
+<li>Aurora 连续备份保留最长 35 天，被删数据在此窗口内可恢复 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>快照为全量，删除合规需管理快照保留与删除 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>无原生擦除证明 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> 数据血缘与目录集成 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（Glue 爬网元数据；无原生血缘）。</p>
+<ul>
+<li>Glue crawler 可抓取 Aurora 表元数据进 Data Catalog <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无原生列级血缘，需第三方血缘工具 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> 存算分离 vs 存算一体 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（存算分离标杆：分布式存储+计算分离）。</p>
+<ul>
+<li>存储与计算分离，存储自动扩缩至 128TB，按使用量计费 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>存储层 6 副本跨 3 AZ，故障切换秒级 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>写入需经存储层仲裁，超高并发小事务延迟高于本地盘 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> 多模能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（随引擎：MySQL JSON / PG 向量生态）。</p>
+<ul>
+<li>Aurora MySQL：JSON 类型+全文索引；Aurora PG：jsonb、pgvector（RDS 系支持）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无原生图/时序引擎 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps 成本可观测性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（AWS 标签归因+Budgets 预算告警）。</p>
+<ul>
+<li>支持成本分配标签，Cost Explorer 按集群/实例/标签维度分析 Aurora 支出。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>AWS Budgets 支持预算阈值告警；Serverless v2 按 ACU 秒级计量。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> 驱动与多语言生态 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（原生协议兼容；RDS Proxy 增强）。</p>
+<ul>
+<li>完全兼容 MySQL/PG 协议与驱动 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>RDS Proxy 提供连接池与故障切换加速 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> 物化视图 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（PG 版手动物化视图；MySQL 版无）。</p>
+<ul>
+<li>Aurora PG：物化视图手动 REFRESH（含 CONCURRENTLY）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Aurora MySQL：无物化视图，靠汇总表+触发器/定时任务模拟 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> 支持跨云 <span class="verdict v-no">无</span></h3><div class="dim-body"><p><strong>无</strong>（AWS 绑定，无跨云）。</p>
+<ul>
+<li>仅 AWS，无其他云版本 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>迁出靠 DMS/逻辑导出，无跨云原生复制 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
 <div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. Cluster-level KMS AES-256, covering storage volumes, automated backups, snapshots, replicas; <strong>enabled at creation time and immutable afterward</strong> (to encrypt an existing cluster you must snapshot → copy with encryption → restore → cut over). Two counter-intuitive notes: MySQL InnoDB tablespace-level TDE (<code>ENCRYPTION=&#x27;Y&#x27;</code>) is <strong>unsupported</strong> (verified absent), and keyring plugins are unsupported across the board — encryption is at the volume level, not the table level. &quot;New clusters have encryption on by default&quot; is a community claim, <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>.</p></div></div>
@@ -215,6 +347,138 @@
 <li>Aurora MySQL with binlog, Aurora PG with logical replication — both feed Debezium <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>DMS for ongoing replication downstream <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Replica lag and primary binlog retention are the usual pitfalls <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL &amp; data lifecycle <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Partitions + scheduled events; no native row-level TTL).</p>
+<ul>
+<li>MySQL flavor: partitioned tables + event scheduler to drop expired partitions <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>PG flavor: pg_cron + partition pruning, same as the PG ecosystem <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No native row-level TTL; row-by-row DELETE on huge tables is slow and bloats undo <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Limited online DDL on MySQL flavor; native on PG flavor).</p>
+<ul>
+<li>Aurora MySQL: InnoDB online DDL covers many add-column cases, but PK changes / type changes still rebuild — gh-ost is safer for huge tables <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Aurora PG: native PG online DDL <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Snapshot restore / backtrack can bail out a failed DDL <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> Multi-tenancy &amp; resource isolation <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Cluster-level isolation; Serverless v2 auto-scaling).</p>
+<ul>
+<li>Tenant isolation via multiple clusters/instances; no in-cluster resource-group throttling <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Serverless v2 auto-scales with load, partly mitigating noisy neighbors <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> Cross-region active-active <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Global Database cross-region reads; single-writer).</p>
+<ul>
+<li>Global Database: one writer, cross-region readers with low read latency <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Cross-region failover takes minutes with a data-loss window (non-zero RPO) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Multi-writer needs app-layer sharding; no native option <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> HA &amp; RTO/RPO <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (6-way storage replicas; ~15s failover).</p>
+<ul>
+<li>Storage replicates 6 ways across 3 AZs; compute failover usually 15–30s <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>RPO≈0 via storage-layer replication — its core HA advantage <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Connections flap during failover; apps need retry logic <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> Row-level security &amp; masking <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Varies by engine; PG edition has RLS).</p>
+<ul>
+<li>Aurora PostgreSQL-compatible edition inherits native PG RLS; the MySQL-compatible edition has no native RLS <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Masking can layer on cloud tools like AWS Glue sensitive-data detection, but those are control-plane <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+<li>Cross-AZ storage replication does not change engine-level semantics <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON &amp; semi-structured <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Native JSON (MySQL); jsonb (PG)).</p>
+<ul>
+<li>Aurora MySQL: native binary JSON, virtual generated columns + indexes, JSON_TABLE <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Aurora PG: full jsonb; JSON features differ by engine, evaluate per engine <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> Full-text search <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (FULLTEXT+ngram; tsvector on PG).</p>
+<ul>
+<li>MySQL flavor: FULLTEXT + ngram parser for Chinese <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Relevance ranking weaker than dedicated search engines; large-scale search still wants OpenSearch <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> Storage efficiency &amp; compression <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Storage-layer compression with usage-based auto-optimization).</p>
+<ul>
+<li>Aurora&#x27;s storage layer compresses and dedupes automatically with usage-based billing; no user management needed. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>The MySQL-compatible edition inherits InnoDB compression; the PostgreSQL-compatible edition inherits TOAST compression. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Compression is a black-box automatic capability with no user tunables and undisclosed ratios. <code>(to be verified)</code></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> OSS license &amp; lock-in risk <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Deeply AWS-bound; storage layer cannot leave).</p>
+<ul>
+<li>Aurora is an AWS managed service; its storage layer (6-copy quorum) and compute are deeply bound to AWS and cannot run outside it. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>MySQL/PostgreSQL protocol compatibility lowers application-layer migration cost, but the storage and HA architecture must be rebuilt. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>No open-source edition; license risk is cloud lock-in risk. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> Optimizer &amp; plan stability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Same optimizer as MySQL/PG engine; storage invisible).</p>
+<ul>
+<li>Query optimizer matches the engine (MySQL 8 / PG): same hints and EXPLAIN behavior <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Aurora&#x27;s storage-layer optimizations are transparent to the optimizer <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Plan-flip root causes (statistics, parameters) mirror the native engine <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> Tuning &amp; autonomy <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Parameter groups tunable; strong Performance Insights).</p>
+<ul>
+<li>Tuned via parameter groups, same common parameters as native engines <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Performance Insights and Enhanced Monitoring give strong diagnostics <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No auto-indexing/rewrites; less autonomous than AlloyDB-class offerings <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> Silent corruption protection <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (6-copy quorum storage; hidden checks).</p>
+<ul>
+<li>Six-way cross-AZ storage with quorum writes masks single-copy corruption; no user-visible checksum controls. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>MySQL-compatible edition inherits InnoDB page checksums and doublewrite, partly superseded by the offloaded storage layer. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Users cannot trigger full-database verification or inspect underlying repair logs. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> Stored procedures &amp; triggers <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Full procedures/triggers/events).</p>
+<ul>
+<li>MySQL flavor: procedures, triggers, event scheduler; PG flavor: full plpgsql <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>MySQL procedural language lacks packages and debugging; Oracle migration rewrites are costly <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> Constraints &amp; integrity <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Full InnoDB constraints).</p>
+<ul>
+<li>Full InnoDB FK, enforced CHECK (8.0.16+), unique constraints <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>FK cascades on bulk deletes amplify writes and lock waits <code>(community tested)</code>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> Analytical SQL <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (MySQL 8 windows/CTEs; full on PG).</p>
+<ul>
+<li>MySQL flavor: 8.0 window functions and CTEs (incl. recursive) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Complex analytics lag OLAP engines; wide-table joins remain a weakness <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> Right to erasure <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Manual DELETE; 35-day backup residue).</p>
+<ul>
+<li>Aurora continuous backups retain up to 35 days; deleted data is recoverable inside that window <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Snapshots are full copies, so compliant deletion must manage snapshot retention and deletion <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>No native erasure attestation <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> Data lineage &amp; catalog <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Glue-crawled metadata; no native lineage).</p>
+<ul>
+<li>Glue crawlers can catalog Aurora table metadata <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No native column-level lineage; third-party tools needed <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> Storage-compute architecture <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Disaggregation benchmark: distributed storage, split compute).</p>
+<ul>
+<li>Storage/compute separated; storage auto-scales to 128TB, pay-per-use <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>6 storage copies across 3 AZs; failover in seconds <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Writes arbitrate through the storage layer; ultra-high-concurrency small transactions lag local disks <code>(community tested)</code>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> Multi-model <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Engine-dependent: MySQL JSON / PG vectors).</p>
+<ul>
+<li>Aurora MySQL: JSON type + full-text; Aurora PG: jsonb, pgvector (RDS-family support) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No native graph/time-series engine <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps &amp; cost observability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (AWS tags, Cost Explorer, Budgets).</p>
+<ul>
+<li>Cost allocation tags let Cost Explorer break down Aurora spend by cluster, instance, or tag. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>AWS Budgets supports budget threshold alerts; Serverless v2 meters ACU usage per second. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> Drivers &amp; clients <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Native protocol compatible; RDS Proxy enhanced).</p>
+<ul>
+<li>Fully compatible with MySQL/PG protocols and drivers <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>RDS Proxy adds pooling and faster failover <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> Materialized views <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Manual MVs on PG; none on MySQL).</p>
+<ul>
+<li>Aurora PG: materialized views with manual REFRESH (incl. CONCURRENTLY) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Aurora MySQL: none; summary tables + triggers/jobs instead <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> Multi-cloud support <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><p><strong>Not supported</strong> (AWS-bound; no cross-cloud).</p>
+<ul>
+<li>AWS-only; no other-cloud offering <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Moving out via DMS/logical export; no native cross-cloud replication <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 </ul></div></div>
 </div>
 </section>
@@ -488,7 +752,7 @@
 <footer class="footer">
   <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
 </footer>
-<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "redshift", "name": "Amazon Redshift", "domain": "olap"}, {"slug": "bigquery", "name": "Google BigQuery", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
 
 <script src="assets/app.js"></script>
 </body>

@@ -142,6 +142,106 @@
 <li>无变更日志持久化、无 exactly-once 语义，不等于 CDC <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 <li>历史版本可通过 revision 回看，但保留期有限 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 </ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL 与数据生命周期管理 <span class="verdict v-yes">有（key 租约（lease）TTL，</span></h3><div class="dim-body"><ul>
+<li>key 可绑定 lease，lease 过期则 key 自动删除，是原生设计 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>lease 需客户端 keepalive 续约，网络分区时可能误删 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>定位是元数据/配置存储，不适合海量业务数据过期 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-neutral">不适用</span></h3><div class="dim-body"><ul>
+<li>纯 KV，无表结构，无 DDL 概念 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>数据格式变更由应用版本管理，与存储无关 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-neutral">不适用（元数据存储，无租户资源概念）</span></h3><div class="dim-body"><ul>
+<li>定位是集群元数据/配置存储，无多租户资源隔离设计 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>quota 后端字节数是全局的，不是租户级 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> 跨地域多活 <span class="verdict v-neutral">不适用</span></h3><div class="dim-body"><ul>
+<li>Raft 强一致要求低延迟，跨区部署延迟爆炸 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>定位是单 region 集群元数据存储 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> 高可用架构与 RTO/RPO <span class="verdict v-yes">有（Raft 选主，秒级恢复）</span></h3><div class="dim-body"><ul>
+<li>Raft 多副本，leader 故障秒级重选，RPO=0 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>推荐 3/5 节点，偶数节点无意义 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>磁盘延迟是 leader 选举抖动常见根因 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> 行级安全与数据脱敏 <span class="verdict v-no">无（KV存储，无行列安全概念）</span></h3><div class="dim-body"><ul>
+<li>etcd 是分布式 KV 存储，无行 / 列概念，原生无 RLS、列级权限与脱敏 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>RBAC 只到 key 前缀 / 范围级别，是唯一的隔离手段 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>敏感值只能靠客户端加密 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON 与半结构化能力 <span class="verdict v-neutral">不适用（KV 字节值，无 JSON 语义）</span></h3><div class="dim-body"><ul>
+<li>value 为不透明字节，etcd 不解析 JSON（不适用）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>如需 JSON 语义在客户端序列化/反序列化 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> 全文检索能力 <span class="verdict v-neutral">不适用（KV 无全文检索概念）</span></h3><div class="dim-body"><ul>
+<li>无全文检索概念（不适用）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>键前缀查询（prefix/range）是其检索方式 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> 存储效率与压缩 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>底层 bbolt 为 B+tree 结构，无数据压缩机制，快照文件体积较大。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>快照与 WAL 保留策略可配置以控制磁盘占用，但属运维手段而非压缩。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>元数据场景数据量小，压缩缺失影响有限；大数据量场景不建议用 etcd。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> 开源协议与厂商锁定风险 <span class="verdict v-no">无</span></h3><div class="dim-body"><ul>
+<li>etcd 采用 Apache 2.0 开源，为 CNCF 毕业项目，社区治理成熟。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>无协议变更黑历史；作为 Kubernetes 默认元数据存储，生态绑定的是开放标准而非厂商。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>任何兼容实现均可替换，无商业锁定。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> 查询优化器与计划稳定性 <span class="verdict v-neutral">不适用（KV 存储无查询优化器）</span></h3><div class="dim-body"><ul>
+<li>纯 KV 读写，无查询计划概念 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> 参数调优与自治能力 <span class="verdict v-partial">部分支持（参数少：配额与压缩是调优点）</span></h3><div class="dim-body"><ul>
+<li>参数精简，核心是 backend quota、compaction 周期 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>大 value/高频 watch 是典型调优场景 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> 静默数据损坏防护 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>底层 bbolt 仅元数据页带校验，数据页无页级 checksum，损坏可能静默。<span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span></li>
+<li>etcd 有实验性的损坏检测与告警（如 corrupt check），但覆盖有限。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>生产实践多靠 quorum 多数派 + 快照重建坏成员，而非页级自愈。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> 存储过程/触发器/过程语言 <span class="verdict v-neutral">不适用（KV 无过程语言概念）</span></h3><div class="dim-body"><ul>
+<li>无存储过程/触发器概念（不适用）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>事务为多 key 原子 compare-and-swap，非过程逻辑 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> 约束与数据完整性 <span class="verdict v-neutral">不适用（KV 无约束概念（不适用））</span></h3><div class="dim-body"><ul>
+<li>无外键/CHECK/唯一约束概念（不适用）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>一致性靠 Raft 与租约（lease），非数据完整性约束 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> 分析 SQL 完备性 <span class="verdict v-neutral">不适用（KV 无 SQL/分析概念）</span></h3><div class="dim-body"><ul>
+<li>无 SQL，更无分析 SQL（不适用）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>运维分析靠监控指标而非查询 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> 被遗忘权与数据擦除 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>etcd 是 MVCC 存储：删除只是追加 tombstone 修订，旧版本在压缩（compaction）前仍可读 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>需定期 compaction + defrag 才能物理回收；后端 bbolt 文件历史页可能残留 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span></li>
+<li>快照备份保留被删数据的历史状态 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>无擦除证明 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> 数据血缘与目录集成 <span class="verdict v-neutral">不适用（KV 元数据存储，无血缘概念）</span></h3><div class="dim-body"><ul>
+<li>定位是分布式 KV/配置中心，无数据血缘概念 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> 存算分离 vs 存算一体 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>Raft 共识 + bbolt 本地存储，典型存算一体 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> 多模能力 <span class="verdict v-no">无（纯 KV，无多模）</span></h3><div class="dim-body"><ul>
+<li>仅 KV 模型 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps 成本可观测性 <span class="verdict v-neutral">不适用（基础设施组件，无计费概念）</span></h3><div class="dim-body"><ul>
+<li>etcd 是 Kubernetes 等系统的基础设施组件，无内置计费，成本并入集群硬件与运维人力。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>托管 Kubernetes 服务的控制面成本通常打包在集群费用中。<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> 驱动与多语言生态 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>gRPC API，官方 Go/Java/Python 客户端 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无 JDBC/ODBC（KV 定位不需要）<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> 物化视图 <span class="verdict v-neutral">不适用（KV 无物化视图概念）</span></h3><div class="dim-body"><ul>
+<li>无物化视图概念（不适用）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>缓存/配置场景不需要预聚合 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> 支持跨云 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>开源 CNCF 项目，任意环境可部署 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>跨云部署无意义（Raft 延迟敏感），单云/单区是常态 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
 <div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-neutral">None</span></h3><div class="dim-body"><p>etcd itself provides <strong>no data-at-rest encryption whatsoever</strong>: bbolt data files, WAL, and snapshot files are all written in plaintext. The 2019 Kubernetes SIG security audit explicitly states &quot;not encrypted at rest&quot;; encryption duty moves up to the kube-apiserver-layer EncryptionConfiguration (aescbc/aesgcm/KMS v2 plugins). <strong>Selection implication</strong>: if you use etcd as a general-purpose KV store and the data is sensitive, you must encrypt at the application layer yourself or rely on disk encryption; snapshots produced by <code>etcdctl snapshot save</code> are plaintext bbolt files — a leaked backup means leaked data.</p></div></div>
@@ -197,6 +297,106 @@
 <li>The Watch API notifies on key prefix/range changes; usable as a lightweight subscription <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>No durable change log, no exactly-once semantics — not CDC <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 <li>Past revisions are readable via revision, with limited retention <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL &amp; data lifecycle <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><ul>
+<li>Keys attach to leases; lease expiry auto-deletes the keys — native by design <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Leases need client keepalive; network partitions can cause premature deletion <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Built for metadata/config, not bulk business-data expiry <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-neutral">N/A</span></h3><div class="dim-body"><ul>
+<li>Pure KV, no table structure, no DDL concept <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Data-format changes are managed by app versioning, unrelated to storage <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> Multi-tenancy &amp; resource isolation <span class="verdict v-neutral">N/A</span></h3><div class="dim-body"><ul>
+<li>Built for cluster metadata/config; no multi-tenant resource isolation design <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>The backend-bytes quota is global, not per-tenant <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> Cross-region active-active <span class="verdict v-neutral">N/A</span></h3><div class="dim-body"><ul>
+<li>Raft&#x27;s strong consistency needs low latency; cross-region latency explodes <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Built as single-region cluster metadata storage <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> HA &amp; RTO/RPO <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><ul>
+<li>Raft multi-replica; leader failure triggers re-election in seconds, RPO=0 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>3/5 nodes recommended; even counts are pointless <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Disk latency is the classic cause of election flapping <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> Row-level security &amp; masking <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><ul>
+<li>etcd is a distributed KV store with no row/column concept; natively no RLS, column privileges, or masking <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>RBAC stops at key-prefix / range level and is the only isolation mechanism <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Sensitive values can only be protected with client-side encryption <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON &amp; semi-structured <span class="verdict v-neutral">N/A</span></h3><div class="dim-body"><ul>
+<li>Values are opaque bytes; etcd does not parse JSON (N/A) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Serialize/deserialize JSON client-side if needed <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> Full-text search <span class="verdict v-neutral">N/A</span></h3><div class="dim-body"><ul>
+<li>No full-text concept (N/A) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Key prefix/range queries are its retrieval model <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> Storage efficiency &amp; compression <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><ul>
+<li>The underlying bbolt store is B+tree based with no data-compression mechanism; snapshot files are large. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Snapshot and WAL retention policies are configurable to bound disk usage, but that is operational control, not compression. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Metadata workloads are small, so missing compression matters little; etcd is not recommended for large data volumes. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> OSS license &amp; lock-in risk <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><ul>
+<li>etcd is open source under Apache 2.0 and a CNCF graduated project with mature community governance. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>No license-change history; as Kubernetes&#x27; default metadata store, the ecosystem binds to an open standard, not a vendor. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Any compatible implementation can replace it; no commercial lock-in. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> Optimizer &amp; plan stability <span class="verdict v-neutral">N/A</span></h3><div class="dim-body"><ul>
+<li>Pure KV reads/writes; no query-plan concept <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> Tuning &amp; autonomy <span class="verdict v-neutral">quota and compacti</span></h3><div class="dim-body"><ul>
+<li>Lean parameters; the levers are backend quota and compaction intervals <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Large values and high-frequency watches are the classic tuning cases <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> Silent corruption protection <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><ul>
+<li>The underlying bbolt checks only meta pages; data pages have no page-level checksum, so corruption can be silent. <code>(community tested)</code></li>
+<li>etcd ships experimental corruption detection and alerting (e.g. corrupt check) with limited coverage. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Production practice leans on quorum majority plus snapshot rebuilds of bad members, not page-level self-healing. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> Stored procedures &amp; triggers <span class="verdict v-neutral">N/A</span></h3><div class="dim-body"><ul>
+<li>No stored-procedure/trigger concept (N/A) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Transactions are multi-key atomic compare-and-swap, not procedural logic <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> Constraints &amp; integrity <span class="verdict v-neutral">N/A</span></h3><div class="dim-body"><ul>
+<li>No FK/CHECK/unique concept (N/A) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Consistency via Raft and leases, not data-integrity constraints <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> Analytical SQL <span class="verdict v-neutral">N/A</span></h3><div class="dim-body"><ul>
+<li>No SQL, let alone analytical SQL (N/A) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Operational insight via metrics, not queries <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> Right to erasure <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><ul>
+<li>etcd is MVCC storage: deletion only appends a tombstone revision, and old versions stay readable until compaction <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Periodic compaction plus defrag is needed for physical reclamation; backend bbolt file history pages may retain data <code>(community tested)</code></li>
+<li>Snapshot backups preserve historical states of deleted data <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>No erasure attestation <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> Data lineage &amp; catalog <span class="verdict v-neutral">N/A</span></h3><div class="dim-body"><ul>
+<li>A distributed KV/config store; no data-lineage concept <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> Storage-compute architecture <span class="verdict v-neutral">Raft + bbolt local</span></h3><div class="dim-body"><ul>
+<li>Raft consensus + bbolt local storage; classically coupled <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> Multi-model <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><ul>
+<li>KV model only <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps &amp; cost observability <span class="verdict v-neutral">N/A</span></h3><div class="dim-body"><ul>
+<li>etcd is infrastructure for systems like Kubernetes with no built-in metering; cost folds into cluster hardware and operations labor. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Managed Kubernetes services typically bundle control-plane cost into the cluster fee. <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> Drivers &amp; clients <span class="verdict v-neutral">Go/Java/Python)</span></h3><div class="dim-body"><ul>
+<li>gRPC API with official Go/Java/Python clients <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No JDBC/ODBC (unneeded for KV) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> Materialized views <span class="verdict v-neutral">N/A</span></h3><div class="dim-body"><ul>
+<li>No materialized-view concept (N/A) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Cache/config use cases need no pre-aggregation <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> Multi-cloud support <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><ul>
+<li>Open-source CNCF project; deploys anywhere <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Cross-cloud deployment is pointless (Raft is latency-sensitive); single-cloud/region is the norm <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
 </div>
 </section>
@@ -408,7 +608,7 @@
 <footer class="footer">
   <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
 </footer>
-<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "redshift", "name": "Amazon Redshift", "domain": "olap"}, {"slug": "bigquery", "name": "Google BigQuery", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
 
 <script src="assets/app.js"></script>
 </body>

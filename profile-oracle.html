@@ -149,6 +149,141 @@
 <li>LogMiner 可解析 redo 做轻量 CDC；XStream 面向 OCI <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>原生 Streams 已废弃，不要再用 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 </ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL 与数据生命周期管理 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（ILM/ADO 自动数据优化，生命周期最完整）。</p>
+<ul>
+<li>ILM + Heat Map 自动识别冷数据，ADO 策略自动压缩/分层/置只读 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>分区表滚动 + 在线重定义配合，生命周期管理覆盖最完整 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>功能多在企业版，授权成本高 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（在线重定义/Edition，在线 DDL 标杆）。</p>
+<ul>
+<li>DBMS_REDEFINITION 在线重定义表、Edition 在线升级应用，业界标杆 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>加列（尤其 nullable）多是在线元数据操作 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>功能强但操作复杂，对 DBA 功力要求高 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（PDB+Resource Manager，多租户标杆）。</p>
+<ul>
+<li>Multitenant PDB + DB Resource Manager，CPU/IO/并行度租户级管控 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>19c 起多租户是默认架构，隔离+资源管控最成熟 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>授权按 PDB/选项收费，成本高 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> 跨地域多活 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（ADG/GG 可配；复杂且贵）。</p>
+<ul>
+<li>Active Data Guard 跨区备库、GoldenGate 双向复制可配多活 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>方案成熟但架构复杂、授权贵，运维门槛高 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>真多写冲突解决靠应用层 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> 高可用架构与 RTO/RPO <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（RAC/Data Guard，HA 标杆）。</p>
+<ul>
+<li>RAC 节点故障实例级接管，Data Guard 自动切换（FSFO）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>RTO 秒到分钟，RPO 可 0（同步备库）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>方案成熟但贵且复杂 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> 行级安全与数据脱敏 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（VPD行级安全+Data Redaction成熟）。</p>
+<ul>
+<li>Virtual Private Database（VPD / DBMS_RLS）是业界最老的行级安全实现：策略函数动态改写查询谓词 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Oracle Data Redaction 提供列级动态脱敏（全脱敏、部分脱敏、正则、随机），无需改应用代码 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>列级权限通过 VPD + 视图实现；Oracle Label Security 可做更细的多级安全 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>许可成本是主要风险：Data Redaction 等属高级安全选件，按处理器收费 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON 与半结构化能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（21c 原生二进制 JSON）。</p>
+<ul>
+<li>21c+ 原生 JSON 数据类型（二进制），JSON 索引、JSON_TABLE <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>老版本 JSON 存 VARCHAR2/CLOB，函数式索引弥补 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> 全文检索能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（Oracle Text 多语言含中文）。</p>
+<ul>
+<li>Oracle Text 全文检索，中文分词器（lexer）支持 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>索引维护（同步/优化）运维负担重 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> 存储效率与压缩 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（Advanced Compression 套件完备）。</p>
+<ul>
+<li>Advanced Compression 提供表压缩、索引压缩、SecureFiles LOB 去重压缩、备份压缩等多层能力。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Hybrid Columnar Compression（HCC）在 Exadata/ODA 上可达很高压缩比，但依赖特定硬件。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>多数压缩能力为需单独授权的收费选项，功能与授权绑定。<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> 开源协议与厂商锁定风险 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（纯商业闭源；审计与授权约束严格）。</p>
+<ul>
+<li>Oracle Database 为纯商业闭源产品，授权按处理器/用户数计费，授权条款复杂且审计严格。<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+<li>深度绑定 PL/SQL、RAC、Data Guard 等专有特性后，迁移出成本极高，是行业典型的厂商锁定案例。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>云上 Autonomous Database 进一步绑定 Oracle Cloud 基础设施。<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> 查询优化器与计划稳定性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（CBO 标杆；hint 最丰富；SPM 冻结）。</p>
+<ul>
+<li>CBO 业界标杆，hint 上百个，SQL Plan Baseline（SPM）冻结计划防翻转 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>AWR/ASH 让计划问题可追溯 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>优化器行为版本间差异大，升级需 SPM 兜底 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> 参数调优与自治能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（参数上千但 ADDM/AWR 自治最强）。</p>
+<ul>
+<li>参数上千，复杂度最高一档 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>ADDM 自动诊断+建议，AWR 完备，自治数据库进一步自治 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>工具强但学习曲线陡峭 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> 静默数据损坏防护 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（块校验+DB_BLOCK_CHECKING 完备）。</p>
+<ul>
+<li>DB_BLOCK_CHECKSUM 与 DB_BLOCK_CHECKING 在块读写路径做校验，损坏块直接报错。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>RMAN VALIDATE 与 DBVERIFY 可主动全库校验；Data Guard 物理备库做块级比对。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>自动块修复（BAMR）可用备库好块自动修复主库坏块，属真正的自愈。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> 存储过程/触发器/过程语言 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（PL/SQL 本家，包/调试完备）。</p>
+<ul>
+<li>PL/SQL 包、触发器、自治事务、DBMS 调试完备 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>深度绑定 PL/SQL 是去 O 迁移的最大成本来源 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> 约束与数据完整性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（约束语义标杆，deferrable 完备）。</p>
+<ul>
+<li>外键、CHECK、deferrable、NOVALIDATE 等语义最完备 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>约束即文档，去 O 时注意目标库语义差异 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> 分析 SQL 完备性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（分析函数本家，MODEL 子句）。</p>
+<ul>
+<li>窗口函数、分析函数、MODEL 子句，分析 SQL 标杆 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>许可按功能包计费，OLAP 选件成本高 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> 被遗忘权与数据擦除 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（手动DELETE；闪回/归档残留）。</p>
+<ul>
+<li>DELETE 为常规 DML，无原生 GDPR 擦除工作流或擦除证明 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Flashback、undo 表空间、归档日志、RMAN 备份都会保留被删数据的可恢复副本，全链路擦除工程量大 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Data Pump 导出、物化视图日志等衍生副本容易被遗漏，是合规盲区 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span></li>
+<li>Oracle 有 GDPR 合规白皮书，但落地仍是客户的工程责任 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> 数据血缘与目录集成 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（OEM/Data Catalog；原生列级弱）。</p>
+<ul>
+<li>Oracle Enterprise Manager、Data Catalog 可做元数据管理 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>原生列级血缘弱，靠第三方 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> 存算分离 vs 存算一体 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（混合：ASM 一体+Exadata 融合+云分离）。</p>
+<ul>
+<li>传统 ASM 存算一体；Exadata 存储层计算下沉（Smart Scan）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>云自治库底层存算分离 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> 多模能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（关系+JSON+全文+空间+图+23ai 向量）。</p>
+<ul>
+<li>JSON、全文、空间、图，23ai 增加 AI Vector Search <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>一库多用能力最全之一 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps 成本可观测性 <span class="verdict v-neutral">不适用</span></h3><div class="dim-body"><p><strong>不适用</strong>（许可证采购模式，无按量计费概念）。</p>
+<ul>
+<li>传统按处理器/用户数许可证采购，成本是采购费+硬件+DBA 人力，无云式按量账单。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>OCI 云上 Oracle 数据库按量计费，支持标签归因与预算告警。<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> 驱动与多语言生态 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（ojdbc/ODP.NET 官方驱动完备）。</p>
+<ul>
+<li>ojdbc、ODBC、ODP.NET、各语言驱动官方完备 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>驱动版本与数据库版本匹配要求严格 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> 物化视图 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（MV 本家：增量刷新+查询改写）。</p>
+<ul>
+<li>物化视图日志增量刷新、查询自动改写，能力最完备 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>刷新策略配错易致数据延迟或性能问题 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> 支持跨云 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（OCI 为主；与 Azure/AWS/GCP 有合作）。</p>
+<ul>
+<li>Oracle Database@Azure / @AWS / @Google Cloud 把 OCI 数据库放到对方云机房 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>本质仍是 OCI 技术栈，不是真正多云原生 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>授权跨云复杂，谈判桌见 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
 <div class="dims-intro"><blockquote>
@@ -220,6 +355,141 @@
 <li>GoldenGate is the official CDC/replication offering (separate license) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>LogMiner parses redo for lightweight CDC; XStream targets OCI <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Native Streams is deprecated — do not use <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">23</span> TTL &amp; data lifecycle <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (ILM/ADO automatic data optimization; most complete lifecycle).</p>
+<ul>
+<li>ILM with Heat Map auto-detects cold data; ADO policies auto-compress/tier/set read-only <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Rolling partitions plus online redefinition make lifecycle coverage the most complete <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Mostly Enterprise Edition features with high license cost <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Online redefinition / Editions; the online-DDL benchmark).</p>
+<ul>
+<li>DBMS_REDEFINITION online table redefinition and Edition-based app upgrades are the industry benchmark <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Add-column (especially nullable) is usually an online metadata op <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Powerful but operationally complex; demands skilled DBAs <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">25</span> Multi-tenancy &amp; resource isolation <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (PDB + Resource Manager; the multi-tenancy benchmark).</p>
+<ul>
+<li>Multitenant PDBs + Database Resource Manager: tenant-level CPU/IO/parallelism control <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Multitenant is the default architecture since 19c; the most mature isolation + control <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Licensed per PDB/option; expensive <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">26</span> Cross-region active-active <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (ADG/GG configurable; complex and costly).</p>
+<ul>
+<li>Active Data Guard cross-region standbys and GoldenGate bidirectional replication enable active-active <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Mature but architecturally complex, costly licensing, high ops bar <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>True multi-write conflict resolution stays app-layer <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">27</span> HA &amp; RTO/RPO <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (RAC / Data Guard; the HA benchmark).</p>
+<ul>
+<li>RAC takes over at instance level on node failure; Data Guard fast-start failover <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>RTO seconds-to-minutes; RPO can be 0 (sync standby) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Mature but expensive and complex <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">28</span> Row-level security &amp; masking <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Mature VPD row security + Data Redaction).</p>
+<ul>
+<li>Virtual Private Database (VPD / DBMS_RLS) is the industry&#x27;s oldest row-level security: policy functions rewrite query predicates dynamically <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Oracle Data Redaction provides column-level dynamic masking (full, partial, regexp, random) with no app changes <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Column privileges via VPD plus views; Oracle Label Security adds finer multi-level security <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Main risk is license cost: Data Redaction is an advanced security option priced per processor <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">29</span> JSON &amp; semi-structured <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Native binary JSON (21c+)).</p>
+<ul>
+<li>21c+ native binary JSON type, JSON indexes, JSON_TABLE <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Older versions store JSON in VARCHAR2/CLOB with function-based indexes <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">30</span> Full-text search <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Oracle Text, multilingual).</p>
+<ul>
+<li>Oracle Text with Chinese lexer support <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Index maintenance (sync/optimize) is ops-heavy <code>(community tested)</code>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">31</span> Storage efficiency &amp; compression <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Mature, complete Advanced Compression suite).</p>
+<ul>
+<li>Advanced Compression offers table, index, SecureFiles LOB dedup/compression and backup compression across layers. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Hybrid Columnar Compression (HCC) on Exadata/ODA reaches very high ratios but depends on specific hardware. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Most compression features are separately licensed paid options, tied to licensing. <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">32</span> OSS license &amp; lock-in risk <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Pure commercial closed source; strict licensing).</p>
+<ul>
+<li>Oracle Database is a purely commercial closed-source product licensed per processor/user, with complex terms and strict audits. <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+<li>Deep reliance on proprietary features (PL/SQL, RAC, Data Guard) makes migration out extremely costly — a textbook vendor lock-in case. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>The Autonomous Database offering further binds users to Oracle Cloud infrastructure. <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">33</span> Optimizer &amp; plan stability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (CBO benchmark; richest hints; SPM plan freeze).</p>
+<ul>
+<li>Industry-benchmark CBO, 100+ hints, SQL Plan Baselines (SPM) freeze plans against flips <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>AWR/ASH make plan issues traceable <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Optimizer behavior varies across versions; upgrades need SPM as a safety net <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">34</span> Tuning &amp; autonomy <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (1000+ params but strongest ADDM/AWR autonomy).</p>
+<ul>
+<li>1000+ parameters; highest complexity tier <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>ADDM auto-diagnosis with advice, complete AWR; Autonomous DB goes further <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Powerful tooling but a steep learning curve <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">35</span> Silent corruption protection <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Block checks plus DB_BLOCK_CHECKING).</p>
+<ul>
+<li>DB_BLOCK_CHECKSUM and DB_BLOCK_CHECKING verify blocks on the read/write path; corrupt blocks raise errors immediately. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>RMAN VALIDATE and DBVERIFY actively verify whole databases; Data Guard physical standbys compare at block level. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Automatic Block Media Recovery (BAMR) heals primary corrupt blocks from standby good blocks: genuine self-healing. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">36</span> Stored procedures &amp; triggers <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (PL/SQL native, complete).</p>
+<ul>
+<li>PL/SQL packages, triggers, autonomous transactions, DBMS debugging <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Deep PL/SQL lock-in is the biggest Oracle-migration cost <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">37</span> Constraints &amp; integrity <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Constraint benchmark semantics).</p>
+<ul>
+<li>Most complete constraint semantics: FK, CHECK, deferrable, NOVALIDATE <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Constraints-as-documentation; mind target semantics when migrating <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">38</span> Analytical SQL <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Analytic functions benchmark).</p>
+<ul>
+<li>Window/analytic functions, MODEL clause — the benchmark <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Licensed per option pack; OLAP options costly <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">39</span> Right to erasure <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Manual DELETE; flashback/archive residue).</p>
+<ul>
+<li>DELETE is ordinary DML; there is no native GDPR erasure workflow or attestation <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Flashback, undo tablespace, archived logs, and RMAN backups all keep recoverable copies of deleted data; full-pipeline erasure is heavy engineering <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>Derived copies such as Data Pump exports and materialized view logs are easy to miss and form compliance blind spots <code>(community tested)</code></li>
+<li>Oracle publishes GDPR whitepapers, but implementation remains the customer&#x27;s engineering responsibility <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">40</span> Data lineage &amp; catalog <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (OEM/Data Catalog; weak native column lineage).</p>
+<ul>
+<li>Oracle Enterprise Manager and Data Catalog cover metadata management <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Weak native column-level lineage; third parties fill in <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">41</span> Storage-compute architecture <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Hybrid: ASM coupled + Exadata offload + cloud split).</p>
+<ul>
+<li>Traditional ASM coupled; Exadata pushes compute to storage (Smart Scan) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Cloud Autonomous DB is disaggregated underneath <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">42</span> Multi-model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Relational + JSON + text + spatial + graph + 23ai vectors).</p>
+<ul>
+<li>JSON, full-text, spatial, graph, plus AI Vector Search in 23ai <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Among the most complete multi-model offerings <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">43</span> FinOps &amp; cost observability <span class="verdict v-neutral">N/A</span></h3><div class="dim-body"><p><strong>N/A</strong> (License model; no usage metering).</p>
+<ul>
+<li>Traditionally licensed per processor/user; costs are license fees plus hardware plus DBA labor, with no cloud-style usage bill. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
+<li>Oracle Database on OCI meters usage with tag attribution and budget alerts. <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">44</span> Drivers &amp; clients <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Complete ojdbc/ODP.NET official drivers).</p>
+<ul>
+<li>Complete official ojdbc, ODBC, ODP.NET, and language drivers <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Strict driver-to-database version matching required <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">45</span> Materialized views <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (MVs: incremental + rewrite).</p>
+<ul>
+<li>MV logs for incremental refresh, automatic query rewrite — most complete <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Misconfigured refresh causes staleness or perf issues <code>(community tested)</code>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">46</span> Multi-cloud support <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (OCI-first; partnerships with Azure/AWS/GCP).</p>
+<ul>
+<li>Oracle Database@Azure / @AWS / @Google Cloud place OCI databases in partner datacenters <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Still fundamentally the OCI stack, not truly multi-cloud native <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Cross-cloud licensing is complex; negotiated case by case <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
 </div>
 </section>
@@ -619,7 +889,7 @@
 <footer class="footer">
   <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
 </footer>
-<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "redshift", "name": "Amazon Redshift", "domain": "olap"}, {"slug": "bigquery", "name": "Google BigQuery", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
 
 <script src="assets/app.js"></script>
 </body>
