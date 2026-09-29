@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Oracle Database（甲骨文） - DB 选型参考</title>
+<link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">&#9672;</span> DB <span data-zh="选型参考" data-en="Compare">选型参考</span></a>
+    <nav class="mainnav">
+<a href="index.html" class="active" data-zh="首页" data-en="Home">首页</a>
+<a href="compare.html" class="" data-zh="维度对比" data-en="Compare">维度对比</a>
+<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
+<a href="advisor.html" class="" data-zh="AI选型" data-en="AI Selection">AI选型</a>
+    </nav>
+    <div class="cmp-tray">
+      <button id="cmp-tray-btn" type="button" class="tray-btn" aria-expanded="false" aria-haspopup="true"><span data-zh="对比" data-en="Compare">对比</span> <b class="tray-count"><i id="cmp-count">0</i>/4</b></button>
+      <div id="cmp-panel" class="tray-panel" hidden>
+        <div class="tray-sec"><span data-zh="已选" data-en="Selected">已选</span></div>
+        <div id="cmp-selected" class="tray-selected"></div>
+        <div class="tray-sec"><span data-zh="全部产品（最多选 4 款）" data-en="All products (up to 4)">全部产品（最多选 4 款）</span></div>
+        <div id="cmp-list" class="tray-list"></div>
+        <div class="tray-actions"><button id="cmp-clear" type="button" class="tray-clear"><span data-zh="清空选择" data-en="Clear selection">清空选择</span></button></div>
+      </div>
+    </div>
+    <button id="lang-toggle" class="lang-btn" type="button" aria-label="switch language">EN</button>
+  </div>
+</header>
+<main class="page">
+<div class="profile-hero">
+  <a class="back" href="index.html"><span data-zh="← 返回首页" data-en="← Back to home">← 返回首页</span></a>
+  <h1>Oracle Database（甲骨文）</h1>
+  <div class="meta-row"><span class="cat cat-oltp" data-zh="关系型 OLTP" data-en="Relational OLTP">关系型 OLTP</span> <span class="tag">#商业数据库</span> <span class="tag">#RAC</span> <span class="tag">#DataGuard</span> <span class="tag">#PLSQL</span> <span class="tag">#授权复杂</span> <span class="tag">#金融核心</span> <span class="tag">#MAA</span> <span class="tag">#Multitenant</span></div>
+  <p class="oneliner"><div class="lang-block lang-zh">
+<p>企业级关系型数据库的事实标准与&quot;税&quot;——为四十年的正确性工程、PL/SQL 存量生态和 MAA 高可用体系付费，代价是业界最复杂的授权计量体系和最深的供应商锁定。</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<p>The de facto standard of enterprise relational databases — and its &quot;tax&quot;: you pay for four decades of correctness engineering, the PL/SQL installed base, and the MAA high-availability stack; the price is the industry&#x27;s most complex licensing metering system and the deepest vendor lock-in.</p>
+</div></p>
+  <div class="ai-dive-row" data-product="Oracle Database（甲骨文）">
+    <span class="ai-dive-label" data-zh="用 AI 深挖这款：" data-en="Deep-dive with AI:">用 AI 深挖这款：</span>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('chatgpt', this)">ChatGPT <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('grok', this)">Grok <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('claude', this)">Claude <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn addcmp-btn" data-addcmp="oracle"><span class="addcmp-label">＋ 对比</span></button>
+  </div>
+  <div class="legend"><span class="legend-label" data-zh="证据等级：" data-en="Evidence levels: ">证据等级：</span><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></div>
+</div>
+<section class="doc-section">
+<h2><span data-zh="基本信息" data-en="Basics">基本信息</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>项</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td>厂商</td><td>Oracle（甲骨文），美国</td></tr>
+<tr><td>国家</td><td>美国</td></tr>
+<tr><td>起源</td><td>1979 年首个商用 SQL 数据库；PL/SQL、RAC、Data Guard 均为其定义品类</td></tr>
+<tr><td>许可证</td><td>商业授权（Enterprise Edition / Standard Edition 2）；部分云上按量计费</td></tr>
+<tr><td>托管服务</td><td>OCI（Oracle Cloud Infrastructure）、Autonomous Database、Database@Azure / @AWS / @Google Cloud</td></tr>
+<tr><td>主类型</td><td>关系型（单机 + RAC 共享磁盘集群）</td></tr>
+<tr><td>兼具类型</td><td>多模（23ai/26ai 起：向量检索、JSON Relational Duality、图、空间；Oracle 官方口径称&quot;AI-native&quot;）</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Item</th><th>Content</th></tr></thead>
+<tbody>
+<tr><td>Vendor</td><td>Oracle (甲骨文), USA</td></tr>
+<tr><td>Country</td><td>USA</td></tr>
+<tr><td>Origin</td><td>First commercial SQL database in 1979; PL/SQL, RAC, and Data Guard all defined their categories</td></tr>
+<tr><td>License</td><td>Commercial licensing (Enterprise Edition / Standard Edition 2); some pay-as-you-go pricing on cloud</td></tr>
+<tr><td>Managed services</td><td>OCI (Oracle Cloud Infrastructure), Autonomous Database, Database@Azure / @AWS / @Google Cloud</td></tr>
+<tr><td>Primary type</td><td>Relational (single-instance + RAC shared-disk cluster)</td></tr>
+<tr><td>Also</td><td>Multi-model (since 23ai/26ai: vector search, JSON Relational Duality, graph, spatial; Oracle&#x27;s official positioning calls it &quot;AI-native&quot;)</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section"><h2><span data-zh="硬维度（14 项）" data-en="Hard dimensions (14)">硬维度（14 项）</span></h2>
+<div class="lang-block lang-zh">
+<div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-yes">有（但单独收费）</span></h3><div class="dim-body"><p><strong>有（但单独收费）</strong>。TDE 属 Advanced Security Option（ASO）选件，需 EE + 单独授权；SE2 查证为无。双层密钥体系（主密钥在 wallet/HSM，表/表空间密钥存数据字典）。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> + AWS 官方博客（官方口径）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。Native Network Encryption 属 ASO；TLS/SSL 支持。证据：官方口径。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> 审计 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。Unified Auditing 内建（12c+）；Oracle Audit Vault and Database Firewall 为独立产品。证据：官方口径。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> 认证与权限 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。密码 / Kerberos / PKI / RADIUS；角色权限模型；VPD 行级安全；Database Vault 为付费选件。证据：官方口径。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> 备份恢复 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。RMAN 内建（含增量备份、块级恢复）；Flashback 系列；Data Pump。证据：官方口径。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> 大版本升级 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。AutoUpgrade / DBUA / 手动升级；官方支持 19c→26ai 直升（Oracle 升级产品经理博客，转述）；19c 起 non-CDB 架构不再支持。证据：官方口径。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> 可观测性 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>。EM Cloud Control 官方工具链；但 AWR/ASH/ADDM 属 Diagnostics Pack <strong>付费包</strong>，SQL Tuning Advisor 属 Tuning Pack 付费包；免费替代是 Statspack。&quot;能看&quot;和&quot;能合法看&quot;是两回事——LMS 审计脚本会扫 feature usage。证据：官方文档 + 社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> 连接模型 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。默认 dedicated server（每连接一个 OS 进程）；shared server（dispatcher 共享）；Connection Manager。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（官方口径），细节为社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> 事务与隔离级别 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。默认读已提交（read committed），支持串行化；基于 undo 的 MVCC，不可脏读。证据：<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> 复制与一致性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。Data Guard 物理备库（redo 传输）；Active Data Guard（备库只读）为<strong>付费选件</strong>；GoldenGate 逻辑复制为付费产品；RAC 多节点写。证据：官方口径。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> 扩展方式 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>。纵向为主；RAC 横向扩展（EE 付费选件，共享存储）；分片（Sharding）功能存在。证据：官方口径。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> 兼容性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。SQL 标准 + PL/SQL 方言；OCI / JDBC / ODBC / ODP.NET 驱动齐全。证据：<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> 许可证与商业模式 <span class="verdict v-yes">有（商业授权）</span></h3><div class="dim-body"><p><strong>有（商业授权）</strong>。EE / SE2 双版本；Processor（核数×core factor）/ NUP（EE 最低 25 NUP per processor）双计量；RAC、Partitioning、ASO、Diagnostics Pack/Tuning Pack 等选件各自单独计费；云上按 OCPU/月或 Autonomous 按量。证据：官方 License Definitions（官方口径）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> 中文资料丰富度 <span class="verdict v-yes">有（丰富）</span></h3><div class="dim-body"><p><strong>有（丰富）</strong>。官方中文文档、DBA 社群、大量中文博客与书籍。证据：编辑判断 + 社区共识。</p></div></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="dims-intro"><blockquote>
+<p>This section is the fixed 14-item mandatory battery; each item gives a &quot;Supported / Not supported / Partially supported&quot; conclusion + evidence grade.</p>
+</blockquote></div>
+<div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported, but separately charged</strong>. TDE belongs to the Advanced Security Option (ASO), requiring EE + a separate license; SE2 confirmed absent. Two-tier key architecture (master key in wallet/HSM, table/tablespace keys stored in the data dictionary). Evidence: official docs + AWS official blog <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / transport encryption <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>. Native Network Encryption is part of ASO; TLS/SSL supported. Evidence: vendor claim.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> Auditing <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>. Unified Auditing built in (12c+); Oracle Audit Vault and Database Firewall is a separate product. Evidence: vendor claim.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> Authentication &amp; authorization <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>. Password / Kerberos / PKI / RADIUS; role-based privilege model; VPD row-level security; Database Vault is a paid option. Evidence: vendor claim.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> Backup &amp; recovery <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>. RMAN built in (including incremental backup, block-level recovery); Flashback family; Data Pump. Evidence: vendor claim.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> Major-version upgrades <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>. AutoUpgrade / DBUA / manual upgrade; official support for direct 19c→26ai upgrade (Oracle upgrade product manager blog, quoted); non-CDB architecture no longer supported since 19c. Evidence: vendor claim.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> Observability <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong>. EM Cloud Control official toolchain; but AWR/ASH/ADDM belong to the Diagnostics Pack <strong>paid pack</strong>, SQL Tuning Advisor to the Tuning Pack paid pack; the free alternative is Statspack. &quot;Being able to see&quot; and &quot;being legally allowed to see&quot; are two different things — LMS audit scripts scan feature usage. Evidence: official docs + community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> Connection model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>. Default dedicated server (one OS process per connection); shared server (dispatcher sharing); Connection Manager. Evidence: official docs <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>; details per community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> Transactions &amp; isolation levels <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>. Default read committed, serializable supported; undo-based MVCC, no dirty reads. Evidence: community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> Replication &amp; consistency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>. Data Guard physical standby (redo transport); Active Data Guard (readable standby) is a <strong>paid option</strong>; GoldenGate logical replication is a paid product; RAC multi-node writes. Evidence: vendor claim.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> Scaling <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong>. Primarily vertical; RAC scale-out (EE paid option, shared storage); sharding feature exists. Evidence: vendor claim.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> Compatibility <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>. SQL standard + PL/SQL dialect; complete OCI / JDBC / ODBC / ODP.NET drivers. Evidence: community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> License &amp; business model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported (commercial licensing)</strong>. EE / SE2 dual editions; Processor (cores × core factor) / NUP (EE minimum 25 NUP per processor) dual metering; RAC, Partitioning, ASO, Diagnostics Pack/Tuning Pack, and other options each billed separately; on cloud by OCPU/month or Autonomous pay-as-you-go. Evidence: official License Definitions <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> Chinese-language resources <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported (rich)</strong>. Official Chinese docs, DBA communities, many Chinese blogs and books. Evidence: editorial judgment + community consensus.</p></div></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="杀手特性" data-en="Killer features">杀手特性</span></h2>
+<div class="lang-block lang-zh">
+<blockquote>
+<p>每个特性 = 它是什么 + 为什么是真本事 + 推到边缘会发生什么。</p>
+</blockquote>
+<ol>
+<li><strong>RAC + Cache Fusion：共享磁盘的 active-active 集群</strong> 真本事：多节点共享同一份存储，块在节点内存间直接传输（GCS 协调），不经过磁盘——这是 Oracle 定义品类的技术。单节点故障时 surviving 节点接管，应用基本无感；也是唯一成熟的商用共享磁盘多写方案。 边缘真相：见深水区一——interconnect 抖动直接触发节点驱逐；写热点块在节点间来回 ping-pong 时，Cache Fusion 从加速器变成放大器；RAC 防的是&quot;节点死&quot;，不防&quot;存储死&quot;和&quot;人犯错&quot;。以及：RAC 是 EE 的<strong>付费选件</strong>，19c 起 SE2 被彻底拿掉。</li>
+<li><strong>PL/SQL 与 Oracle 方言：四十年的存量资产护城河</strong> 真本事：包（package）、触发器、DBMS_* 系统包、分析函数、层次查询——全球金融/电信/政企的核心业务逻辑就写在这些包里。Oracle 的锁定不是合同，是代码。 边缘真相：见深水区六——&quot;去 O&quot;难，难的不是数据，是这几十万行 PL/SQL；包级会话状态、自治事务、DBMS_ 包调用在目标库上没有等价物，重写是逐行的人力账。买 Oracle 的那天起，退出成本就开始计息。</li>
+<li><strong>Data Guard / MAA：零数据丢失容灾的参考实现</strong> 真本事：物理备库 + redo 实时应用，三种保护模式；最大可用/最大保护模式下 RPO=0；FSFO（快速启动故障转移）+ Observer 实现自动切换。这是&quot;容灾&quot;这个词在数据库行业的定义者。 边缘真相：见深水区二——同步模式拿主库写延迟换零丢失；异步模式故障时丢几秒 redo；Active Data Guard（备库可读）是<strong>单独收费的选件</strong>；Observer 本身是单点，要独立部署。RPO=0 是&quot;配置正确+网络撑得住&quot;时的结果，不是开箱即得。</li>
+<li><strong>CBO 优化器：最成熟的代价优化器</strong> 真本事：几十年的优化器工程积累，对复杂 SQL（多表关联、子查询、分析函数）的计划质量仍是业界标杆；并行执行、分区裁剪、物化视图改写是一整套体系。 边缘真相：计划翻转（plan flip）是 Oracle DBA 的日常——统计信息过期、绑定变量窥探、直方图变化都可能让同一条 SQL 突然换计划；SPM（SQL Plan Management）能锁计划，但那是&quot;手动挡&quot;。优化器越智能，计划问题的排查越依赖 DBA 功力。</li>
+<li><strong>Multitenant（PDB）：单实例多租户整合</strong> 真本事：一个 CDB 下挂多个 PDB，补丁/升级/备份按 CDB 一次做，PDB 热插拔迁移；适合&quot;一库多用&quot;的整合场景，资源利用率高。 边缘真相：19c 起 non-CDB 架构不再支持，想不想要都得进 CDB；PDB 数量与 Multitenant 选件授权的关系以当前 License Definitions 为准（<span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>，Oracle 历史上调整过口径）；PDB 级故障隔离不如独立实例，一个 CDB 的坏块/失误影响所有 PDB。</li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<blockquote>
+<p>Each feature = what it is + why it&#x27;s genuinely good + what happens at the edge.</p>
+</blockquote>
+<ol>
+<li><strong>RAC + Cache Fusion: a shared-disk active-active cluster</strong> Why it&#x27;s real: multiple nodes share the same storage; blocks move directly between node memory (coordinated by GCS) without touching disk — this is the technology Oracle defined a category with. When a node fails, surviving nodes take over with applications barely noticing; it&#x27;s also the only mature commercial shared-disk multi-writer solution. Edge truth: see Deep Dive 1 — interconnect jitter directly triggers node eviction; when hot-write blocks ping-pong between nodes, Cache Fusion turns from accelerator into amplifier; RAC protects against &quot;node death&quot;, not &quot;storage death&quot; or &quot;human error&quot;. Also: RAC is a <strong>paid option</strong> of EE; it was completely removed from SE2 starting with 19c.</li>
+<li><strong>PL/SQL and the Oracle dialect: a four-decade installed-base moat</strong> Why it&#x27;s real: packages, triggers, DBMS_* system packages, analytic functions, hierarchical queries — the core business logic of global finance/telecom/government enterprises is written in these packages. Oracle&#x27;s lock-in isn&#x27;t a contract; it&#x27;s code. Edge truth: see Deep Dive 6 — &quot;de-O&quot; (removing Oracle) is hard not because of data but because of hundreds of thousands of lines of PL/SQL; package-level session state, autonomous transactions, and DBMS_ package calls have no equivalents on target databases; rewriting is a line-by-line labor bill. The day you buy Oracle, the exit cost starts accruing interest.</li>
+<li><strong>Data Guard / MAA: the reference implementation of zero-data-loss DR</strong> Why it&#x27;s real: physical standby + real-time redo apply, three protection modes; RPO=0 under maximum availability / maximum protection; FSFO (Fast-Start Failover) + Observer enables automatic failover. This is what defined the word &quot;disaster recovery&quot; in the database industry. Edge truth: see Deep Dive 2 — synchronous mode trades primary write latency for zero loss; async mode loses a few seconds of redo on failure; Active Data Guard (readable standby) is a <strong>separately charged option</strong>; the Observer itself is a single point that must be deployed independently. RPO=0 is the result of &quot;correct configuration + network that holds up&quot;, not an out-of-the-box guarantee.</li>
+<li><strong>CBO optimizer: the most mature cost-based optimizer</strong> Why it&#x27;s real: decades of optimizer engineering; plan quality for complex SQL (multi-table joins, subqueries, analytic functions) remains the industry benchmark; parallel execution, partition pruning, and materialized-view rewrite form a complete system. Edge truth: plan flips are an Oracle DBA&#x27;s daily routine — stale statistics, bind-variable peeking, and histogram changes can all make the same SQL suddenly switch plans; SPM (SQL Plan Management) can pin plans, but that&#x27;s &quot;driving stick&quot;. The smarter the optimizer, the more plan troubleshooting depends on DBA skill.</li>
+<li><strong>Multitenant (PDB): multi-tenant consolidation in a single instance</strong> Why it&#x27;s real: multiple PDBs under one CDB; patching/upgrading/backup done once per CDB; PDB hot-plug migration; ideal for &quot;one database, many uses&quot; consolidation with high resource utilization. Edge truth: since 19c the non-CDB architecture is no longer supported — you enter CDB whether you want it or not; the relationship between PDB count and Multitenant option licensing is per the current License Definitions (<span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>, Oracle has changed its wording historically); PDB-level fault isolation is weaker than separate instances — a bad block / mistake in one CDB affects all PDBs.</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="深水区" data-en="Deep dives">深水区</span></h2>
+<div class="lang-block lang-zh">
+<blockquote>
+<p>每条 = 机制 + 推到边缘的行为 + 选型含义 + 来源。</p>
+</blockquote>
+<p><strong>深水区一（性能/可用性）：RAC 的 Cache Fusion——interconnect 是命门，脑裂时 Oracle 选择杀节点保数据</strong></p>
+<ul>
+<li>机制：各节点 buffer cache 中的块由 GCS（Global Cache Service）统一编目；节点需要别的节点持有的块时，LMS 进程通过私网 interconnect 直接传块（CR 读一致性传输 / Current 当前块传输），延迟 0.5~2ms，约为磁盘的 1/10（社区实测，19c）。CSS 心跳 + Voting Disk 做集群成员仲裁。</li>
+<li>推到边缘：<ul>
+<li>interconnect 抖动/丢包/延迟毛刺 → CSS 心跳超时 → 少数派节点被<strong>驱逐（evict）</strong>，实例直接被 kill。DBA 经常看到的是 ORA-29702、CRS-1609/1611，然后&quot;节点没了&quot;。这不是 bug，是设计哲学：<strong>数据正确性优先于可用性</strong>。</li>
+<li>写热点块（如序列、热点索引根块）在节点间来回传递，<code>gc buffer busy</code> 等待事件飙升——Cache Fusion 从&quot;加速器&quot;变成&quot;放大器&quot;。RAC 扩展的是&quot;吞吐&quot;，不是&quot;单热点写&quot;。</li>
+<li>脑裂时 Voting Disk 仲裁，输的一方被 I/O fencing 隔离——&quot;杀节点&quot;是 Oracle 解决脑裂的标准答案，不是协商。</li>
+<li>互联网络与业务网络混用、私网 MTU 不一致、网卡 bonding 配错，是生产环境脑裂/误驱逐最常见的三个人为原因。</li>
+</ul></li>
+<li>选型含义：RAC 要求独立的私网 interconnect（万兆起步）、共享存储、奇数 voting disk；POC 必须压&quot;跨节点写热点&quot;和&quot;私网抖动&quot;两个场景；接受&quot;为保正确性可以杀节点&quot;的哲学再选 RAC。</li>
+<li>来源：Oracle 官方 RAC 概念文档（github.com/oracle/skills）——官方口径；DBA 社区实测（Cache Fusion 延迟数据、驱逐案例）——社区实测；脑裂防护机制——社区共识。</li>
+</ul>
+<p><strong>深水区二（复制与容灾）：Data Guard 的 RPO 是拿什么换的——同步拖慢主库，异步丢尾部 redo</strong></p>
+<ul>
+<li>机制：主库 redo 实时传输到备库应用；三种保护模式：最大性能（异步）、最大可用（同步，备库不可用时降级为异步保主库可写）、最大保护（同步，备库不可用时主库停写）。FSFO 需 Data Guard Broker + 独立 Observer 进程，阈值可配（如单实例低延迟网络 10~15 秒）。</li>
+<li>推到边缘：<ul>
+<li>最大保护模式下，备库一次网络抖动 = 主库写入阻塞——容灾的代价是主库可用性。多数生产选最大可用，本质是&quot;平时同步、关键时刻保主库&quot;。</li>
+<li>默认的最大性能（异步）模式下主库宕机，备库没收到的尾部 redo 必然丢失，RPO&gt;0 是常态。</li>
+<li>failover 后旧主库时间线分叉：开了 Flashback 可 <code>REINSTATE</code> 秒级回退为备库；没开就只能重建——&quot;开没开 Flashback&quot;这个不起眼的配置决定灾后恢复是分钟级还是小时级。</li>
+<li>FSFO 的 Observer 若和主备同机房，机房级故障时 observer 和主库一起没，自动切换不会发生。Observer 的部署位置是架构题。</li>
+<li>Active Data Guard（备库可读）是<strong>单独收费选件</strong>——&quot;备库不闲置&quot;这个美好想法要加钱。</li>
+</ul></li>
+<li>选型含义：保护模式的选择是 RPO/RTO/主库性能的三方 trade-off，没有免费项；灾备演练必须做 failover + reinstate 全链路，而不只是 switchover；询价时把 Active Data Guard 单独列出来。</li>
+<li>来源：Oracle 官方 MAA 文档（High Availability Overview、FSFO 最佳实践）——官方口径；DBA 社区实践（reinstate/re-create 决策）——社区实测。</li>
+</ul>
+<p><strong>深水区三（成本/授权）：授权计量与 LMS 审计——按&quot;核×系数&quot;计费，虚拟化按整集群算，审计脚本扫出 feature usage 就是账单</strong></p>
+<ul>
+<li>机制：Processor 计量 = 物理核数 × Oracle Processor Core Factor Table 系数（官方表，按芯片架构给系数）；NUP 计量要求 EE 最低 <strong>25 NUP per processor</strong>（官方 License Definitions and Rules——官方口径）；应用服务器多路复用（multiplexing）时按<strong>终端真实用户数</strong>计，不按连接池用户数；互联网应用无法数用户数时必须用 Processor 计量（官方 Database Licensing 文档——官方口径）。</li>
+<li>推到边缘：<ul>
+<li><strong>选件各自收费</strong>：RAC、Partitioning、Advanced Security（TDE）、Diagnostics Pack（AWR/ASH）、Tuning Pack、Database Vault 等，每个都是独立 SKU。用了没买 = 不合规。最经典的坑：DBA 随手跑个 AWR 报告，Diagnostics Pack 的 feature usage 就被记下来了。</li>
+<li><strong>LMS 审计</strong>：Oracle 用专有脚本采集 feature usage，脚本输出就是审计报告初稿；历史上审计常被感知为&quot;销售工具&quot;（CCL 调查：近 9 成受访者对审计流程持负面看法，2014 年调查，第三方历史数据）。2025 年第三方观察：Oracle 战略转向云，正式审计减少，但&quot;技术验证&quot;仍在，脚本照跑（第三方判断，待持续验证）。</li>
+<li><strong>虚拟化 partitioning 政策</strong>：Oracle 不认 VMware 等软分区——在 vSphere 集群上跑 Oracle，授权要按<strong>整个集群/vCenter 下所有物理主机</strong>算，不是一个 VM 的 vCPU 数。这是云上/虚拟化部署 Oracle 成本爆炸的主因（第三方授权分析——社区共识）。</li>
+<li><strong>支持费</strong>：按 license 净价约 22%/年逐年收取（第三方/社区共识口径）；19c 支持到 2032 年意味着支持费要交到 2032 年——TCO 模型里支持费是大头，不是零头。</li>
+<li><strong>计量边界核对清单（询价时书面确认）</strong>：备库/容灾节点是否计费（Data Guard 物理备库的授权规则）、测试/开发环境、容器按 request 还是 limit、VMware 集群范围、RAC 节点数、选件清单、ULA 的测量方式。</li>
+</ul></li>
+<li>选型含义：Oracle 的真实成本 = 授权 + 选件 + 22%/年×N年支持费 + 合规风险；&quot;比xx便宜&quot;只能相对 Oracle 自身历史，不可跨厂商折算；上生产前先做 Effective License Position（ entitlement vs 实际部署的对照表）。</li>
+<li>来源：Oracle 官方 License Definitions and Rules、Processor Core Factor Table、Database Licensing 文档——官方口径；LMS 审计实践——第三方分析 + 社区共识；虚拟化政策——第三方授权分析（licenseware 等），社区共识。</li>
+</ul>
+<p><strong>深水区四（运维/升级）：版本碎片与补丁——20/22 跳票、23ai 改名 26ai、19c 续命到 2032</strong></p>
+<ul>
+<li>机制：Oracle 支持三阶段：Premier（补丁+新功能）→ Extended（付费补丁）→ Sustaining（无新补丁）。官方 Lifetime Support Policy（2026-05-01 生效版）：19c Premier 至 <strong>2029-12-31</strong>、Extended 至 <strong>2032-12-31</strong>；26ai（LTS）Premier 至 2031-12-31；21c（innovation 版）Premier 至 2027-07-31，无 Extended（官方口径）。</li>
+<li>推到边缘：<ul>
+<li>Oracle 曾宣布 20/22 版本（2019 年口径），实际从未发布——版本号承诺不可当真（第三方报道）。</li>
+<li>23ai 先云后 on-prem，多次跳票（2024 上半年→下半年→2025），on-prem GA 拖到 2025 年中之后；2025-10 直接<strong>改名</strong>为 Oracle AI Database 26ai（内部版本仍是 23.26.x，打 RU 23.26 即&quot;升级&quot;）。版本认知混乱是真实的运维成本：文档、驱动、第三方工具对&quot;26ai&quot;的支持矩阵要逐项核对（客户端互操作矩阵：18c 及更老客户端连不上 26ai）。</li>
+<li>19c 一再续命（Premier 从 2024 延到 2029）说明一件事：生产主流就是 19c，大量客户根本没动。留在 19c 的代价是 Extended Support 付费 + 与新版本的功能差。</li>
+<li>19c 起 <strong>SE2 不再支持 RAC</strong>（安装程序直接拦截），SE2 RAC 老用户升级 19c = 被迫转 EE 或改架构；19c 起 non-CDB 不再支持。</li>
+<li>补丁（RU/RUR）回归风险是 DBA 社区长年话题：打补丁前必须在测试环境完整回归，&quot;最新补丁&quot;不等于&quot;最稳补丁&quot;<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></li>
+<li>选型含义：新部署直接按 26ai 规划（Oracle 官方口径：23ai 新装应看 26ai）；存量 19c 制定 2029 年前的升级路线图；SE2 用户先确认 RAC/功能需求再谈版本。</li>
+<li>来源：Oracle Lifetime Support Policy（Technology Products，2026-05-01 生效）——官方口径；26ai 发布与改名——Oracle 官方公告 + DBA 社区（zeddba、dohdatabase）；SE2 RAC 取消——Oracle 官方通知（Miro Consulting 转述）；补丁回归——社区共识。</li>
+</ul>
+<p><strong>深水区五（生态/战略）：云战略——&quot;把 OCI 搬进对手的数据中心&quot;，数据库仍是 Oracle 的</strong></p>
+<ul>
+<li>机制：OCI 全球约 50 个 region；Database@Azure / @AWS / @Google Cloud 把 OCI 的 Exadata 硬件<strong>物理部署在 hyperscaler 数据中心内</strong>，跑 Exadata Database Service / Autonomous Database，应用侧亚毫秒延迟、无 egress 费用（Oracle 官方 + 第三方分析——官方/第三方口径）；Autonomous Database 主打自运维（自动补丁/调优/扩缩）。</li>
+<li>推到边缘：<ul>
+<li>multicloud 的本质：计算/AI 可以在 AWS/Azure/GCP 上，<strong>数据库那台 Exadata 依然是 Oracle 的硬件、Oracle 的管控</strong>。延迟问题解决了，锁定问题没解决——是从&quot;OCI 锁定&quot;变成&quot;Oracle 数据库锁定&quot;，换了个地方。</li>
+<li>Oracle 新版本一贯<strong>云优先</strong>：23ai 先在 OCI 上 GA，on-prem 晚了一年多。跟着 on-prem 节奏走的客户，永远比云客户晚一年用上新功能。</li>
+<li>Autonomous 的&quot;自治&quot;边界：自动打补丁意味着补丁时间不由你定；对变更窗口敏感的核心系统，这是 feature 也是 risk。</li>
+<li>在 AWS/Azure/GCP 上用 RDS 托管 Oracle：功能受限（无 RAC 等），且授权是 BYOL 为主——&quot;上云&quot;不等于&quot;省心&quot;，等于&quot;换一种方式交 Oracle 税&quot;。</li>
+</ul></li>
+<li>选型含义：multicloud 解决的是&quot;应用与数据同机房&quot;，不是&quot;去 Oracle 化&quot;；云上 Oracle 的 TCO 要把&quot;Oracle 授权 + 云资源&quot;两本账一起算；监管/主权场景看 Dedicated Region / 专有云。</li>
+<li>来源：Oracle 官方 multicloud 文档与 IDC MarketScape 报告——官方/第三方口径；Database@AWS 合作细节——第三方报道；云优先发布节奏——社区共识。</li>
+</ul>
+<p><strong>深水区六（兼容/迁移）：&quot;去 O&quot;难，难的不是数据，是代码——PL/SQL 是按行计费的人力账</strong></p>
+<ul>
+<li>机制：异构迁移分两步：schema/代码转换 + 数据搬迁（全量+CDC）。AWS 官方迁移评估口径：<strong>难的是代码，不是数据</strong>。</li>
+<li>推到边缘（Oracle→PostgreSQL 的无等价物清单，迁移工具只能 best-effort）：<ul>
+<li><strong>包（package）</strong>：PG 无直接等价物，包级会话状态（如 <code>pkg.g_price_cache</code>）无处安放，需重构为 schema+函数或应用层状态。</li>
+<li><strong>CONNECT BY</strong>：改写为递归 CTE；<code>LEVEL</code>、<code>SYS_CONNECT_BY_PATH</code>、<code>NOCYCLE</code> 逐项手工处理。</li>
+<li><strong>ROWNUM</strong>：在 ORDER BY 之前生效， naive 地换成 LIMIT 会返回<strong>不同的行</strong>，不只是顺序不同。</li>
+<li><strong>(+)</strong> 外连接：转错方向的 LEFT JOIN 能跑但结果错——&quot;能跑&quot;是迁移中最危险的状态。</li>
+<li><strong>位图索引</strong>：PG 不支持，索引策略重做。</li>
+<li><strong>优化器 hint</strong>：在 PG 里是注释，静默忽略，执行计划直接变样，不报错。</li>
+<li><strong>空字符串=NULL</strong>、<strong>SYSDATE 语义</strong>（语句内不推进）、<strong>TIMESTAMP WITH LOCAL TIME ZONE</strong>：语义级差异，测试用例不覆盖就漏过去。</li>
+<li><strong>PRAGMA AUTONOMOUS_TRANSACTION</strong>、<strong>DBMS_</strong>* 包调用：无自动翻译，逐个人工。</li>
+<li>AWS 真实评估案例：78,000 行 PL/SQL + 23 个 AQ 队列的理赔系统，自动转换率仅 31%，结论是&quot;高投入、架构重做&quot;；而 PL/SQL 很少的系统自动转换率 78%（AWS 官方博客——官方口径）。</li>
+</ul></li>
+<li>选型含义：去 O 评估第一步是<strong>代码扫描</strong>（多少行 PL/SQL、多少包、多少 CONNECT BY/ROWNUM/(+)），而不是数据量；自动转换率 &lt;50% 的系统按&quot;重写&quot;做预算；双跑验证期 + 回滚预案是必选项；&quot;去 O 省授权费&quot;和&quot;去 O 花人力费&quot;是同一枚硬币。</li>
+<li>来源：AWS 官方迁移博客（SCT 评估案例）——官方口径；开源迁移工具文档（credativ-pg-migrator、oracle-to-postgres 迁移 lab 的 H 系列清单）——社区实测；HN 用户 multi-year 迁移经验帖——社区实测。</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<blockquote>
+<p>Each = mechanism + behavior at the edge + selection implication + source.</p>
+</blockquote>
+<p><strong>Deep Dive 1 (performance/availability): RAC&#x27;s Cache Fusion — the interconnect is the lifeline; on split-brain Oracle chooses to kill nodes to protect data</strong></p>
+<ul>
+<li>Mechanism: blocks in each node&#x27;s buffer cache are cataloged by GCS (Global Cache Service); when a node needs a block held by another node, the LMS process transfers it directly over the private interconnect (CR consistent-read transfer / Current block transfer), with 0.5–2ms latency, roughly 1/10 of disk (community-tested, 19c). CSS heartbeat + Voting Disk perform cluster membership arbitration.</li>
+<li>At the edge:<ul>
+<li>Interconnect jitter/packet loss/latency spikes → CSS heartbeat timeout → minority nodes get <strong>evicted</strong>, instances killed outright. What DBAs often see is ORA-29702, CRS-1609/1611, and then &quot;the node is gone&quot;. This isn&#x27;t a bug; it&#x27;s design philosophy: <strong>data correctness over availability</strong>.</li>
+<li>Hot-write blocks (sequences, hot index root blocks) bouncing between nodes drive <code>gc buffer busy</code> waits through the roof — Cache Fusion turns from &quot;accelerator&quot; into &quot;amplifier&quot;. RAC scales &quot;throughput&quot;, not &quot;single-hotspot writes&quot;.</li>
+<li>On split-brain, Voting Disk arbitrates; the loser gets isolated by I/O fencing — &quot;killing the node&quot; is Oracle&#x27;s standard answer to split-brain, not negotiation.</li>
+<li>Sharing the interconnect with the business network, mismatched MTU on the private network, and misconfigured NIC bonding are the three most common human causes of production split-brain/false eviction.</li>
+</ul></li>
+<li>Selection implication: RAC requires a dedicated private interconnect (10GbE minimum), shared storage, and an odd number of voting disks; POC must stress two scenarios — &quot;cross-node hot writes&quot; and &quot;private-network jitter&quot;; only choose RAC if you accept the philosophy that &quot;nodes may be killed to protect correctness&quot;.</li>
+<li>Sources: Oracle official RAC concepts docs (github.com/oracle/skills) — official docs; DBA community tests (Cache Fusion latency data, eviction cases) — community-tested; split-brain protection mechanism — community consensus.</li>
+</ul>
+<p><strong>Deep Dive 2 (replication &amp; DR): what Data Guard&#x27;s RPO is traded for — sync slows the primary, async drops trailing redo</strong></p>
+<ul>
+<li>Mechanism: primary redo streams in real time to the standby for apply; three protection modes: maximum performance (async), maximum availability (sync, degrades to async to keep the primary writable when the standby is unavailable), maximum protection (sync, primary stops writing when the standby is unavailable). FSFO requires Data Guard Broker + an independent Observer process, with configurable thresholds (e.g., 10–15 seconds on low-latency single-instance networks).</li>
+<li>At the edge:<ul>
+<li>Under maximum protection, one standby network blip = primary writes blocked — the cost of DR is primary availability. Most production deployments choose maximum availability, which is essentially &quot;sync normally, protect the primary at critical moments&quot;.</li>
+<li>Under the default maximum performance (async) mode, a primary crash means the standby never received trailing redo — it&#x27;s lost for good; RPO&gt;0 is the norm.</li>
+<li>After failover, the old primary&#x27;s timeline diverges: with Flashback enabled, <code>REINSTATE</code> rolls it back to a standby in seconds; without it, you must rebuild — the unassuming &quot;is Flashback on&quot; setting decides whether post-disaster recovery is minutes or hours.</li>
+<li>If FSFO&#x27;s Observer sits in the same datacenter as primary and standby, a site-level failure takes out the observer along with the primary, and automatic failover never happens. Observer placement is an architecture question.</li>
+<li>Active Data Guard (readable standby) is a <strong>separately charged option</strong> — the lovely idea of &quot;no idle standby&quot; costs extra.</li>
+</ul></li>
+<li>Selection implication: choosing a protection mode is a three-way RPO/RTO/primary-performance trade-off with no free lunch; DR drills must cover the full failover + reinstate chain, not just switchover; list Active Data Guard separately when getting quotes.</li>
+<li>Sources: Oracle official MAA docs (High Availability Overview, FSFO best practices) — official docs; DBA community practice (reinstate/re-create decisions) — community-tested.</li>
+</ul>
+<p><strong>Deep Dive 3 (cost/licensing): license metering and LMS audits — billed by &quot;cores × factor&quot;, virtualization billed across the whole cluster, audit scripts scanning feature usage turn into invoices</strong></p>
+<ul>
+<li>Mechanism: Processor metering = physical cores × Oracle Processor Core Factor Table coefficient (official table, coefficients by chip architecture); NUP metering requires EE minimum <strong>25 NUP per processor</strong> (official License Definitions and Rules — official docs); with application-server multiplexing, billing is by <strong>actual end-user count</strong>, not connection-pool users; internet-facing apps that can&#x27;t count users must use Processor metering (official Database Licensing docs — official docs).</li>
+<li>At the edge:<ul>
+<li><strong>Each option billed separately</strong>: RAC, Partitioning, Advanced Security (TDE), Diagnostics Pack (AWR/ASH), Tuning Pack, Database Vault, etc., each an independent SKU. Using without buying = non-compliant. The classic trap: a DBA casually runs an AWR report and the Diagnostics Pack feature usage gets recorded.</li>
+<li><strong>LMS audits</strong>: Oracle collects feature usage with proprietary scripts; script output becomes the first draft of the audit report; historically audits were widely perceived as a &quot;sales tool&quot; (CCL survey: nearly 90% of respondents viewed the audit process negatively, 2014 survey, historical third-party data). Third-party observation in 2025: Oracle&#x27;s strategy shifted to cloud, formal audits decreased, but &quot;technical validation&quot; continues and the scripts still run (third-party judgment, pending ongoing verification).</li>
+<li><strong>Virtualization partitioning policy</strong>: Oracle doesn&#x27;t recognize soft partitioning like VMware — running Oracle on a vSphere cluster means licensing <strong>all physical hosts in the cluster/vCenter</strong>, not one VM&#x27;s vCPU count. This is the main reason virtualized/cloud Oracle deployments explode in cost (third-party licensing analysis — community consensus).</li>
+<li><strong>Support fees</strong>: ~22%/year of the license net price, charged annually (third-party/community consensus figure); 19c supported through 2032 means paying support through 2032 — in a TCO model, support fees are the main course, not a side dish.</li>
+<li><strong>Metering-boundary checklist (confirm in writing when quoting)</strong>: whether standby/DR nodes are billed (Data Guard physical standby licensing rules), test/dev environments, containers by request vs limit, VMware cluster scope, RAC node count, option list, ULA measurement method.</li>
+</ul></li>
+<li>Selection implication: Oracle&#x27;s true cost = license + options + 22%/year × N years of support + compliance risk; &quot;cheaper than xx&quot; can only be relative to Oracle&#x27;s own history, never cross-vendor; before production, build an Effective License Position (entitlements vs actual deployment reconciliation).</li>
+<li>Sources: Oracle official License Definitions and Rules, Processor Core Factor Table, Database Licensing docs — official docs; LMS audit practice — third-party analysis + community consensus; virtualization policy — third-party licensing analysis (Licenseware etc.), community consensus.</li>
+</ul>
+<p><strong>Deep Dive 4 (ops/upgrades): version fragmentation and patching — 20/22 never shipped, 23ai renamed to 26ai, 19c extended to 2032</strong></p>
+<ul>
+<li>Mechanism: Oracle support has three stages: Premier (patches + new features) → Extended (paid patches) → Sustaining (no new patches). Official Lifetime Support Policy (effective 2026-05-01): 19c Premier through <strong>2029-12-31</strong>, Extended through <strong>2032-12-31</strong>; 26ai (LTS) Premier through 2031-12-31; 21c (innovation release) Premier through 2027-07-31, no Extended <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>At the edge:<ul>
+<li>Oracle once announced versions 20/22 (2019 wording) that never shipped — version-number promises can&#x27;t be taken at face value (third-party reports).</li>
+<li>23ai shipped cloud-first with repeated delays (H1 2024 → H2 → 2025), on-prem GA dragging past mid-2025; in 2025-10 it was directly <strong>renamed</strong> Oracle AI Database 26ai (internally still 23.26.x; applying RU 23.26 counts as &quot;upgrading&quot;). Version confusion is a real operational cost: docs, drivers, and third-party tools&#x27; support matrices for &quot;26ai&quot; must be checked item by item (client interoperability matrix: 18c and older clients can&#x27;t connect to 26ai).</li>
+<li>19c&#x27;s repeated extensions (Premier pushed from 2024 to 2029) say one thing: production mainstream is 19c, and huge numbers of customers never moved. The cost of staying on 19c is paid Extended Support + the feature gap with newer versions.</li>
+<li>Since 19c, <strong>SE2 no longer supports RAC</strong> (the installer blocks it outright); SE2 RAC users upgrading to 19c are forced to move to EE or change architecture; since 19c non-CDB is no longer supported.</li>
+<li>Patch (RU/RUR) regression risk is a perennial DBA-community topic: patches must go through full regression in test environments first — &quot;latest patch&quot; ≠ &quot;most stable patch&quot; <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></li>
+<li>Selection implication: plan new deployments directly on 26ai (Oracle&#x27;s official position: fresh 23ai installs should target 26ai); existing 19c estates need an upgrade roadmap before 2029; SE2 users should confirm RAC/feature requirements before talking versions.</li>
+<li>Sources: Oracle Lifetime Support Policy (Technology Products, effective 2026-05-01) — official docs; 26ai release and rename — Oracle official announcements + DBA community (zeddba, dohdatabase); SE2 RAC removal — Oracle official notice (quoted via Miro Consulting); patch regression — community consensus.</li>
+</ul>
+<p><strong>Deep Dive 5 (ecosystem/strategy): cloud strategy — &quot;moving OCI into competitors&#x27; datacenters&quot;, while the database remains Oracle&#x27;s</strong></p>
+<ul>
+<li>Mechanism: OCI has ~50 global regions; Database@Azure / @AWS / @Google Cloud <strong>physically deploy OCI&#x27;s Exadata hardware inside hyperscaler datacenters</strong>, running Exadata Database Service / Autonomous Database with sub-millisecond app-side latency and no egress fees (Oracle official + third-party analysis — official/third-party docs); Autonomous Database focuses on self-management (automatic patching/tuning/scaling).</li>
+<li>At the edge:<ul>
+<li>The essence of multicloud: compute/AI can live on AWS/Azure/GCP, but <strong>the Exadata box holding the database is still Oracle hardware under Oracle control</strong>. The latency problem is solved; the lock-in problem isn&#x27;t — it changed from &quot;OCI lock-in&quot; to &quot;Oracle Database lock-in&quot;, in a different place.</li>
+<li>Oracle&#x27;s new releases are consistently <strong>cloud-first</strong>: 23ai GA&#x27;d on OCI first, on-prem more than a year later. Customers on the on-prem cadence always get new features a year later than cloud customers.</li>
+<li>The boundary of Autonomous&#x27; &quot;autonomy&quot;: automatic patching means patch timing isn&#x27;t yours to choose; for core systems sensitive to change windows, that&#x27;s a feature and a risk.</li>
+<li>Running Oracle managed by cloud vendors on AWS/Azure/GCP: restricted features (no RAC on RDS, etc.), and mostly BYOL — &quot;moving to cloud&quot; ≠ &quot;peace of mind&quot;; it equals &quot;paying the Oracle tax in a different way&quot;.</li>
+</ul></li>
+<li>Selection implication: multicloud solves &quot;apps and data in the same datacenter&quot;, not &quot;de-Oracle-ization&quot;; cloud Oracle TCO must account for both &quot;Oracle licensing&quot; and &quot;cloud resources&quot;; sovereignty scenarios should look at Dedicated Region / sovereign cloud.</li>
+<li>Sources: Oracle official multicloud docs and IDC MarketScape report — official/third-party docs; Database@AWS partnership details — third-party reports; cloud-first release cadence — community consensus.</li>
+</ul>
+<p><strong>Deep Dive 6 (compatibility/migration): &quot;de-O&quot; is hard not because of data but because of code — PL/SQL is a line-by-line labor bill</strong></p>
+<ul>
+<li>Mechanism: heterogeneous migration has two steps: schema/code conversion + data movement (full load + CDC). Per AWS&#x27;s official migration assessment: <strong>the hard part is code, not data</strong>.</li>
+<li>At the edge (Oracle→PostgreSQL no-equivalent list; migration tools are best-effort only):<ul>
+<li><strong>Packages</strong>: PG has no direct equivalent; package-level session state (e.g., <code>pkg.g_price_cache</code>) has nowhere to live; requires refactoring into schemas+functions or application-layer state.</li>
+<li><strong>CONNECT BY</strong>: rewrite as recursive CTEs; <code>LEVEL</code>, <code>SYS_CONNECT_BY_PATH</code>, <code>NOCYCLE</code> handled manually item by item.</li>
+<li><strong>ROWNUM</strong>: takes effect before ORDER BY; naively swapping in LIMIT returns <strong>different rows</strong>, not just a different order.</li>
+<li><strong>(+)</strong> outer joins: a LEFT JOIN with the wrong direction runs but returns wrong results — &quot;it runs&quot; is the most dangerous state in a migration.</li>
+<li><strong>Bitmap indexes</strong>: unsupported in PG; index strategy must be redone.</li>
+<li><strong>Optimizer hints</strong>: they&#x27;re comments in PG, silently ignored; execution plans change outright without errors.</li>
+<li><strong>Empty string = NULL</strong>, <strong>SYSDATE semantics</strong> (doesn&#x27;t advance within a statement), <strong>TIMESTAMP WITH LOCAL TIME ZONE</strong>: semantic-level differences that slip through if test cases don&#x27;t cover them.</li>
+<li><strong>PRAGMA AUTONOMOUS_TRANSACTION</strong>, <strong>DBMS_</strong>* package calls: no automatic translation; manual, one by one.</li>
+<li>Real AWS assessment case: a claims system with 78,000 lines of PL/SQL + 23 AQ queues achieved only 31% automatic conversion, with the conclusion &quot;high investment, architecture redo&quot;; while systems with little PL/SQL reached 78% (AWS official blog — official docs).</li>
+</ul></li>
+<li>Selection implication: the first step of a de-O assessment is <strong>code scanning</strong> (how many lines of PL/SQL, how many packages, how many CONNECT BY/ROWNUM/(+)), not data volume; systems with &lt;50% auto-conversion should be budgeted as &quot;rewrites&quot;; parallel-run validation + rollback plans are mandatory; &quot;de-O saves license fees&quot; and &quot;de-O costs labor fees&quot; are two sides of the same coin.</li>
+<li>Sources: AWS official migration blog (SCT assessment cases) — official docs; open-source migration tool docs (credativ-pg-migrator, oracle-to-postgres migration lab&#x27;s H-series checklist) — community-tested; HN user multi-year migration experience posts — community-tested.</li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="用户最买账的 5 点" data-en="What users love most">用户最买账的 5 点</span></h2>
+<div class="lang-block lang-zh">
+<blockquote>
+<p>好的也要有深度。每条 = 为什么是真的 + 边缘与限度。</p>
+</blockquote>
+<ol>
+<li><strong>&quot;从不丢数据&quot;的正确性口碑</strong><ul>
+<li>为什么是真的：redo + undo + Data Guard + RAC 四十年的工程积累，金融核心系统默认选项；RPO=0 是真实可达的（按 MAA 实施）。</li>
+<li>边缘与限度：口碑建立在&quot;MAA 完整实施&quot;上——裸单实例一样会丢数据、一样怕 human error；RPO=0 的代价是同步复制的延迟税和 Active Data Guard 的选件费。买的是&quot;能力上限&quot;，不是&quot;开箱即得&quot;。</li>
+<li>来源：社区共识；Oracle MAA 文档（官方口径）。观察版本：19c/26ai。</li>
+</ul></li>
+<li><strong>PL/SQL 存量资产：业务逻辑的家</strong><ul>
+<li>为什么是真的：几十年沉淀的包、存储过程、触发器，换库=重写业务；Oracle 是&quot;代码的家&quot;，迁移评估时这就是护城河。</li>
+<li>边缘与限度：护城河的另一面是锁定——包级状态、DBMS_*、自治事务让迁出成本按行计费；新生代开发者不写 PL/SQL，人才结构在老化<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>来源：社区共识；去 O 迁移案例（AWS 官方博客）。观察版本：全版本。</li>
+</ul></li>
+<li><strong>工具链完整：RMAN / Data Pump / EM</strong><ul>
+<li>为什么是真的：RMAN 内建（增量/块级恢复）、Data Pump 高速导入导出、EM 集中管理，DBA 工具箱开箱即全。</li>
+<li>边缘与限度：EM 的 AWR/ASH 底座是 Diagnostics Pack <strong>付费包</strong>——&quot;看得见&quot;要先&quot;买得起&quot;；RMAN 高级特性（如 Block Change Tracking 快速增量）在 SE2 受限。</li>
+<li>来源：Oracle 官方文档（官方口径）；AWS EE/SE2 对比（第三方）。观察版本：19c。</li>
+</ul></li>
+<li><strong>RAC / Data Guard 的 HA 口碑</strong><ul>
+<li>为什么是真的：节点故障秒级接管、站点故障零丢失切换，是&quot;高可用&quot;在数据库行业的定义者。</li>
+<li>边缘与限度：RAC 和 Active Data Guard 都是 EE 的<strong>付费选件</strong>；RAC 要私网+共享存储+资深 DBA 三件套；Data Guard 的零丢失要拿主库延迟换。口碑是&quot;顶配版&quot;的口碑。</li>
+<li>来源：Oracle MAA 文档（官方口径）；社区共识。观察版本：19c。</li>
+</ul></li>
+<li><strong>DBA 人才供给与知识沉淀</strong><ul>
+<li>为什么是真的：全球 Oracle DBA 存量最大，文档、书籍、社区问答四十年积累，遇到问题&quot;一定有人踩过&quot;。</li>
+<li>边缘与限度：人才在老化，云原生一代 DBA 更熟悉 PG/MySQL；且 Oracle 的&quot;知识&quot;里有一半是&quot;授权合规知识&quot;，不是技术知识。</li>
+<li>来源：社区共识（编辑判断）。观察版本：全版本。</li>
+</ul></li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<blockquote>
+<p>The good deserves depth too. Each = why it&#x27;s true + edges and limits.</p>
+</blockquote>
+<ol>
+<li><strong>&quot;Never loses data&quot; correctness reputation</strong><ul>
+<li>Why it&#x27;s true: four decades of redo + undo + Data Guard + RAC engineering; the default choice for financial core systems; RPO=0 genuinely achievable (when implemented per MAA).</li>
+<li>Edges &amp; limits: the reputation rests on &quot;complete MAA implementation&quot; — a bare single instance loses data and fears human error just the same; RPO=0 costs the latency tax of synchronous replication plus the Active Data Guard option fee. You&#x27;re buying &quot;capability ceiling&quot;, not &quot;out-of-the-box&quot;.</li>
+<li>Sources: community consensus; Oracle MAA docs <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. Observed versions: 19c/26ai.</li>
+</ul></li>
+<li><strong>PL/SQL installed base: the home of business logic</strong><ul>
+<li>Why it&#x27;s true: decades of accumulated packages, stored procedures, and triggers; switching databases = rewriting business; Oracle is &quot;the home of code&quot;, and that&#x27;s the moat in migration assessments.</li>
+<li>Edges &amp; limits: the moat&#x27;s flip side is lock-in — package-level state, DBMS_*, and autonomous transactions make exit costs billable by the line; the new generation of developers doesn&#x27;t write PL/SQL; the talent pool is aging <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Sources: community consensus; de-O migration cases (AWS official blog). Observed versions: all.</li>
+</ul></li>
+<li><strong>Complete toolchain: RMAN / Data Pump / EM</strong><ul>
+<li>Why it&#x27;s true: RMAN built in (incremental/block-level recovery), Data Pump high-speed import/export, EM centralized management — the DBA toolbox is complete out of the box.</li>
+<li>Edges &amp; limits: EM&#x27;s AWR/ASH foundation is the Diagnostics Pack <strong>paid pack</strong> — &quot;seeing&quot; requires &quot;being able to afford&quot; first; RMAN advanced features (e.g., Block Change Tracking for fast incrementals) are restricted in SE2.</li>
+<li>Sources: Oracle official docs <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>; AWS EE/SE2 comparison (third-party). Observed versions: 19c.</li>
+</ul></li>
+<li><strong>RAC / Data Guard HA reputation</strong><ul>
+<li>Why it&#x27;s true: second-level takeover on node failure, zero-loss switchover on site failure — the definer of &quot;high availability&quot; in the database industry.</li>
+<li>Edges &amp; limits: RAC and Active Data Guard are both EE <strong>paid options</strong>; RAC needs the trio of private network + shared storage + senior DBAs; Data Guard&#x27;s zero loss trades primary latency. The reputation is the &quot;fully-loaded&quot; reputation.</li>
+<li>Sources: Oracle MAA docs <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>; community consensus. Observed versions: 19c.</li>
+</ul></li>
+<li><strong>DBA talent supply and knowledge accumulation</strong><ul>
+<li>Why it&#x27;s true: the world&#x27;s largest Oracle DBA population; four decades of docs, books, and community Q&amp;A — any problem &quot;has been hit by someone before&quot;.</li>
+<li>Edges &amp; limits: the talent pool is aging; the cloud-native generation of DBAs knows PG/MySQL better; and half of Oracle &quot;knowledge&quot; is &quot;licensing compliance knowledge&quot;, not technical knowledge.</li>
+<li>Sources: community consensus (editor&#x27;s judgment). Observed versions: all.</li>
+</ul></li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="吐槽清单" data-en="Complaints">吐槽清单</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>分类</th><th>吐槽</th><th>影响版本</th><th>状态</th><th>来源</th></tr></thead>
+<tbody>
+<tr><td>授权坑</td><td>Processor 按&quot;核数×core factor&quot;计费，系数表按芯片架构给，算错就补税</td><td>全版本</td><td>open</td><td>Oracle 官方 Core Factor Table，2026-09-29 查阅</td></tr>
+<tr><td>授权坑</td><td>NUP 最低 25 NUP per processor（EE），用户数少也得按最低买</td><td>全版本</td><td>open</td><td>Oracle License Definitions and Rules——官方口径</td></tr>
+<tr><td>授权坑</td><td>应用服务器多路复用按终端真实用户数计；互联网应用强制 Processor 计量</td><td>全版本</td><td>open</td><td>Oracle Database Licensing 文档——官方口径</td></tr>
+<tr><td>授权坑</td><td>选件各自收费：RAC / Partitioning / ASO(TDE) / Diagnostics Pack(AWR) / Tuning Pack / Database Vault；用了没买=不合规</td><td>全版本</td><td>open</td><td>Oracle 官方 + AWS EE/SE2 对比——官方/第三方口径</td></tr>
+<tr><td>授权坑</td><td>VMware 等软分区不被承认，按整个集群/所有物理主机授权</td><td>全版本</td><td>open</td><td>第三方授权分析，社区共识</td></tr>
+<tr><td>授权坑</td><td>LMS 审计脚本扫 feature usage，审计常被感知为销售工具；支持费约 22%/年</td><td>全版本</td><td>partially-fixed（2025 年起正式审计减少，但技术验证仍在——第三方判断）</td><td>CCL 调查（历史）、Medium 2025-10 第三方分析</td></tr>
+<tr><td>授权坑</td><td>无公开统一售价，询价制；计量边界（备库/测试/容器/超量）必须书面确认</td><td>全版本</td><td>open</td><td>官方订阅/授权协议口径</td></tr>
+<tr><td>运维坑</td><td>补丁（RU）有回归风险，&quot;最新&quot;不等于&quot;最稳&quot;，必须测试环境先行</td><td>全版本</td><td>open（机制性）</td><td>社区共识</td></tr>
+<tr><td>运维坑</td><td>19c 起 SE2 不再支持 RAC（安装程序拦截），SE2 RAC 老用户被迫转 EE 或改架构</td><td>19c+</td><td>open</td><td>Oracle 官方通知（Miro Consulting 转述）</td></tr>
+<tr><td>运维坑</td><td>19c 起 non-CDB 不再支持，强制进 CDB 架构</td><td>19c+</td><td>open（官方既定路线）</td><td>Oracle 官方文档——官方口径</td></tr>
+<tr><td>版本坑</td><td>20/22 版本宣布后从未发布；23ai→26ai 改名造成版本认知与工具链适配混乱</td><td>23ai/26ai</td><td>open</td><td>第三方报道；Oracle 官方公告</td></tr>
+<tr><td>版本坑</td><td>新版本云优先：23ai 先 OCI GA，on-prem 晚一年多</td><td>23ai/26ai</td><td>open</td><td>第三方报道，社区共识</td></tr>
+<tr><td>生态坑</td><td>云厂商托管 Oracle 功能受限（RDS 无 RAC 等），且多为 BYOL</td><td>全版本</td><td>open</td><td>AWS 文档——官方口径</td></tr>
+<tr><td>生态坑</td><td>深度锁定：PL/SQL、DBMS_*、RAC、Data Guard 全是迁出成本</td><td>全版本</td><td>open（机制性）</td><td>社区共识；去 O 迁移案例</td></tr>
+<tr><td>成本坑</td><td>小规模/互联网场景性价比极低；TCO 大头是多年 22% 支持费</td><td>全版本</td><td>open</td><td>第三方/社区共识口径</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Category</th><th>Complaint</th><th>Affected versions</th><th>Status</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>Licensing traps</td><td>Processor billed by &quot;cores × core factor&quot;, factor table varies by chip architecture — miscalculate and you owe back taxes</td><td>All versions</td><td>open</td><td>Oracle official Core Factor Table, checked 2026-09-29</td></tr>
+<tr><td>Licensing traps</td><td>NUP minimum 25 NUP per processor (EE); few users still pay the minimum</td><td>All versions</td><td>open</td><td>Oracle License Definitions and Rules — official docs</td></tr>
+<tr><td>Licensing traps</td><td>App-server multiplexing billed by actual end-user count; internet apps forced into Processor metering</td><td>All versions</td><td>open</td><td>Oracle Database Licensing docs — official docs</td></tr>
+<tr><td>Licensing traps</td><td>Each option billed separately: RAC / Partitioning / ASO (TDE) / Diagnostics Pack (AWR) / Tuning Pack / Database Vault; use-without-buying = non-compliant</td><td>All versions</td><td>open</td><td>Oracle official + AWS EE/SE2 comparison — official/third-party docs</td></tr>
+<tr><td>Licensing traps</td><td>VMware and other soft partitioning not recognized; license across the whole cluster / all physical hosts</td><td>All versions</td><td>open</td><td>Third-party licensing analysis, community consensus</td></tr>
+<tr><td>Licensing traps</td><td>LMS audit scripts scan feature usage; audits widely perceived as a sales tool; support fees ~22%/year</td><td>All versions</td><td>partially-fixed (formal audits decreased since 2025, but technical validation continues — third-party judgment)</td><td>CCL survey (historical), Medium 2025-10 third-party analysis</td></tr>
+<tr><td>Licensing traps</td><td>No public unified pricing; quote-by-inquiry; metering boundaries (standby/test/containers/overage) must be confirmed in writing</td><td>All versions</td><td>open</td><td>Official subscription/licensing agreement wording</td></tr>
+<tr><td>Ops traps</td><td>Patch (RU) regression risk; &quot;latest&quot; ≠ &quot;most stable&quot;; test environments must go first</td><td>All versions</td><td>open (structural)</td><td>Community consensus</td></tr>
+<tr><td>Ops traps</td><td>Since 19c, SE2 no longer supports RAC (installer blocks it); SE2 RAC users forced to EE or architecture change</td><td>19c+</td><td>open</td><td>Oracle official notice (quoted via Miro Consulting)</td></tr>
+<tr><td>Ops traps</td><td>Since 19c, non-CDB no longer supported; forced into CDB architecture</td><td>19c+</td><td>open (official established direction)</td><td>Oracle official docs — official docs</td></tr>
+<tr><td>Version traps</td><td>Versions 20/22 announced but never shipped; 23ai→26ai rename caused version confusion and toolchain adaptation chaos</td><td>23ai/26ai</td><td>open</td><td>Third-party reports; Oracle official announcements</td></tr>
+<tr><td>Version traps</td><td>New versions cloud-first: 23ai GA&#x27;d on OCI first, on-prem more than a year later</td><td>23ai/26ai</td><td>open</td><td>Third-party reports, community consensus</td></tr>
+<tr><td>Ecosystem traps</td><td>Cloud-vendor-managed Oracle is feature-restricted (no RAC on RDS, etc.) and mostly BYOL</td><td>All versions</td><td>open</td><td>AWS docs — official docs</td></tr>
+<tr><td>Ecosystem traps</td><td>Deep lock-in: PL/SQL, DBMS_*, RAC, Data Guard are all exit costs</td><td>All versions</td><td>open (structural)</td><td>Community consensus; de-O migration cases</td></tr>
+<tr><td>Cost traps</td><td>Extremely poor cost-performance for small-scale/internet scenarios; TCO dominated by years of 22% support fees</td><td>All versions</td><td>open</td><td>Third-party/community consensus figures</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="判决" data-en="Verdict">判决</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li><strong>一句话定位</strong>：企业级关系型数据库的事实标准——为正确性工程、PL/SQL 存量生态和 MAA 体系付费，代价是业界最复杂的授权计量和最深的锁定。Oracle 是&quot;税&quot;，不是&quot;工具&quot;。</li>
+<li><strong>适合谁</strong>：<ul>
+<li>金融/电信/政企核心系统，正确性优先、RPO=0 是硬性要求；</li>
+<li>背着几十万行 PL/SQL 存量资产，且管理层算得过&quot;重写成本 &gt; 授权成本&quot;的账；</li>
+<li>需要 RAC/Data Guard MAA 体系、且有资深 DBA 团队驾驭的；</li>
+<li>合规要求商业支持责任主体、审计完备的受监管行业；</li>
+<li>已深度绑定 Oracle 技术栈（Exadata/ODA/应用），迁移成本高于续费成本的。</li>
+</ul></li>
+<li><strong>不适合谁</strong>：<ul>
+<li>初创/互联网公司（性价比极低，授权复杂度与规模不匹配）；</li>
+<li>无 Oracle 包袱的绿地项目（PG/MySQL 免费且够用）；</li>
+<li>预算敏感、对&quot;审计&quot;二字过敏的团队；</li>
+<li>信创/去 O 政策明确的场景；</li>
+<li>想&quot;上云就省心&quot;的团队（云上 Oracle 只是换一种方式交税）。</li>
+</ul></li>
+<li><strong>迁移成本</strong>：<ul>
+<li><strong>from_oracle（去 O）</strong>：<strong>高</strong>。数据搬迁是小头，PL/SQL 代码重写是大头；自动转换率取决于 PL/SQL 行数（AWS 案例：78% vs 31%）；必须做代码扫描先行、双跑验证、回滚预案。</li>
+<li><strong>from_mysql</strong>：中。应用层改造为主；若重度依赖 MySQL 特性，改造成本上升；另需一次性接受 Oracle 授权体系。</li>
+<li><strong>from_postgres</strong>：中高。PG→Oracle 是&quot;从免费进收费&quot;，除应用改造外还要过授权与选件的财务关；除非业务强依赖 Oracle 独有能力，否则很少有人走这条路。</li>
+</ul></li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li><strong>One-line positioning</strong>: The de facto standard of enterprise relational databases — you pay for correctness engineering, the PL/SQL installed base, and the MAA stack; the price is the industry&#x27;s most complex licensing metering and the deepest lock-in. Oracle is a &quot;tax&quot;, not a &quot;tool&quot;.</li>
+<li><strong>Who it&#x27;s for</strong>:<ul>
+<li>Financial/telecom/government core systems where correctness comes first and RPO=0 is a hard requirement;</li>
+<li>Teams carrying hundreds of thousands of lines of PL/SQL legacy where management has done the math that &quot;rewrite cost &gt; license cost&quot;;</li>
+<li>Those needing the RAC/Data Guard MAA stack with senior DBA teams to run it;</li>
+<li>Regulated industries requiring a commercial support owner and complete auditing;</li>
+<li>Those already deeply tied to the Oracle stack (Exadata/ODA/applications) where migration costs exceed renewal costs.</li>
+</ul></li>
+<li><strong>Who it&#x27;s not for</strong>:<ul>
+<li>Startups/internet companies (extremely poor cost-performance; licensing complexity mismatched to scale);</li>
+<li>Greenfield projects with no Oracle baggage (PG/MySQL are free and sufficient);</li>
+<li>Budget-sensitive teams allergic to the word &quot;audit&quot;;</li>
+<li>Scenarios with explicit 信创 (xìnchuàng, IT innovation/localization) / de-O mandates;</li>
+<li>Teams hoping &quot;moving to cloud means peace of mind&quot; (cloud Oracle is just paying the tax differently).</li>
+</ul></li>
+<li><strong>Migration cost</strong>:<ul>
+<li><strong>from_oracle (de-O)</strong>: <strong>High</strong>. Data movement is the small part; PL/SQL code rewriting is the big part; automatic conversion rates depend on PL/SQL line counts (AWS case: 78% vs 31%); code scanning must come first, plus parallel-run validation and rollback plans.</li>
+<li><strong>from_mysql</strong>: Medium. Mainly application-layer rework; heavy reliance on MySQL-specific features raises conversion cost; plus one-time acceptance of the Oracle licensing system.</li>
+<li><strong>from_postgres</strong>: Medium-high. PG→Oracle is &quot;going from free to paid&quot; — beyond application rework, there&#x27;s the financial hurdle of licensing and options; few go this route unless the business strongly depends on Oracle-exclusive capabilities.</li>
+</ul></li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="来源与待验证清单" data-en="Sources & to-be-verified">来源与待验证清单</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li>版本与支持：Oracle Lifetime Support Policy for Technology Products（2026-05-01 生效：19c Premier 至 2029-12-31 / Extended 至 2032-12-31；26ai Premier 至 2031-12-31；21c 至 2027-07-31）——官方口径；Oracle AI Database 26ai 发布公告（2025-10-14，oracle.com）——官方口径；on-prem GA 2026-01-27、内部版本 23.26.x——DBA 社区（zeddba、dohdatabase）</li>
+<li>RAC/脑裂：Oracle 官方 RAC 概念文档（github.com/oracle/skills）——官方口径；Cache Fusion 延迟与驱逐案例——DBA 社区实测；Voting Disk/I/O fencing——社区共识</li>
+<li>Data Guard：Oracle MAA 文档（High Availability Overview、FSFO 最佳实践白皮书）——官方口径；switchover/failover/reinstate 实践——DBA 社区实测（2026-09）</li>
+<li>授权：License Definitions and Rules、Processor Core Factor Table、Database Licensing 文档——官方口径；LMS 审计——CCL 历史调查 + Medium 2025-10 第三方分析；虚拟化 partitioning 政策——第三方授权分析，社区共识；22% 支持费——第三方/社区共识口径</li>
+<li>TDE/选件归属：AWS 官方博客（RDS Custom for Oracle TDE 系列）——官方口径；Oracle 安全文档——官方口径</li>
+<li>云战略：Oracle multicloud 研究简报（Moor Insights &amp; Strategy 2025-03）、IDC MarketScape 2025——第三方口径；Database@AWS 合作——第三方报道（2026-09）</li>
+<li>去 O：AWS 官方迁移博客（SCT 评估：78% vs 31% 自动转换率案例）——官方口径；credativ-pg-migrator、oracle-to-postgres 迁移 lab——社区实测；HN multi-year 迁移经验帖——社区实测</li>
+<li>下次评审：跟踪 26ai 后续 RU（23.26.3+）与第三方工具链适配；跟踪 LMS 审计政策变化；复核 Multitenant PDB 授权口径；复核 19c Extended Support 付费期（2029–2032）细则</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li>Versions &amp; support: Oracle Lifetime Support Policy for Technology Products (effective 2026-05-01: 19c Premier through 2029-12-31 / Extended through 2032-12-31; 26ai Premier through 2031-12-31; 21c through 2027-07-31) — official docs; Oracle AI Database 26ai release announcement (2025-10-14, oracle.com) — official docs; on-prem GA 2026-01-27, internal version 23.26.x — DBA community (zeddba, dohdatabase)</li>
+<li>RAC/split-brain: Oracle official RAC concepts docs (github.com/oracle/skills) — official docs; Cache Fusion latency and eviction cases — DBA community tests; Voting Disk/I/O fencing — community consensus</li>
+<li>Data Guard: Oracle MAA docs (High Availability Overview, FSFO best-practices whitepaper) — official docs; switchover/failover/reinstate practice — DBA community tests (2026-09)</li>
+<li>Licensing: License Definitions and Rules, Processor Core Factor Table, Database Licensing docs — official docs; LMS audits — CCL historical survey + Medium 2025-10 third-party analysis; virtualization partitioning policy — third-party licensing analysis, community consensus; 22% support fee — third-party/community consensus figures</li>
+<li>TDE/option attribution: AWS official blog (RDS Custom for Oracle TDE series) — official docs; Oracle security docs — official docs</li>
+<li>Cloud strategy: Oracle multicloud research brief (Moor Insights &amp; Strategy 2025-03), IDC MarketScape 2025 — third-party docs; Database@AWS partnership — third-party reports (2026-09)</li>
+<li>De-O: AWS official migration blog (SCT assessment: 78% vs 31% auto-conversion cases) — official docs; credativ-pg-migrator, oracle-to-postgres migration lab — community-tested; HN multi-year migration experience posts — community-tested</li>
+<li>Next review: track 26ai follow-up RUs (23.26.3+) and third-party toolchain adaptation; track LMS audit policy changes; re-verify Multitenant PDB licensing wording; re-verify 19c Extended Support paid period (2029–2032) details</li>
+</ul>
+</div>
+</section>
+</main>
+<footer class="footer">
+  <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
+</footer>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
