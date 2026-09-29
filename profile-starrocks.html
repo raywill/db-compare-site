@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>StarRocks - DB 选型参考</title>
+<link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">&#9672;</span> DB <span data-zh="选型参考" data-en="Compare">选型参考</span></a>
+    <nav class="mainnav">
+<a href="index.html" class="active" data-zh="首页" data-en="Home">首页</a>
+<a href="compare.html" class="" data-zh="维度对比" data-en="Compare">维度对比</a>
+<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
+<a href="advisor.html" class="" data-zh="AI选型" data-en="AI Selection">AI选型</a>
+    </nav>
+    <div class="cmp-tray">
+      <button id="cmp-tray-btn" type="button" class="tray-btn" aria-expanded="false" aria-haspopup="true"><span data-zh="对比" data-en="Compare">对比</span> <b class="tray-count"><i id="cmp-count">0</i>/4</b></button>
+      <div id="cmp-panel" class="tray-panel" hidden>
+        <div class="tray-sec"><span data-zh="已选" data-en="Selected">已选</span></div>
+        <div id="cmp-selected" class="tray-selected"></div>
+        <div class="tray-sec"><span data-zh="全部产品（最多选 4 款）" data-en="All products (up to 4)">全部产品（最多选 4 款）</span></div>
+        <div id="cmp-list" class="tray-list"></div>
+        <div class="tray-actions"><button id="cmp-clear" type="button" class="tray-clear"><span data-zh="清空选择" data-en="Clear selection">清空选择</span></button></div>
+      </div>
+    </div>
+    <button id="lang-toggle" class="lang-btn" type="button" aria-label="switch language">EN</button>
+  </div>
+</header>
+<main class="page">
+<div class="profile-hero">
+  <a class="back" href="index.html"><span data-zh="← 返回首页" data-en="← Back to home">← 返回首页</span></a>
+  <h1>StarRocks</h1>
+  <div class="meta-row"><span class="cat cat-olap" data-zh="OLAP" data-en="OLAP">OLAP</span> <span class="tag">#OLAP</span> <span class="tag">#MPP</span> <span class="tag">#实时数仓</span> <span class="tag">#MySQL协议</span> <span class="tag">#存算分离</span> <span class="tag">#湖仓一体</span> <span class="tag">#向量化引擎</span> <span class="tag">#开源</span></div>
+  <p class="oneliner"><div class="lang-block lang-zh">
+<p>源自百度 Palo / Doris 代码基的极速 MPP 分析型数据库——为&quot;多表关联的实时报表 + 湖仓一体&quot;而生：全向量化执行引擎配 Cascades 风格 CBO，主键模型做实时 upsert，存算分离做弹性；代价是 FE 中心化元数据、tablet 规划和主键内存这些&quot;建表第一天就写好&quot;的约束。</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<p>A blazing-fast MPP analytical database with roots in the Baidu Palo / Doris codebase — built for &quot;real-time reporting over many joined tables plus lakehouse in one engine&quot;: a fully vectorized execution engine with a Cascades-style CBO, a primary-key model for real-time upserts, and shared-data storage for elasticity; the price is front-loading constraints like FE-centralized metadata, tablet planning, and primary-key memory — decisions made on day one of table design.</p>
+</div></p>
+  <div class="ai-dive-row" data-product="StarRocks">
+    <span class="ai-dive-label" data-zh="用 AI 深挖这款：" data-en="Deep-dive with AI:">用 AI 深挖这款：</span>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('chatgpt', this)">ChatGPT <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('grok', this)">Grok <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('claude', this)">Claude <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn addcmp-btn" data-addcmp="starrocks"><span class="addcmp-label">＋ 对比</span></button>
+  </div>
+  <div class="legend"><span class="legend-label" data-zh="证据等级：" data-en="Evidence levels: ">证据等级：</span><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></div>
+</div>
+<section class="doc-section">
+<h2><span data-zh="基本信息" data-en="Basics">基本信息</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>项</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td>厂商</td><td>StarRocks 开源社区（创始团队背景；商业化由 CelerData（北美）、MirrorShip（亚太）等承担）</td></tr>
+<tr><td>国家</td><td>中国起源，国际化运营</td></tr>
+<tr><td>起源</td><td>技术 lineage 可追溯至 Google Mesa → 百度 Palo → Apache Doris；2020 年左右从 Doris 代码基 fork 独立发展（此前曾用名 DorisDB，因 Apache 商标规范更名），2021 年 6 月以 StarRocks 之名 Apache 2.0 开源</td></tr>
+<tr><td>许可证</td><td>Apache 2.0（内核全开源，含存算分离）</td></tr>
+<tr><td>商业版说明</td><td>未发现独立闭源企业版内核的发售信息；商业化 = 云托管服务（CelerData Cloud 等 Serverless 形态）+ 云厂商 EMR 集成 + 技术支持</td></tr>
+<tr><td>托管服务</td><td>CelerData Cloud、阿里云 EMR Serverless StarRocks、火山引擎 / 腾讯云 / 华为云集成（社区资料口径）</td></tr>
+<tr><td>主类型</td><td>OLAP（MPP 分析型，并非 OLTP）</td></tr>
+<tr><td>兼具类型</td><td>湖仓一体（External Catalog 直查 Hive / Iceberg / Hudi / Paimon / Delta）、向量检索（v4.0 起 AI Native 方向）</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Item</th><th>Content</th></tr></thead>
+<tbody>
+<tr><td>Vendor</td><td>StarRocks open-source community (founding-team background; commercialization via CelerData (North America), MirrorShip (APAC), etc.)</td></tr>
+<tr><td>Country</td><td>Originated in China, internationally operated</td></tr>
+<tr><td>Origin</td><td>Technical lineage traces back to Google Mesa → Baidu Palo → Apache Doris; forked from the Doris codebase around 2020 and developed independently (formerly DorisDB, renamed for Apache trademark compliance), open-sourced as StarRocks under Apache 2.0 in June 2021</td></tr>
+<tr><td>License</td><td>Apache 2.0 (kernel fully open source, including shared-data)</td></tr>
+<tr><td>Commercial model</td><td>No evidence of a separately sold closed-source enterprise kernel; commercialization = cloud services (CelerData Cloud etc. in Serverless form) + cloud-vendor EMR integrations + support</td></tr>
+<tr><td>Managed services</td><td>CelerData Cloud, Alibaba Cloud EMR Serverless StarRocks, Volcano Engine / Tencent Cloud / Huawei Cloud integrations (community sources)</td></tr>
+<tr><td>Primary type</td><td>OLAP (MPP analytical, not OLTP)</td></tr>
+<tr><td>Also covers</td><td>Lakehouse (External Catalogs query Hive / Iceberg / Hudi / Paimon / Delta directly), vector search (AI Native direction since v4.0)</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section"><h2><span data-zh="硬维度（14 项）" data-en="Hard dimensions (14)">硬维度（14 项）</span></h2>
+<div class="lang-block lang-zh">
+<div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——<code>enable_transparent_data_encryption</code>（BE 静态参数，v3.3.1 / v3.4.0 / v3.5.0 / v4.0.0 起引入）：开启后新写入的存储对象（segment、delete/update 文件、lake SST、persistent index 等）落盘加密，密钥经 KEK / KeyCache 管理。<strong>边缘</strong>：默认关闭；必须在部署前开启、运行期不可动态修改；FE 与 BE 的加密开关必须一致，否则 BE 在心跳时直接 abort（LOG(FATAL)）；仅覆盖&quot;开启后新写入&quot;的对象，老数据需重写才加密；WAL / 临时文件 / 备份的覆盖边界未找到明确证据。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（BE 参数文档）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——v3.4 起支持 MySQL 协议链路的 SSL（fe.conf <code>ssl_force_secure_transport=true</code> 可强制，客户端不用加密会被 5205 拒绝）；Stream Load 可走 HTTPS。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（v3.4 release notes、SSL 配置文档）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> 审计 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——FE <code>fe.audit.log</code> 记录全量 SQL、用户、客户端、执行时间与结果；可按模块过滤（<code>audit_log_modules=slow_query,query,load,stream_load</code>）、JSON 格式、默认保留 30 天、可压缩归档。<strong>边缘</strong>：文件型审计日志，合规场景需外部采集（ELK 等）做集中留存与防篡改；细粒度&quot;谁看了哪列&quot;需配合脱敏策略与 secure view。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（logs.md、FE 配置文档）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> 认证与权限 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——MySQL 兼容的用户 / 密码 / 角色 / GRANT-REVOKE 权限体系；支持 LDAP 外部认证、SSL 客户端认证；v3.4 起支持 secure view（防越权穿透基表）；列级脱敏 masking policy 在社区资料中有完整语法示例，官方文档待复核。行级安全策略、Kerberos 未找到证据。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> + 社区资料。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> 备份恢复 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——<code>CREATE REPOSITORY</code>（S3 / HDFS via broker）+ <code>BACKUP SNAPSHOT</code> / <code>RESTORE SNAPSHOT</code>，支持分区 / 表 / 库三级粒度，异步执行；恢复可改副本数、可跨集群；v3.4 起 shared-data 集群支持自动快照用于集群恢复。<strong>边缘</strong>：同一时间只允许一个备份任务；恢复是&quot;搭新表再导数据&quot;式的重建，大库恢复耗时与写入吞吐强相关，恢复窗口要实测。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> 大版本升级 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——支持滚动升级；但降级路径受限且版本相关：v3.5 只能回退到 v3.4.5+（禁回 3.4.0~3.4.4），v4.1 只能回退到 v4.0.6+（tablet 切分带来的数据布局变更）；v3.5 起强制 JDK 17，需清理 JAVA_OPTS 中的 CMS 等旧参数；v4.1.0 容器镜像曾有 BE 启动顺序问题（v4.1.1 修复）。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（各版本 release notes 升级/降级说明）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> 可观测性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——Prometheus 指标 + 官方 Grafana 看板；<code>information_schema</code> 暴露运维表（如 <code>be_cloud_native_compactions</code> 可审计 shared-data compaction 历史）；慢查询日志、审计日志、<code>EXPLAIN ANALYZE</code> 与 query profile。<strong>边缘</strong>：shared-data 的关键指标（DataCache 命中率、<code>lake_publish_tablet_version_queuing_count</code>、compaction score）需要 DBA 主动看，默认看板不一定覆盖；v3.5 新增 <code>txn_max_committed_pending_publish_ms</code> 专门诊断版本发布卡住。证据：官方文档 + 社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> 连接模型 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——FE 经 MySQL 协议（9030 端口）接入，兼容 MySQL 客户端与 BI 工具；Stream Load 走 FE/BE 的 HTTP（8030）；v3.5 起支持 Arrow Flight SQL 高速通道。连接池靠应用侧或外部代理，FE 本身是查询协调器而非连接池。证据：官方文档 + 社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> 事务与隔离级别 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——OLAP 定位，无通用 OLTP 事务；写入侧有单库事务能力：Stream Load 事务接口（预提交 + 提交两阶段，对 Flink 保证 exactly-once），v4.0 起支持单库多表事务（多库多表开发中），label 机制做去重（at-most-once 语义），<code>idle_transaction_timeout</code> 超时自动回滚；另有 Group Commit 合并高频小批量写入。跨库事务、多语句交互式事务查证为无；&quot;快照隔离&quot;级别的严谨表述待验证。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（Stream Load 事务接口文档）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> 复制与一致性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——默认 3 副本（<code>replication_num=3</code>），tablet 多副本分布；v3.4 起写入按&quot;多数派副本成功即成功&quot;（此前曾因单副本找不到而整体失败）；读走版本化可见性（visible version），单批次写入原子可见。<strong>边缘</strong>：一致性是&quot;单表版本级&quot;而非跨表分布式强一致；shared-data 下 FE leader 切换曾导致在途事务丢失（见深水区一）。证据：官方文档 + 社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> 扩展方式 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——原生 scale-out。shared-nothing：加 BE 节点，tablet 自动均衡（需数据重分布，吃 IO/网络）；shared-data：CN 计算节点无状态、秒级弹性（K8s HPA），Warehouse 实现多负载物理隔离。<strong>硬约束</strong>：两种模式不可混部、不可互转（官方文档明确）；shared-data 要求 CN 硬件同构。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> 兼容性 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——MySQL 协议兼容（驱动 / ORM / BI 工具即插即用）；SQL 语法部分兼容 MySQL（分析型子集）；不支持存储过程 / 触发器（OLAP 定位，官方能力矩阵中无该能力——查证为无）。证据：官方文档 + 社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> 许可证与商业模式 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——Apache 2.0 全开源（含存算分离等核心能力）；商业化 = CelerData / MirrorShip 云服务（Serverless 按计算用量计费）+ 云厂商托管集成 + 技术支持。不写绝对价格（易过期）。证据：官方口径 + 社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> 中文资料丰富度 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（丰富）——官方中文文档完整、中文社区活跃、CSDN / 博客实践帖大量；英文文档同样完整。证据：<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</p></div></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — <code>enable_transparent_data_encryption</code> (static BE parameter, introduced in v3.3.1 / v3.4.0 / v3.5.0 / v4.0.0): when enabled, newly written storage objects (segments, delete/update files, lake SSTs, persistent indexes, etc.) are encrypted at rest, with keys managed via KEK / KeyCache. <strong>Edges</strong>: off by default; must be enabled before deployment, cannot be changed dynamically at runtime; FE and BE flags must match or the BE aborts at heartbeat (LOG(FATAL)); only covers objects written <em>after</em> enabling — old data stays unencrypted until rewritten; coverage of WAL / temp files / backups has no evidence found. Evidence: official docs (BE parameter reference).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / transport encryption <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — MySQL-protocol SSL since v3.4 (<code>ssl_force_secure_transport=true</code> in fe.conf enforces it; unencrypted clients are rejected with error 5205); Stream Load can run over HTTPS. Evidence: official docs (v3.4 release notes, SSL configuration docs).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> Auditing <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — FE <code>fe.audit.log</code> records all SQL, users, clients, execution times and results; filterable by module (<code>audit_log_modules=slow_query,query,load,stream_load</code>), JSON format, 30-day default retention, compressible archives. <strong>Edges</strong>: file-based audit logs — compliance scenarios need external collection (ELK etc.) for centralized retention and tamper protection; &quot;who saw which column&quot; granularity requires masking policies plus secure views. Evidence: official docs (logs.md, FE configuration docs).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> Authentication &amp; authorization <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — MySQL-compatible user / password / role / GRANT-REVOKE privilege system; external LDAP authentication, SSL client authentication; secure views since v3.4 (prevents privilege escalation through base tables); column masking policy syntax exists in community materials, official docs pending verification. No evidence found for row-level security policies or Kerberos. Evidence: official docs + community materials.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> Backup &amp; recovery <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — <code>CREATE REPOSITORY</code> (S3 / HDFS via broker) + <code>BACKUP SNAPSHOT</code> / <code>RESTORE SNAPSHOT</code>, partition / table / database granularity, asynchronous execution; restore can change replica counts and target a different cluster; shared-data clusters support automatic snapshots for cluster recovery since v3.4. <strong>Edges</strong>: only one backup task at a time; restore is a &quot;rebuild the table and load the data&quot; style operation — restore time scales with data volume and write throughput, so the recovery window must be measured. Evidence: official docs.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> Major-version upgrades <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — rolling upgrades supported; but downgrade paths are restricted and version-specific: v3.5 can only roll back to v3.4.5+ (not 3.4.0–3.4.4), v4.1 only to v4.0.6+ (tablet-splitting data-layout changes); JDK 17 mandatory since v3.5 (clean CMS and other legacy JVM flags from JAVA_OPTS); v4.1.0 container images had BE startup-order issues (fixed in v4.1.1). Evidence: official docs (upgrade/downgrade notes in each release&#x27;s release notes).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> Observability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — Prometheus metrics + official Grafana dashboards; <code>information_schema</code> exposes operational tables (e.g. <code>be_cloud_native_compactions</code> audits shared-data compaction history); slow-query logs, audit logs, <code>EXPLAIN ANALYZE</code> and query profiles. <strong>Edges</strong>: shared-data key metrics (DataCache hit rate, <code>lake_publish_tablet_version_queuing_count</code>, compaction scores) need DBAs to watch actively — default dashboards may not cover them; v3.5 added <code>txn_max_committed_pending_publish_ms</code> specifically to diagnose stuck version publishing. Evidence: official docs + community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> Connection model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — FE accepts MySQL protocol (port 9030), compatible with MySQL clients and BI tools; Stream Load uses FE/BE HTTP (8030); Arrow Flight SQL high-speed channel since v3.5. Connection pooling lives in the application side or external proxies — the FE is a query coordinator, not a connection pooler. Evidence: official docs + community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> Transactions &amp; isolation levels <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — OLAP positioning, no general OLTP transactions; write-side single-database transactions: Stream Load transaction interface (prepare + commit two-phase, exactly-once for the Flink connector), multi-table-in-one-database transactions since v4.0 (cross-database in development), label mechanism for deduplication (at-most-once semantics), <code>idle_transaction_timeout</code> auto-rollback; plus Group Commit merging high-frequency small batches. Cross-database transactions and multi-statement interactive transactions: verified absent; rigorous &quot;snapshot isolation&quot; claims pending verification. Evidence: official docs (Stream Load transaction interface).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> Replication &amp; consistency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — default 3 replicas (<code>replication_num=3</code>) with tablets spread across replicas; since v3.4 writes commit on majority-replica success (previously a missing single replica could fail the whole write); reads use versioned visibility (visible version), each write batch atomically visible. <strong>Edges</strong>: consistency is &quot;per-table version level&quot;, not cross-table distributed strong consistency; shared-data FE leader failover once caused in-flight transaction loss (see Deep dive 1). Evidence: official docs + community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> Scaling <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — native scale-out. Shared-nothing: add BE nodes, tablets rebalance automatically (costs IO/network for redistribution); shared-data: stateless CN compute nodes, elastic in seconds (K8s HPA), Warehouses provide physical isolation between workloads. <strong>Hard constraints</strong>: the two modes cannot be mixed in one cluster or converted into each other (explicit in official docs); shared-data requires homogeneous CN hardware. Evidence: official docs.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> Compatibility <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — MySQL protocol compatible (drivers / ORMs / BI tools plug in); SQL syntax partially MySQL-compatible (analytical subset); no stored procedures / triggers (OLAP positioning — verified absent from the official capability matrix). Evidence: official docs + community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> License &amp; business model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — Apache 2.0 fully open source (including shared-data and other core capabilities); commercialization = CelerData / MirrorShip cloud services (Serverless billed by compute usage) + cloud-vendor managed integrations + support. No absolute prices (they expire quickly). Evidence: official statements + community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> Chinese-language resources <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (rich) — complete official Chinese docs, active Chinese community, abundant CSDN / blog practices; English docs equally complete. Evidence: community consensus.</p></div></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="杀手特性" data-en="Killer features">杀手特性</span></h2>
+<div class="lang-block lang-zh">
+<blockquote>
+<p>写法要求：每个特性 = 它是什么 + 为什么是真本事 + 推到边缘会发生什么。</p>
+</blockquote>
+<ol>
+<li><strong>全面向量化执行引擎 + CBO + Pipeline</strong> 真本事：C++ 向量化引擎（SIMD）配 Cascades 风格 CBO 与 Pipeline 并行执行，多表 Join 场景下优化器自动选 Join 顺序与策略（broadcast / shuffle / colocate），这是它相对 ClickHouse（Join 历史短板）的结构性差异，也是&quot;多表关联实时报表&quot;口碑的技术根基。 边缘真相：CBO 的&quot;智能&quot;完全依赖统计信息——<code>ANALYZE</code> 没跑或过期，Join 顺序和策略就可能选错；外表（湖上数据）统计信息天然弱，湖上复杂查询的计划质量要打折；v3.5 灰度升级时官方曾要求手动关闭低基数优化（<code>cbo_enable_low_cardinality_optimize=false</code>），说明优化器新特性与升级存在耦合风险。见深水区六。</li>
+<li><strong>主键模型（Primary Key）：列存上的真 upsert</strong> 真本事：把随机更新转化为&quot;追加新版本 + 主键索引去重&quot;，保留列存批量写入优势的同时做到秒级可见，部分列更新（column mode）进一步降低写入放大。这是实时数仓 CDC 场景选它的核心理由——对比 ClickHouse 的 ReplacingMergeTree（后台异步去重、读时仍需处理），StarRocks 的主键模型在&quot;更新频繁 + 查询也要快&quot;的场景更直接。 边缘真相：见深水区二——主键索引是内存税，规划失误直接报 <code>primary key memory usage exceeds the limit</code>；DelVector 带来读时过滤开销；compaction 必须及时清理历史版本，否则读放大。主键模型不是&quot;免费的更新&quot;，是把更新成本从写入时搬到了内存和后台合并。</li>
+<li><strong>异步物化视图 + SPJG 透明改写</strong> 真本事：v2.4 引入、v2.5 起支持改写，MV 可跨多表、跨数据源（Hive / Iceberg / Hudi / Paimon）构建，支持分区级增量刷新；查询侧 SPJG 算法自动匹配改写（单表 / Join / 聚合 / Union / 嵌套 MV），业务 SQL 不用改。这是&quot;预聚合加速&quot;口碑的来源。 边缘真相：见深水区三——&quot;刷新&quot;和&quot;改写&quot;是两条独立链路，数据新鲜度和查询能否命中是两个问题；v4.1.1 对 INCREMENTAL / AUTO 类 MV 禁用了查询改写并拒绝 FORCE 刷新（行为变更，升级前必读 release notes）；候选 MV 过多会拖慢优化器本身。</li>
+<li><strong>存算分离（shared-data）：CN 秒级弹性 + Warehouse 隔离</strong> 真本事：v3.0 引入，数据下沉对象存储，CN 计算节点无状态，K8s 下可按负载秒级扩缩容；Warehouse 实现&quot;一份数据、多组计算资源&quot;的物理隔离，解决 MPP 时代&quot;ETL 大查询饿死小查询&quot;的资源隔离难题。研发重心明显向该架构倾斜（4.x 新特性多优先 shared-data）。 边缘真相：见深水区一——这是&quot;用运维复杂度换弹性&quot;：DataCache（StarCache）腐蚀 / 驱逐、S3 限流、FE leader 切换丢在途事务、tablet 数量爆炸压垮 FE 元数据；且与 shared-nothing 不可互转，选型时一次定终身。</li>
+<li><strong>湖仓一体：External Catalog 直查</strong> 真本事：Hive / Iceberg / Hudi / Paimon / Delta / JDBC 等外部 catalog 一等公民，StarRocks 可直接查询湖上数据并做 MV 加速，&quot;热数据放仓、冷数据放湖&quot;不用搬数据。这是它相对纯数仓引擎的差异化。 边缘真相：外表查询的性能天花板受湖格式与对象存储延迟限制；外表元数据缓存过期会导致&quot;基表是否变化&quot;判断失准，进而影响 MV 刷新正确性；跨引擎写湖（Format SDK / Spark 直写）是较新的能力，生产采用需逐项验证。</li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<blockquote>
+<p>Each feature = what it is + why it&#x27;s genuinely good + what happens at the edge.</p>
+</blockquote>
+<ol>
+<li><strong>Fully vectorized execution engine + CBO + Pipeline</strong> The real thing: C++ vectorized engine (SIMD) with a Cascades-style CBO and Pipeline parallel execution — the optimizer automatically picks join order and join strategy (broadcast / shuffle / colocate) for multi-table joins. This is its structural difference versus ClickHouse (whose join capabilities historically lagged) and the technical root of its &quot;real-time reporting over joins&quot; reputation. The edge truth: the CBO&#x27;s &quot;intelligence&quot; is entirely statistics-dependent — stale or missing <code>ANALYZE</code> statistics and the CBO picks the wrong join order and strategy; external tables (data on the lake) have inherently weak statistics, so query plans over the lake are discounted; gray-upgrading to v3.5 once required manually disabling low-cardinality optimization (<code>cbo_enable_low_cardinality_optimize=false</code>), showing optimizer features are coupled to upgrade risk. See Deep dive 6.</li>
+<li><strong>Primary-key model: real upserts on a columnar store</strong> The real thing: random updates become &quot;append a new version + primary-index deduplication&quot;, keeping columnar bulk-write advantages while achieving second-level visibility; partial updates (column mode) further reduce write amplification. This is the core reason CDC real-time-warehouse scenarios pick it — versus ClickHouse&#x27;s ReplacingMergeTree (background async dedup, reads still have to cope), StarRocks&#x27; primary-key model is more direct for &quot;frequent updates + fast queries&quot;. The edge truth: see Deep dive 2 — the primary index is a memory tax, and bad planning fails loudly with <code>primary key memory usage exceeds the limit</code>; DelVector adds read-time filtering overhead; compaction must reclaim old versions promptly or read amplification grows. The primary-key model is not &quot;free updates&quot; — it moves update cost from write time to memory and background merging.</li>
+<li><strong>Asynchronous materialized views + SPJG transparent rewrite</strong> The real thing: introduced in v2.4, rewrite-capable since v2.5; MVs can span multiple tables and data sources (Hive / Iceberg / Hudi / Paimon), with partition-level incremental refresh; the SPJG algorithm automatically matches and rewrites queries (single-table / join / aggregation / union / nested MV) without changing business SQL. This is the source of its &quot;pre-aggregation acceleration&quot; reputation. The edge truth: see Deep dive 3 — &quot;refresh&quot; and &quot;rewrite&quot; are two independent pipelines; data freshness and whether a query hits the MV are two separate questions; v4.1.1 disabled query rewrite for INCREMENTAL / AUTO MVs and rejected FORCE refresh (a behavior change — read the release notes before upgrading); too many candidate MVs slow down the optimizer itself.</li>
+<li><strong>Shared-data: second-level CN elasticity + Warehouse isolation</strong> The real thing: introduced in v3.0; data sinks to object storage, CN compute nodes are stateless and scale in seconds on K8s with load; Warehouses give &quot;one dataset, multiple isolated compute groups&quot; physical isolation, solving the classic MPP problem of &quot;big ETL queries starving small queries&quot;. R&amp;D emphasis is visibly shifting to this architecture (most 4.x features land there first). The edge truth: see Deep dive 1 — this trades operational complexity for elasticity: DataCache (StarCache) corruption / eviction, S3 throttling, FE leader failover losing in-flight transactions, tablet explosion crushing FE metadata; and it cannot be converted to/from shared-nothing — one choice, for life.</li>
+<li><strong>Lakehouse: External Catalogs query the lake directly</strong> The real thing: Hive / Iceberg / Hudi / Paimon / Delta / JDBC external catalogs are first-class; StarRocks can query lake data directly and accelerate with MVs — &quot;hot data in the warehouse, cold data in the lake&quot; without moving data. This is its differentiation against pure warehouse engines. The edge truth: external-table performance is capped by lake formats and object-storage latency; stale external-table metadata caches can misjudge &quot;did the base table change&quot;, hurting MV refresh correctness; cross-engine lake writes (Format SDK / direct Spark writes) are newer capabilities — verify each one before production use.</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="深水区" data-en="Deep dives">深水区</span></h2>
+<div class="lang-block lang-zh">
+<p><strong>深水区一：存算分离的真实成熟度——弹性是拿运维复杂度换的</strong></p>
+<ul>
+<li>领域：存储架构 / 运维</li>
+<li>机制一句话：CN 计算节点无状态，数据持久化在对象存储，本地 StarCache（DataCache）做热数据加速，Warehouse 做多租户计算隔离。</li>
+<li>推到边缘：<ul>
+<li>DataCache 是第一故障聚集地：缓存块腐蚀（checksum mismatch 导致发布/查询失败）、自动扩缩容驱逐引发 S3 回源、compaction 跟不上时 score 告警——shared-data 排障手册里五大根因有三条与缓存/对象存储相关。</li>
+<li>S3 侧：multipart 上传失败、503 限流会直接卡住写入与 compaction。</li>
+<li>FE leader 切换曾导致在途事务丢失（EditLog gap 造成事务重放失败）——&quot;高可用切换&quot;与&quot;数据不丢&quot;在这里是两笔账。</li>
+<li>tablet 数量失控会压垮 FE：官方 issue 承认单 tablet ~1GB 的推荐值在大规模下导致 FE 元数据（shard/tablet 元数据、GC、RPC）先成为瓶颈，目标是把单 tablet 容量做到 100GB——这是架构级的已知短板，不是调优能解决的。</li>
+<li>历史事故：v3.4.1 shared-data 集群在 leader 切换 + 未发布 compaction 事务下发生元数据丢失，该版本被下线，基线至少 v3.4.5 / v3.5。</li>
+<li>硬约束：shared-nothing 与 shared-data 不可混部、不可互转；CN 硬件必须同构。</li>
+</ul></li>
+<li>对选型的含义：shared-data 适合&quot;负载波峰波谷明显、能接受 K8s 运维&quot;的团队；选之前先评估团队是否有对象存储 + 缓存排障能力；tablet/分桶规划在 shared-data 下更关键（FE 是单点瓶颈）；新集群直接上最新 patch，老集群迁 shared-data 等于重建。</li>
+<li>来源：官方文档（shared-data feature support）；官方 issue #66457（tablet 容量）；社区排障手册（shared-data 五大根因）；社区版本基线记录（v3.4.1 事故）。</li>
+</ul>
+<p><strong>深水区二：主键模型的内存税——upsert 不是免费的</strong></p>
+<ul>
+<li>领域：存储引擎</li>
+<li>机制一句话：随机更新转化为&quot;追加新版本 + 主键索引定位旧版本&quot;，主键索引常驻内存（或 persistent index 落盘），读时用 DelVector 过滤旧行，后台 compaction 清理历史版本。</li>
+<li>推到边缘：<ul>
+<li>规划失误的直接后果是报错 <code>primary key memory usage exceeds the limit</code>（真实案例：Airtable 数据验证系统，7200 个 bucket 下主键内存超限，加载卡住）。</li>
+<li>每个 tablet 有独立的 ingest memtable 和主键索引 memtable——tablet 数量 × 单 tablet 索引 = 总内存，tablet 切得越碎，内存税越重（与深水区一的 FE 压力同源）。</li>
+<li>导入进度&quot;99% 卡住&quot;是典型症状：LOAD 返回 99% 表示数据写完，生效（版本发布 + 索引构建）才是最后 1%，主键表的大导入这里最容易现形。</li>
+<li>部分列更新走 column mode，与 GIN 倒排索引组合曾出现结果损坏（v4.1.4 修复）——新特性的组合路径是 bug 高发区。</li>
+<li>缓解手段 <code>enable_persistent_index</code> 把索引放磁盘，是用读放大换内存，点查延迟会涨，不是无代价开关。</li>
+</ul></li>
+<li>对选型的含义：主键表必须做&quot;分区分桶 × 预估行数 × 主键宽度&quot;的内存测算；高频 CDC 场景先压测&quot;写入 + compaction + 查询&quot;三并发，而不是只测写入；把 <code>enable_persistent_index</code> 当作容量规划选项而非事后救火。</li>
+<li>来源：官方文档（主键模型、persistent index）；社区实测（Airtable 案例、CSDN 实践）；官方 release notes（v4.1.4 GIN 修复）。</li>
+</ul>
+<p><strong>深水区三：物化视图——&quot;刷新&quot;和&quot;改写&quot;是两条独立链路</strong></p>
+<ul>
+<li>领域：SQL 层</li>
+<li>机制一句话：刷新链路（MVRefreshPartitionSelector 选分区、BaseMVRefreshProcessor 执行、成功后更新 BaseTableVisibleVersionMap）管数据新鲜度；改写链路（MvRewritePreprocessor 收集候选 + SPJG 模式匹配 + 补偿）管查询能否命中，两者在优化器里汇合。</li>
+<li>推到边缘：<ul>
+<li>&quot;数据新鲜&quot;不等于&quot;查询能用&quot;：分区映射错误、外表 connector 元数据过期，都会导致&quot;基表是否变化&quot;判断失准，MV 看似新鲜实则过期。</li>
+<li>候选 MV 过多拖慢优化器本身：<code>cbo_materialized_view_rewrite_related_mvs_limit</code> 默认 64、<code>optimizer_materialized_view_timelimit</code> 默认 1000ms——MV 建得越多，优化器搜索成本越高，改写可能因超时而放弃。</li>
+<li>行为变更风险：v4.1.1 起对 INCREMENTAL / AUTO 类 MV 禁用查询改写、拒绝 FORCE 刷新与分区刷新——依赖这类 MV 的集群升级 4.1 必须先读 release notes。</li>
+<li>统计信息过期会让&quot;命中 MV 的计划仍然不优&quot;；嵌套 MV 要限制改写层数防组合爆炸。</li>
+</ul></li>
+<li>对选型的含义：MV 治理（命名、分区对齐、数量上限）是 DBA 的日常工作，不是&quot;建完不管&quot;；升级前逐项核对 MV 行为变更；用 <code>EXPLAIN</code> 验证改写是否真的发生（看是否出现 MV Scan），不要靠&quot;感觉变快了&quot;。</li>
+<li>来源：官方文档（MV 文档、v4.1.1 release notes）；社区源码级解析（2026-08 架构深挖）。</li>
+</ul>
+<p><strong>深水区四：写入的隐形瓶颈——版本发布（publish）</strong></p>
+<ul>
+<li>领域：写入 / 事务</li>
+<li>机制一句话：Stream Load 走预提交 + 提交两阶段，数据落盘后还要&quot;发布版本&quot;（publish version）才可见；Group Commit 把高频小批量合并为 fewer 版本；label 机制做去重。</li>
+<li>推到边缘：<ul>
+<li>高频小写入（如逐条 CDC）的版本数会膨胀：版本越多，compaction 压力越大，查询读放越大——这是&quot;实时性&quot;向&quot;查询性能&quot;收的税。</li>
+<li>版本发布卡住时，<code>txn_max_committed_pending_publish_ms</code>（v3.5 新增指标）会报警——&quot;已提交但不可见&quot;是 StarRocks 特有的中间态，排障时先看这个指标而不是只看写入 QPS。</li>
+<li>FE leader 切换在 shared-data 下可能丢在途事务——&quot;exactly-once&quot;是 Flink connector + 事务接口配合达成的，不是存储层无条件保证，链路任一环节（FE 切换、label 去重窗口）出问题语义就降级。</li>
+<li>大版本发布延迟会直接放大 HTAP/实时报表的&quot;数据新鲜度&quot;——业务以为的&quot;秒级实时&quot;，可能是&quot;秒级写入 + 分钟级可见&quot;。</li>
+</ul></li>
+<li>对选型的含义：实时数仓 POC 必须同时压&quot;写入吞吐&quot;和&quot;版本发布延迟&quot;，并看 compaction 队列；CDC 链路做端到端语义测试（含 FE 切换演练），不要只看 happy path。</li>
+<li>来源：官方文档（Stream Load 事务接口、Group Commit）；官方 release notes（v3.5 新指标）；社区排障手册。</li>
+</ul>
+<p><strong>深水区五：tablet / 分桶规划——建表第一天就决定上限</strong></p>
+<ul>
+<li>领域：数据分布</li>
+<li>机制一句话：表按分区切、分区按分桶（bucket）切成 tablet，tablet 是数据分布、副本、compaction、调度的基本单位。</li>
+<li>推到边缘：<ul>
+<li>tablet 太多：每个 tablet 独立 memtable / 索引 / compaction，BE 内存与 CPU 开销随 tablet 数线性涨；FE 要维护海量 shard/tablet 元数据，CPU、内存、GC、RPC 先到瓶颈（官方 issue #66457 明确承认这是架构级短板）。</li>
+<li>tablet 太少 / 数据倾斜：单个 tablet 的写入与 compaction 是单线程，一个倾斜的 tablet 就是整条链路的瓶颈。</li>
+<li>官方推荐单 tablet ~1GB（压缩后），但这是经验值不是自适应的——v4.0 起支持 automatic tablet splitting（自动分裂），成熟度待生产验证。</li>
+<li>分桶键选错（如高基数列做 hash 导致倾斜）上线后再改等于重建表。</li>
+</ul></li>
+<li>对选型的含义：建表必须做&quot;数据量 / 分区数 / 分桶数 / tablet 大小&quot;四算；大表优先按时间分区 + 合理分桶；把 tablet 数量纳入日常巡检（FE 元数据压力是慢死不是快死）。</li>
+<li>来源：官方文档（Data_distribution，含 MERGE TABLETS / range 分布限制）；官方 issue #66457；社区容量规划口诀。</li>
+</ul>
+<p><strong>深水区六：CBO 的强弱项——统计信息是氧气</strong></p>
+<ul>
+<li>领域：SQL 层</li>
+<li>机制一句话：Cascades 风格 CBO 基于 <code>ANALYZE</code> 收集的基数、直方图等统计信息估算代价，决定 Join 顺序、Join 策略（broadcast / shuffle / colocate）、是否命中 MV。</li>
+<li>推到边缘：<ul>
+<li>统计信息过期或缺失时，CBO 会选错 Join 顺序、把大表 broadcast（内存爆炸）或该 colocate 的走了 shuffle——&quot;查询突然变慢&quot;的第一嫌疑人永远是统计信息。</li>
+<li>外表（Hive / Iceberg 等）统计信息天然弱，湖上复杂查询的计划质量系统性低于内表。</li>
+<li>新优化特性与升级耦合：v3.5 灰度升级要求先关低基数优化（<code>cbo_enable_low_cardinality_optimize=false</code>），说明优化器行为是版本相关的，升级后要回归核心报表的执行计划。</li>
+<li>低基数列优化、Runtime Filter 等好不好使，都依赖统计信息对基数的正确估计。</li>
+</ul></li>
+<li>对选型的含义：把 <code>ANALYZE</code> 做成定时任务写进运维手册（尤其是 ETL 后）；核心报表升级前后做执行计划 diff；湖仓一体场景对&quot;外表查询性能&quot;单独设预期，不要拿内表跑分去要求湖上查询。</li>
+<li>来源：官方文档（CBO、统计信息、v3.5 升级说明）；社区共识。</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<p><strong>Deep dive 1: Real maturity of shared-data — elasticity bought with operational complexity</strong></p>
+<ul>
+<li>Domain: storage architecture / operations</li>
+<li>Mechanism in one sentence: CN compute nodes are stateless, data persists in object storage, a local StarCache (DataCache) accelerates hot data, and Warehouses isolate multi-tenant compute.</li>
+<li>At the edge:<ul>
+<li>DataCache is the first incident cluster: block corruption (checksum mismatch failing publishes/queries), auto-scaling evictions causing S3 round-trips, compaction falling behind triggering score alarms — three of the five documented shared-data root causes relate to cache/object storage.</li>
+<li>On the S3 side: failed multipart uploads and 503 throttling directly stall writes and compaction.</li>
+<li>FE leader failover once caused in-flight transaction loss (EditLog gap breaking transaction replay) — &quot;HA failover&quot; and &quot;no data loss&quot; are two separate ledgers here.</li>
+<li>Runaway tablet counts crush the FE: the official issue admits the ~1GB-per-tablet guidance creates an FE metadata (shard/tablet metadata, GC, RPC) bottleneck at scale, targeting 100GB per tablet — an architecture-level known weakness, not a tuning problem.</li>
+<li>Historical incident: v3.4.1 shared-data clusters lost metadata under FE leader switch + un-published compaction transactions; the version was pulled, baseline at least v3.4.5 / v3.5.</li>
+<li>Hard constraints: shared-nothing and shared-data cannot mix in one cluster or convert into each other; CN hardware must be homogeneous.</li>
+</ul></li>
+<li>Selection implication: shared-data suits teams with spiky loads that can handle K8s operations; assess whether the team can debug object storage + cache before adopting; tablet/bucket planning matters more under shared-data (the FE is a single bottleneck); new clusters go straight to the latest patch, moving an old cluster to shared-data equals rebuilding.</li>
+<li>Sources: official docs (shared-data feature support); official issue #66457 (tablet sizing); community shared-data troubleshooting handbook (five root causes); community version-baseline records (v3.4.1 metadata incident).</li>
+</ul>
+<p><strong>Deep dive 2: The primary-key memory tax — upserts are not free</strong></p>
+<ul>
+<li>Domain: storage engine</li>
+<li>Mechanism in one sentence: random updates become &quot;append a new version + primary-index lookup of the old version&quot;; the primary index lives in memory (or on disk via persistent index), reads filter old rows with DelVector, and background compaction reclaims old versions.</li>
+<li>At the edge:<ul>
+<li>The direct consequence of bad planning is the hard error <code>primary key memory usage exceeds the limit</code> (real case: an Airtable data-validation system hit primary-key memory limits with 7,200 buckets and loads stalled).</li>
+<li>Each tablet has its own ingest memtable and primary-index memtable — tablet count × per-tablet index = total memory; the more fragmented the tablets, the heavier the memory tax (same root as the FE pressure in Deep dive 1).</li>
+<li>Imports &quot;stuck at 99%&quot; is the classic symptom: LOAD reporting 99% means data is written; taking effect (version publish + index build) is the final 1% — most visible on primary-key tables.</li>
+<li>Partial updates via column mode combined with GIN inverted indexes once returned corrupted results (fixed in v4.1.4) — new-feature combination paths are bug hotspots.</li>
+<li>The mitigation <code>enable_persistent_index</code> moves the index to disk — trading memory for read amplification, raising point-lookup latency; not a free switch.</li>
+</ul></li>
+<li>Selection implication: primary-key tables require upfront &quot;partitions × buckets × estimated rows × primary-key width&quot; memory math; high-frequency CDC scenarios must load-test &quot;write + compaction + query&quot; together, not writes alone; treat <code>enable_persistent_index</code> as a capacity-planning option, not a fire extinguisher.</li>
+<li>Sources: official docs (primary-key model, persistent index); community field reports (Airtable primary-key memory case); official v4.1.4 release notes (GIN + column-mode fix).</li>
+</ul>
+<p><strong>Deep dive 3: Materialized views — &quot;refresh&quot; and &quot;rewrite&quot; are two independent pipelines</strong></p>
+<ul>
+<li>Domain: SQL layer</li>
+<li>Mechanism in one sentence: the refresh pipeline (MVRefreshPartitionSelector picks partitions, BaseMVRefreshProcessor executes, then updates BaseTableVisibleVersionMap) governs data freshness; the rewrite pipeline (MvRewritePreprocessor collects candidates + SPJG pattern matching + compensation) governs whether queries hit the MV; they meet inside the optimizer.</li>
+<li>At the edge:<ul>
+<li>&quot;Fresh data&quot; ≠ &quot;query can use it&quot;: wrong partition mapping or stale external-connector metadata misjudges &quot;did the base table change&quot;, leaving MVs looking fresh while actually stale.</li>
+<li>Too many candidate MVs slow the optimizer itself: <code>cbo_materialized_view_rewrite_related_mvs_limit</code> defaults to 64, <code>optimizer_materialized_view_timelimit</code> to 1000ms — more MVs mean higher optimizer search cost, and rewrite may be abandoned on timeout.</li>
+<li>Behavior-change risk: since v4.1.1, INCREMENTAL / AUTO MVs have query rewrite disabled and FORCE / partition refreshes rejected — clusters relying on them must read the release notes before upgrading to 4.1.</li>
+<li>Stale statistics leave &quot;a plan that hit the MV still suboptimal&quot;; nested MVs need rewrite-depth limits against combinatorial explosion.</li>
+</ul></li>
+<li>Selection implication: MV governance (naming, partition alignment, count caps) is DBA daily work, not &quot;build and forget&quot;; verify every MV behavior change before upgrading; verify rewrite actually happens with <code>EXPLAIN</code> (look for MV Scan) instead of relying on &quot;it feels faster&quot;.</li>
+<li>Sources: official docs (MV documentation, v4.1.1 release notes); community MV deep-dives (SPJG, rewrite matrix, refresh strategies); community source-level analysis (refresh/rewrite dual pipelines, optimizer cost).</li>
+</ul>
+<p><strong>Deep dive 4: The invisible write bottleneck — version publishing</strong></p>
+<ul>
+<li>Domain: writes / transactions</li>
+<li>Mechanism in one sentence: Stream Load runs prepare + commit two-phase; data must &quot;publish its version&quot; (publish version) to become visible after landing; Group Commit merges high-frequency small batches into fewer versions; labels provide deduplication.</li>
+<li>At the edge:<ul>
+<li>High-frequency small writes (e.g. per-row CDC) inflate version counts: more versions → more compaction pressure → higher query read amplification — a tax that &quot;real-time&quot; pays against &quot;query performance&quot;.</li>
+<li>When publishing stalls, <code>txn_max_committed_pending_publish_ms</code> (new in v3.5) raises the alarm — &quot;committed but invisible&quot; is a StarRocks-specific intermediate state; check this metric first, not just write QPS.</li>
+<li>FE leader failover can lose in-flight transactions under shared-data — &quot;exactly-once&quot; is achieved by the Flink connector + transaction interface together, not an unconditional storage guarantee; any link (FE failover, label-dedup window) degrading the semantics downgrades the guarantee.</li>
+<li>Publishing lag directly inflates HTAP / real-time-reporting &quot;data freshness&quot; — what the business thinks of as &quot;second-level real-time&quot; may be &quot;second-level writes + minute-level visibility&quot;.</li>
+</ul></li>
+<li>Selection implication: real-time-warehouse POCs must load-test both write throughput and publish lag, and watch the compaction queue; run end-to-end semantics tests for CDC pipelines (including FE failover drills), not just happy paths.</li>
+<li>Sources: official docs (Stream Load transaction interface, Group Commit); official release notes (v3.5 new metric); community troubleshooting handbook.</li>
+</ul>
+<p><strong>Deep dive 5: Tablet / bucket planning — day-one table design sets the ceiling</strong></p>
+<ul>
+<li>Domain: data distribution</li>
+<li>Mechanism in one sentence: tables are cut by partitions, partitions by buckets into tablets; the tablet is the unit of data distribution, replication, compaction, and scheduling.</li>
+<li>At the edge:<ul>
+<li>Too many tablets: each has an independent memtable / index / compaction; BE memory and CPU scale linearly with tablet count; the FE must maintain vast shard/tablet metadata, hitting CPU, memory, GC, and RPC limits first (official issue #66457 calls this an architecture-level weakness).</li>
+<li>Too few / skewed tablets: writes and compaction on a single tablet are single-threaded — one skewed tablet bottlenecks the whole pipeline.</li>
+<li>The official ~1GB-per-tablet (compressed) guidance is an empirical rule, not adaptive — automatic tablet splitting since v4.0, production maturity pending validation.</li>
+<li>Picking the wrong bucket key (e.g. a high-cardinality column hash that skews) means rebuilding the table later.</li>
+</ul></li>
+<li>Selection implication: table design requires &quot;data volume / partition count / bucket count / tablet size&quot; math; large tables prefer time partitioning + sensible bucketing; put tablet counts on the routine patrol checklist (FE metadata pressure dies slowly, not loudly).</li>
+<li>Sources: official docs (Data_distribution, including MERGE TABLETS / range-distribution limits); official issue #66457; community capacity-planning rules of thumb.</li>
+</ul>
+<p><strong>Deep dive 6: The CBO&#x27;s strengths and weaknesses — statistics are oxygen</strong></p>
+<ul>
+<li>Domain: SQL layer</li>
+<li>Mechanism in one sentence: the Cascades-style CBO estimates costs from statistics (cardinality, histograms) collected by <code>ANALYZE</code> to decide join order, join strategy (broadcast / shuffle / colocate), and MV hits.</li>
+<li>At the edge:<ul>
+<li>Stale or missing statistics make the CBO pick the wrong join order, broadcast a huge table (memory blowup), or shuffle when colocate was right — &quot;the query suddenly got slow&quot; always suspects statistics first.</li>
+<li>External tables (Hive / Iceberg etc.) have inherently weak statistics; complex queries over the lake are systematically worse-planned than on internal tables.</li>
+<li>New optimizer features couple to upgrades: gray-upgrading to v3.5 required disabling low-cardinality optimization first (<code>cbo_enable_low_cardinality_optimize=false</code>) — optimizer behavior is version-dependent, so core-report plans need regression checks after upgrades.</li>
+<li>Low-cardinality optimization, Runtime Filters and friends all depend on correct cardinality estimates from statistics.</li>
+</ul></li>
+<li>Selection implication: make <code>ANALYZE</code> a scheduled job in the operations runbook (especially after ETL); diff core-report execution plans before and after upgrades; set separate expectations for external-table query performance in lakehouse scenarios — don&#x27;t hold lake queries to internal-table benchmarks.</li>
+<li>Sources: official docs (CBO, statistics, v3.5 upgrade notes); community consensus.</li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="用户最买账的 5 点" data-en="What users love most">用户最买账的 5 点</span></h2>
+<div class="lang-block lang-zh">
+<blockquote>
+<p>好的也要有深度。每条 = 为什么是真的 + 边缘与限度。</p>
+</blockquote>
+<ol>
+<li><strong>查询快，尤其是多表 Join</strong><ul>
+<li>为什么是真的：全向量化引擎 + CBO + Pipeline，TPC-H / TPC-DS 这类复杂分析是主场；社区大量&quot;从 Hive / Presto 迁过来查询快一个数量级&quot;的实测（厂商口径的倍数不采信，但&quot;变快&quot;的方向是社区共识）。</li>
+<li>边缘与限度：快的前提是统计信息新鲜、tablet 规划合理；单表极限扫描拼不过 ClickHouse（向量化鼻祖 + 更高压缩比）；外表查询受对象存储延迟限制。以及 benchmark 跑的是&quot;调优后的上限&quot;，不是&quot;你建表第一天的下限&quot;。</li>
+<li>来源：社区共识；观察版本：v3.5 / v4.1。</li>
+</ul></li>
+<li><strong>MySQL 协议，BI 工具即插即用</strong><ul>
+<li>为什么是真的：9030 端口 MySQL 协议，Tableau / Superset / PowerBI / DataGrip 直连，分析师零学习成本；JDBC 驱动通用。</li>
+<li>边缘与限度：兼容的是&quot;协议和常用查询语法&quot;，不是 MySQL 行为——存储过程、触发器没有，某些函数语义有差异；BI 生成的复杂 SQL 仍可能触发 CBO 选错计划。接入成本低不等于&quot;SQL 随便写都快&quot;。</li>
+<li>来源：官方文档；社区共识。观察版本：v4.1。</li>
+</ul></li>
+<li><strong>实时写入秒级可见，CDC 友好</strong><ul>
+<li>为什么是真的：Stream Load / Routine Load / Flink connector 链路成熟，主键模型 upsert 秒级可见，Flink 事务接口保证 exactly-once，是实时数仓的主流选型之一。</li>
+<li>边缘与限度：见深水区四——&quot;秒级写入&quot;不等于&quot;秒级可见&quot;，版本发布延迟是隐形成本；高频小写入有版本膨胀税；FE 切换等异常下语义降级。实时链路的 SLA 要按&quot;端到端可见延迟&quot;签，不要按&quot;写入成功&quot;签。</li>
+<li>来源：官方文档；社区共识。观察版本：v3.5 / v4.1。</li>
+</ul></li>
+<li><strong>架构简单，无外部依赖</strong><ul>
+<li>为什么是真的：FE / BE（/ CN）两类角色，元数据内嵌 BDB-JE 复制，不依赖 ZK / HDFS / 外部协调服务；扩容加节点自动均衡。相对 ClickHouse（分片规划 + Keeper）的运维项确实少。</li>
+<li>边缘与限度：&quot;无外部依赖&quot;不等于&quot;无单点&quot;——FE 的 BDB-JE 元数据集群（3 节点，leader 选举 &lt;3 秒）仍是中心，tablet 爆炸时 FE 先成为瓶颈（深水区一、五）；shared-data 引入对象存储后，&quot;外部依赖&quot;以 S3 的形式回来了（限流、multipart 失败照单全收）。</li>
+<li>来源：官方文档；社区共识。观察版本：v4.1。</li>
+</ul></li>
+<li><strong>Apache 2.0 真开源 + 中文生态</strong><ul>
+<li>为什么是真的：内核 GitHub 全公开（含存算分离），无功能阉割的社区版；中文文档完整、社区响应快，国内团队上手成本低。</li>
+<li>边缘与限度：开源的是代码不是运维能力——深水区问题（tablet 规划、主键内存、DataCache 排障）最终靠读源码或买商业支持；云上 Serverless 是按计算用量计费，常驻高负载下自建可能更便宜，成本模型要按自己的负载曲线算。以及 GitHub star 数是流行度不是质量分。</li>
+<li>来源：官方口径；社区共识。观察版本：v4.1。</li>
+</ul></li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<blockquote>
+<p>Strengths get depth too. Each = why it&#x27;s real + its edge and limits.</p>
+</blockquote>
+<ol>
+<li><strong>Fast queries, especially multi-table joins</strong><ul>
+<li>Why it&#x27;s real: fully vectorized engine + CBO + Pipeline; TPC-H / TPC-DS style complex analytics are its home turf; community field reports of &quot;an order of magnitude faster than Hive / Presto after migration&quot; (vendor-claimed multiples not adopted, but the direction of &quot;faster&quot; is community consensus).</li>
+<li>Edges and limits: speed assumes fresh statistics and sane tablet planning; it can&#x27;t beat ClickHouse on single-table scan extremes (the vectorization originator with higher compression); external-table queries are object-storage-latency-bound. And benchmarks show a tuned ceiling, not your day-one floor.</li>
+<li>Sources: community consensus; observed on v3.5 / v4.1.</li>
+</ul></li>
+<li><strong>MySQL protocol — BI tools plug right in</strong><ul>
+<li>Why it&#x27;s real: MySQL protocol on port 9030; Tableau / Superset / PowerBI / DataGrip connect directly, zero learning curve for analysts; generic JDBC drivers work.</li>
+<li>Edges and limits: compatibility covers &quot;protocol and common query syntax&quot;, not MySQL behavior — no stored procedures or triggers, some function semantics differ; BI-generated complex SQL can still trigger bad CBO plans. Low connection cost doesn&#x27;t mean &quot;any SQL runs fast&quot;.</li>
+<li>Sources: official docs; community consensus. Observed on v4.1.</li>
+</ul></li>
+<li><strong>Second-level write visibility, CDC-friendly</strong><ul>
+<li>Why it&#x27;s real: mature Stream Load / Routine Load / Flink connector pipelines; primary-key upserts visible in seconds; the Flink transaction interface guarantees exactly-once — a mainstream real-time-warehouse pick.</li>
+<li>Edges and limits: see Deep dive 4 — &quot;second-level writes&quot; ≠ &quot;second-level visibility&quot;; publish lag is the hidden cost; high-frequency small writes pay the version-inflation tax; semantics degrade under anomalies like FE failover. Sign SLAs on &quot;end-to-end visible latency&quot;, not &quot;write success&quot;.</li>
+<li>Sources: official docs; community consensus. Observed on v3.5 / v4.1.</li>
+</ul></li>
+<li><strong>Simple architecture, no external dependencies</strong><ul>
+<li>Why it&#x27;s real: two role types (FE / BE, plus CN), metadata replicated via embedded BDB-JE — no ZooKeeper / HDFS / external coordination; adding nodes rebalances automatically. Genuinely fewer moving parts than ClickHouse (shard planning + Keeper).</li>
+<li>Edges and limits: &quot;no external dependencies&quot; ≠ &quot;no single point&quot; — the FE&#x27;s BDB-JE metadata cluster (3 nodes, leader election &lt;3s) is still central, and the FE bottlenecks first on tablet explosion (Deep dives 1 and 5); shared-data brings &quot;external dependencies&quot; back in S3 form (throttling and multipart failures included).</li>
+<li>Sources: official docs; community consensus. Observed on v4.1.</li>
+</ul></li>
+<li><strong>Genuinely open Apache 2.0 + Chinese ecosystem</strong><ul>
+<li>Why it&#x27;s real: kernel fully on GitHub (including shared-data), no crippled community edition; complete Chinese docs, responsive Chinese community, low onboarding cost for domestic teams.</li>
+<li>Edges and limits: open source is code, not operational capability — deep-dive problems (tablet planning, primary-key memory, DataCache debugging) ultimately require reading source or buying commercial support; cloud Serverless bills by compute usage, and self-hosting may be cheaper under sustained high load — model costs against your own load curve. And GitHub stars measure popularity, not quality.</li>
+<li>Sources: official statements; community consensus. Observed on v4.1.</li>
+</ul></li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="吐槽清单" data-en="Complaints">吐槽清单</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>分类</th><th>吐槽</th><th>影响版本</th><th>状态</th></tr></thead>
+<tbody>
+<tr><td>运维坑</td><td>FE 是元数据中心（BDB-JE 3 节点），tablet 数量失控时 FE 的 CPU/内存/GC/RPC 先到瓶颈，是&quot;慢死&quot;不是&quot;快死&quot;，巡检容易漏</td><td>全版本</td><td>open</td></tr>
+<tr><td>运维坑</td><td>v3.4.1 shared-data 集群在 FE leader 切换 + 未发布 compaction 事务下发生元数据丢失，该版本被下线</td><td>v3.4.1</td><td>fixed-in-v3.4.5（基线 v3.4.5+ / v3.5）</td></tr>
+<tr><td>运维坑</td><td>降级路径受限：v3.5 只能回退到 v3.4.5+，v4.1 只能回退到 v4.0.6+，跨大版本无任意回退</td><td>v3.5 / v4.1</td><td>open</td></tr>
+<tr><td>运维坑</td><td>v3.5 起强制 JDK 17，升级要清理 JAVA_OPTS 中的 CMS 等旧参数，外部 catalog 还要加 <code>--add-opens</code></td><td>v3.5+</td><td>open（升级 checklist）</td></tr>
+<tr><td>运维坑</td><td>v4.1.0 容器镜像 BE 启动顺序不稳定，容器环境勿用</td><td>v4.1.0</td><td>fixed-in-v4.1.1</td></tr>
+<tr><td>运维坑</td><td>shared-data 与 shared-nothing 不可混部、不可互转，选型一次定终身；CN 要求硬件同构</td><td>v3.0+</td><td>open（架构约束）</td></tr>
+<tr><td>性能坑</td><td>主键模型内存超限直接报错（<code>primary key memory usage exceeds the limit</code>），分桶规划失误即踩坑；<code>enable_persistent_index</code> 是拿读放大换内存</td><td>全版本</td><td>open（靠容量规划规避）</td></tr>
+<tr><td>性能坑</td><td>shared-data 下 DataCache 腐蚀 / 自动驱逐回源、S3 503 限流与 multipart 失败、高频小写入的版本膨胀，都会把&quot;弹性&quot;变成&quot;延迟毛刺&quot;</td><td>v3.0+</td><td>partially-fixed（持续优化中）</td></tr>
+<tr><td>性能坑</td><td>大导入进度常卡在 99%（写完≠生效，版本发布与索引构建是最后 1%），主键表最明显</td><td>全版本</td><td>open（预期管理 + 压测）</td></tr>
+<tr><td>性能坑</td><td>统计信息过期导致 CBO 选错计划（大表 broadcast 内存爆炸、该 colocate 的走 shuffle），&quot;查询突然变慢&quot;第一嫌疑人</td><td>全版本</td><td>open（ANALYZE 运维化）</td></tr>
+<tr><td>兼容坑</td><td>无存储过程 / 触发器，MySQL 语法仅分析型子集兼容；v4.1.1 起 INCREMENTAL / AUTO 类 MV 禁用查询改写（行为变更）</td><td>全版本 / v4.1.1</td><td>open</td></tr>
+<tr><td>兼容坑</td><td>部分列更新 column mode 与 GIN 倒排索引组合曾返回损坏结果</td><td>&lt;v4.1.4</td><td>fixed-in-v4.1.4</td></tr>
+<tr><td>成本坑</td><td>shared-nothing 默认 3 副本，存储成本 ×3；BE 要求本地 SSD（NVMe 更佳），硬件门槛高于存算分离</td><td>全版本</td><td>open</td></tr>
+<tr><td>成本坑</td><td>云上 Serverless 按计算用量计费，常驻高负载场景下长期成本可能高于自建，需按负载曲线测算</td><td>全版本</td><td>open</td></tr>
+<tr><td>生态坑</td><td>无 Oracle 兼容，&quot;去 O&quot;场景不在候选；PG 生态用户同样要重写</td><td>全版本</td><td>open</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Category</th><th>Complaint</th><th>Affected versions</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Operations</td><td>FE is the metadata center (BDB-JE, 3 nodes); runaway tablet counts exhaust FE CPU/memory/GC/RPC first — it dies slowly, not loudly, and patrol checks miss it</td><td>All versions</td><td>open</td></tr>
+<tr><td>Operations</td><td>v3.4.1 shared-data clusters lost metadata under FE leader switch + un-published compaction transactions; the version was pulled</td><td>v3.4.1</td><td>fixed-in-v3.4.5 (baseline v3.4.5+ / v3.5)</td></tr>
+<tr><td>Operations</td><td>Restricted downgrade paths: v3.5 only back to v3.4.5+, v4.1 only back to v4.0.6+ — no arbitrary cross-major rollback</td><td>v3.5 / v4.1</td><td>open</td></tr>
+<tr><td>Operations</td><td>JDK 17 mandatory since v3.5; upgrades must clean CMS and other legacy flags from JAVA_OPTS; external catalogs need <code>--add-opens</code></td><td>v3.5+</td><td>open (upgrade checklist)</td></tr>
+<tr><td>Operations</td><td>v4.1.0 container images had unstable BE startup order — avoid in container environments</td><td>v4.1.0</td><td>fixed-in-v4.1.1</td></tr>
+<tr><td>Operations</td><td>Shared-data and shared-nothing can&#x27;t mix or convert — the choice is for life; CNs require homogeneous hardware</td><td>v3.0+</td><td>open (architectural constraint)</td></tr>
+<tr><td>Performance</td><td>Primary-key memory limits fail hard (<code>primary key memory usage exceeds the limit</code>); bad bucket planning bites immediately; <code>enable_persistent_index</code> trades memory for read amplification</td><td>All versions</td><td>open (avoid via capacity planning)</td></tr>
+<tr><td>Performance</td><td>Under shared-data, DataCache corruption / eviction round-trips, S3 503 throttling and multipart failures, and version inflation from high-frequency small writes turn &quot;elasticity&quot; into latency spikes</td><td>v3.0+</td><td>partially-fixed (ongoing optimization)</td></tr>
+<tr><td>Performance</td><td>Big imports often stall at 99% progress (written ≠ effective; version publish and index build are the final 1%), most visible on primary-key tables</td><td>All versions</td><td>open (expectation management + load testing)</td></tr>
+<tr><td>Performance</td><td>Stale statistics make the CBO pick bad plans (huge-table broadcasts blowing memory, shuffle instead of colocate) — first suspect when &quot;queries suddenly slow down&quot;</td><td>All versions</td><td>open (operationalize ANALYZE)</td></tr>
+<tr><td>Compatibility</td><td>No stored procedures / triggers; MySQL syntax only the analytical subset; since v4.1.1 INCREMENTAL / AUTO MVs have query rewrite disabled (behavior change)</td><td>All versions / v4.1.1</td><td>open</td></tr>
+<tr><td>Compatibility</td><td>Partial-update column mode combined with GIN inverted indexes once returned corrupted results</td><td>&lt;v4.1.4</td><td>fixed-in-v4.1.4</td></tr>
+<tr><td>Cost</td><td>Shared-nothing defaults to 3 replicas — storage ×3; BEs want local SSDs (NVMe better), a higher hardware bar than shared-data</td><td>All versions</td><td>open</td></tr>
+<tr><td>Cost</td><td>Cloud Serverless bills by compute usage — sustained high-load scenarios may cost more than self-hosting long-term; model against your load curve</td><td>All versions</td><td>open</td></tr>
+<tr><td>Ecosystem</td><td>No Oracle compatibility — not a candidate for &quot;de-O&quot; replacement projects; PG-ecosystem users rewrite too</td><td>All versions</td><td>open</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="判决" data-en="Verdict">判决</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li><strong>一句话定位</strong>：多表关联实时分析的最优解之一——CBO + 向量化 + 主键模型 + 湖仓一体，代价是把 tablet 规划、主键内存、统计信息运维这些&quot;建表第一天&quot;的约束前置。</li>
+<li><strong>适合谁</strong>：<ul>
+<li>多表 Join 的实时报表 / BI（广告、零售、SaaS 用户侧分析），查询模式复杂、并发高；</li>
+<li>Flink CDC 实时数仓，需要主键 upsert 秒级可见；</li>
+<li>湖仓一体：热数据放仓、冷数据放湖，一个引擎统一查询；</li>
+<li>负载波峰波谷明显、能接受 K8s 运维，想用存算分离弹性的团队；</li>
+<li>MySQL / BI 技术栈，希望分析侧&quot;换库不换工具&quot;的团队。</li>
+</ul></li>
+<li><strong>不适合谁</strong>：<ul>
+<li>单表海量日志扫描、追求极限吞吐（ClickHouse 单表聚合仍是标杆）；</li>
+<li>需要存储过程 / 触发器的传统系统；</li>
+<li>&quot;去 O&quot;替换 Oracle 的信创场景（无 Oracle 兼容）；</li>
+<li>团队无专职数据工程师、想&quot;装完不管&quot;（tablet 规划、ANALYZE、compaction 观察一个不能少）；</li>
+<li>数据量很小（GB 级）且查询简单——单机 DuckDB / MySQL 更省事。</li>
+</ul></li>
+<li><strong>迁移成本</strong>：<ul>
+<li>MySQL（分析侧）→ 低：协议兼容，BI 工具直连；主要是把&quot;行存思维&quot;换成&quot;列存 + 分区分桶&quot;建模。</li>
+<li>ClickHouse → 中：单表扫描逻辑要重写成多表模型能发挥优势的形态；ReplacingMergeTree 的去重习惯要换成主键模型；分片规划换成 tablet 规划。</li>
+<li>Hive / Spark 数仓 → 中：ETL 链路可保留，查询层迁移；宽表模型可直接沿用，但分区策略要重做。</li>
+<li>Doris → 低-中：同源架构（FE/BE、9030、三种数据模型、Stream Load）高度相似，上手快；差异在 CBO 调优、MV 体系、存算分离细节，需逐项验证。</li>
+</ul></li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li><strong>One-line positioning</strong>: One of the best fits for real-time analytics over many joined tables — CBO + vectorization + primary-key model + lakehouse, at the price of front-loading day-one constraints like tablet planning, primary-key memory, and statistics maintenance.</li>
+<li><strong>Good for</strong>:<ul>
+<li>Real-time reporting / BI over multi-table joins (ads, retail, SaaS user-side analytics) with complex query patterns and high concurrency;</li>
+<li>Flink CDC real-time warehouses needing primary-key upserts with second-level visibility;</li>
+<li>Lakehouse: hot data in the warehouse, cold data in the lake, one engine querying both;</li>
+<li>Teams with spiky loads that can handle K8s operations and want shared-data elasticity;</li>
+<li>MySQL / BI-stack teams wanting &quot;new warehouse, same tools&quot; on the analytics side.</li>
+</ul></li>
+<li><strong>Not for</strong>:<ul>
+<li>Single-table massive log scans chasing extreme throughput (ClickHouse still sets the single-table bar);</li>
+<li>Systems needing stored procedures / triggers;</li>
+<li>&quot;De-O&quot; Oracle-replacement projects (no Oracle compatibility);</li>
+<li>Teams without dedicated data engineers wanting &quot;install and forget&quot; (tablet planning, ANALYZE, compaction watch are all mandatory);</li>
+<li>Tiny datasets (GB scale) with simple queries — a single-node DuckDB / MySQL is simpler.</li>
+</ul></li>
+<li><strong>Migration cost</strong>:<ul>
+<li>MySQL (analytics side) → Low: protocol-compatible, BI tools connect directly; mainly replacing &quot;row-store thinking&quot; with &quot;columnar + partitioning + bucketing&quot; modeling.</li>
+<li>ClickHouse → Medium: single-table scan logic must be reshaped to exploit multi-table strengths; ReplacingMergeTree dedup habits become the primary-key model; shard planning becomes tablet planning.</li>
+<li>Hive / Spark warehouses → Medium: ETL pipelines can stay, the query layer migrates; wide-table models carry over, but partitioning strategies need redoing.</li>
+<li>Doris → Low-medium: same-origin architecture (FE/BE, port 9030, three data models, Stream Load) is highly similar and easy to pick up; differences in CBO tuning, the MV system, and shared-data details need item-by-item verification.</li>
+</ul></li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="来源与待验证清单" data-en="Sources & to-be-verified">来源与待验证清单</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li>版本与发版节奏：GitHub starrocks/starrocks release notes（v4.1.4 2026-08-05、v4.0.14 2026-08-11、v3.5.20 2026-07-23；v4.1.0 容器镜像问题、v4.1/v3.5 降级约束、v3.5 JDK 17 要求）</li>
+<li>技术 lineage：社区架构深挖（2026-08，Mesa → Palo → Doris → DorisDB → StarRocks 时间线；V1.0~V4.1 版本特性表；商业化生态表：CelerData / MirrorShip / 云厂商集成）</li>
+<li>TDE：官方 BE 参数文档（<code>enable_transparent_data_encryption</code>，v3.3.1 / v3.4.0 / v3.5.0 / v4.0.0 引入；FE/BE 开关不一致 BE abort）</li>
+<li>TLS：官方 v3.4 release notes（MySQL 协议 SSL）、SSL 配置文档（<code>ssl_force_secure_transport</code>、5205 错误）</li>
+<li>审计：官方 logs.md 与 FE 配置文档（<code>fe.audit.log</code>、audit_log_modules、JSON 格式、30 天保留）</li>
+<li>权限：官方 SSL/LDAP 认证文档、v3.4 release notes（secure view）；masking policy 语法来自社区技能文档，官方文档待复核</li>
+<li>备份恢复：官方 Backup_and_restore 文档（BACKUP/RESTORE 语法、分区/表/库粒度、单备份任务限制）、v3.4 release notes（shared-data 自动快照）</li>
+<li>Stream Load 事务：官方 Stream_Load_transaction_interface 文档（2PC、exactly-once、v4.0 单库多表、单客户端并发限制）</li>
+<li>shared-data 约束与排障：官方 feature-support-shared-data 文档（不可混部/互转、CN 同构）；社区 shared-data 排障手册（DataCache / S3 / FE 切换五大根因）；官方 issue #66457（tablet 容量目标 100GB）；社区版本基线记录（v3.4.1 元数据事故）</li>
+<li>主键模型：官方主键模型文档；社区实测（Airtable 主键内存超限案例）；官方 v4.1.4 release notes（GIN + column mode 修复）</li>
+<li>物化视图：社区 MV 深度解析（SPJG、改写矩阵、刷新策略）；社区源码级解析（刷新/改写双链路、优化器代价）；官方 v4.1.1 release notes（INCREMENTAL/AUTO MV 改写禁用）</li>
+<li>CBO/统计信息：官方 CBO 与统计信息文档、v3.5 升级说明（低基数优化开关）；社区共识</li>
+<li>Doris 对比：社区同源分家史梳理（中立事实：同源、2020 年左右 fork、独立发展、接口相似）；一方 partisan 文章的观点（&quot;闭源商业模块&quot;等说法）未采信，已按官方文档交叉验证</li>
+<li>吐槽采集方向（待 LLM 流水线规模化验证）：GitHub Issues、知乎、CSDN / V2EX 实践帖</li>
+<li>下次评审：跟踪 v4.1+ 的 automatic tablet splitting 生产成熟度；复核 masking policy 官方文档；跟踪多库多表事务与多客户端并发写的落地进度</li>
+</ul>
+<blockquote>
+<p>last_reviewed: 2026-09-29 · reviewed_version: v4.1.x</p>
+</blockquote>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li>Versions and release cadence: GitHub starrocks/starrocks release notes (v4.1.4 2026-08-05, v4.0.14 2026-08-11, v3.5.20 2026-07-23; v4.1.0 container-image issue, v4.1/v3.5 downgrade constraints, v3.5 JDK 17 requirement)</li>
+<li>Technical lineage: community architecture deep-dive (2026-08, Mesa → Palo → Doris → DorisDB → StarRocks timeline; V1.0–V4.1 feature table; commercial ecosystem: CelerData / MirrorShip / cloud-vendor integrations)</li>
+<li>TDE: official BE parameter docs (<code>enable_transparent_data_encryption</code>, introduced in v3.3.1 / v3.4.0 / v3.5.0 / v4.0.0; BE aborts on FE/BE flag mismatch)</li>
+<li>TLS: official v3.4 release notes (MySQL-protocol SSL), SSL configuration docs (<code>ssl_force_secure_transport</code>, error 5205)</li>
+<li>Auditing: official logs.md and FE configuration docs (<code>fe.audit.log</code>, audit_log_modules, JSON format, 30-day retention)</li>
+<li>Privileges: official SSL/LDAP auth docs, v3.4 release notes (secure views); masking-policy syntax from community skill docs, official docs pending verification</li>
+<li>Backup &amp; restore: official Backup_and_restore docs (BACKUP/RESTORE syntax, partition/table/database granularity, single-backup-task limit), v3.4 release notes (shared-data automatic snapshots)</li>
+<li>Stream Load transactions: official Stream_Load_transaction_interface docs (2PC, exactly-once, single-database multi-table since v4.0, single-client concurrency limit)</li>
+<li>Shared-data constraints &amp; troubleshooting: official feature-support-shared-data docs (no mixing/conversion, homogeneous CNs); community shared-data troubleshooting handbook (DataCache / S3 / FE-failover root causes); official issue #66457 (tablet sizing target 100GB); community version-baseline records (v3.4.1 metadata incident)</li>
+<li>Primary-key model: official primary-key model docs; community field reports (Airtable primary-key memory case); official v4.1.4 release notes (GIN + column-mode fix)</li>
+<li>Materialized views: community MV deep-dives (SPJG, rewrite matrix, refresh strategies); community source-level analysis (refresh/rewrite dual pipelines, optimizer cost); official v4.1.1 release notes (INCREMENTAL/AUTO MV rewrite disabled)</li>
+<li>CBO/statistics: official CBO and statistics docs, v3.5 upgrade notes (low-cardinality optimization switch); community consensus</li>
+<li>Doris comparison: community lineage梳理 (neutral facts: common origin, fork ~2020, independent development, similar interfaces); one partisan article&#x27;s claims (&quot;closed-source commercial modules&quot; etc.) not adopted, cross-verified against official docs</li>
+<li>Complaints collection directions (to be scaled by the LLM pipeline): GitHub Issues, Zhihu, CSDN / V2EX practice posts</li>
+<li>Next review: track production maturity of automatic tablet splitting in v4.1+; verify masking-policy official docs; track cross-database multi-table transactions and multi-client concurrent writes</li>
+</ul>
+<blockquote>
+<p>last_reviewed: 2026-09-29 · reviewed_version: v4.1.x</p>
+</blockquote>
+</div>
+</section>
+</main>
+<footer class="footer">
+  <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
+</footer>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
