@@ -172,10 +172,12 @@ tbody tr:nth-child(even){background:#fafbfc}
 
 /* 全局对比托盘 */
 .cmp-tray{position:relative}
-.tray-btn{display:flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:7px 16px;font-size:14px;cursor:pointer;color:var(--ink);white-space:nowrap}
-.tray-btn:hover{border-color:var(--accent);color:var(--accent)}
-.tray-btn .tray-count{font-weight:700;font-size:13px}
-.tray-btn .tray-count i{font-style:normal;color:var(--accent)}
+.tray-btn{display:flex;align-items:center;gap:6px;border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:999px;padding:7px 16px;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;box-shadow:0 2px 8px rgba(29,78,216,.28)}
+.tray-btn:hover{background:#1e40af;border-color:#1e40af;color:#fff}
+.tray-btn .tray-count{font-weight:700;font-size:13px;opacity:.95}
+.tray-btn .tray-count i{font-style:normal;color:#fff}
+.tray-btn.tray-empty{animation:trayPulse 2.6s ease-in-out infinite}
+@keyframes trayPulse{0%,100%{box-shadow:0 2px 8px rgba(29,78,216,.28)}50%{box-shadow:0 2px 18px rgba(29,78,216,.6)}}
 .tray-panel{position:absolute;right:0;top:calc(100% + 8px);width:340px;max-height:70vh;overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 12px 40px rgba(15,23,42,.14);z-index:100;padding:14px 16px;text-align:left}
 .tray-sec{font-size:12px;color:var(--muted);font-weight:700;margin:10px 0 6px}
 .tray-sec:first-child{margin-top:0}

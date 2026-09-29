@@ -1,6 +1,16 @@
 (function () {
 'use strict';
 
+/* 导航顺序归一化：首页、维度对比、AI选型、方法论。同步执行（nav 已解析），老页面无需重推即可收敛，无闪烁 */
+(function () {
+var nav = document.querySelector('nav.mainnav');
+if (!nav) return;
+var order = ['index.html', 'compare.html', 'advisor.html', 'methodology.html'];
+var links = nav.querySelectorAll('a'), byHref = {}, i;
+for (i = 0; i < links.length; i++) byHref[links[i].getAttribute('href')] = links[i];
+for (i = 0; i < order.length; i++) { if (byHref[order[i]]) nav.appendChild(byHref[order[i]]); }
+})();
+
 /* ---------------- 语言 ---------------- */
 var KEY = 'dbcompare-lang';
 function getLang() {
@@ -109,6 +119,8 @@ function renderTray() {
 var lang = getLang(), sel = getSelection(), i, k;
 var count = document.getElementById('cmp-count');
 if (count) count.textContent = sel.length;
+var trayBtn = document.getElementById('cmp-tray-btn');
+if (trayBtn) trayBtn.classList.toggle('tray-empty', sel.length === 0);
 var box = document.getElementById('cmp-selected');
 if (box) {
 if (!sel.length) {
@@ -277,8 +289,8 @@ refreshDynamicText();
 }
 
 /* 多库 PK 提示词（N = 2/3/4）；无选择时走下拉框的旧模板 */
-var PK_ZH = '你是一名中立的数据库架构顾问，不代表任何厂商。请基于公开资料，对{a}和{b}做一次双库 PK 对比。输出要求：1. 按这 14 个维度逐项对比：静态加密、传输加密、审计、认证与权限、备份恢复、大版本升级、可观测性、连接模型、事务与隔离级别、复制与一致性、扩展方式、兼容性、许可证与商业模式、中文资料丰富度。2. 每个关键结论标注证据等级：官方文档、厂商口径、社区实测、社区共识、待验证；严格区分"查证为无"和"未找到证据"，不要把没查到的写成不支持。3. 每款给出：最适合的场景、最可能踩的三个坑（从机制层面解释，并说明在什么负载或故障下会触发）。4. 不做综合总分、不排名，只给带条件的判断，格式为"如果……那么……"。5. 需要我的业务场景信息才能下结论时，先向我提问，不要编造。6. 用中文回答。（建议：把本站这两款产品的档案页内容贴在下面，作为分析的起点）';
-var PK_EN = 'You are a neutral database architecture advisor, not affiliated with any vendor. Do a head-to-head comparison of {a} vs {b} based on public information. Requirements: 1. Compare dimension by dimension across these 14 dimensions: encryption at rest, encryption in transit, auditing, authentication and authorization, backup and recovery, major-version upgrades, observability, connection model, transactions and isolation levels, replication and consistency, scaling approach, compatibility, license and business model, Chinese-language resources. 2. Tag each key claim with an evidence level: official docs, vendor claim, community-tested, community consensus, to-be-verified; strictly distinguish "verified absent" from "no evidence found". 3. For each: best-fit scenarios and the three most likely production pitfalls, explained at the mechanism level with trigger conditions. 4. No aggregate total score and no ranking; conditional verdicts only, in "if..., then..." form. 5. Ask me for my scenario details when needed instead of inventing facts. 6. Answer in English. (Tip: paste the profile pages on this site for both products below as a starting point.)';
+var PK_ZH = '你是一名中立的数据库架构顾问，不代表任何厂商。请基于公开资料，对{a}和{b}做一次双库 PK 对比。输出要求：1. 按这 14 个维度逐项对比：静态加密、传输加密、审计、认证与权限、备份恢复、大版本升级、可观测性、连接模型、事务与隔离级别、复制与一致性、扩展方式、兼容性、许可证与商业模式、中文资料丰富度。2. 每个关键结论标注证据等级：官方文档、厂商口径、社区实测、社区共识、待验证；严格区分"查证为无"和"未找到证据"，不要把没查到的写成不支持。3. 每款给出：最适合的场景、最可能踩的三个坑（从机制层面解释，并说明在什么负载或故障下会触发）。4. 不做综合总分、不排名，只给带条件的判断，格式为"如果……那么……"。5. 需要我的业务场景信息才能下结论时，主动向我提问：用带选项的选择题形式（每题给出 3-4 个典型选项，外加"其他，请说明"），一次性问清关键问题再开始分析，不要编造。如果候选库属于不同领域（如 OLTP 与向量库），不要硬对比：先用选择题确认我的真实诉求与对比口径，再决定是对比还是纠正选型方向。6. 用中文回答。（建议：把本站这两款产品的档案页内容贴在下面，作为分析的起点）';
+var PK_EN = 'You are a neutral database architecture advisor, not affiliated with any vendor. Do a head-to-head comparison of {a} vs {b} based on public information. Requirements: 1. Compare dimension by dimension across these 14 dimensions: encryption at rest, encryption in transit, auditing, authentication and authorization, backup and recovery, major-version upgrades, observability, connection model, transactions and isolation levels, replication and consistency, scaling approach, compatibility, license and business model, Chinese-language resources. 2. Tag each key claim with an evidence level: official docs, vendor claim, community-tested, community consensus, to-be-verified; strictly distinguish "verified absent" from "no evidence found". 3. For each: best-fit scenarios and the three most likely production pitfalls, explained at the mechanism level with trigger conditions. 4. No aggregate total score and no ranking; conditional verdicts only, in "if..., then..." form. 5. When you need my scenario details for a conclusion, proactively ask me targeted multiple-choice questions (3-4 typical options per question plus an "other, please specify" option), covering the key questions all at once before starting the analysis, instead of inventing facts. If the candidates belong to different domains (e.g. OLTP vs vector DB), do not force a comparison: first use multiple-choice questions to confirm what I actually need and the right basis of comparison, then decide whether to compare or to correct the selection direction. 6. Answer in English. (Tip: paste the profile pages on this site for both products below as a starting point.)';
 function pkPromptN(lang, names) {
 var n = names.length, i, list = '', sep = (lang === 'zh')? '、': ', ';
 for (i = 0; i < n; i++) list += (i? sep: '') + names[i];
@@ -289,7 +301,7 @@ return '你是一名中立的数据库架构顾问，不代表任何厂商。请
 '2. 每个关键结论标注证据等级：官方文档、厂商口径、社区实测、社区共识、待验证；严格区分"查证为无"和"未找到证据"，不要把没查到的写成不支持。' +
 '3. 每款给出：最适合的场景、最可能踩的三个坑（从机制层面解释，并说明在什么负载或故障下会触发）。' +
 '4. 不做综合总分、不排名，只给带条件的判断，格式为"如果……那么……"。' +
-'5. 需要我的业务场景信息才能下结论时，先向我提问，不要编造。6. 用中文回答。' +
+'5. 需要我的业务场景信息才能下结论时，主动向我提问：用带选项的选择题形式（每题给出 3-4 个典型选项，外加"其他，请说明"），一次性问清关键问题再开始分析，不要编造。如果候选库属于不同领域（如 OLTP 与向量库），不要硬对比：先用选择题确认我的真实诉求与对比口径，再决定是对比还是纠正选型方向。6. 用中文回答。' +
 '（建议：把本站这几款产品的档案页内容贴在下面，作为分析的起点）';
 }
 var kindEn = n === 2? 'head-to-head': n + '-way';
@@ -298,7 +310,7 @@ return 'You are a neutral database architecture advisor, not affiliated with any
 '2. Tag each key claim with an evidence level: official docs, vendor claim, community-tested, community consensus, to-be-verified; strictly distinguish "verified absent" from "no evidence found". ' +
 '3. For each: best-fit scenarios and the three most likely production pitfalls, explained at the mechanism level with trigger conditions. ' +
 '4. No aggregate total score and no ranking; conditional verdicts only, in "if..., then..." form. ' +
-'5. Ask me for my scenario details when needed instead of inventing facts. 6. Answer in English. ' +
+'5. When you need my scenario details for a conclusion, proactively ask me targeted multiple-choice questions (3-4 typical options per question plus an "other, please specify" option), covering the key questions all at once before starting the analysis, instead of inventing facts. If the candidates belong to different domains (e.g. OLTP vs vector DB), do not force a comparison: first use multiple-choice questions to confirm what I actually need and the right basis of comparison, then decide whether to compare or to correct the selection direction. 6. Answer in English. ' +
 '(Tip: paste the profile pages on this site for these products below as a starting point.)';
 }
 
