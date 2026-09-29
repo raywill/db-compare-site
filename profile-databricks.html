@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Databricks - DB 选型参考</title>
+<link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">&#9672;</span> DB <span data-zh="选型参考" data-en="Compare">选型参考</span></a>
+    <nav class="mainnav">
+<a href="index.html" class="active" data-zh="首页" data-en="Home">首页</a>
+<a href="compare.html" class="" data-zh="维度对比" data-en="Compare">维度对比</a>
+<a href="advisor.html" class="" data-zh="AI选型" data-en="AI Selection">AI选型</a>
+<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
+    </nav>
+    <div class="cmp-tray">
+      <button id="cmp-tray-btn" type="button" class="tray-btn" aria-expanded="false" aria-haspopup="true"><span data-zh="对比" data-en="Compare">对比</span> <b class="tray-count"><i id="cmp-count">0</i>/4</b></button>
+      <div id="cmp-panel" class="tray-panel" hidden>
+        <div class="tray-sec"><span data-zh="已选" data-en="Selected">已选</span></div>
+        <div id="cmp-selected" class="tray-selected"></div>
+        <div class="tray-sec"><span data-zh="全部产品（最多选 4 款）" data-en="All products (up to 4)">全部产品（最多选 4 款）</span></div>
+        <div id="cmp-list" class="tray-list"></div>
+        <div class="tray-actions"><button id="cmp-clear" type="button" class="tray-clear"><span data-zh="清空选择" data-en="Clear selection">清空选择</span></button></div>
+      </div>
+    </div>
+    <button id="lang-toggle" class="lang-btn" type="button" aria-label="switch language">EN</button>
+  </div>
+</header>
+<main class="page">
+<div class="profile-hero">
+  <a class="back" href="index.html"><span data-zh="← 返回首页" data-en="← Back to home">← 返回首页</span></a>
+  <h1>Databricks</h1>
+  <div class="meta-row"><span class="cat cat-olap" data-zh="OLAP" data-en="OLAP">OLAP</span> <span class="tag">#Lakehouse</span> <span class="tag">#Delta-Lake</span> <span class="tag">#Apache-Spark</span> <span class="tag">#Unity-Catalog</span> <span class="tag">#Photon</span> <span class="tag">#DBU计费</span> <span class="tag">#Serverless</span> <span class="tag">#多雲</span> <span class="tag">#MLOps</span></div>
+  <p class="oneliner"><div class="lang-block lang-zh">
+<p>由 Apache Spark 原班人马创立的云原生 Lakehouse 平台——&quot;数据湖的规模 + 数仓的可靠性 + AI 的原生底座&quot;：以 Delta Lake（ACID 事务日志）统一存储、Unity Catalog 统一治理、Photon 向量化引擎加速查询，一套平台覆盖数据工程、BI、机器学习与 AI Agent；代价是纯云上消费制计费（DBU + 云资源双账单）、Spark 调优负担、以及&quot;数据是开放的、平台是私有的&quot;锁定结构。</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<p>A cloud-native Lakehouse platform founded by the original Apache Spark team — &quot;data-lake scale + warehouse reliability + a native foundation for AI&quot;: Delta Lake (ACID transaction log) unifies storage, Unity Catalog unifies governance, and the Photon vectorized engine accelerates queries; one platform covers data engineering, BI, machine learning and AI agents. The price is pure cloud consumption billing (DBUs + cloud-resource double invoice), the Spark tuning burden, and a &quot;data is open, the platform is proprietary&quot; lock-in structure.</p>
+</div></p>
+  <div class="ai-dive-row" data-product="Databricks">
+    <span class="ai-dive-label" data-zh="用 AI 深挖这款：" data-en="Deep-dive with AI:">用 AI 深挖这款：</span>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('chatgpt', this)">ChatGPT <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('grok', this)">Grok <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('claude', this)">Claude <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn addcmp-btn" data-addcmp="databricks"><span class="addcmp-label">＋ 对比</span></button>
+  </div>
+  <div class="legend"><span class="legend-label" data-zh="证据等级：" data-en="Evidence levels: ">证据等级：</span><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></div>
+</div>
+<section class="doc-section">
+<h2><span data-zh="基本信息" data-en="Basics">基本信息</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>项</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td>厂商</td><td>Databricks, Inc.（2013 年成立，总部旧金山；创始人为 UC Berkeley AMPLab 的 Apache Spark 原班团队：Ali Ghodsi、Matei Zaharia 等 7 人）</td></tr>
+<tr><td>国家</td><td>美国</td></tr>
+<tr><td>起源</td><td>2013 年由 Spark 创始团队创立；2020 年提出 Lakehouse 架构；2023 年收购 MosaicML 切入生成式 AI</td></tr>
+<tr><td>许可证</td><td>平台为专有商业软件（无开源版本）；Delta Lake、MLflow 等核心组件开源（Delta Lake 已捐给 Linux 基金会）</td></tr>
+<tr><td>商业版说明</td><td>纯消费制：按 Databricks Unit（DBU）计费，不同工作负载（数据工程/SQL 分析/机器学习）费率不同；经典计算另收底层云资源费，Serverless 含基础设施费。具体价格随云厂商/地区/合同变化，本档案不写绝对价格</td></tr>
+<tr><td>托管服务</td><td>本身就是全托管云服务，覆盖 AWS / Azure / GCP；2025 年后主推 Serverless 计算</td></tr>
+<tr><td>主类型</td><td>Lakehouse 平台（数据工程 + 数仓 + AI 统一）</td></tr>
+<tr><td>兼具类型</td><td>流批一体处理、ML 平台（MLOps）、AI Agent 平台（Mosaic AI / Agent Bricks）、数据共享</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Item</th><th>Content</th></tr></thead>
+<tbody>
+<tr><td>Vendor</td><td>Databricks, Inc. (founded 2013, HQ San Francisco; founders are the original Apache Spark team from UC Berkeley AMPLab: Ali Ghodsi, Matei Zaharia and five others)</td></tr>
+<tr><td>Country</td><td>USA</td></tr>
+<tr><td>Origin</td><td>Founded 2013 by the Spark creators; introduced the Lakehouse architecture in 2020; acquired MosaicML in 2023 to enter generative AI</td></tr>
+<tr><td>License</td><td>Proprietary commercial platform (no open-source edition); core components Delta Lake and MLflow are open source (Delta Lake donated to the Linux Foundation)</td></tr>
+<tr><td>Commercial note</td><td>Pure consumption: billed in Databricks Units (DBUs), with different rates per workload type (data engineering / SQL analytics / machine learning); classic compute adds underlying cloud-resource charges, Serverless bundles infrastructure. Prices vary by cloud/region/contract — no absolute figures quoted here</td></tr>
+<tr><td>Managed service</td><td>It is itself a fully managed cloud service on AWS / Azure / GCP; Serverless compute is the strategic direction since 2025</td></tr>
+<tr><td>Primary type</td><td>Lakehouse platform (unified data engineering + warehouse + AI)</td></tr>
+<tr><td>Also covers</td><td>Unified batch+streaming processing, ML platform (MLOps), AI agent platform (Mosaic AI / Agent Bricks), data sharing</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section"><h2><span data-zh="硬维度（19 项）" data-en="Hard dimensions (19)">硬维度（19 项）</span></h2>
+<div class="lang-block lang-zh">
+<div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>数据实际落在客户自己的云存储（S3/ADLS/GCS），默认走云厂商服务端加密（SSE）；控制面元数据由 Databricks 加密 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>支持客户管理密钥（CMK/Customer-managed keys）：密钥存客户自己的 KMS（AWS KMS / Azure Key Vault），可覆盖工作区存储与 Unity Catalog 元存储 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>合规安全配置文件（Compliance Security Profile）可强制加密与密钥策略，是过 HIPAA/PCI 等认证的前置条件 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有（TLS 1.2+ 全链路）</span></h3><div class="dim-body"><ul>
+<li>控制面与计算面之间所有通信 TLS 加密；Secure Cluster Connectivity 走加密 WebSocket 隧道 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>JDBC/ODBC、REST API、Notebook 流量均为 HTTPS/TLS；官方安全基线要求 TLS 1.2 以上 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>无明文回退：不存在&quot;开了 TLS 还留着明文端口&quot;的自建式坑，端口暴露面由云网络配置决定 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> 审计 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>审计日志记录工作区操作、数据访问、权限变更等事件，可投递到客户 S3/ADLS（建议配对象锁定防篡改）再接入 Splunk/Datadog <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Unity Catalog 的 <code>system.access.audit</code> 系统表可 SQL 直接查&quot;谁在何时访问了哪张表&quot;，是数据访问审计的主入口 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>注意：审计日志投递与保留策略要自己配；老工作区若未启用 Unity Catalog，表级审计粒度会打折 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> 认证与权限 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>身份：SSO（SAML/OIDC）、MFA、SCIM 用户同步；自动化用 Service Principal 而非个人账号 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>授权：Unity Catalog 三级命名空间（catalog.schema.table）统一管表、文件（Volume）、模型、函数乃至 AI Agent 的权限；支持行级安全、列掩码、动态视图 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>遗留坑：2023 年前建的老工作区可能是 Hive Metastore 模式，权限是另一套；迁移到 Unity Catalog 是生产合规的必经之路，迁移本身有工作量 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> 备份恢复 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>Delta Lake 自带时间旅行（Time Travel）：可按版本号/时间戳查询历史快照，误删/误写后可回滚到历史版本 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li><code>CLONE</code>（浅/深克隆）可快速复制表做恢复演练或测试环境；VACUUM 控制历史保留期 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>但没有传统数据库式的&quot;全库备份/时间点恢复&quot;一键方案：数据在客户云存储上，备份策略（跨区复制、生命周期）要按云厂商最佳实践自己做；工作区配置（Job 定义、权限）的备份靠 Terraform/导出 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> 可观测性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li><code>system</code> schema 系统表极丰富：<code>system.billing.usage</code>（DBU 消费明细，可 join 价格表算钱）、<code>system.access.audit</code>（审计）、<code>system.query.history</code>（查询历史与耗时）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Spark UI / Ganglia 看作业执行细节（stage、shuffle、GC）；SQL 仓库有查询历史与执行计划 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>成本可观测是刚需：DBU 只显示消费量不显示&quot;为什么&quot;，必须靠 system 表 + 打标签（tag）做分团队 chargeback，否则账单黑盒 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> 连接模型 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>BI/应用走 SQL Warehouse：标准 JDBC/ODBC、Python SQL 连接器；Serverless SQL 仓库免运维、自动启停 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>编程入口：REST API、Databricks Connect（本地 IDE 连远程集群）、各语言 SDK；Notebook 支持 Python/SQL/Scala/R 多语言协作 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无传统&quot;连接池打爆&quot;问题：连接本身轻量，瓶颈在计算资源（DBU）配额与并发 slot；SQL 仓库的并发靠自动扩缩容 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> 事务与隔离级别 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>Delta Lake 在对象存储上实现 ACID：事务日志 + 乐观并发控制，多写者并发写同一表由协议仲裁 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>默认隔离级别为可串行化（Serializable）；支持 <code>MERGE</code>、<code>UPDATE</code>、<code>DELETE</code> 等 DML，schema 强制与演进 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>注意：这是&quot;分析型事务&quot;（ETL 写入、 slowly changing dimensions），不是 OLTP 行级锁；高频小事务写入会有小文件与日志膨胀问题 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> 复制与一致性 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>对外复制/共享：Delta Sharing 开放协议，可把实时表安全共享给外部组织（对方用任意引擎读），无需复制数据 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>云内高可用：数据在云存储上天然多 AZ 冗余；计算无状态，挂了重拉 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>无内置的跨区主动-主动复制：多 Region 部署的数据同步与一致性要自己设计（存储复制 + 作业调度），跨区 egress 费用是隐藏大头 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> 扩展方式 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>经典集群：按任务队列在 min/max worker 区间自动扩缩；实例池（Instance Pools）缩短冷启动 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Serverless 计算：免集群管理、秒级启动、按实际用量计费，是 2025 年后官方主推方向 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>边缘真相：自动扩缩的上下限配得太宽会&quot;易上难下&quot;，缩容滞后吃掉 DBU；Photon/Serverless 缩短的是 wall-clock，不是单价 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> 兼容性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>API：完整 Spark API（DataFrame/SQL/Streaming/MLlib），PySpark 是事实标准入口；Databricks Runtime 是优化版 Spark <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>表格式：Delta Lake 底层是 Parquet + 事务日志，任何能读 Parquet 的引擎都能读数据；与 Apache Iceberg 互读能力持续增强（UniForm 等），&quot;换引擎不搬数据&quot;是卖点 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>注意：开放的是数据格式，不是平台 API——作业调度、权限、计费都绑定 Databricks 控制面；Photon 是闭源加速引擎 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> 许可证与商业模式 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>平台专有、无开源/自建版本：必须跑在 Databricks 账号体系下（AWS/Azure/GCP 三家云），不存在&quot;下载一个 Databricks 装到自己机房&quot; <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>计费：DBU × 时长 × 工作负载类型费率；经典计算另付云资源费，Serverless 打包；企业合同价与目录价差异大 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>开源部分：Delta Lake（Linux 基金会）、MLflow、Apache Spark 本体开源，数据不被格式锁定是相对 Snowflake 的差异化 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> 中文资料丰富度 <span class="verdict v-partial">部分支持（英文优先，中文在增长）</span></h3><div class="dim-body"><ul>
+<li>官方文档以英文为主，部分有机器翻译中文；Azure Databricks 有较多中文文档（微软生态）<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>中文博客/课程在增长（CSDN、知乎、极客时间有 Databricks 系列），但深度内容（调优、Unity Catalog 迁移实战）英文仍多一个身位 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>认证体系（Data Engineer Professional 等）为英文考试 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> 性能与延迟特征 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>Photon 向量化引擎：官方口径称相对开源 Spark 有数倍提升（TPC-DS 类基准），是 SQL 仓库与 DLT 的默认加速 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>典型延迟：SQL 仓库交互式查询秒级（TB 级聚合常见，社区多方实测）；流处理端到端秒级；2026 年发布的 Lakehouse//RT（实时引擎 Reyden）把目标打到亚秒级并发查询 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
+<li>边界：毫秒级点查/高频 OLTP 不是设计目标；冷启动（经典集群拉起）曾是主要吐槽，Serverless 大幅缓解但仍非零 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">15</span> 合规与认证 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>SOC 2 Type II、ISO/IEC 27001（2022 版，覆盖 AWS/Azure/GCP 三云）、ISO 27017/27018/27701、HIPAA、PCI-DSS、FedRAMP（指定区域）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>合规安全配置文件（Compliance Security Profile）一键强化：FIPS 加密模块、增强审计等，是过等保/金融合规的标配动作 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>注意：部分 AI 功能（如按 token 计费的 Foundation Model API）在非 HIPAA 合规档下受限；中国区无本地云（需经全球云部署）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">16</span> 成熟度与社区生态 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>2013 年由 Spark 原班团队创立，总部旧金山，员工 8000+（2025-2026 口径）；2024 年 12 月估值 620 亿美元，2025 年底超千亿美元，仍未 IPO <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>Spark 本体社区与 Databricks 生态高度重叠：技术问答、第三方书籍、认证体系成熟；Delta Lake、MLflow 开源社区活跃 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>风险面：未上市公司的长期定价与战略存在不确定性；平台迭代快，API/默认行为变更需要跟进 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">17</span> 标杆用户 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>公开客户：AT&amp;T、Block、Rivian、Walgreens、Mercedes-Benz、Shell、Siemens、Toyota、Warner Bros. Discovery；国内出海与跨国企业采用多 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>互联网/AI 公司是基本盘：MosaicML 被收购前就是客户，收购后成为 Mosaic AI 底座 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>采用模式常见：Databricks 做 ingestion/特征/训练，BI 层接 Power BI 或 Snowflake（双平台并存很常见）<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">18</span> 生态工具链 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>IaC：官方 Terraform Provider（工作区、集群、UC 权限、Job 全可代码化）；CI/CD 接 GitHub Actions/Azure DevOps <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>数据栈：dbt-databricks 适配器、Airflow Provider、Fivetran/Airbyte 等 ingestion 工具官方 connector <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>ML：MLflow（Databricks 创始捐献）实验跟踪 + 模型注册 + Model Serving 一条龙 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">19</span> 云托管与 Serverless <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>三云全覆盖：AWS / Azure（Azure Databricks 为微软一等集成）/ GCP；不支持私有化部署，专有云/本地机房只能走混合架构 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Serverless SQL 仓库与 Serverless 计算：免集群运维、快速启停、按量计费；经典集群仍可用于需要深度定制（VPC 注入、特殊实例）的场景 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>成本注意：Serverless 单价高于经典 DBU，省的是运维与空转，不是单价；选型要按负载画像算总账 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">20</span> 数据接入与摄入 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>Auto Loader（cloudFiles）：增量检测新文件落盘（S3/ADLS/GCS），schema 推断与演进，是&quot;文件进湖&quot;事实标准 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>COPY INTO：SQL 一次性/幂等批量加载；Delta Live Tables（现 Lakeflow Declarative Pipelines）：声明式 ETL，流批统一，内建数据质量期望（EXPECTATIONS）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>流式：Spark Structured Streaming 直连 Kafka/Event Hubs/Kinesis，端到端 exactly-once 语义 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>边缘：小文件碎片是湖仓通病，Auto Loader + OPTIMIZE/Z-ORDER 是标准治理动作；schema 漂移处理要显式设计 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">21</span> 外部数据访问 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>对外共享：Delta Sharing 开放协议，把实时 Delta 表安全共享给外部组织，对方用任意引擎（Spark/Pandas/Power BI）读，无需复制数据 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>对内联邦：Lakehouse Federation 建外部连接（Connection）+ 外部目录（Foreign Catalog），直接查询 PostgreSQL/MySQL/Snowflake/BigQuery 等源，查询下推到源端执行，走 Unity Catalog 统一鉴权审计 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>边界：联邦查询适合即席探索与小结果集；大体量反复扫描、高频生产查询仍建议先入湖（延迟与源端负载不可控）；跨云 egress 费用自理 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">22</span> CDC 与下游同步 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>Delta Change Data Feed（CDF）：表级开启后，下游可增量读取行的插入/更新/删除变更，是湖内 CDC 标准机制 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>DLT/Lakeflow 管道：<code>APPLY CHANGES INTO</code> 语法直接消费上游 CDC 做 SCD Type 1/2 拉链 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>新方向：Lakebase（Databricks 的 Postgres 兼容 OLTP）→ Delta 的 Lakehouse Sync 原生 CDC，无需外部作业即可把操作库变更流进数仓 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>下游：出湖仓可经 Delta Sharing、JDBC/ODBC、或写回 Kafka/对象存储；CDC 链路延迟通常在秒到分钟级，不是毫秒级同步 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (cloud SSE + optional customer-managed keys).</p>
+<ul>
+<li>Data physically lands in the customer&#x27;s own cloud storage (S3/ADLS/GCS) under cloud-native server-side encryption (SSE); control-plane metadata is encrypted by Databricks <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Customer-managed keys (CMK) supported: keys live in the customer&#x27;s own KMS (AWS KMS / Azure Key Vault) and can cover workspace storage and the Unity Catalog metastore <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>The Compliance Security Profile can enforce encryption and key policies — a prerequisite for HIPAA/PCI-style certifications <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / transport encryption <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (TLS 1.2+ end to end).</p>
+<ul>
+<li>All control-plane to compute-plane traffic is TLS-encrypted; Secure Cluster Connectivity runs over an encrypted WebSocket tunnel <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>JDBC/ODBC, REST API and notebook traffic are all HTTPS/TLS; the official security baseline requires TLS 1.2+ <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>No plaintext fallback: unlike self-managed setups there is no &quot;TLS on but plaintext ports left open&quot; trap — the exposed surface is governed by cloud network configuration <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> Auditing <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (audit logs + system.access.audit).</p>
+<ul>
+<li>Audit logs capture workspace operations, data access and permission changes, deliverable to customer S3/ADLS (object lock recommended for tamper resistance) and onward to Splunk/Datadog <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Unity Catalog&#x27;s <code>system.access.audit</code> table answers &quot;who accessed which table when&quot; directly in SQL — the primary data-access audit surface <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Caveat: log delivery and retention policies are yours to configure; on legacy workspaces without Unity Catalog, table-level audit granularity is weaker <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> Authentication &amp; authorization <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (SSO + fine-grained Unity Catalog RBAC).</p>
+<ul>
+<li>Identity: SSO (SAML/OIDC), MFA, SCIM user sync; automation uses service principals, not personal accounts <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Authorization: Unity Catalog&#x27;s three-level namespace (catalog.schema.table) governs tables, files (Volumes), models, functions and even AI agents under one model; row-level security, column masking and dynamic views supported <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Legacy trap: workspaces created before ~2023 may run the Hive Metastore permission model, which is a different system; migrating to Unity Catalog is real project work and effectively mandatory for compliance-grade production <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> Backup &amp; recovery <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (Delta time travel + clone; no traditional backup).</p>
+<ul>
+<li>Delta Lake time travel: query historical snapshots by version or timestamp, roll back from accidental deletes/writes <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li><code>CLONE</code> (shallow/deep) duplicates tables fast for recovery rehearsals or test environments; VACUUM governs history retention <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>But there is no one-click &quot;full backup / point-in-time restore&quot; in the traditional database sense: data lives in customer cloud storage, so backup strategy (cross-region replication, lifecycle) follows cloud best practices and is yours to build; workspace configuration (job definitions, grants) is backed up via Terraform/exports <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> Observability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (system tables + query history + Spark UI).</p>
+<ul>
+<li>Exceptionally rich <code>system</code> schema: <code>system.billing.usage</code> (DBU consumption line items — joinable to price lists to compute spend), <code>system.access.audit</code> (auditing), <code>system.query.history</code> (query history and durations) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Spark UI / Ganglia for job execution internals (stages, shuffles, GC); SQL warehouses expose query history and plans <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Cost observability is mandatory, not optional: DBUs show consumption without explaining &quot;why&quot; — without tags plus <code>system.billing.usage</code> analysis and per-team chargeback, the invoice is a black box <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> Connection model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (SQL warehouses over JDBC/ODBC + REST + notebooks).</p>
+<ul>
+<li>BI/applications connect via SQL warehouses: standard JDBC/ODBC and the Python SQL connector; serverless SQL warehouses need no ops and start/stop automatically <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Programmatic access: REST API, Databricks Connect (local IDE to remote cluster), SDKs in multiple languages; notebooks support collaborative Python/SQL/Scala/R <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No classic &quot;connection pool exhaustion&quot; problem: connections are lightweight; the bottleneck is compute (DBU) quota and concurrency slots, with SQL-warehouse concurrency handled by autoscaling <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> Transactions &amp; isolation levels <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Delta Lake ACID, serializable by default).</p>
+<ul>
+<li>Delta Lake implements ACID on object storage via transaction log + optimistic concurrency; concurrent writers to the same table are arbitrated by the protocol <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Default isolation is serializable; <code>MERGE</code>, <code>UPDATE</code>, <code>DELETE</code> DML plus schema enforcement and evolution are supported <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Note: these are analytical transactions (ETL writes, slowly changing dimensions), not OLTP row locking; high-frequency micro-transactions create small-file and log-bloat problems <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> Replication &amp; consistency <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (Delta Sharing outward; no built-in cross-region active-active).</p>
+<ul>
+<li>Outbound replication/sharing: the Delta Sharing open protocol securely shares live tables with external organizations — recipients read with any engine, no data copying <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>In-cloud HA: data on cloud storage is multi-AZ redundant by construction; compute is stateless and re-provisioned on failure <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>No built-in cross-region active-active replication: multi-region data sync and consistency are yours to design (storage replication + job scheduling), and cross-region egress fees are a major hidden cost <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> Scaling <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (autoscaling + serverless elasticity).</p>
+<ul>
+<li>Classic clusters autoscale workers within min/max bounds driven by the task queue; instance pools shorten cold starts <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Serverless compute: no cluster management, fast startup, pay-for-what-you-use — the official strategic direction since 2025 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Edge truth: autoscaling bounds set too wide scale up easily and down slowly, burning DBUs while shrinking; Photon/Serverless shorten wall-clock time, not unit price <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> Compatibility <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Spark API + open-format interop).</p>
+<ul>
+<li>API: full Spark API (DataFrame/SQL/Streaming/MLlib); PySpark is the de-facto entry point; Databricks Runtime is an optimized Spark distribution <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Table formats: Delta Lake is Parquet plus a transaction log underneath — any Parquet-capable engine can read the data; interop with Apache Iceberg keeps improving (UniForm and friends), and &quot;change engines without moving data&quot; is a selling point <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Note: the open part is the data format, not the platform API — job scheduling, permissions and billing are bound to the Databricks control plane; Photon is a closed-source acceleration engine <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> License &amp; business model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (proprietary platform on DBU consumption; core components open source).</p>
+<ul>
+<li>Proprietary platform, no open-source/self-hosted edition: it only runs under a Databricks account on AWS/Azure/GCP — there is no &quot;download Databricks and install it in your own data center&quot; <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Billing: DBUs × duration × workload-type rate; classic compute adds cloud-resource fees, Serverless bundles them; enterprise contract pricing differs substantially from list <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>Open-source parts: Delta Lake (Linux Foundation), MLflow and Apache Spark itself are open — data is not format-locked, which is the differentiator against Snowflake-style proprietary storage <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> Chinese-language resources <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (English-first, Chinese catching up).</p>
+<ul>
+<li>Official docs are English-first with partial machine-translated Chinese; Azure Databricks has more Chinese documentation via the Microsoft ecosystem <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Chinese blogs and courses are growing (CSDN, Zhihu, Geektime series), but deep content (tuning, Unity Catalog migration war stories) still runs a generation behind English <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Certification exams (e.g. Data Engineer Professional) are English-only <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> Performance &amp; latency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Photon batch benchmark; interactive in seconds; OLTP not the target).</p>
+<ul>
+<li>Photon vectorized engine: vendor-claimed multi-fold speedups over open-source Spark on TPC-DS-style benchmarks; the default accelerator for SQL warehouses and DLT <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>Typical latencies: interactive SQL-warehouse queries in seconds (TB-scale aggregations commonly measured by the community); streaming end-to-end in seconds; the 2026 Lakehouse//RT launch (Reyden engine) targets sub-second concurrent queries <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>.</li>
+<li>Boundary: millisecond point lookups / high-frequency OLTP are not the design target; cluster cold starts (classic) were the classic complaint — Serverless mitigates substantially but not to zero <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">15</span> Compliance &amp; certifications <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (full SOC2/ISO/HIPAA/PCI/FedRAMP suite).</p>
+<ul>
+<li>SOC 2 Type II, ISO/IEC 27001:2022 (covering AWS/Azure/GCP), ISO 27017/27018/27701, HIPAA, PCI-DSS, FedRAMP (in designated regions) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>The Compliance Security Profile hardens in one switch — FIPS crypto modules, enhanced auditing — the standard move for regulated/financial compliance <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Note: some AI features (pay-per-token Foundation Model APIs) are restricted outside HIPAA-class compliance profiles; no China-region cloud (deploy via global clouds) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">16</span> Maturity &amp; community <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (founded 2013; the de-facto Spark-ecosystem standard).</p>
+<ul>
+<li>Founded 2013 by the original Spark team, HQ San Francisco, 8,000+ employees (2025–2026 figures); valued at $62B in Dec 2024, north of $100B by end of 2025, still private <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>The Spark open-source community and the Databricks ecosystem heavily overlap: Q&amp;A, third-party books and a mature certification system; Delta Lake and MLflow open-source communities are active <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Risk side: as a private company, long-term pricing and strategy carry uncertainty; the platform iterates fast and API/default-behavior changes need tracking <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">17</span> Notable adopters <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (AT&amp;T, Shell, Toyota and cross-industry others).</p>
+<ul>
+<li>Public customers: AT&amp;T, Block, Rivian, Walgreens, Mercedes-Benz, Shell, Siemens, Toyota, Warner Bros. Discovery; strong adoption among multinationals and companies expanding overseas <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Internet/AI companies are the home turf: MosaicML was a customer before the acquisition and became the Mosaic AI foundation after it <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Common pattern: Databricks for ingestion/features/training, BI served from Power BI or Snowflake — dual-platform coexistence is normal <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">18</span> Ecosystem tooling <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Terraform/dbt/Airflow/MLflow fully covered).</p>
+<ul>
+<li>IaC: official Terraform provider (workspaces, clusters, UC grants, jobs — all as code); CI/CD via GitHub Actions / Azure DevOps <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Data stack: dbt-databricks adapter, Airflow provider, official connectors for Fivetran/Airbyte-class ingestion tools <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>ML: MLflow (donated by Databricks&#x27; founders) for experiment tracking + model registry + Model Serving end to end <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">19</span> Managed &amp; serverless <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (it is itself the cloud service; Serverless is the strategic default).</p>
+<ul>
+<li>All three clouds: AWS / Azure (Azure Databricks is a first-class Microsoft integration) / GCP; no private/on-premises deployment — regulated on-prem scenarios need a hybrid architecture <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Serverless SQL warehouses and serverless compute: no cluster ops, fast start/stop, usage billing; classic clusters remain for deep customization (VPC injection, special instance types) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Cost note: Serverless unit price exceeds classic DBUs — it saves ops and idle time, not unit price; choose by workload profile and do the total math <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">20</span> Data ingestion <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Auto Loader + COPY INTO + DLT unified batch/streaming).</p>
+<ul>
+<li>Auto Loader (cloudFiles): incrementally detects new files landing in S3/ADLS/GCS with schema inference and evolution — the de-facto &quot;files into the lake&quot; standard <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>COPY INTO: idempotent SQL bulk loads; Delta Live Tables (now Lakeflow Declarative Pipelines): declarative ETL unifying batch and streaming with built-in data-quality expectations <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Streaming: Spark Structured Streaming straight into Kafka/Event Hubs/Kinesis with end-to-end exactly-once semantics <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Edge: small-file fragmentation is the chronic lakehouse disease — Auto Loader plus OPTIMIZE/Z-ORDER is the standard regimen; schema drift needs explicit design <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">21</span> External data access <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Delta Sharing for outbound; Lakehouse Federation for inbound queries).</p>
+<ul>
+<li>Outbound sharing: the Delta Sharing open protocol securely shares live Delta tables with external organizations — recipients read with any engine (Spark/pandas/Power BI), no data copying <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Inbound federation: Lakehouse Federation creates external Connections + Foreign Catalogs to query PostgreSQL/MySQL/Snowflake/BigQuery in place, with pushdown to the source and unified Unity Catalog auth/audit <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Boundary: federation suits ad-hoc exploration and small result sets; repeated large scans and high-frequency production queries should still land in the lake first (latency and source load are uncontrollable); cross-cloud egress is on you <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">22</span> CDC &amp; downstream <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Delta CDF + DLT + Lakebase Sync).</p>
+<ul>
+<li>Delta Change Data Feed (CDF): enable per table and downstream consumers incrementally read row-level inserts/updates/deletes — the in-lake CDC standard <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>DLT/Lakeflow pipelines: <code>APPLY CHANGES INTO</code> consumes upstream CDC directly into SCD Type 1/2 historization <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>New direction: Lakebase (Databricks&#x27; Postgres-compatible OLTP) to Delta via Lakehouse Sync — native CDC streaming operational changes into the warehouse with no external jobs <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>Downstream: exit via Delta Sharing, JDBC/ODBC, or write-back to Kafka/object storage; CDC pipeline latency is typically seconds to minutes, not millisecond sync <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="杀手特性" data-en="Killer features">杀手特性</span></h2>
+<div class="lang-block lang-zh">
+<blockquote>
+<p>写法要求：每个特性 = 它是什么 + 为什么是真本事 + 推到边缘会发生什么。</p>
+</blockquote>
+<ol>
+<li><strong>Delta Lake：对象存储上的 ACID 与时间旅行</strong> 真本事：Parquet 文件 + 事务日志，在廉价对象存储上实现可串行化事务、schema 强制/演进、版本回溯；数据湖从此有了数仓的可靠性承诺。 边缘真相：高频小写入会产生小文件海与日志膨胀，OPTIMIZE/VACUUM 是必修运维；CDF 开久了变更日志本身成为存储与读取成本；把 Delta 当 OLTP 行级更新用是反模式。</li>
+<li><strong>Unity Catalog：数据与 AI 资产的统一治理</strong> 真本事：三级命名空间 + 细粒度权限 + 列掩码/行过滤 + 全链路血缘 + 审计，一套模型同时管表、文件、模型、函数乃至 AI Agent；联邦查询也走同一套鉴权。 边缘真相：老工作区 Hive Metastore 迁移是真实项目制工作；权限模型配错会在&quot;过松&quot;与&quot;分析师什么都查不了&quot;之间摇摆；血缘覆盖第三方写入路径时有盲区。</li>
+<li><strong>Photon：Spark 生态的向量化加速</strong> 真本事：C++ 重写的向量化执行引擎，对 SQL 与 DataFrame API 透明加速，TPC-DS 类查询数倍于开源 Spark；SQL 仓库默认开启。 边缘真相：UDF 密集、Python 逐行逻辑的作业吃不到 Photon 红利；加速比是 workload 相关的，官方基准数字不等于你的查询；Photon 是闭源，调优黑盒程度更高。</li>
+<li><strong>流批一体（Structured Streaming + DLT）：一套代码两种速度</strong> 真本事：同一套 DataFrame API 跑批也跑流，exactly-once 语义；DLT 声明式定义管道，引擎管编排、增量、数据质量期望。 边缘真相：流作业的 checkpoint 与状态后端是运维深水区；late data 与 watermark 语义配错会丢数或重数；DLT 的声明式抽象在复杂依赖面前仍要理解执行计划。</li>
+<li><strong>Mosaic AI / Agent Bricks：湖仓之上的 AI 原生层</strong> 真本事：Vector Search、Foundation Model API、Model Serving 与 Unity Catalog 治理打通；Agent Bricks 把 Agent 当版本化资产（agent-as-a-table）构建评测部署。 边缘真相：按 token/DBU 双重计费下，大模型调用成本先算清再上线；评测基准（relevance/groundedness）配不好等于自嗨；RAG 质量最终还是取决于湖里数据的质量。</li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<blockquote>
+<p>Style rule: each feature = what it is + why it&#x27;s genuinely good + what happens at the edge.</p>
+</blockquote>
+<ol>
+<li><strong>Delta Lake: ACID and time travel on object storage</strong> Why it&#x27;s real: Parquet files plus a transaction log deliver serializable transactions, schema enforcement/evolution and version rollback on cheap object storage — the data lake finally carries a warehouse-grade reliability promise. Edge truth: high-frequency micro-writes breed small-file seas and log bloat — OPTIMIZE/VACUUM are mandatory ops; long-lived CDF change logs become their own storage and read cost; using Delta for OLTP-style row updates is an anti-pattern.</li>
+<li><strong>Unity Catalog: unified governance for data and AI assets</strong> Why it&#x27;s real: three-level namespace + fine-grained grants + column masking/row filters + end-to-end lineage + auditing, one model governing tables, files, models, functions and even AI agents; federated queries pass through the same auth. Edge truth: migrating legacy Hive Metastore workspaces is genuine project work; misconfigured permission models oscillate between &quot;too loose&quot; and &quot;analysts can&#x27;t query anything&quot;; lineage has blind spots where third parties write directly.</li>
+<li><strong>Photon: vectorized acceleration for the Spark ecosystem</strong> Why it&#x27;s real: a C++ vectorized execution engine that transparently accelerates SQL and DataFrame APIs, multiple times faster than open-source Spark on TPC-DS-class queries; on by default in SQL warehouses. Edge truth: UDF-heavy, row-at-a-time Python logic sees none of the Photon dividend; speedups are workload-dependent — vendor benchmarks are not your queries; Photon is closed source, so tuning is more of a black box.</li>
+<li><strong>Unified batch + streaming (Structured Streaming + DLT): one codebase, two speeds</strong> Why it&#x27;s real: the same DataFrame API runs batch and streaming with exactly-once semantics; DLT declares pipelines and the engine handles orchestration, incrementalization and data-quality expectations. Edge truth: streaming-job ops (checkpoints, state backends) are a deep-water zone; misconfigured late-data and watermark semantics lose or duplicate rows; DLT&#x27;s declarative abstraction still demands understanding the execution plan for complex dependencies.</li>
+<li><strong>Mosaic AI / Agent Bricks: the AI-native layer on the lakehouse</strong> Why it&#x27;s real: Vector Search, Foundation Model APIs and Model Serving are wired into Unity Catalog governance; Agent Bricks builds, evaluates and deploys agents as versioned assets (agent-as-a-table). Edge truth: under token-plus-DBU double billing, model-call costs must be modeled before launch; poorly configured evaluation benchmarks (relevance/groundedness) are self-congratulation; RAG quality ultimately depends on the quality of the data in the lake.</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="深水区" data-en="Deep dives">深水区</span></h2>
+<div class="lang-block lang-zh">
+<blockquote>
+<p>以下每条 = 领域 + 机制一句话 + 推到边缘会发生什么 + 选型含义。证据类型已标注。</p>
+</blockquote>
+<p><strong>深水区一：DBU 计费——账单是第二套&quot;查询优化器&quot;</strong></p>
+<ul>
+<li>领域：成本模型。</li>
+<li>机制一句话：消费按 DBU（Databricks Unit）× 时长 × 工作负载费率，外加经典计算的底层云资源费；DBU 只计量消耗，不解释&quot;为什么消耗&quot;。</li>
+<li>边缘行为：交互式集群忘记关、自动终止配 2 小时、扩缩上限过宽，DBU 在空转中燃烧；月度账单只给总数，不告诉你哪个 Job、哪个用户烧的——不做标签（tag）+ system.billing.usage 分析，成本归因就是黑盒。Serverless 按量但单价更高，&quot;省心&quot;不等于&quot;省钱&quot;。</li>
+<li>选型含义：上线第一天就建 FinOps：强制 auto-termination（15–30 分钟）、Job 集群替代常驻交互集群、按团队/项目打标签 chargeback；POC 必须跑真实 workload 测 DBU/查询。</li>
+<li>来源：官方文档（计费与 system 表）+ 社区成本优化实践。</li>
+</ul>
+<p><strong>深水区二：小文件与 Delta 日志膨胀——湖仓的慢性病</strong></p>
+<ul>
+<li>领域：存储与写入路径。</li>
+<li>机制一句话：每次写入生成新 Parquet 文件 + 事务日志条目；流式/高频微批写入天然产生海量小文件。</li>
+<li>边缘行为：小文件过多导致 list 开销、查询计划膨胀、合并读放大；OPTIMIZE（compaction）与 Z-ORDER 是常规药，但大表 OPTIMIZE 本身是重型作业，要和业务错峰；VACUUM 保留期设太短会删掉时间旅行需要的历史，设太长存储与 CDF 成本上升。</li>
+<li>选型含义：写入链路必须设计文件大小目标（如 Auto Loader 触发阈值）；把 OPTIMIZE/VACUUM 纳入定期运维，而不是救火。</li>
+<li>来源：官方文档 + 社区实践。</li>
+</ul>
+<p><strong>深水区三：Spark 调优负担——平台托管了机器，没托管复杂度</strong></p>
+<ul>
+<li>领域：计算调优。</li>
+<li>机制一句话：Databricks 管集群生命周期，但 shuffle 分区数、数据倾斜、broadcast 阈值、Photon 是否生效，仍是用户作业的属性。</li>
+<li>边缘行为：数据倾斜的 join 在 Serverless 上一样慢，只是换了一种计费方式慢；AQP/Photon 掩盖不了糟糕的分区裁剪；从&quot;能跑&quot;到&quot;跑得便宜&quot;之间隔着 Spark UI 解读能力。小团队若无人懂 Spark，平台优势兑现度打折。</li>
+<li>选型含义：团队至少要有一名能读 Spark UI 的人；SQL 仓库 + Photon 覆盖 80% BI 场景，把&quot;裸 Spark 调优&quot;留给真正的重型 ETL。</li>
+<li>来源：社区共识 + 官方性能指南。</li>
+</ul>
+<p><strong>深水区四：Unity Catalog 迁移——老工作区的成人礼</strong></p>
+<ul>
+<li>领域：治理与迁移。</li>
+<li>机制一句话：UC 是账号级三级命名空间治理，老工作区是工作区级 Hive Metastore；两者权限模型不互通。</li>
+<li>边缘行为：迁移要重建 catalog/schema/table 映射、重授权限、改作业引用路径；外部表（external location）的存储凭证要逐个迁移；迁移期间新老两套权限并存，最容易出&quot;以为有权限其实没有&quot;或反过来的事故。官方有 UCX 迁移工具，但大型工作区仍是项目制。</li>
+<li>选型含义：新上直接 UC；老用户把 UC 迁移排进路线图，合规审计（等保/金融）通常以 UC 为前提。</li>
+<li>来源：官方文档（UC 迁移指南）+ 社区迁移实践。</li>
+</ul>
+<p><strong>深水区五：跨云/跨区的数据重力——egress 是隐形税</strong></p>
+<ul>
+<li>领域：多雲部署。</li>
+<li>机制一句话：Databricks 计算与存储解耦在客户云账号内，跨区/跨云读写的流量费由云厂商收，不在 DBU 里。</li>
+<li>边缘行为：多 Region 容灾、跨云联邦查询、Delta Sharing 给外部 Azure 订阅者，egress 账单可能超过 DBU 本身；&quot;在一个云做计算、另一个云存数据&quot;的架构在财务上通常不成立。</li>
+<li>选型含义：计算与数据同区部署是铁律；跨云场景优先用 Delta Sharing 的&quot;就近读&quot;而非&quot;拉回来算&quot;；POC 阶段就把 egress 计入 TCO。</li>
+<li>来源：社区共识 + 云厂商计费文档。</li>
+</ul>
+<p><strong>深水区六：Serverless 的边界——不是所有负载都适合</strong></p>
+<ul>
+<li>领域：计算形态。</li>
+<li>机制一句话：Serverless 免运维、秒级启动、按量计费，但网络是 Databricks 托管（无 VPC 注入）、实例类型不可选、单价高于经典 DBU。</li>
+<li>边缘行为：需要 VPC 注入、私有终端、特殊合规网络隔离的场景只能用经典集群；长稳态重负载下，经典预留/竞价实例的总成本可能更低；Serverless 的&quot;自动&quot;在超大 shuffle 作业面前仍可能遇到配额与并发上限。</li>
+<li>选型含义：按画像选形态——BI/即席/波动负载走 Serverless，网络强管控/超大批处理走经典；不要&quot;全 Serverless&quot;一刀切。</li>
+<li>来源：官方文档 + 社区实践。</li>
+</ul>
+<p><strong>深水区七：AI 负载的双重计费——token 与 DBU 叠加</strong></p>
+<ul>
+<li>领域：AI/ML 成本。</li>
+<li>机制一句话：Foundation Model API 按 token 计费，Model Serving 按 DBU/预置吞吐计费，Vector Search 索引同步另耗计算。</li>
+<li>边缘行为：RAG 的 embedding 回填、Agent 的多轮调用、评测集的大批量跑分，三项叠加后 AI 账单可能超过数仓账单；&quot;先上线再看账单&quot;的团队会被教育。</li>
+<li>选型含义：AI 功能上线前做 token 预算；评测与回填用采样/错峰；把 AI 成本单独打标签核算。</li>
+<li>来源：官方文档（Model Serving 计费）+ 社区实践。</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<blockquote>
+<p>Each entry = domain + mechanism in one sentence + what happens at the edge + what it means for selection. Evidence graded.</p>
+</blockquote>
+<p><strong>Deep dive 1: DBU billing — the invoice is a second query optimizer</strong></p>
+<ul>
+<li>Domain: cost model.</li>
+<li>Mechanism in one sentence: consumption is metered as DBUs (Databricks Units) × duration × workload rate, plus underlying cloud-resource fees for classic compute; DBUs meter consumption without explaining &quot;why&quot;.</li>
+<li>At the edge: forgotten interactive clusters, 2-hour auto-termination timeouts and over-wide autoscaling bounds burn DBUs while idling; the monthly invoice gives totals, not which job or user burned them — without tags plus <code>system.billing.usage</code> analysis, cost attribution is a black box. Serverless bills by usage at a higher unit price: &quot;peace of mind&quot; is not &quot;cheaper&quot;.</li>
+<li>Selection meaning: build FinOps from day one — enforce auto-termination (15–30 min), prefer job clusters over always-on interactive ones, tag by team/project for chargeback; POCs must run real workloads and measure DBUs per query.</li>
+<li>Source: official docs (billing and system tables) + community cost-optimization practices.</li>
+</ul>
+<p><strong>Deep dive 2: Small files and Delta log bloat — the lakehouse chronic illness</strong></p>
+<ul>
+<li>Domain: storage and write path.</li>
+<li>Mechanism in one sentence: every write creates new Parquet files plus transaction-log entries; streaming and high-frequency micro-batches naturally breed seas of small files.</li>
+<li>At the edge: too many small files inflate list costs, query-plan size and merge-read amplification; OPTIMIZE (compaction) and Z-ORDER are the standard medicine, but OPTIMIZE on huge tables is itself a heavyweight job that must avoid business hours; VACUUM retention set too short deletes the history time travel needs, too long inflates storage and CDF cost.</li>
+<li>Selection meaning: design target file sizes into the ingestion path (e.g. Auto Loader trigger thresholds); make OPTIMIZE/VACUUM scheduled operations, not firefighting.</li>
+<li>Source: official docs + community practices.</li>
+</ul>
+<p><strong>Deep dive 3: The Spark tuning burden — the platform manages machines, not complexity</strong></p>
+<ul>
+<li>Domain: compute tuning.</li>
+<li>Mechanism in one sentence: Databricks manages cluster lifecycle, but shuffle partition counts, data skew, broadcast thresholds and whether Photon actually engaged remain properties of your job.</li>
+<li>At the edge: a skewed join is slow on Serverless too — just slow under a different billing mode; AQP/Photon can&#x27;t hide terrible partition pruning; between &quot;it runs&quot; and &quot;it runs cheaply&quot; lies the ability to read the Spark UI. Teams with nobody who speaks Spark get a discounted version of the platform&#x27;s value.</li>
+<li>Selection meaning: staff at least one person who can read the Spark UI; SQL warehouses + Photon cover 80% of BI — reserve bare-metal Spark tuning for genuinely heavy ETL.</li>
+<li>Source: community consensus + official performance guides.</li>
+</ul>
+<p><strong>Deep dive 4: Unity Catalog migration — the coming-of-age ritual for old workspaces</strong></p>
+<ul>
+<li>Domain: governance and migration.</li>
+<li>Mechanism in one sentence: UC is an account-level three-level-namespace governance layer; legacy workspaces use workspace-scoped Hive Metastore — the two permission models don&#x27;t interoperate.</li>
+<li>At the edge: migration means rebuilding catalog/schema/table mappings, re-granting permissions and rewriting job references; external-location storage credentials migrate one by one; during migration two permission systems coexist — the easiest time to ship &quot;thought I had access but didn&#x27;t&quot; incidents (or the reverse). The official UCX migration tooling helps, but large workspaces remain project work.</li>
+<li>Selection meaning: go UC from day one on new deployments; legacy users should put UC migration on the roadmap — compliance audits (regulated/financial) generally assume UC.</li>
+<li>Source: official docs (UC migration guide) + community migration practices.</li>
+</ul>
+<p><strong>Deep dive 5: Cross-cloud/cross-region data gravity — egress is the invisible tax</strong></p>
+<ul>
+<li>Domain: multi-cloud deployment.</li>
+<li>Mechanism in one sentence: Databricks compute is decoupled from storage inside the customer&#x27;s cloud account; cross-region/cross-cloud traffic fees are collected by the cloud vendor, not included in DBUs.</li>
+<li>At the edge: multi-region DR, cross-cloud federated queries and Delta Sharing to external Azure subscribers can produce egress bills exceeding the DBUs themselves; &quot;compute in one cloud, data in another&quot; rarely survives contact with finance.</li>
+<li>Selection meaning: co-locate compute and data in the same region as an iron rule; for cross-cloud, prefer Delta Sharing&#x27;s &quot;read nearby&quot; over &quot;pull it back and compute&quot;; put egress into TCO from the POC stage.</li>
+<li>Source: community consensus + cloud billing documentation.</li>
+</ul>
+<p><strong>Deep dive 6: The boundaries of Serverless — not every workload fits</strong></p>
+<ul>
+<li>Domain: compute shape.</li>
+<li>Mechanism in one sentence: Serverless removes ops, starts fast and bills by usage — but networking is Databricks-managed (no VPC injection), instance types aren&#x27;t selectable, and unit price exceeds classic DBUs.</li>
+<li>At the edge: scenarios needing VPC injection, private endpoints or strict compliance network isolation require classic clusters; for long-running heavy steady-state loads, classic reserved/spot instances can total less; Serverless &quot;automatic&quot; still meets quota and concurrency ceilings on monster shuffle jobs.</li>
+<li>Selection meaning: choose the shape by profile — Serverless for BI/ad-hoc/spiky, classic for network-controlled or mega-batch; don&#x27;t one-size-fits-all to &quot;all Serverless&quot;.</li>
+<li>Source: official docs + community practices.</li>
+</ul>
+<p><strong>Deep dive 7: Double billing on AI workloads — tokens plus DBUs</strong></p>
+<ul>
+<li>Domain: AI/ML cost.</li>
+<li>Mechanism in one sentence: Foundation Model APIs bill per token, Model Serving bills per DBU/provisioned throughput, and Vector Search index syncs consume compute separately.</li>
+<li>At the edge: RAG embedding backfills, multi-turn agent calls and large evaluation-suite runs stack three ways — the AI invoice can exceed the warehouse invoice; teams that &quot;launch first, read the bill later&quot; get educated.</li>
+<li>Selection meaning: budget tokens before AI features launch; sample and off-peak evaluations and backfills; tag AI spend separately.</li>
+<li>Source: official docs (Model Serving billing) + community practices.</li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="用户最买账的 5 点" data-en="What users love most">用户最买账的 5 点</span></h2>
+<div class="lang-block lang-zh">
+<ol>
+<li><strong>一套平台覆盖工程、BI、ML、AI</strong> 为什么是真的：同一份 Delta 数据，数据工程师跑 ETL、分析师跑 SQL、算法跑训练、Agent 跑 RAG，不用来回倒数据；Unity Catalog 一套权限管全。 边缘与失效条件：统一的前提是团队愿意统一——&quot;各部门各买各的云服务&quot;的组织拿不到协同红利；平台越全，单点议价能力越弱。 来源：官方文档 + 社区共识。观察版本：平台滚动发布（2026-09）。</li>
+<li><strong>Delta Lake 开放格式，数据不被锁定</strong> 为什么是真的：Parquet + 事务日志，换 Trino/Snowflake（Iceberg 互操作）可读；相对 Snowflake 私有存储格式，退出成本低一个量级。 边缘与失效条件：开放的是数据，不是作业、权限与调度逻辑；迁移的真实成本在重写管道与重建治理，不在数据本身。 来源：官方文档 + 社区共识。观察版本：Delta Lake（Linux 基金会）。</li>
+<li><strong>Photon + Serverless：BI 查询开箱即快</strong> 为什么是真的：SQL 仓库 + Photon，TB 级聚合秒级返回很常见；Serverless 免去&quot;半夜集群挂了&quot;的运维。 边缘与失效条件：快的是&quot;典型 BI 查询&quot;；超大 join、倾斜数据、UDF 重逻辑仍要调优；Serverless 单价贵，7×24 重载不如经典划算。 来源：官方口径 + 社区实测。观察版本：平台滚动发布（2026-09）。</li>
+<li><strong>流批一体，CDC 链路短</strong> 为什么是真的：Structured Streaming + DLT + CDF，从 Kafka 到 gold 表一条链路，exactly-once；Lakebase Sync 把 OLTP 变更原生流进湖。 边缘与失效条件：流作业的运维（checkpoint、水位线）仍是深水区；CDC 延迟是秒到分钟级，不是毫秒级。 来源：官方文档 + 社区实践。观察版本：平台滚动发布（2026-09）。</li>
+<li><strong>MLOps 到 Agent 的完整 AI 链路</strong> 为什么是真的：MLflow 跟踪/注册/ serving、Vector Search、Agent Bricks 评测部署，都在同一治理下；做 RAG/Agent 不用另搭一套。 边缘与失效条件：AI 功能的计费（token + DBU）要单独建模；模型质量最终取决于数据质量，平台不替你洗数据。 来源：官方文档 + 社区共识。观察版本：平台滚动发布（2026-09）。</li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<ol>
+<li><strong>One platform for engineering, BI, ML and AI</strong> Why it&#x27;s real: the same Delta data serves ETL engineers, SQL analysts, model trainers and RAG agents — no data ping-pong; one permission model (Unity Catalog) governs all. Edge &amp; failure conditions: unification requires the organization to want unification — federated &quot;every department buys its own cloud service&quot; orgs capture none of the synergy; the broader the platform, the weaker your per-item negotiating leverage. Source: official docs + community consensus. Observed on: rolling platform release (2026-09).</li>
+<li><strong>Delta Lake&#x27;s open format — data isn&#x27;t locked in</strong> Why it&#x27;s real: Parquet plus transaction log — Trino/Snowflake (via Iceberg interop) can read it; exit costs run an order of magnitude below Snowflake-style proprietary storage. Edge &amp; failure conditions: what&#x27;s open is the data, not the jobs, permissions and scheduling logic; real migration cost sits in rewriting pipelines and rebuilding governance, not in the data itself. Source: official docs + community consensus. Observed on: Delta Lake (Linux Foundation).</li>
+<li><strong>Photon + Serverless: BI queries fast out of the box</strong> Why it&#x27;s real: SQL warehouses plus Photon commonly return TB-scale aggregations in seconds; Serverless removes the &quot;cluster died at 3am&quot; ops burden. Edge &amp; failure conditions: &quot;typical BI queries&quot; are the fast ones; monster joins, skewed data and UDF-heavy logic still need tuning; Serverless unit pricing is premium — 24/7 heavy loads can total less on classic. Source: vendor claims + community-tested. Observed on: rolling platform release (2026-09).</li>
+<li><strong>Unified streaming and batch with short CDC paths</strong> Why it&#x27;s real: Structured Streaming + DLT + CDF form one pipeline from Kafka to gold tables with exactly-once; Lakehouse Sync streams OLTP changes natively into the lake. Edge &amp; failure conditions: streaming-job ops (checkpoints, watermarks) remain deep water; CDC latency is seconds-to-minutes, not milliseconds. Source: official docs + community practices. Observed on: rolling platform release (2026-09).</li>
+<li><strong>The complete AI chain from MLOps to agents</strong> Why it&#x27;s real: MLflow tracking/registry/serving, Vector Search and Agent Bricks evaluation/deployment all under one governance umbrella — no separate stack needed for RAG/agents. Edge &amp; failure conditions: AI billing (tokens + DBUs) needs its own cost model; model quality ultimately depends on data quality — the platform won&#x27;t clean your data for you. Source: official docs + community consensus. Observed on: rolling platform release (2026-09).</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="吐槽清单" data-en="Complaints">吐槽清单</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>分类</th><th>吐槽</th><th>影响版本</th><th>状态</th></tr></thead>
+<tbody>
+<tr><td>成本</td><td>DBU + 云资源双账单，费用不可预测；闲置集群、过宽扩缩是最常见的烧钱姿势</td><td>全版本</td><td>open</td></tr>
+<tr><td>成本</td><td>月度账单只给总数，不做标签 + system.billing 分析就无法归因到团队/作业</td><td>全版本</td><td>open</td></tr>
+<tr><td>成本</td><td>Serverless 单价高于经典，&quot;省心不省钱&quot;，7×24 重载总账可能更贵</td><td>全版本</td><td>open</td></tr>
+<tr><td>运维</td><td>经典集群冷启动慢，交互式体验不如纯 Serverless 数仓</td><td>全版本</td><td>partially-fixed</td></tr>
+<tr><td>学习</td><td>Spark 调优（倾斜、shuffle、分区）负担仍在用户侧，小团队无专人则优势打折</td><td>全版本</td><td>open</td></tr>
+<tr><td>治理</td><td>老工作区 Hive Metastore 迁 Unity Catalog 是项目制工作，官方 UCX 工具也非一键</td><td>迁移期</td><td>partially-fixed</td></tr>
+<tr><td>存储</td><td>高频写入小文件海 + Delta 日志膨胀，OPTIMIZE/VACUUM 是必修运维</td><td>全版本</td><td>open</td></tr>
+<tr><td>网络</td><td>跨区/跨云 egress 费用不在 DBU 内，多 Region 架构下可能成最大单项</td><td>全版本</td><td>open</td></tr>
+<tr><td>锁定</td><td>数据格式开放，但作业调度、权限体系、计费深度绑定平台，迁移真实成本在管道与治理</td><td>全版本</td><td>open</td></tr>
+<tr><td>合规</td><td>部分 AI 功能（按 token 计费模型 API）在非 HIPAA 合规档下受限</td><td>全版本</td><td>open</td></tr>
+<tr><td>部署</td><td>无私有化/本地部署选项，强监管本地化场景只能走混合架构</td><td>全版本</td><td>open</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Category</th><th>Complaint</th><th>Affected versions</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Cost</td><td>DBU + cloud-resource double billing with unpredictable totals; idle clusters and over-wide autoscaling are the most common money fires</td><td>All</td><td>open</td></tr>
+<tr><td>Cost</td><td>Monthly invoice gives totals only — without tags + system.billing analysis there is no attribution to teams/jobs</td><td>All</td><td>open</td></tr>
+<tr><td>Cost</td><td>Serverless unit price exceeds classic — &quot;peace of mind, not cheaper&quot;; 24/7 heavy loads may total more</td><td>All</td><td>open</td></tr>
+<tr><td>Ops</td><td>Classic cluster cold starts are slow; interactive experience lags pure-serverless warehouses</td><td>All</td><td>partially-fixed</td></tr>
+<tr><td>Learning</td><td>Spark tuning burden (skew, shuffle, partitioning) stays on the user; small teams without a specialist get discounted value</td><td>All</td><td>open</td></tr>
+<tr><td>Governance</td><td>Migrating legacy Hive Metastore workspaces to Unity Catalog is project work; the official UCX tooling is no one-click fix</td><td>Migration period</td><td>partially-fixed</td></tr>
+<tr><td>Storage</td><td>High-frequency writes breed small-file seas + Delta log bloat; OPTIMIZE/VACUUM are mandatory ops</td><td>All</td><td>open</td></tr>
+<tr><td>Network</td><td>Cross-region/cross-cloud egress sits outside DBUs and can become the largest line item in multi-region architectures</td><td>All</td><td>open</td></tr>
+<tr><td>Lock-in</td><td>Data format is open, but job scheduling, permission systems and billing are deeply platform-bound — real migration cost is pipelines and governance</td><td>All</td><td>open</td></tr>
+<tr><td>Compliance</td><td>Some AI features (pay-per-token model APIs) are restricted outside HIPAA-class compliance profiles</td><td>All</td><td>open</td></tr>
+<tr><td>Deployment</td><td>No private/on-premises deployment option; strict data-localization scenarios need hybrid architectures</td><td>All</td><td>open</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="判决" data-en="Verdict">判决</span></h2>
+<div class="lang-block lang-zh">
+<p><strong>适合谁</strong>：云原生的数据平台团队——需要一套覆盖 ETL、BI、ML 乃至 AI Agent 的统一底座；数据量 TB~PB 级且持续增长；团队有 Spark/SQL 能力并愿意建 FinOps；看重开放表格式、不想被私有存储格式锁定。</p>
+<p><strong>不适合谁</strong>：只要&quot;跑 SQL 查数&quot;的轻量 BI 团队（Serverless 数仓可能更简单便宜）；毫秒级 OLTP 点查；强监管要求本地化部署；无专人看账单与调优、指望&quot;开了就行&quot;的团队；预算刚性、对可预测性要求高于弹性的组织。</p>
+<p><strong>迁移成本</strong>：中等。从 Hadoop/Spark 自建迁来平滑（API 兼容）；从传统数仓迁来，成本在三处：(1) 管道重写为 DLT/Structured Streaming 范式；(2) 治理重建——Unity Catalog 权限与血缘；(3) FinOps 体系——标签、预算、auto-termination。真正的长期成本不在迁移，在持续的 DBU 治理。</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<p><strong>Good fit for</strong>: cloud-native data platform teams — needing one foundation covering ETL, BI, ML and even AI agents; TB-to-PB-scale data still growing; teams with Spark/SQL skills willing to build FinOps; buyers who value open table formats and don&#x27;t want proprietary-storage lock-in.</p>
+<p><strong>Poor fit for</strong>: lightweight BI teams that just &quot;run SQL and look at numbers&quot; (a serverless warehouse may be simpler and cheaper); millisecond OLTP point lookups; strict regulatory on-premises requirements; teams with nobody watching the bill or tuning, expecting &quot;it just works&quot;; organizations with rigid budgets valuing predictability over elasticity.</p>
+<p><strong>Migration cost</strong>: medium. Migrating from self-built Hadoop/Spark is smooth (API-compatible); from traditional warehouses the cost sits in three places: (1) rewriting pipelines into the DLT/Structured Streaming paradigm; (2) rebuilding governance — Unity Catalog grants and lineage; (3) building the FinOps apparatus — tags, budgets, auto-termination. The real long-term cost isn&#x27;t migration — it&#x27;s ongoing DBU governance.</p>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="来源与待验证清单" data-en="Sources & to-be-verified">来源与待验证清单</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li>官方文档：Databricks 文档（Unity Catalog、Delta Lake、DBSQL、DLT/Lakeflow、计费与 system 表、安全与合规）。</li>
+<li>第三方分析：G2 Azure Databricks 评价（2026）、iomete Fortune 500 成本拆解、Fabric 对比教程（DBU 模型描述）。</li>
+<li>媒体：TechFundingNews（估值与 ARR）、Wikipedia（公司历史）、GeekWire（Row Zero 收购）。</li>
+<li>本轮明确未覆盖：各云具体 DBU 目录价（易变，未引用绝对价格）、Lakehouse//RT 正式 GA 状态——标待验证，未写入结论。</li>
+<li>v1.0（2026-09-29）：首版建档。<code>last_reviewed: 2026-09-29</code>，评审对象为 Databricks 平台滚动发布版本（Runtime 16.x 一代）。</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li>Official docs: Databricks documentation (Unity Catalog, Delta Lake, DBSQL, DLT/Lakeflow, billing and system tables, security and compliance).</li>
+<li>Third-party analysis: G2 Azure Databricks reviews (2026), iomete Fortune-500 cost teardown, Fabric comparison tutorial (DBU model description).</li>
+<li>Press: TechFundingNews (valuation and ARR), Wikipedia (company history), GeekWire (Row Zero acquisition).</li>
+<li>Explicitly out of scope this round: per-cloud DBU list prices (volatile — no absolute figures quoted), Lakehouse//RT GA status — marked to-be-verified, not written into conclusions.</li>
+<li>v1.0 (2026-09-29): initial profile. <code>last_reviewed: 2026-09-29</code>, review target is the rolling Databricks platform release (Runtime 16.x generation).</li>
+</ul>
+</div>
+</section>
+</main>
+<footer class="footer">
+  <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
+</footer>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

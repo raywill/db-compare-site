@@ -13,8 +13,8 @@
     <nav class="mainnav">
 <a href="index.html" class="active" data-zh="首页" data-en="Home">首页</a>
 <a href="compare.html" class="" data-zh="维度对比" data-en="Compare">维度对比</a>
-<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
 <a href="advisor.html" class="" data-zh="AI选型" data-en="AI Selection">AI选型</a>
+<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
     </nav>
     <div class="cmp-tray">
       <button id="cmp-tray-btn" type="button" class="tray-btn" aria-expanded="false" aria-haspopup="true"><span data-zh="对比" data-en="Compare">对比</span> <b class="tray-count"><i id="cmp-count">0</i>/4</b></button>
@@ -82,7 +82,7 @@
 </table></div>
 </div>
 </section>
-<section class="doc-section"><h2><span data-zh="硬维度（14 项）" data-en="Hard dimensions (14)">硬维度（14 项）</span></h2>
+<section class="doc-section"><h2><span data-zh="硬维度（19 项）" data-en="Hard dimensions (19)">硬维度（19 项）</span></h2>
 <div class="lang-block lang-zh">
 <div class="dims-intro"><blockquote>
 <p>以下逐项对应固定题库（14 项），每项均有&quot;有 / 无 / 部分支持 / 未找到证据 / 查证为无&quot;结论与证据等级。</p>
@@ -92,15 +92,68 @@
 <div class="dim-item"><h3><span class="dim-num">3</span> 审计 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——内置 <code>log_statement</code> / <code>log_min_duration_statement</code> 等日志审计；细粒度审计靠 pgaudit 扩展。证据：官方文档 + 社区共识。</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">4</span> 认证与权限 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——SCRAM-SHA-256（默认）、LDAP / Kerberos / GSSAPI / SSPI / 证书认证；<strong>PG 18 新增 OAuth 2.0 认证</strong>；RBAC 角色模型。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（PG 18 release notes）。</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">5</span> 备份恢复 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——<code>pg_basebackup</code> + WAL 归档实现 PITR；<code>pg_restore</code> / <code>pg_dump</code> 逻辑备份；<strong>PG 17+ 支持增量备份</strong>（<code>pg_basebackup --incremental</code>）。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">6</span> 大版本升级 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——<code>pg_upgrade</code>（<code>--link</code> 硬链接，停机分钟级；PG 18 新增 <code>--swap</code>、并行检查 <code>--jobs</code>、统计信息跨版本继承）；逻辑复制滚动升级；dump/restore。<strong>无</strong>官方原地回退（查证为无）。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">7</span> 可观测性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——<code>pg_stat_*</code> 视图族、<code>pg_stat_statements</code>（contrib）、<code>auto_explain</code>、EXPLAIN (ANALYZE, BUFFERS)。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">8</span> 连接模型 <span class="verdict v-yes">有（进程模型）</span></h3><div class="dim-body"><p><strong>有（进程模型）</strong>——每连接一个后端 OS 进程；高并发必须配连接池（PgBouncer）。证据：官方文档 + 社区共识。</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">9</span> 事务与隔离级别 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——单机强一致；MVCC；Read Committed（默认）、Repeatable Read、Serializable；<strong>DDL 具有事务性</strong>（可在事务块中回滚）；崩溃恢复可靠（WAL + checkpoint）。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">10</span> 复制与一致性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——流复制（异步/同步，支持级联）、逻辑复制（含 PG 16+ 双向逻辑复制）、内置逻辑解码。<strong>无</strong>原生自动故障切换（查证为无，靠 Patroni / Stolon / 云托管实现）。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">11</span> 扩展方式 <span class="verdict v-no">无</span></h3><div class="dim-body"><p>纵向扩展为主；读扩展靠流复制备库；写扩展靠分区表、应用层分片或 Citus 等扩展；<strong>无</strong>原生分布式。证据：<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">12</span> 兼容性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——PG 协议（libpq）为事实标准，驱动/ORM/工具生态最全；FDW 可连外部数据源。证据：<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">13</span> 许可证与商业模式 <span class="verdict v-no">无</span></h3><div class="dim-body"><p>PostgreSQL License（宽松）；<strong>无</strong>官方商业版；商业支持由第三方（EDB 等）或云厂商提供。证据：官方。</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">14</span> 中文资料丰富度 <span class="verdict v-yes">有（丰富）</span></h3><div class="dim-body"><p><strong>有（丰富）</strong>——官方文档有中文版、中文社区（postgres.cn）活跃。证据：<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> 可观测性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——<code>pg_stat_*</code> 视图族、<code>pg_stat_statements</code>（contrib）、<code>auto_explain</code>、EXPLAIN (ANALYZE, BUFFERS)。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> 连接模型 <span class="verdict v-yes">有（进程模型）</span></h3><div class="dim-body"><p><strong>有（进程模型）</strong>——每连接一个后端 OS 进程；高并发必须配连接池（PgBouncer）。证据：官方文档 + 社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> 事务与隔离级别 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——单机强一致；MVCC；Read Committed（默认）、Repeatable Read、Serializable；<strong>DDL 具有事务性</strong>（可在事务块中回滚）；崩溃恢复可靠（WAL + checkpoint）。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> 复制与一致性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——流复制（异步/同步，支持级联）、逻辑复制（含 PG 16+ 双向逻辑复制）、内置逻辑解码。<strong>无</strong>原生自动故障切换（查证为无，靠 Patroni / Stolon / 云托管实现）。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> 扩展方式 <span class="verdict v-no">无</span></h3><div class="dim-body"><p>纵向扩展为主；读扩展靠流复制备库；写扩展靠分区表、应用层分片或 Citus 等扩展；<strong>无</strong>原生分布式。证据：<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> 兼容性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——PG 协议（libpq）为事实标准，驱动/ORM/工具生态最全；FDW 可连外部数据源。证据：<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> 许可证与商业模式 <span class="verdict v-no">无</span></h3><div class="dim-body"><p>PostgreSQL License（宽松）；<strong>无</strong>官方商业版；商业支持由第三方（EDB 等）或云厂商提供。证据：官方。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> 中文资料丰富度 <span class="verdict v-yes">有（丰富）</span></h3><div class="dim-body"><p><strong>有（丰富）</strong>——官方文档有中文版、中文社区（postgres.cn）活跃。证据：<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> 性能与延迟特征 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（单机综合性能强；复杂查询优化器是长板）。</p>
+<ul>
+<li>OLTP 与 MySQL 同量级；复杂 SQL（窗口函数/CTE/多表关联）优化器更强 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>并行查询、BRIN/GIN 索引对分析型负载友好；写扩展同样靠分片（Citus 等）<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>深水点：长事务导致表膨胀（bloat），VACUUM/自动清理策略直接影响性能稳定性 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">15</span> 合规与认证 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（开源版无官方认证；合规靠部署方或发行版）。</p>
+<ul>
+<li>社区版：无官方合规认证，等保/密评由部署方负责 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>商业发行版（EDB/各云 RDS）：各自持有云厂商或厂商的合规资质 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>国际：各托管 PG 服务通常具备 SOC2/ISO27001（以云厂商公开页为准）<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">16</span> 成熟度与社区生态 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（1996 年发布；全球开发者社区驱动）。</p>
+<ul>
+<li>源自 Berkeley Postgres，1996 年发布；无单一商业主导，全球开发者社区驱动 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>每年一个大版本（现 17/18 代），扩展生态（PostGIS/Citus/向量插件）最活跃 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>GitHub stars 万级；长期主义代表，版本兼容性口碑好 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">17</span> 标杆用户 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（Instagram/Reddit 等公开案例）。</p>
+<ul>
+<li>Instagram、Reddit 等公开大规模 PG 用户 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>金融/政企去 O 迁移的首选目标之一 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>各云厂商 RDS PG 用户极多，间接证明 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">18</span> 生态工具链 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（备份/CDC/监控完整；迁移有 ora2pg）。</p>
+<ul>
+<li>备份：pg_dump/pg_basebackup/pgBackRest/Barman <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>CDC：Debezium（逻辑复制）；迁移：ora2pg（Oracle→PG）<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>监控：pg_exporter/PMM；连接池：PgBouncer/Pgpool <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">19</span> 云托管与 Serverless <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（各云 RDS；Neon/Supabase 做 Serverless）。</p>
+<ul>
+<li>各云厂商 RDS PG 全覆盖 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>Serverless：Neon（存算分离 Serverless PG）、Supabase <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>选择多，云中立性好，不易被单一厂商锁定 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">20</span> 数据接入与摄入 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（COPY 最快；pg_bulkload/pgloader）。</p>
+<ul>
+<li>COPY 是单机最快导入通道；\copy、file_fdw 读 CSV <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>pg_bulkload 并行 direct path 加载 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>pg_dump/pg_restore 逻辑迁移标准 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">21</span> 外部数据访问 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（FDW 生态最强：postgres_fdw/file_fdw/dblink）。</p>
+<ul>
+<li>postgres_fdw 可联邦查询远端 PG，下推谓词 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>file_fdw 读 CSV；dblink 做临时的跨库查询 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>社区 FDW（mysql_fdw、odbc_fdw 等）覆盖主流源 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">22</span> CDC 与下游同步 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（逻辑解码（pgoutput）生态最成熟）。</p>
+<ul>
+<li>逻辑复制槽 + pgoutput，wal2json/test_decoding 可选 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Debezium PG 连接器是事实标准 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>大事务解码延迟、slot 堆积涨 WAL 是已知运维点 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
 <div class="dims-intro"><blockquote>
@@ -111,15 +164,68 @@
 <div class="dim-item"><h3><span class="dim-num">3</span> Auditing <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — built-in log-based auditing such as <code>log_statement</code> / <code>log_min_duration_statement</code>; fine-grained auditing via the pgaudit extension. Evidence: official docs + community consensus.</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">4</span> Authentication &amp; authorization <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — SCRAM-SHA-256 (default), LDAP / Kerberos / GSSAPI / SSPI / certificate authentication; <strong>PG 18 adds OAuth 2.0 authentication</strong>; RBAC role model. Evidence: official docs (PG 18 release notes).</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">5</span> Backup &amp; recovery <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — <code>pg_basebackup</code> + WAL archiving for PITR; <code>pg_restore</code> / <code>pg_dump</code> for logical backups; <strong>PG 17+ supports incremental backup</strong> (<code>pg_basebackup --incremental</code>). Evidence: official docs.</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">6</span> Major-version upgrades <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — <code>pg_upgrade</code> (<code>--link</code> hard links, minutes of downtime; PG 18 adds <code>--swap</code>, parallel checks <code>--jobs</code>, and cross-version statistics inheritance); rolling upgrades via logical replication; dump/restore. <strong>No</strong> official in-place rollback (confirmed absent). Evidence: official docs.</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">7</span> Observability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — the <code>pg_stat_*</code> view family, <code>pg_stat_statements</code> (contrib), <code>auto_explain</code>, EXPLAIN (ANALYZE, BUFFERS). Evidence: official docs.</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">8</span> Connection model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported (process model)</strong> — one backend OS process per connection; high concurrency requires a connection pooler (PgBouncer). Evidence: official docs + community consensus.</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">9</span> Transactions &amp; isolation levels <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — strong consistency on a single node; MVCC; Read Committed (default), Repeatable Read, Serializable; <strong>DDL is transactional</strong> (can be rolled back inside a transaction block); reliable crash recovery (WAL + checkpoint). Evidence: official docs.</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">10</span> Replication &amp; consistency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — streaming replication (async/sync, cascading supported), logical replication (including bidirectional logical replication since PG 16), built-in logical decoding. <strong>No</strong> native automatic failover (confirmed absent; rely on Patroni / Stolon / managed services). Evidence: official docs.</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">11</span> Scaling <span class="verdict v-no">No ive distribution.</span></h3><div class="dim-body"><p>scale-up first; read scaling via streaming replicas; write scaling via partitioned tables, application-level sharding, or extensions such as Citus; <strong>no</strong> native distribution. Evidence: community consensus.</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">12</span> Compatibility <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — the PG protocol (libpq) is the de facto standard with the most complete driver/ORM/tool ecosystem; FDW connects to external data sources. Evidence: community consensus.</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">13</span> License &amp; business model <span class="verdict v-no">No icial commercial e</span></h3><div class="dim-body"><p>PostgreSQL License (permissive); <strong>no</strong> official commercial edition; commercial support from third parties (e.g., EDB) or cloud vendors. Evidence: official.</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">14</span> Chinese-language resources <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported (rich)</strong> — official docs have a Chinese edition, and the Chinese community (postgres.cn) is active. Evidence: community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> Observability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — the <code>pg_stat_*</code> view family, <code>pg_stat_statements</code> (contrib), <code>auto_explain</code>, EXPLAIN (ANALYZE, BUFFERS). Evidence: official docs.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> Connection model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported (process model)</strong> — one backend OS process per connection; high concurrency requires a connection pooler (PgBouncer). Evidence: official docs + community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> Transactions &amp; isolation levels <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — strong consistency on a single node; MVCC; Read Committed (default), Repeatable Read, Serializable; <strong>DDL is transactional</strong> (can be rolled back inside a transaction block); reliable crash recovery (WAL + checkpoint). Evidence: official docs.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> Replication &amp; consistency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — streaming replication (async/sync, cascading supported), logical replication (including bidirectional logical replication since PG 16), built-in logical decoding. <strong>No</strong> native automatic failover (confirmed absent; rely on Patroni / Stolon / managed services). Evidence: official docs.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> Scaling <span class="verdict v-no">No ive distribution.</span></h3><div class="dim-body"><p>scale-up first; read scaling via streaming replicas; write scaling via partitioned tables, application-level sharding, or extensions such as Citus; <strong>no</strong> native distribution. Evidence: community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> Compatibility <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — the PG protocol (libpq) is the de facto standard with the most complete driver/ORM/tool ecosystem; FDW connects to external data sources. Evidence: community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> License &amp; business model <span class="verdict v-no">No icial commercial e</span></h3><div class="dim-body"><p>PostgreSQL License (permissive); <strong>no</strong> official commercial edition; commercial support from third parties (e.g., EDB) or cloud vendors. Evidence: official.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> Chinese-language resources <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported (rich)</strong> — official docs have a Chinese edition, and the Chinese community (postgres.cn) is active. Evidence: community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> Performance &amp; latency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (strong single-node all-rounder; optimizer shines on complex queries).</p>
+<ul>
+<li>OLTP on par with MySQL; stronger optimizer for complex SQL (window functions, CTEs, multi-table joins) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Parallel queries and BRIN/GIN indexes help analytical workloads; write scaling still needs sharding (e.g. Citus) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Deep-water point: long transactions cause table bloat; VACUUM/autovacuum strategy directly affects performance stability <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">15</span> Compliance &amp; certifications <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (no official certs for open source; via deployer or distribution).</p>
+<ul>
+<li>Community edition: no official compliance certifications; MLPS/crypto reviews are the deployer&#x27;s job <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Commercial distributions (EDB, cloud RDS offerings) carry their vendor&#x27;s or cloud&#x27;s qualifications <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>International: managed PostgreSQL services typically hold SOC2/ISO 27001 (per providers&#x27; public pages) <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">16</span> Maturity &amp; community <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (released 1996; global developer community driven).</p>
+<ul>
+<li>Descended from Berkeley Postgres, released 1996; no single commercial owner, driven by a global developer community <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Yearly major releases (now generations 17/18); the most active extension ecosystem (PostGIS, Citus, vector plugins) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Tens of thousands of GitHub stars; the long-termist&#x27;s choice with a strong compatibility reputation <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">17</span> Notable adopters <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (public cases like Instagram/Reddit).</p>
+<ul>
+<li>Public large-scale users include Instagram and Reddit <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>A top target for off-Oracle migrations in finance/government <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Huge managed-RDS PostgreSQL user counts across clouds, indirectly confirming adoption <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">18</span> Ecosystem tooling <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (complete backup/CDC/monitoring; ora2pg for migration).</p>
+<ul>
+<li>Backup: pg_dump, pg_basebackup, pgBackRest, Barman <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>CDC: Debezium (logical replication); migration: ora2pg (Oracle→PG) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Monitoring: pg_exporter, PMM; pooling: PgBouncer, Pgpool <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">19</span> Managed &amp; serverless <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (RDS on every cloud; Neon/Supabase do serverless).</p>
+<ul>
+<li>RDS PostgreSQL on every cloud vendor <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Serverless: Neon (disaggregated serverless PG), Supabase <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Plenty of choice with good cloud neutrality — hard to get locked to one vendor <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">20</span> Data ingestion <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (COPY is fastest; pg_bulkload/pgloader).</p>
+<ul>
+<li>COPY is the fastest single-node load path; \copy and file_fdw read CSV <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>pg_bulkload for parallel direct-path loading <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>pg_dump/pg_restore is the logical-migration standard <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">21</span> External data access <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Strongest FDW ecosystem: postgres_fdw/file_fdw/dblink).</p>
+<ul>
+<li>postgres_fdw federates into remote PG with predicate pushdown <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>file_fdw reads CSV; dblink for ad-hoc cross-database queries <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Community FDWs (mysql_fdw, odbc_fdw, etc.) cover mainstream sources <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">22</span> CDC &amp; downstream <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Most mature logical-decoding (pgoutput) ecosystem).</p>
+<ul>
+<li>Logical replication slots + pgoutput; wal2json/test_decoding as options <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>The Debezium PG connector is the de-facto standard <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Decode lag on huge transactions and WAL growth from lagging slots are known ops concerns <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
 </div>
 </section>
 <section class="doc-section">
@@ -448,7 +554,7 @@
 <footer class="footer">
   <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
 </footer>
-<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
 
 <script src="assets/app.js"></script>
 </body>

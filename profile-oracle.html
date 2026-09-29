@@ -13,8 +13,8 @@
     <nav class="mainnav">
 <a href="index.html" class="active" data-zh="首页" data-en="Home">首页</a>
 <a href="compare.html" class="" data-zh="维度对比" data-en="Compare">维度对比</a>
-<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
 <a href="advisor.html" class="" data-zh="AI选型" data-en="AI Selection">AI选型</a>
+<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
     </nav>
     <div class="cmp-tray">
       <button id="cmp-tray-btn" type="button" class="tray-btn" aria-expanded="false" aria-haspopup="true"><span data-zh="对比" data-en="Compare">对比</span> <b class="tray-count"><i id="cmp-count">0</i>/4</b></button>
@@ -80,22 +80,75 @@
 </table></div>
 </div>
 </section>
-<section class="doc-section"><h2><span data-zh="硬维度（14 项）" data-en="Hard dimensions (14)">硬维度（14 项）</span></h2>
+<section class="doc-section"><h2><span data-zh="硬维度（19 项）" data-en="Hard dimensions (19)">硬维度（19 项）</span></h2>
 <div class="lang-block lang-zh">
 <div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-yes">有（但单独收费）</span></h3><div class="dim-body"><p><strong>有（但单独收费）</strong>。TDE 属 Advanced Security Option（ASO）选件，需 EE + 单独授权；SE2 查证为无。双层密钥体系（主密钥在 wallet/HSM，表/表空间密钥存数据字典）。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> + AWS 官方博客（官方口径）。</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。Native Network Encryption 属 ASO；TLS/SSL 支持。证据：官方口径。</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">3</span> 审计 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。Unified Auditing 内建（12c+）；Oracle Audit Vault and Database Firewall 为独立产品。证据：官方口径。</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">4</span> 认证与权限 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。密码 / Kerberos / PKI / RADIUS；角色权限模型；VPD 行级安全；Database Vault 为付费选件。证据：官方口径。</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">5</span> 备份恢复 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。RMAN 内建（含增量备份、块级恢复）；Flashback 系列；Data Pump。证据：官方口径。</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">6</span> 大版本升级 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。AutoUpgrade / DBUA / 手动升级；官方支持 19c→26ai 直升（Oracle 升级产品经理博客，转述）；19c 起 non-CDB 架构不再支持。证据：官方口径。</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">7</span> 可观测性 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>。EM Cloud Control 官方工具链；但 AWR/ASH/ADDM 属 Diagnostics Pack <strong>付费包</strong>，SQL Tuning Advisor 属 Tuning Pack 付费包；免费替代是 Statspack。&quot;能看&quot;和&quot;能合法看&quot;是两回事——LMS 审计脚本会扫 feature usage。证据：官方文档 + 社区共识。</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">8</span> 连接模型 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。默认 dedicated server（每连接一个 OS 进程）；shared server（dispatcher 共享）；Connection Manager。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（官方口径），细节为社区共识。</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">9</span> 事务与隔离级别 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。默认读已提交（read committed），支持串行化；基于 undo 的 MVCC，不可脏读。证据：<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">10</span> 复制与一致性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。Data Guard 物理备库（redo 传输）；Active Data Guard（备库只读）为<strong>付费选件</strong>；GoldenGate 逻辑复制为付费产品；RAC 多节点写。证据：官方口径。</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">11</span> 扩展方式 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>。纵向为主；RAC 横向扩展（EE 付费选件，共享存储）；分片（Sharding）功能存在。证据：官方口径。</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">12</span> 兼容性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。SQL 标准 + PL/SQL 方言；OCI / JDBC / ODBC / ODP.NET 驱动齐全。证据：<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">13</span> 许可证与商业模式 <span class="verdict v-yes">有（商业授权）</span></h3><div class="dim-body"><p><strong>有（商业授权）</strong>。EE / SE2 双版本；Processor（核数×core factor）/ NUP（EE 最低 25 NUP per processor）双计量；RAC、Partitioning、ASO、Diagnostics Pack/Tuning Pack 等选件各自单独计费；云上按 OCPU/月或 Autonomous 按量。证据：官方 License Definitions（官方口径）。</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">14</span> 中文资料丰富度 <span class="verdict v-yes">有（丰富）</span></h3><div class="dim-body"><p><strong>有（丰富）</strong>。官方中文文档、DBA 社群、大量中文博客与书籍。证据：编辑判断 + 社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> 可观测性 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>。EM Cloud Control 官方工具链；但 AWR/ASH/ADDM 属 Diagnostics Pack <strong>付费包</strong>，SQL Tuning Advisor 属 Tuning Pack 付费包；免费替代是 Statspack。&quot;能看&quot;和&quot;能合法看&quot;是两回事——LMS 审计脚本会扫 feature usage。证据：官方文档 + 社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> 连接模型 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。默认 dedicated server（每连接一个 OS 进程）；shared server（dispatcher 共享）；Connection Manager。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（官方口径），细节为社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> 事务与隔离级别 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。默认读已提交（read committed），支持串行化；基于 undo 的 MVCC，不可脏读。证据：<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> 复制与一致性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。Data Guard 物理备库（redo 传输）；Active Data Guard（备库只读）为<strong>付费选件</strong>；GoldenGate 逻辑复制为付费产品；RAC 多节点写。证据：官方口径。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> 扩展方式 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>。纵向为主；RAC 横向扩展（EE 付费选件，共享存储）；分片（Sharding）功能存在。证据：官方口径。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> 兼容性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。SQL 标准 + PL/SQL 方言；OCI / JDBC / ODBC / ODP.NET 驱动齐全。证据：<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> 许可证与商业模式 <span class="verdict v-yes">有（商业授权）</span></h3><div class="dim-body"><p><strong>有（商业授权）</strong>。EE / SE2 双版本；Processor（核数×core factor）/ NUP（EE 最低 25 NUP per processor）双计量；RAC、Partitioning、ASO、Diagnostics Pack/Tuning Pack 等选件各自单独计费；云上按 OCPU/月或 Autonomous 按量。证据：官方 License Definitions（官方口径）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> 中文资料丰富度 <span class="verdict v-yes">有（丰富）</span></h3><div class="dim-body"><p><strong>有（丰富）</strong>。官方中文文档、DBA 社群、大量中文博客与书籍。证据：编辑判断 + 社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> 性能与延迟特征 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（高端硬件上的极限性能标杆；公开可复现实测少）。</p>
+<ul>
+<li>Exadata/RAC 组合是传统高性能 OLTP 的参考实现；RAC 提供写扩展，但 Cache Fusion 私有互联有开销 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>优化器成熟，复杂负载表现稳定；深度调优依赖 AWR/ASH 等商业诊断包 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>闭源商业产品，公开可复现的第三方 benchmark 少，性能数据多为厂商口径 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">15</span> 合规与认证 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（国际认证齐全；中国区以上云/部署方测评为准）。</p>
+<ul>
+<li>国际：SOC2、ISO27001/27017/27018、PCI DSS 等（厂商口径，以 Oracle 合规页为准）<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>中国：公有云（OCI 中国区）参与等保测评；本地部署的合规责任在用户方 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>未见 Oracle Database 进入中国信创名录的公开信息 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">16</span> 成熟度与社区生态 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（1979 年发布；商业数据库的定义者）。</p>
+<ul>
+<li>1979 年发布首个商用 SQL 数据库；现 19c/23ai/26ai 代 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>生态：DBA 人才、第三方工具、教材最完整，但与 Oracle 绑定深 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>趋势：云与去 O 运动下新增市场收缩，存量基本盘极大 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">17</span> 标杆用户 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（银行/电信/政府的核心系统）。</p>
+<ul>
+<li>全球大型银行、电信运营商、政府机构核心系统<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span><span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>中国：国有大行、运营商 BOSS 系统存量大 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>去 O 运动下新增减少，但存量迁移周期以十年计 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">18</span> 生态工具链 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（RMAN/Data Pump/OGG；商业工具链）。</p>
+<ul>
+<li>备份：RMAN；逻辑：Data Pump；CDC/同步：Oracle GoldenGate <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>迁移/升级：AutoUpgrade、DBUA；诊断：AWR/ASH（需 Diagnostic Pack 许可）<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>第三方开源工具少，生态围绕 Oracle 商业体系 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">19</span> 云托管与 Serverless <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（OCI Autonomous Database；AWS RDS for Oracle）。</p>
+<ul>
+<li>OCI Autonomous Database（自治+Serverless 按量）<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>AWS RDS for Oracle（BYOL/托管）<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>云上 Oracle 许可复杂，选型前做许可尽调 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">20</span> 数据接入与摄入 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（SQL*Loader/Data Pump/外部表，传统强项）。</p>
+<ul>
+<li>SQL*Loader、Data Pump（impdp/expdp 并行）是标准批量通道 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>外部表可直接读平面文件不落地 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>大数据量导入注意 direct path 与索引维护 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">21</span> 外部数据访问 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（外部表+DB Link+异构服务，联邦查询老牌）。</p>
+<ul>
+<li>DB Link 做 Oracle 间联邦查询；Heterogeneous Services 连非 Oracle 源 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>外部表支持平面文件直查 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Big Data SQL 曾主打 Hadoop 联邦，现为 Oracle Big Data Service 能力 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">22</span> CDC 与下游同步 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（GoldenGate（商业）；LogMiner/XStream）。</p>
+<ul>
+<li>GoldenGate 是官方 CDC/复制方案（单独许可）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>LogMiner 可解析 redo 做轻量 CDC；XStream 面向 OCI <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>原生 Streams 已废弃，不要再用 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
 <div class="dims-intro"><blockquote>
@@ -106,15 +159,68 @@
 <div class="dim-item"><h3><span class="dim-num">3</span> Auditing <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>. Unified Auditing built in (12c+); Oracle Audit Vault and Database Firewall is a separate product. Evidence: vendor claim.</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">4</span> Authentication &amp; authorization <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>. Password / Kerberos / PKI / RADIUS; role-based privilege model; VPD row-level security; Database Vault is a paid option. Evidence: vendor claim.</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">5</span> Backup &amp; recovery <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>. RMAN built in (including incremental backup, block-level recovery); Flashback family; Data Pump. Evidence: vendor claim.</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">6</span> Major-version upgrades <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>. AutoUpgrade / DBUA / manual upgrade; official support for direct 19c→26ai upgrade (Oracle upgrade product manager blog, quoted); non-CDB architecture no longer supported since 19c. Evidence: vendor claim.</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">7</span> Observability <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong>. EM Cloud Control official toolchain; but AWR/ASH/ADDM belong to the Diagnostics Pack <strong>paid pack</strong>, SQL Tuning Advisor to the Tuning Pack paid pack; the free alternative is Statspack. &quot;Being able to see&quot; and &quot;being legally allowed to see&quot; are two different things — LMS audit scripts scan feature usage. Evidence: official docs + community consensus.</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">8</span> Connection model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>. Default dedicated server (one OS process per connection); shared server (dispatcher sharing); Connection Manager. Evidence: official docs <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>; details per community consensus.</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">9</span> Transactions &amp; isolation levels <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>. Default read committed, serializable supported; undo-based MVCC, no dirty reads. Evidence: community consensus.</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">10</span> Replication &amp; consistency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>. Data Guard physical standby (redo transport); Active Data Guard (readable standby) is a <strong>paid option</strong>; GoldenGate logical replication is a paid product; RAC multi-node writes. Evidence: vendor claim.</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">11</span> Scaling <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong>. Primarily vertical; RAC scale-out (EE paid option, shared storage); sharding feature exists. Evidence: vendor claim.</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">12</span> Compatibility <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>. SQL standard + PL/SQL dialect; complete OCI / JDBC / ODBC / ODP.NET drivers. Evidence: community consensus.</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">13</span> License &amp; business model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported (commercial licensing)</strong>. EE / SE2 dual editions; Processor (cores × core factor) / NUP (EE minimum 25 NUP per processor) dual metering; RAC, Partitioning, ASO, Diagnostics Pack/Tuning Pack, and other options each billed separately; on cloud by OCPU/month or Autonomous pay-as-you-go. Evidence: official License Definitions <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">14</span> Chinese-language resources <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported (rich)</strong>. Official Chinese docs, DBA communities, many Chinese blogs and books. Evidence: editorial judgment + community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> Observability <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong>. EM Cloud Control official toolchain; but AWR/ASH/ADDM belong to the Diagnostics Pack <strong>paid pack</strong>, SQL Tuning Advisor to the Tuning Pack paid pack; the free alternative is Statspack. &quot;Being able to see&quot; and &quot;being legally allowed to see&quot; are two different things — LMS audit scripts scan feature usage. Evidence: official docs + community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> Connection model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>. Default dedicated server (one OS process per connection); shared server (dispatcher sharing); Connection Manager. Evidence: official docs <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>; details per community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> Transactions &amp; isolation levels <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>. Default read committed, serializable supported; undo-based MVCC, no dirty reads. Evidence: community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> Replication &amp; consistency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>. Data Guard physical standby (redo transport); Active Data Guard (readable standby) is a <strong>paid option</strong>; GoldenGate logical replication is a paid product; RAC multi-node writes. Evidence: vendor claim.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> Scaling <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong>. Primarily vertical; RAC scale-out (EE paid option, shared storage); sharding feature exists. Evidence: vendor claim.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> Compatibility <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>. SQL standard + PL/SQL dialect; complete OCI / JDBC / ODBC / ODP.NET drivers. Evidence: community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> License &amp; business model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported (commercial licensing)</strong>. EE / SE2 dual editions; Processor (cores × core factor) / NUP (EE minimum 25 NUP per processor) dual metering; RAC, Partitioning, ASO, Diagnostics Pack/Tuning Pack, and other options each billed separately; on cloud by OCPU/month or Autonomous pay-as-you-go. Evidence: official License Definitions <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> Chinese-language resources <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported (rich)</strong>. Official Chinese docs, DBA communities, many Chinese blogs and books. Evidence: editorial judgment + community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> Performance &amp; latency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (top-end hardware performance benchmark; few reproducible public tests).</p>
+<ul>
+<li>Exadata/RAC is the reference implementation for high-end OLTP; RAC scales writes but Cache Fusion interconnect has overhead <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>Mature optimizer, stable on complex workloads; deep tuning relies on commercial diagnostics (AWR/ASH) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Closed-source commercial product: few reproducible third-party benchmarks; most performance figures are vendor claims <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">15</span> Compliance &amp; certifications <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (full international set; China compliance via cloud/deployer assessment).</p>
+<ul>
+<li>International: SOC2, ISO 27001/27017/27018, PCI DSS, etc. (vendor claim, per Oracle&#x27;s compliance page) <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>China: OCI China regions undergo MLPS assessment; on-premises compliance is the customer&#x27;s responsibility <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>No public information found on Oracle Database entering China&#x27;s trusted-innovation catalog <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">16</span> Maturity &amp; community <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (released 1979; defined the commercial database).</p>
+<ul>
+<li>First commercial SQL database, 1979; current generations 19c/23ai/26ai <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Ecosystem: deepest DBA talent pool, third-party tools and training materials — but deeply Oracle-tied <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Trend: new-market share shrinking under cloud and off-Oracle moves; installed base remains enormous <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">17</span> Notable adopters <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (core systems of banks/telecoms/governments).</p>
+<ul>
+<li>Core systems of global banks, telecom operators and government agencies <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>China: large installed base in state-owned banks and carrier BSS/OSS systems <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>New adoption shrinking under off-Oracle moves, but migration cycles from the installed base span decades <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">18</span> Ecosystem tooling <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (RMAN/Data Pump/OGG; commercial toolchain).</p>
+<ul>
+<li>Backup: RMAN; logical: Data Pump; CDC/sync: Oracle GoldenGate <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Migration/upgrade: AutoUpgrade, DBUA; diagnostics: AWR/ASH (needs Diagnostic Pack license) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Few third-party open-source tools; ecosystem revolves around Oracle&#x27;s commercial stack <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">19</span> Managed &amp; serverless <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (OCI Autonomous Database; AWS RDS for Oracle).</p>
+<ul>
+<li>OCI Autonomous Database (self-driving + serverless pay-per-use) <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>AWS RDS for Oracle (BYOL/managed) <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>Oracle licensing on cloud is complex — do license due diligence before selecting <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">20</span> Data ingestion <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (SQL*Loader/Data Pump/external tables; traditional strength).</p>
+<ul>
+<li>SQL*Loader and Data Pump (parallel impdp/expdp) are the standard bulk channels <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>External tables read flat files without staging <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>For huge loads, mind direct path and index maintenance <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">21</span> External data access <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (External tables + DB links + heterogeneous services; federation veteran).</p>
+<ul>
+<li>DB links federate across Oracle instances; Heterogeneous Services reach non-Oracle sources <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>External tables query flat files directly <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Big Data SQL once targeted Hadoop federation, now an Oracle Big Data Service capability <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">22</span> CDC &amp; downstream <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (GoldenGate (commercial); LogMiner/XStream).</p>
+<ul>
+<li>GoldenGate is the official CDC/replication offering (separate license) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>LogMiner parses redo for lightweight CDC; XStream targets OCI <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Native Streams is deprecated — do not use <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
 </div>
 </section>
 <section class="doc-section">
@@ -513,7 +619,7 @@
 <footer class="footer">
   <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
 </footer>
-<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
 
 <script src="assets/app.js"></script>
 </body>

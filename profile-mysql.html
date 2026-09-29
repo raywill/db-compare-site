@@ -13,8 +13,8 @@
     <nav class="mainnav">
 <a href="index.html" class="active" data-zh="首页" data-en="Home">首页</a>
 <a href="compare.html" class="" data-zh="维度对比" data-en="Compare">维度对比</a>
-<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
 <a href="advisor.html" class="" data-zh="AI选型" data-en="AI Selection">AI选型</a>
+<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
     </nav>
     <div class="cmp-tray">
       <button id="cmp-tray-btn" type="button" class="tray-btn" aria-expanded="false" aria-haspopup="true"><span data-zh="对比" data-en="Compare">对比</span> <b class="tray-count"><i id="cmp-count">0</i>/4</b></button>
@@ -92,7 +92,7 @@
 <hr/>
 </div>
 </section>
-<section class="doc-section"><h2><span data-zh="硬维度（14 项）" data-en="Hard dimensions (14)">硬维度（14 项）</span></h2>
+<section class="doc-section"><h2><span data-zh="硬维度（19 项）" data-en="Hard dimensions (19)">硬维度（19 项）</span></h2>
 <div class="lang-block lang-zh">
 <div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
 <li>有：InnoDB 表空间静态加密，两级密钥结构（tablespace key 存于表空间头部，由 master key 加密；支持主密钥轮换）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。覆盖范围：表空间、doublewrite、系统表空间、redo、undo；binlog/relay log、审计日志加密需分别配置 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
@@ -130,63 +130,96 @@
 <li>PITR：全备 + binlog 回放实现；需要 <code>log_bin</code> 开启并保留 binlog（8.4 用 <code>binlog_expire_logs_seconds</code> 控制过期）<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 <li>深水点：<strong>备份≠恢复能力</strong>。逻辑备份恢复是单线程回放 SQL，大库 RTO 以小时计；物理备份需 <code>--prepare</code>；从没做过恢复演练的备份只是愿望 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">6</span> 大版本升级 <span class="verdict v-yes">有（LTS 线内顺滑，跨线有坑）</span></h3><div class="dim-body"><ul>
-<li>机制：同一 LTS 内功能/数据格式冻结，支持原地升级与降级；8.0→8.4→9.7 为官方 LTS 升级路径 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
-<li>官方升级检查工具：MySQL Shell 的 <code>util.checkForServerUpgrade()</code>，升级前必跑 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
-<li>8.0→8.4 真实踩坑清单（多份社区升级指南一致）：<ol>
-<li><code>mysql_native_password</code> 默认禁用 → 老客户端/旧账号连不上；</li>
-<li>被移除的系统变量（<code>expire_logs_days</code>、<code>innodb_log_file_size</code> 等）若还写在配置文件里，<strong>服务器拒绝启动</strong>；</li>
-<li><code>binlog_format</code> 仅 ROW；<code>mysqlpump</code> 移除；TLS 1.0/1.1 移除；</li>
-<li>升级顺序：<strong>先升级从库再升级主库</strong>（新主→旧从的复制不受支持）；</li>
-<li>升级前 <code>innodb_fast_shutdown=0</code> 做干净关闭。</li>
-</ol></li>
-<li>回退边界：<strong>in-place 大版本升级不可逆</strong>。回退靠升级前全备、或先在克隆实例上 dry-run <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
-</ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">7</span> 可观测性 <span class="verdict v-yes">有（内建强，但有&quot;可观测性税&quot;）</span></h3><div class="dim-body"><ul>
+<div class="dim-item"><h3><span class="dim-num">6</span> 可观测性 <span class="verdict v-yes">有（内建强，但有&quot;可观测性税&quot;）</span></h3><div class="dim-body"><ul>
 <li>有：<code>performance_schema</code> + <code>sys</code> schema（SQL digest、等待事件、锁、IO、线程）、慢查询日志、<code>SHOW ENGINE INNODB STATUS</code>、<code>data_locks</code>/<code>data_lock_waits</code>、<code>EXPLAIN ANALYZE</code> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 <li>税：默认 instrument 集通常适合生产；<strong>全开所有 instrument/consumer 会产生可测开销</strong>。LINE 旧实测在特定 sysbench 场景下全开约降 TPS 15%——必须强调这是<strong>旧版特定负载的社区实测，不能推广为固定数字</strong> <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
 <li>慢日志阈值设太低会产生明显 IO 开销；<code>EXPLAIN ANALYZE</code> 会<strong>真实执行</strong>语句，写语句不能当无副作用诊断用 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 <li>正确姿势：选择性启用 + 事故期间临时放大采集。</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">8</span> 连接模型 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<div class="dim-item"><h3><span class="dim-num">7</span> 连接模型 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
 <li>默认 <strong>thread-per-connection</strong>：每个连接一个 OS 线程；<code>max_connections</code> 默认 151 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 <li><strong>线程池（Thread Pool）插件仅限 Enterprise</strong>；Percona Server 提供免费的 <code>thread_pool</code> 插件作为替代 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 <li>深水点：每个连接的内存成本是真实的（<code>sort_buffer_size</code>、<code>join_buffer_size</code> 等按连接分配）；社区有&quot;1000 连接 × 256MB sort buffer = 256GB 上限&quot;的经典算式 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。连接风暴下线程上下文切换会拖垮实例，生产标准做法是前面加连接池（ProxySQL / MySQL Router / 应用侧有界池），池大小一般取 <code>max_connections - 10</code>（留 10 给管理和复制）<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">9</span> 事务与隔离级别 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<div class="dim-item"><h3><span class="dim-num">8</span> 事务与隔离级别 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
 <li>默认 <code>REPEATABLE READ</code>，InnoDB 用 record lock + gap lock + next-key lock 防幻读 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 <li><strong>不同键的 INSERT 也可能死锁</strong>（落在同一 gap、唯一性检查、加锁顺序不同）；缺索引的 UPDATE/DELETE 会扫描逐行加锁（不是&quot;锁升级&quot;，而是大量行锁）<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 <li>死锁自动检测并回滚一个 victim（错误 1213），应用必须捕获并<strong>重试整个事务</strong>；1205 是锁等待超时，与死锁不同 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 <li>降到 READ COMMITTED 能减少大部分 gap 锁，但消灭不了锁顺序、唯一键、外键导致的死锁 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 <li>长事务/大事务见深水区。</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">10</span> 复制与一致性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<div class="dim-item"><h3><span class="dim-num">9</span> 复制与一致性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
 <li>默认<strong>异步复制</strong>：主库提交不等从库，切主可能丢未应用事务，RPO &gt; 0 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 <li>GTID + <code>SOURCE_AUTO_POSITION=1</code> 简化从库重定位，但 <strong>GTID 不是零丢失保证</strong>；提升从库前仍要比对 <code>Executed_Gtid_Set</code> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 <li>半同步 <code>AFTER_SYNC</code>：用约一次网络 RTT 换已确认提交的更强持久性；<code>AFTER_COMMIT</code> 不能等同无丢失 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 <li>Group Replication：内置复制组/故障转移；但认证过程<strong>不考虑 gap 锁</strong>（多主模式官方推荐 READ COMMITTED）、有事务大小限制、要求表有主键（无主键表在组内不可写）、InnoDB Cluster 官方明确<strong>只适合局域网</strong>（跨 WAN 写性能明显受损），多数据中心用 InnoDB ClusterSet（异步链路）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>读扩展：从库只扩读不扩写；<code>Seconds_Behind_Source</code> 有空闲重置等盲区，社区建议用 heartbeat/GTID 交叉监控 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">11</span> 扩展方式 <span class="verdict v-partial">部分支持（无原生自动分片）</span></h3><div class="dim-body"><ul>
+<div class="dim-item"><h3><span class="dim-num">10</span> 扩展方式 <span class="verdict v-partial">部分支持（无原生自动分片）</span></h3><div class="dim-body"><ul>
 <li>纵向：单机 scale-up（大内存、大 NVMe 是 MySQL 的舒适区）。</li>
 <li>横向读：异步从库、Group Replication、InnoDB Cluster。</li>
 <li>横向写：<strong>原生无自动分片</strong>。靠 Vitess / ShardingSphere / ProxySQL 等中间件，或应用层分片 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 <li>NDB Cluster（MySQL Cluster）是独立产品，内存-centric、运维小众，不计入常规选型 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">12</span> 兼容性 <span class="verdict v-yes">有（协议是事实标准，但家族已分化）</span></h3><div class="dim-body"><ul>
+<div class="dim-item"><h3><span class="dim-num">11</span> 兼容性 <span class="verdict v-yes">有（协议是事实标准，但家族已分化）</span></h3><div class="dim-body"><ul>
 <li>MySQL 协议 + SQL 方言是生态事实标准：驱动、ORM、工具链最全 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 <li>分化现实：MariaDB 已走远（GTID、系统表、优化器行为多处不兼容）；Aurora MySQL 线路兼容但存储引擎完全不同（故障行为、性能特征不能直接套用）；Percona Server 紧跟上游、基本可视为&quot;MySQL+补丁&quot; <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">13</span> 许可证与商业模式 <span class="verdict v-yes">有（双轨清晰）</span></h3><div class="dim-body"><ul>
+<div class="dim-item"><h3><span class="dim-num">12</span> 许可证与商业模式 <span class="verdict v-yes">有（双轨清晰）</span></h3><div class="dim-body"><ul>
 <li>Community：GPLv2，功能完整但无官方审计/线程池/企业级 keyring 后端/PAM-LDAP/商业备份工具 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 <li>Enterprise Edition：商业订阅，含上述企业插件 + MySQL Enterprise Monitor + 官方支持（LTS：Premier 5 年 + Extended 3 年）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>云：MySQL HeatWave（OCI/AWS 上的托管 MySQL + 内存加速/Lakehouse），Oracle 的云叙事主力 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">14</span> 中文资料丰富度 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<div class="dim-item"><h3><span class="dim-num">13</span> 中文资料丰富度 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
 <li>官方文档无中文版 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>（未找到官方中文文档证据，标&quot;查证为无&quot;而非&quot;未找到&quot;需再确认，暂标待验证）。</li>
 <li>中文社区资料丰富（博客、专栏、翻译），但版本滞后于 8.4/9.x 新特性是常态 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul>
 <hr/></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> 性能与延迟特征 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>点查/短事务：单机 sysbench 点查可达数万 QPS 量级，P99 毫秒级（视硬件与调优）<span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
+<li>读扩展靠主从复制加从库；写是单机上限，靠分片中间件（ShardingSphere/DBLE）或业务分片 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>瓶颈：大事务、长 DDL（8.0 Instant DDL 缓解部分场景）、单表过大 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">15</span> 合规与认证 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>社区版/企业版（Oracle）：无公开的国测/信创认证信息；等保合规由部署方测评 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</li>
+<li>各云厂商的托管 MySQL（RDS 等）继承云厂商的等保三级/可信云资质 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>国际：Oracle 云体系的 SOC2/ISO 等适用于 Oracle 运营的 MySQL HeatWave 云服务 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">16</span> 成熟度与社区生态 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>1995 年发布，2010 年随 Sun 并入 Oracle；8.0/8.4 LTS、9.x 创新版并行 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>GitHub stars 万级，生态（驱动/工具/教程）最厚 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>风险点：Oracle 主导下社区版与企业版功能分界时有争议 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">17</span> 标杆用户 <span class="verdict v-yes">有（互联网大厂的基本盘）</span></h3><div class="dim-body"><ul>
+<li>Meta（Facebook）、Wikipedia 等公开重度用户 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>曾支撑 YouTube/Twitter/Uber 早期架构，后部分迁移 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>国内：各大厂自建 MySQL 分支（阿里/腾讯）是事实标准 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">18</span> 生态工具链 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>备份：mysqldump/MySQL Shell/XtraBackup/Clone 插件 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>在线 DDL/迁移：gh-ost、pt-online-schema-change <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>CDC：Debezium、Canal；监控：PMM、mysqld_exporter + Prometheus <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">19</span> 云托管与 Serverless <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>各云厂商 RDS（阿里/腾讯/AWS/华为）全覆盖 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>Oracle MySQL HeatWave（云原生+分析加速）<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>Serverless：PlanetScale（基于 Vitess 的 Serverless MySQL）<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">20</span> 数据接入与摄入 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>LOAD DATA INFILE、mysqlimport 是最快单机导入通道 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>mydumper/myloader 并行逻辑导入导出，社区主流 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>mysqlsh util.loadDump 支持 MySQL Shell dump 的并行加载 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">21</span> 外部数据访问 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>FEDERATED 引擎可映射远端 MySQL 表，但功能/性能弱，生产少用 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>无 S3/对象存储直查、湖仓格式支持 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>MySQL HeatWave 侧有对象存储查询，是商业版能力 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">22</span> CDC 与下游同步 <span class="verdict v-yes">有（binlog（row）生态最成熟：</span></h3><div class="dim-body"><ul>
+<li>row 格式 binlog 是事实标准 CDC 源 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Debezium、Canal、Maxwell、Flink CDC 均成熟 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>GTID + 半同步下位点管理简单；大事务 binlog 膨胀是常见坑 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
 <div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-neutral">Partially supporte</span></h3><div class="dim-body"><ul>
@@ -225,63 +258,96 @@
 <li>PITR: full backup + binlog replay; requires <code>log_bin</code> enabled and binlogs retained (expiration controlled by <code>binlog_expire_logs_seconds</code> in 8.4) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 <li>Deep-water point: <strong>backup ≠ recovery capability</strong>. Logical backup restore is single-threaded SQL replay; for large DBs, RTO is measured in hours; physical backups require <code>--prepare</code>; a backup that has never been through a restore drill is just a wish <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">6</span> Major-version upgrades <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><ul>
-<li>Mechanism: within a single LTS, features/data format are frozen, supporting in-place upgrade and downgrade; 8.0→8.4→9.7 is the official LTS upgrade path <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
-<li>Official pre-upgrade checker: MySQL Shell&#x27;s <code>util.checkForServerUpgrade()</code> — mandatory before upgrading <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
-<li>Real-world 8.0→8.4 pitfall checklist (consistent across multiple community upgrade guides):<ol>
-<li><code>mysql_native_password</code> disabled by default → old clients/accounts can&#x27;t connect;</li>
-<li>Removed system variables (<code>expire_logs_days</code>, <code>innodb_log_file_size</code>, etc.) still present in the config file will cause the <strong>server to refuse to start</strong>;</li>
-<li><code>binlog_format</code> supports ROW only; <code>mysqlpump</code> removed; TLS 1.0/1.1 removed;</li>
-<li>Upgrade order: <strong>replicas first, then the primary</strong> (replication from a new primary to an old replica is unsupported);</li>
-<li>Before upgrading, do a clean shutdown with <code>innodb_fast_shutdown=0</code>.</li>
-</ol></li>
-<li>Rollback boundary: <strong>in-place major upgrades are irreversible</strong>. Roll back via a pre-upgrade full backup, or dry-run on a cloned instance first <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
-</ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">7</span> Observability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><ul>
+<div class="dim-item"><h3><span class="dim-num">6</span> Observability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><ul>
 <li>Available: <code>performance_schema</code> + <code>sys</code> schema (SQL digest, wait events, locks, IO, threads), slow query log, <code>SHOW ENGINE INNODB STATUS</code>, <code>data_locks</code> / <code>data_lock_waits</code>, <code>EXPLAIN ANALYZE</code> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 <li>The tax: the default instrument set is generally production-safe; <strong>enabling all instruments/consumers produces measurable overhead</strong>. LINE&#x27;s old benchmark saw roughly a 15% TPS drop with everything enabled in a specific sysbench scenario — this is a <strong>community-tested result on an old version under a specific workload and must not be generalized into a fixed number</strong> <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>.</li>
 <li>Setting the slow-log threshold too low produces significant IO overhead; <code>EXPLAIN ANALYZE</code> <strong>actually executes</strong> the statement — it cannot be used as a side-effect-free diagnostic for writes <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 <li>Correct posture: selective enablement normally, temporarily widened collection during incidents.</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">8</span> Connection model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><ul>
+<div class="dim-item"><h3><span class="dim-num">7</span> Connection model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><ul>
 <li>Default <strong>thread-per-connection</strong>: one OS thread per connection; <code>max_connections</code> defaults to 151 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 <li>The <strong>Thread Pool plugin is Enterprise-only</strong>; Percona Server provides a free <code>thread_pool</code> plugin as an alternative <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 <li>Deep-water point: per-connection memory cost is real (<code>sort_buffer_size</code>, <code>join_buffer_size</code>, etc. are allocated per connection); the community&#x27;s classic formula is &quot;1000 connections × 256MB sort buffer = 256GB upper bound&quot; <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>. Under connection storms, thread context switching drags the instance down; the production standard is a connection pooler in front (ProxySQL / MySQL Router / bounded application-side pools), with pool size typically set to <code>max_connections - 10</code> (reserving 10 for management and replication) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">9</span> Transactions &amp; isolation levels <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><ul>
+<div class="dim-item"><h3><span class="dim-num">8</span> Transactions &amp; isolation levels <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><ul>
 <li>Default <code>REPEATABLE READ</code>; InnoDB uses record locks + gap locks + next-key locks to prevent phantom reads <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 <li><strong>INSERTs on different keys can also deadlock</strong> (insert intention checks the gap for locks, uniqueness checks take record locks, and reversed lock acquisition order forms a cycle); UPDATE/DELETE without an index locks row by row during the scan (not &quot;lock escalation&quot;, but a large number of row locks) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 <li>Deadlock auto-detection rolls back one victim (error 1213); applications must catch it and <strong>retry the entire transaction</strong>; 1205 is lock wait timeout, different from deadlock <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 <li>Dropping to READ COMMITTED eliminates most gap locks, but cannot eliminate deadlocks caused by lock ordering, unique keys, or foreign keys <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 <li>Long/large transactions: see Deep Dives.</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">10</span> Replication &amp; consistency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><ul>
+<div class="dim-item"><h3><span class="dim-num">9</span> Replication &amp; consistency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><ul>
 <li>Default <strong>asynchronous replication</strong>: the primary commits without waiting for replicas; failover can lose unapplied transactions, RPO &gt; 0 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 <li>GTID + <code>SOURCE_AUTO_POSITION=1</code> simplifies replica re-pointing, but <strong>GTID is not a zero-loss guarantee</strong>; compare <code>Executed_Gtid_Set</code> before promoting a replica <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 <li>Semi-sync <code>AFTER_SYNC</code>: trades roughly one network RTT for a stronger durability guarantee of acknowledged commits; <code>AFTER_COMMIT</code> is not equivalent to zero loss <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 <li>Group Replication: built-in replication group / failover; but the certification process <strong>does not see gap locks</strong> (multi-primary mode officially recommends READ COMMITTED), has transaction size limits, requires tables to have primary keys (tables without PKs are not writable inside a group), InnoDB Cluster is officially <strong>LAN-only</strong> (cross-WAN writes suffer noticeably), and multi-datacenter deployments should use InnoDB ClusterSet (async links) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Read scale-out: replicas scale reads only, not writes; <code>Seconds_Behind_Source</code> has blind spots such as idle resets, and the community recommends cross-checking with heartbeat/GTID monitoring <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">11</span> Scaling <span class="verdict v-no">no native auto-sharding</span></h3><div class="dim-body"><ul>
+<div class="dim-item"><h3><span class="dim-num">10</span> Scaling <span class="verdict v-no">no native auto-sharding</span></h3><div class="dim-body"><ul>
 <li>Vertical: single-node scale-up (big memory, big NVMe is MySQL&#x27;s comfort zone).</li>
 <li>Horizontal read: async replicas, Group Replication, InnoDB Cluster.</li>
 <li>Horizontal write: <strong>no native auto-sharding</strong>. Rely on middleware such as Vitess / ShardingSphere / ProxySQL, or application-level sharding <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 <li>NDB Cluster (MySQL Cluster) is a separate product — memory-centric, niche to operate — excluded from conventional evaluation <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">12</span> Compatibility <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><ul>
+<div class="dim-item"><h3><span class="dim-num">11</span> Compatibility <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><ul>
 <li>The MySQL protocol + SQL dialect is the ecosystem de facto standard: drivers, ORMs, toolchains are the most complete <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 <li>Divergence reality: MariaDB has drifted far (GTID, system tables, optimizer behavior all incompatible in places); Aurora MySQL is wire-compatible but has a completely different storage engine (failure behavior and performance characteristics cannot be assumed transferable); Percona Server tracks upstream closely and is basically &quot;MySQL + patches&quot; <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">13</span> License &amp; business model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><ul>
+<div class="dim-item"><h3><span class="dim-num">12</span> License &amp; business model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><ul>
 <li>Community: GPLv2, feature-complete but without official audit / thread pool / enterprise-grade keyring backends / PAM-LDAP / commercial backup tools <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 <li>Enterprise Edition: commercial subscription, includes the above enterprise plugins + MySQL Enterprise Monitor + official support (LTS: Premier 5 years + Extended 3 years) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Cloud: MySQL HeatWave (managed MySQL on OCI/AWS + in-memory acceleration/Lakehouse), Oracle&#x27;s flagship cloud narrative <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">14</span> Chinese-language resources <span class="verdict v-neutral">Partially supporte</span></h3><div class="dim-body"><ul>
+<div class="dim-item"><h3><span class="dim-num">13</span> Chinese-language resources <span class="verdict v-neutral">Partially supporte</span></h3><div class="dim-body"><ul>
 <li>No Chinese version of the official documentation <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span> (no evidence of official Chinese docs found; whether to mark this &quot;verified absent&quot; vs &quot;not found&quot; needs reconfirmation — temporarily marked to-be-verified).</li>
 <li>Chinese community materials are abundant (blogs, columns, translations), but lagging behind 8.4/9.x new features is the norm <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul>
 <hr/></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> Performance &amp; latency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><ul>
+<li>Point lookups/short transactions: tens of thousands of QPS per node in sysbench point-select, P99 in milliseconds (hardware/tuning dependent) <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>.</li>
+<li>Read scaling via async replicas; single-node write ceiling — scale writes with sharding middleware (ShardingSphere/DBLE) or application sharding <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Bottlenecks: large transactions, long DDL (8.0 Instant DDL helps some cases), oversized single tables <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">15</span> Compliance &amp; certifications <span class="verdict v-neutral">Partially supporte</span></h3><div class="dim-body"><ul>
+<li>Community/Enterprise editions (Oracle): no public information on Chinese national testing/trusted-innovation certification; MLPS (等保) compliance is the deployer&#x27;s responsibility <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>.</li>
+<li>Managed MySQL offerings inherit their cloud provider&#x27;s MLPS Level 3 / Trusted Cloud qualifications <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>International: Oracle Cloud&#x27;s SOC2/ISO family covers Oracle-operated MySQL HeatWave cloud service <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">16</span> Maturity &amp; community <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><ul>
+<li>Released 1995; joined Oracle via Sun in 2010; 8.0/8.4 LTS plus 9.x innovation releases <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Tens of thousands of GitHub stars; the thickest ecosystem (drivers, tools, tutorials) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Risk: Oracle&#x27;s stewardship periodically sparks community-vs-enterprise feature-split controversies <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">17</span> Notable adopters <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><ul>
+<li>Public heavy users include Meta (Facebook) and Wikipedia <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Once powered early YouTube/Twitter/Uber architectures; some later migrated <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>China: in-house MySQL forks at major internet companies (Alibaba/Tencent) are the de-facto standard <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">18</span> Ecosystem tooling <span class="verdict v-neutral">backup/migration/C</span></h3><div class="dim-body"><ul>
+<li>Backup: mysqldump, MySQL Shell, XtraBackup, Clone plugin <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Online DDL/migration: gh-ost, pt-online-schema-change <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>CDC: Debezium, Canal; monitoring: PMM, mysqld_exporter + Prometheus <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">19</span> Managed &amp; serverless <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><ul>
+<li>RDS on every cloud vendor (Alibaba/Tencent/AWS/Huawei) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Oracle MySQL HeatWave (cloud-native + analytics acceleration) <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>Serverless: PlanetScale (serverless MySQL on Vitess) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">20</span> Data ingestion <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><ul>
+<li>LOAD DATA INFILE and mysqlimport are the fastest single-node load paths <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>mydumper/myloader for parallel logical import/export, community mainstream <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>mysqlsh util.loadDump parallel-loads MySQL Shell dumps <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">21</span> External data access <span class="verdict v-neutral">Partially supporte</span></h3><div class="dim-body"><ul>
+<li>The FEDERATED engine maps remote MySQL tables but is weak in features/performance, rarely used in prod <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>No direct S3/object-storage or lakehouse-format querying <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>MySQL HeatWave offers object-storage queries as a commercial capability <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">22</span> CDC &amp; downstream <span class="verdict v-neutral">Debezium/Canal/Max</span></h3><div class="dim-body"><ul>
+<li>Row-format binlog is the de-facto CDC source <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Debezium, Canal, Maxwell and Flink CDC are all mature <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>GTID + semisync make position management easy; huge transactions bloat binlog <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
 </div>
 </section>
 <section class="doc-section">
@@ -612,7 +678,7 @@
 <footer class="footer">
   <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
 </footer>
-<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
 
 <script src="assets/app.js"></script>
 </body>

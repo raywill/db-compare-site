@@ -13,8 +13,8 @@
     <nav class="mainnav">
 <a href="index.html" class="active" data-zh="首页" data-en="Home">首页</a>
 <a href="compare.html" class="" data-zh="维度对比" data-en="Compare">维度对比</a>
-<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
 <a href="advisor.html" class="" data-zh="AI选型" data-en="AI Selection">AI选型</a>
+<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
     </nav>
     <div class="cmp-tray">
       <button id="cmp-tray-btn" type="button" class="tray-btn" aria-expanded="false" aria-haspopup="true"><span data-zh="对比" data-en="Compare">对比</span> <b class="tray-count"><i id="cmp-count">0</i>/4</b></button>
@@ -74,22 +74,74 @@
 </ul>
 </div>
 </section>
-<section class="doc-section"><h2><span data-zh="硬维度（14 项）" data-en="Hard dimensions (14)">硬维度（14 项）</span></h2>
+<section class="doc-section"><h2><span data-zh="硬维度（19 项）" data-en="Hard dimensions (19)">硬维度（19 项）</span></h2>
 <div class="lang-block lang-zh">
 <div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-tbd">未找到证据</span></h3><div class="dim-body"><p><strong>未找到证据</strong>——本轮检索未在官方文档与社区资料中找到 Apache Doris 社区版原生 TDE（落盘透明加密）的可靠证据。对象存储服务端加密、磁盘层加密属于基础设施能力，不等于 Doris 内核 TDE。某中文博客声称的 <code>be.conf</code> 中 <code>enable_tde</code> 参数无官方佐证，不可采信。（证据：中；结论方向偏向&quot;查证为无&quot;，但因未找到官方明确的不支持声明，按规则记为&quot;未找到证据&quot;）</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——官方 2.1 中文手册确认自 2.0 起 FE HTTP 接口支持 HTTPS（JKS/PKCS12 证书配置）。MySQL 协议链路、FE–BE 内部 RPC、Stream Load 等链路的 TLS 覆盖情况未找到完整官方说明，故记为部分支持。（证据：中）</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">3</span> 审计 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——FE 提供查询/慢查询审计日志（<code>audit_log_dir</code>、<code>audit_log_modules</code> 支持 <code>slow_query</code>、<code>query</code> 等模块，<code>audit_log_roll_num</code> 控制滚动），并有官方 Audit Loader 插件可把审计日志导入 Doris 内表做分析。注意：这是&quot;有审计日志能力&quot;，不等于开箱即用的合规审计报表。（证据：强，见 2.1 中文手册 PDF）</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">4</span> 认证与权限 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——支持用户、角色（Role）、GRANT/REVOKE 权限体系。行级/列级等更细粒度权限的版本边界本轮未逐项核实；LDAP/外部目录集成的官方证据本轮未找到。（证据：中）</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">5</span> 备份恢复 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——通过 Repository + BACKUP/RESTORE 把快照经 Broker 保存到远端存储，支持表级/库级备份与跨集群恢复，可做周期快照与集群迁移。限制：恢复期间表可能已可见但不可访问；覆盖恢复失败后通常需要重新执行；未找到官方 PITR（时间点恢复）证据。（证据：中，核心机制见 2.1 中文手册）</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">6</span> 大版本升级 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——支持滚动升级，常规做法是先升级 FE 再升级 BE。但 FE 元数据格式升级后不可轻易回滚；FE/BE 混部版本有兼容窗口要求；跨大版本需要按官方升级路径逐级验证，周边插件与工具链需同步验证。（证据：中，社区实践总结）</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">7</span> 可观测性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——FE/BE 提供 metrics 接口、查询 Profile、慢查询日志、审计日志；官方文档提供 Prometheus + Grafana 监控接入方案。这是 Doris 运维体系中比较完整的一块。（证据：强）</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">8</span> 连接模型 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——客户端经 MySQL 协议连接 FE（默认 9030），由 FE 管理会话、解析与规划，再下发到 BE 执行。高并发接入需要前端负载均衡与连接数管理（FE 有 <code>qe_max_connection</code> 等连接上限配置），长连接复用是常规做法。（证据：强）</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">9</span> 事务与隔离级别 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——Doris 的&quot;事务&quot;主要存在于导入路径：Stream Load 的 label 去重与单批原子性、两阶段提交（2PC）预提交/提交、Group Commit 攒批事务；查询侧是快照读。不支持通用 OLTP 式多语句交互事务与标准隔离级别语义，不要按关系型事务数据库做选型假设。（证据：强）</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">10</span> 复制与一致性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——数据层按 Tablet 多副本（默认 3 副本）分布在 BE 上，副本故障后自动修复与重平衡；FE 元数据多节点高可用（基于 bdbje）。单副本写入多数派确认等协议级细节本轮未做源码级核实。（证据：中）</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">11</span> 扩展方式 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——传统存算一体架构下 BE 可热扩容（注册新 BE 即加入集群，数据自动重平衡）；3.0 起的存算分离模式支持计算节点弹性扩缩。FE 扩容涉及元数据组变更，比 BE 重。（证据：强）</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">12</span> 兼容性 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——MySQL 协议兼容：JDBC 与各语言 MySQL 驱动可直接连接，常用 SQL 语法可用，BI 工具接入顺滑。但这不等于 MySQL 存储引擎/事务语义兼容；复杂 MySQL 特性、存储过程等需逐项验证。（证据：强）</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">13</span> 许可证与商业模式 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——Apache License 2.0，社区版功能完整。SelectDB 等厂商提供商业版/云托管服务（含额外企业特性与 SLA），与 Apache 社区项目是两条线，POC 时要确认测的是哪一条。（证据：强）</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">14</span> 中文资料丰富度 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——官方文档中英文齐全，国内社区活跃，博客、问答、生产案例多。但第三方中文博客质量参差，个别文章存在未经核实的配置声称（如所谓 TDE 参数），关键配置务必以官方文档为准。（证据：强）</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> 可观测性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——FE/BE 提供 metrics 接口、查询 Profile、慢查询日志、审计日志；官方文档提供 Prometheus + Grafana 监控接入方案。这是 Doris 运维体系中比较完整的一块。（证据：强）</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> 连接模型 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——客户端经 MySQL 协议连接 FE（默认 9030），由 FE 管理会话、解析与规划，再下发到 BE 执行。高并发接入需要前端负载均衡与连接数管理（FE 有 <code>qe_max_connection</code> 等连接上限配置），长连接复用是常规做法。（证据：强）</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> 事务与隔离级别 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——Doris 的&quot;事务&quot;主要存在于导入路径：Stream Load 的 label 去重与单批原子性、两阶段提交（2PC）预提交/提交、Group Commit 攒批事务；查询侧是快照读。不支持通用 OLTP 式多语句交互事务与标准隔离级别语义，不要按关系型事务数据库做选型假设。（证据：强）</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> 复制与一致性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——数据层按 Tablet 多副本（默认 3 副本）分布在 BE 上，副本故障后自动修复与重平衡；FE 元数据多节点高可用（基于 bdbje）。单副本写入多数派确认等协议级细节本轮未做源码级核实。（证据：中）</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> 扩展方式 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——传统存算一体架构下 BE 可热扩容（注册新 BE 即加入集群，数据自动重平衡）；3.0 起的存算分离模式支持计算节点弹性扩缩。FE 扩容涉及元数据组变更，比 BE 重。（证据：强）</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> 兼容性 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——MySQL 协议兼容：JDBC 与各语言 MySQL 驱动可直接连接，常用 SQL 语法可用，BI 工具接入顺滑。但这不等于 MySQL 存储引擎/事务语义兼容；复杂 MySQL 特性、存储过程等需逐项验证。（证据：强）</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> 许可证与商业模式 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——Apache License 2.0，社区版功能完整。SelectDB 等厂商提供商业版/云托管服务（含额外企业特性与 SLA），与 Apache 社区项目是两条线，POC 时要确认测的是哪一条。（证据：强）</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> 中文资料丰富度 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——官方文档中英文齐全，国内社区活跃，博客、问答、生产案例多。但第三方中文博客质量参差，个别文章存在未经核实的配置声称（如所谓 TDE 参数），关键配置务必以官方文档为准。（证据：强）</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> 性能与延迟特征 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（MPP 向量化；与 StarRocks 同代竞争）。</p>
+<ul>
+<li>向量化执行引擎；官方 TPC-H/TPC-DS 数据<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span><span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>主键模型支持实时更新，并发点查好于传统 OLAP <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>存算分离、物化视图是查询加速主要手段 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">15</span> 合规与认证 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（国产 OLAP；信创与云资质走厂商）。</p>
+<ul>
+<li>Apache Doris 开源版：无官方合规认证 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>信创名录/信通院测评、SelectDB Cloud 合规资质以厂商官方公告为准<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span><span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">16</span> 成熟度与社区生态 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（2017 年开源；2022 年 Apache 毕业）。</p>
+<ul>
+<li>前身百度 Palo，2017 年开源，2022 年 Apache 毕业 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>GitHub stars 万级；SelectDB 提供商业支持 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>国内社区活跃，海外声量弱于 ClickHouse/StarRocks <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">17</span> 标杆用户 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（百度系起源；互联网与金融）。</p>
+<ul>
+<li>起源百度，百度内部大规模使用 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>小米、美团等互联网公司公开案例<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span><span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>金融/运营商实时数仓案例增长中 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">18</span> 生态工具链 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（Broker 备份；Flink CDC；Stream Load）。</p>
+<ul>
+<li>备份：Broker 备份到 HDFS/S3 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>入数/CDC：Flink CDC、Stream Load、Routine Load（Kafka）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>迁移：Doris-Spark/Flink 连接器；监控：Prometheus <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">19</span> 云托管与 Serverless <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（SelectDB Cloud）。</p>
+<ul>
+<li>SelectDB Cloud（官方云服务）<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>阿里云/腾讯云等也有 Doris 托管/Serverless 形态 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>开源自建仍是主流形态之一 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">20</span> 数据接入与摄入 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（Stream/Broker/Routine/Spark Load 四件套）。</p>
+<ul>
+<li>Stream Load（HTTP 推）、Broker Load（HDFS/S3 拉）、Routine Load（Kafka 常驻）、Spark Load（大批量）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Flink Doris Connector / Doris Stream Loader 生态成熟 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>选型看数据量与实时性：Routine Load 适合常驻流，Broker 适合离线大文件 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">21</span> 外部数据访问 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（Multi-Catalog：Hive/Iceberg/Hudi/JDBC/ES）。</p>
+<ul>
+<li>Multi-Catalog 可直查 Hive/Iceberg/Hudi/Delta Lake、Elasticsearch、JDBC 源 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>外表查询可下推谓词，湖仓一体是主打场景 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>外表性能弱于内表，大查询建议先导入 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">22</span> CDC 与下游同步 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（Flink CDC 入 Doris 成熟；对外无原生 CDC）。</p>
+<ul>
+<li>入：Flink CDC → Doris 是标准链路 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>出：Doris 无行级变更日志，对外靠 Binlog（版本覆盖有限）或定期导出 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</li>
+<li>常见替代：用 Routine Load 消费上游 Kafka 而不是从 Doris 抽变更 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
 <div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-no">No evidence found</span></h3><div class="dim-body"><p><strong>No evidence found</strong> — this round of research found no reliable evidence of native TDE (transparent data-at-rest encryption) in the Apache Doris community edition, in official docs or community materials. Object-storage server-side encryption or disk-layer encryption are infrastructure capabilities, not Doris kernel TDE. An <code>enable_tde</code> parameter in <code>be.conf</code> claimed by one Chinese blog has no official corroboration and must not be treated as fact. (Evidence: medium; leaning toward &quot;verified absent&quot;, but recorded as &quot;no evidence found&quot; since no explicit official statement of non-support was located.)</p></div></div>
@@ -97,15 +149,67 @@
 <div class="dim-item"><h3><span class="dim-num">3</span> Auditing <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — FE provides query/slow-query audit logging (<code>audit_log_dir</code>, <code>audit_log_modules</code> with <code>slow_query</code>, <code>query</code> modules, <code>audit_log_roll_num</code> for rotation), plus an official Audit Loader plugin that loads audit logs into Doris internal tables for analysis. Note: this is audit-logging capability, not out-of-the-box compliance audit reporting. (Evidence: strong, per the 2.1 Chinese manual PDF)</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">4</span> Authentication &amp; authorization <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — users, roles, and a GRANT/REVOKE privilege system. Version boundaries for finer-grained privileges (row/column level) were not verified item by item; no official evidence of LDAP/external directory integration was found in this round. (Evidence: medium)</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">5</span> Backup &amp; recovery <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — Repository + BACKUP/RESTORE snapshots via Broker to remote storage, with table/database-level backup and cross-cluster restore, usable for periodic snapshots and cluster migration. Limits: tables may be visible but inaccessible during restore; a failed overwrite-restore usually must be redone; no official PITR (point-in-time recovery) evidence found. (Evidence: medium; core mechanism per the 2.1 Chinese manual)</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">6</span> Major-version upgrades <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — rolling upgrades are supported, with the conventional order of FE first, then BE. But FE metadata format upgrades are not easily reversible; FE/BE mixed-version compatibility windows are limited; cross-major upgrades must be validated step by step along the official upgrade path, including plugins and surrounding tooling. (Evidence: medium, community practice)</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">7</span> Observability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — FE/BE metrics endpoints, query profiles, slow-query logs, audit logs; official docs provide a Prometheus + Grafana monitoring setup. This is one of the more complete areas of Doris operations. (Evidence: strong)</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">8</span> Connection model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — clients connect to FE via the MySQL protocol (default 9030); FE manages sessions, parsing, and planning, then dispatches to BEs. High-concurrency access needs front-end load balancing and connection management (FE has connection caps such as <code>qe_max_connection</code>); long-lived connection reuse is standard practice. (Evidence: strong)</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">9</span> Transactions &amp; isolation levels <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — Doris &quot;transactions&quot; live mainly on the ingestion path: Stream Load label dedup with per-batch atomicity, two-phase commit (2PC) pre-commit/commit, Group Commit batched transactions; queries are snapshot reads. No general-purpose OLTP-style multi-statement interactive transactions or standard isolation-level semantics — do not select it as a transactional database. (Evidence: strong)</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">10</span> Replication &amp; consistency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — data is replicated per Tablet (default 3 replicas) across BEs, with automatic replica repair and rebalancing on BE failure/scale-out; FE metadata is multi-node HA (based on bdbje). Protocol-level details such as write quorums were not verified at source level in this round. (Evidence: medium)</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">11</span> Scaling <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — in the classic shared-nothing architecture BEs scale out hot (register a new BE and data rebalances automatically); the 3.0+ compute-storage separated mode supports elastic compute scaling. FE scale-out involves metadata group changes and is heavier than BE. (Evidence: strong)</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">12</span> Compatibility <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — MySQL protocol compatibility: JDBC and MySQL drivers in every language connect directly, common SQL syntax works, BI tools connect smoothly. This does not equal MySQL storage-engine/transaction-semantics compatibility; complex MySQL features and stored procedures need case-by-case verification. (Evidence: strong)</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">13</span> License &amp; business model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — Apache License 2.0 with a complete community edition. Vendors such as SelectDB offer commercial editions/managed services (extra enterprise features and SLAs) — a separate track from the Apache project; confirm which one a POC is testing. (Evidence: strong)</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">14</span> Chinese-language resources <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — official docs in both Chinese and English, an active domestic community, and plenty of blogs, Q&amp;A, and production cases. But third-party Chinese blog quality varies; some contain unverified configuration claims (e.g. a fabricated TDE switch) — always verify key settings against official docs. (Evidence: strong)</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> Observability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — FE/BE metrics endpoints, query profiles, slow-query logs, audit logs; official docs provide a Prometheus + Grafana monitoring setup. This is one of the more complete areas of Doris operations. (Evidence: strong)</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> Connection model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — clients connect to FE via the MySQL protocol (default 9030); FE manages sessions, parsing, and planning, then dispatches to BEs. High-concurrency access needs front-end load balancing and connection management (FE has connection caps such as <code>qe_max_connection</code>); long-lived connection reuse is standard practice. (Evidence: strong)</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> Transactions &amp; isolation levels <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — Doris &quot;transactions&quot; live mainly on the ingestion path: Stream Load label dedup with per-batch atomicity, two-phase commit (2PC) pre-commit/commit, Group Commit batched transactions; queries are snapshot reads. No general-purpose OLTP-style multi-statement interactive transactions or standard isolation-level semantics — do not select it as a transactional database. (Evidence: strong)</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> Replication &amp; consistency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — data is replicated per Tablet (default 3 replicas) across BEs, with automatic replica repair and rebalancing on BE failure/scale-out; FE metadata is multi-node HA (based on bdbje). Protocol-level details such as write quorums were not verified at source level in this round. (Evidence: medium)</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> Scaling <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — in the classic shared-nothing architecture BEs scale out hot (register a new BE and data rebalances automatically); the 3.0+ compute-storage separated mode supports elastic compute scaling. FE scale-out involves metadata group changes and is heavier than BE. (Evidence: strong)</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> Compatibility <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — MySQL protocol compatibility: JDBC and MySQL drivers in every language connect directly, common SQL syntax works, BI tools connect smoothly. This does not equal MySQL storage-engine/transaction-semantics compatibility; complex MySQL features and stored procedures need case-by-case verification. (Evidence: strong)</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> License &amp; business model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — Apache License 2.0 with a complete community edition. Vendors such as SelectDB offer commercial editions/managed services (extra enterprise features and SLAs) — a separate track from the Apache project; confirm which one a POC is testing. (Evidence: strong)</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> Chinese-language resources <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — official docs in both Chinese and English, an active domestic community, and plenty of blogs, Q&amp;A, and production cases. But third-party Chinese blog quality varies; some contain unverified configuration claims (e.g. a fabricated TDE switch) — always verify key settings against official docs. (Evidence: strong)</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> Performance &amp; latency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (vectorized MPP; same generation as StarRocks).</p>
+<ul>
+<li>Vectorized execution engine; official TPC-H/TPC-DS figures <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>Primary-key model supports real-time updates with better concurrent point lookups than classic OLAP <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Disaggregated storage-compute and materialized views are the main query accelerators <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">15</span> Compliance &amp; certifications <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (Chinese OLAP; trusted-innovation and cloud quals via vendor).</p>
+<ul>
+<li>Apache Doris open source: no official compliance certs <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Trusted-innovation catalog / CAICT testing and SelectDB Cloud qualifications per vendor announcements <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">16</span> Maturity &amp; community <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (open-sourced 2017; Apache graduated 2022).</p>
+<ul>
+<li>Formerly Baidu Palo, open-sourced 2017, Apache graduated 2022 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Tens of thousands of GitHub stars; SelectDB provides commercial support <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Active domestic community; weaker overseas mindshare than ClickHouse/StarRocks <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">17</span> Notable adopters <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Baidu origins; internet and finance).</p>
+<ul>
+<li>Originated at Baidu with large-scale internal use <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Public internet cases: Xiaomi, Meituan, etc. <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>Growing finance/carrier real-time-warehouse cases <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">18</span> Ecosystem tooling <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Broker backup; Flink CDC; Stream Load).</p>
+<ul>
+<li>Backup: Broker backup to HDFS/S3 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Ingestion/CDC: Flink CDC, Stream Load, Routine Load (Kafka) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Migration: Doris-Spark/Flink connectors; monitoring: Prometheus <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">19</span> Managed &amp; serverless <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (SelectDB Cloud).</p>
+<ul>
+<li>SelectDB Cloud (official cloud service) <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>Alibaba/Tencent clouds also offer managed/serverless Doris <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>Self-hosted open source remains a mainstream form <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">20</span> Data ingestion <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Stream/Broker/Routine/Spark Load quartet).</p>
+<ul>
+<li>Stream Load (HTTP push), Broker Load (HDFS/S3 pull), Routine Load (persistent Kafka), Spark Load (huge batches) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Flink Doris Connector / Doris Stream Loader ecosystem is mature <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Pick by volume and latency: Routine Load for persistent streams, Broker Load for offline large files <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">21</span> External data access <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Multi-Catalog: Hive/Iceberg/Hudi/JDBC/ES).</p>
+<ul>
+<li>Multi-Catalog queries Hive/Iceberg/Hudi/Delta Lake, Elasticsearch and JDBC sources directly <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Predicate pushdown on external tables; lakehouse is the flagship scenario <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>External tables are slower than internal ones — import first for heavy queries <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">22</span> CDC &amp; downstream <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (Flink CDC into Doris is mature; no native CDC out).</p>
+<ul>
+<li>In: Flink CDC → Doris is the standard path <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Out: Doris has no row-level change log; export relies on binlog (limited version coverage) or periodic dumps <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>.</li>
+<li>Common alternative: Routine Load consumes upstream Kafka instead of extracting changes from Doris <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
 </div>
 </section>
 <section class="doc-section">
@@ -268,7 +372,7 @@
 <footer class="footer">
   <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
 </footer>
-<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
 
 <script src="assets/app.js"></script>
 </body>

@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Snowflake - DB 选型参考</title>
+<link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">&#9672;</span> DB <span data-zh="选型参考" data-en="Compare">选型参考</span></a>
+    <nav class="mainnav">
+<a href="index.html" class="active" data-zh="首页" data-en="Home">首页</a>
+<a href="compare.html" class="" data-zh="维度对比" data-en="Compare">维度对比</a>
+<a href="advisor.html" class="" data-zh="AI选型" data-en="AI Selection">AI选型</a>
+<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
+    </nav>
+    <div class="cmp-tray">
+      <button id="cmp-tray-btn" type="button" class="tray-btn" aria-expanded="false" aria-haspopup="true"><span data-zh="对比" data-en="Compare">对比</span> <b class="tray-count"><i id="cmp-count">0</i>/4</b></button>
+      <div id="cmp-panel" class="tray-panel" hidden>
+        <div class="tray-sec"><span data-zh="已选" data-en="Selected">已选</span></div>
+        <div id="cmp-selected" class="tray-selected"></div>
+        <div class="tray-sec"><span data-zh="全部产品（最多选 4 款）" data-en="All products (up to 4)">全部产品（最多选 4 款）</span></div>
+        <div id="cmp-list" class="tray-list"></div>
+        <div class="tray-actions"><button id="cmp-clear" type="button" class="tray-clear"><span data-zh="清空选择" data-en="Clear selection">清空选择</span></button></div>
+      </div>
+    </div>
+    <button id="lang-toggle" class="lang-btn" type="button" aria-label="switch language">EN</button>
+  </div>
+</header>
+<main class="page">
+<div class="profile-hero">
+  <a class="back" href="index.html"><span data-zh="← 返回首页" data-en="← Back to home">← 返回首页</span></a>
+  <h1>Snowflake</h1>
+  <div class="meta-row"><span class="cat cat-olap" data-zh="OLAP" data-en="OLAP">OLAP</span> <span class="tag">#云数仓</span> <span class="tag">#SaaS</span> <span class="tag">#存算分离</span> <span class="tag">#OLAP</span> <span class="tag">#微分区</span> <span class="tag">#Time-Travel</span> <span class="tag">#零拷贝克隆</span> <span class="tag">#Iceberg</span> <span class="tag">#Cortex-AI</span> <span class="tag">#按量计费</span></div>
+  <p class="oneliner"><div class="lang-block lang-zh">
+<p>云原生数仓的 SaaS 标杆——&quot;存算彻底分离的弹性数据云&quot;：三层架构（存储/计算/云服务）让 N 个独立仓库零争用读同一份数据，Time Travel + 零拷贝克隆把&quot;误操作恢复&quot;变成日常操作；代价是纯 SaaS（无私有化）、按 credit 消费计费带来的成本不可预测性，以及专有存储格式的迁出成本。</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<p>The SaaS benchmark for cloud-native warehousing — &quot;an elastic data cloud with storage fully separated from compute&quot;: a three-layer architecture (storage/compute/cloud services) lets N independent warehouses read the same data with zero contention, while Time Travel + zero-copy cloning turn &quot;oops recovery&quot; into a daily operation. The price is pure SaaS (no self-hosting), cost unpredictability from consumption-based credits, and real migration cost out of a proprietary storage format.</p>
+</div></p>
+  <div class="ai-dive-row" data-product="Snowflake">
+    <span class="ai-dive-label" data-zh="用 AI 深挖这款：" data-en="Deep-dive with AI:">用 AI 深挖这款：</span>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('chatgpt', this)">ChatGPT <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('grok', this)">Grok <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('claude', this)">Claude <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn addcmp-btn" data-addcmp="snowflake"><span class="addcmp-label">＋ 对比</span></button>
+  </div>
+  <div class="legend"><span class="legend-label" data-zh="证据等级：" data-en="Evidence levels: ">证据等级：</span><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></div>
+</div>
+<section class="doc-section">
+<h2><span data-zh="基本信息" data-en="Basics">基本信息</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>项</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td>全称</td><td>Snowflake AI Data Cloud（云原生数据云平台；公司 2024 年后主推&quot;AI Data Cloud&quot;定位）</td></tr>
+<tr><td>厂商</td><td>Snowflake Inc.（2012 年成立，总部美国蒙大拿州博兹曼；2020 年 NYSE 上市，代码 SNOW）</td></tr>
+<tr><td>国家</td><td>美国</td></tr>
+<tr><td>当前稳定线</td><td>SaaS 持续交付，无用户侧版本号；Gen-2 标准仓库 2025-03 GA，现为新账户默认（官方口径同等 credit 下约 2.1x 性价比）</td></tr>
+<tr><td>版本策略</td><td>全托管 SaaS 滚动升级，用户不管理版本、不打补丁</td></tr>
+<tr><td>存储引擎</td><td>自研列式微分区（micro-partition）：50–500MB 不可变压缩列存文件，存于底层云对象存储（S3/Blob/GCS），用户不可见、不可选格式</td></tr>
+<tr><td>许可证</td><td>闭源商业软件；SaaS 订阅制，按 credit 消费计费（计算与存储分离计费）</td></tr>
+<tr><td>协议</td><td>私有；SQL 为 ANSI 兼容的 Snowflake SQL 方言，无 PG/MySQL wire 协议兼容</td></tr>
+<tr><td>主类型</td><td>云数仓 OLAP（SaaS）</td></tr>
+<tr><td>兼具类型</td><td>数据湖仓（Iceberg 表）、流式摄入、AI/ML（Cortex）、数据共享与交易（Marketplace）</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Item</th><th>Content</th></tr></thead>
+<tbody>
+<tr><td>Full name</td><td>Snowflake AI Data Cloud (cloud-native data cloud platform; &quot;AI Data Cloud&quot; positioning pushed since 2024)</td></tr>
+<tr><td>Vendor</td><td>Snowflake Inc. (founded 2012, headquartered in Bozeman, Montana, USA; NYSE IPO 2020, ticker SNOW)</td></tr>
+<tr><td>Country</td><td>USA</td></tr>
+<tr><td>Current stable line</td><td>SaaS continuous delivery, no user-facing version numbers; Gen-2 standard warehouses GA March 2025, now default for new accounts (~2.1x perf-per-dollar per vendor claim)</td></tr>
+<tr><td>Version policy</td><td>Fully managed SaaS with rolling upgrades; users never manage versions or patches</td></tr>
+<tr><td>Storage engine</td><td>Proprietary columnar micro-partitions: 50–500MB immutable compressed columnar files on underlying cloud object storage (S3/Blob/GCS); invisible to users, format not selectable</td></tr>
+<tr><td>License</td><td>Closed-source commercial software; SaaS subscription billed in consumption credits (compute and storage billed separately)</td></tr>
+<tr><td>Protocol</td><td>Proprietary; SQL is ANSI-compatible Snowflake SQL dialect, no PG/MySQL wire-protocol compatibility</td></tr>
+<tr><td>Primary type</td><td>Cloud data warehouse OLAP (SaaS)</td></tr>
+<tr><td>Also covers</td><td>Data lakehouse (Iceberg tables), streaming ingestion, AI/ML (Cortex), data sharing and monetization (Marketplace)</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section"><h2><span data-zh="硬维度（19 项）" data-en="Hard dimensions (19)">硬维度（19 项）</span></h2>
+<div class="lang-block lang-zh">
+<div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>全量静态加密：所有微分区数据默认 AES-256 加密，密钥由 Snowflake 管理，用户无感 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Business Critical 版支持 Tri-Secret Secure：客户自管密钥（CMK/HSM），满足金融/医疗强合规 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>密钥轮换与层级由平台负责，用户侧无&quot;丢密钥即丢数据&quot;的自运维风险（代价是密钥完全不在自己手里） <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>全链路 TLS 1.2+ 加密（客户端—云服务层—仓库—存储） <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Business Critical 版支持 AWS PrivateLink / Azure Private Link 私有连接，流量不走公网 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无自建证书管理负担（SaaS 托管），但也意味着无法自定义 TLS 策略细节 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> 审计 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>ACCOUNT_USAGE 下 ACCESS_HISTORY / QUERY_HISTORY / LOGIN_HISTORY 等视图覆盖&quot;谁、何时、查了什么&quot; <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Trust Center 提供内置风险/合规姿态扫描（一等审计信号源） <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>注意：审计日志由云服务层托管，用户无法自建独立防篡改归档；极端合规场景需评估&quot;既当运动员又当裁判&quot;的边界 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> 认证与权限 <span class="verdict v-yes">有（RBAC + 列掩码 + 行策略）</span></h3><div class="dim-body"><ul>
+<li>RBAC：权限授予角色、角色授予用户，支持角色继承与 future grant（未来对象自动授权） <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>列级动态脱敏（Dynamic Data Masking）、行访问策略（Row Access Policy）、Secure View（Enterprise+），对外共享数据不泄露明细 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>SSO/SAML、SCIM、MFA、OAuth、密钥对认证齐全；密钥对是机器账号推荐方式 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> 备份恢复 <span class="verdict v-yes">有（但形态特殊：无传统备份文件）</span></h3><div class="dim-body"><ul>
+<li>Time Travel：Standard 版 1 天，Enterprise+ 最长 90 天（<code>DATA_RETENTION_TIME_IN_DAYS</code>），<code>AT</code>/<code>BEFORE</code> 查历史、<code>UNDROP</code> 恢复误删表 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Fail-safe：Time Travel 结束后固定 7 天，仅 Snowflake 官方支持可恢复（用户不可自助），仅永久表 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>零拷贝克隆：<code>CLONE</code> 秒级复制库/表（元数据指针，写时复制），常被当作&quot;逻辑备份/环境快照&quot;用 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>跨区/跨云数据库复制 + failover/failback（Business Critical）承担异地灾备 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> 可观测性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>Snowsight Query Profile：算子级耗时、扫描分区数、spill 等可视化 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>ACCOUNT_USAGE：QUERY_HISTORY、WAREHOUSE_METERING_HISTORY、PIPE_USAGE_HISTORY 等，覆盖查询、仓库、管道用量 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>注意：细粒度&quot;某条查询/某张表花了多少钱&quot;的归因能力弱，社区靠第三方 FinOps 工具补；这是成本争议的主要技术根源之一 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> 连接模型 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>JDBC/ODBC、Python/Go/Node/.NET 连接器、Snowflake CLI（<code>snow</code>）、SnowSQL、Snowsight Web UI、REST API <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无 OLTP 式长事务会话与连接池语义；并发靠多集群仓库（Enterprise+ 按并发自动扩 1–N 集群） <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>结果缓存：24 小时精确查询匹配（含参数绑定）直接返回，不消耗仓库 credit <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> 事务与隔离级别 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>支持显式多语句事务（BEGIN/COMMIT/ROLLBACK），ACID 语义 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>隔离级别为 READ COMMITTED（语句级快照），无可串行化选项 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>注意：这是分析型事务语义（ETL 的 MERGE/多表写入），不是 OLTP 逐行锁/高并发短事务模型；不要拿它当 TP 库用 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> 复制与一致性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>同一区内：多仓库读同一份存储，架构级零争用（shared-data 设计，非复制实现） <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>跨区/跨云：数据库复制（Database Replication）+ 故障转移/回切（Business Critical），RPO 取决于复制延迟配置 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>一致性是快照隔离下的读一致性；复制是异步的，灾备演练需实测 RTO <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> 扩展方式 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>计算：仓库 XS–6XL 共 10 档，每升一档节点数与 credit/小时翻倍（XS=1 credit/小时）；可随时启停、升降配 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>并发：多集群仓库（Enterprise+）按排队查询数自动增减集群，STANDARD/ECONOMY 两种扩缩策略 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>存储：自动扩展，按压缩后均值按月计费；存算扩缩互不干扰 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> 兼容性 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>Snowflake SQL：ANSI 兼容方言，窗口函数、CTE、QUALIFY 等分析语法完整 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>半结构化 VARIANT/OBJECT/ARRAY 一等公民，JSON 点号访问、FLATTEN 展开 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无 PostgreSQL/MySQL wire 协议兼容；专有函数与 DDL 多，从传统数仓/ PG 迁移需改写 SQL <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> 许可证与商业模式 <span class="verdict v-neutral">闭源 SaaS</span></h3><div class="dim-body"><ul>
+<li>闭源商业软件，纯 SaaS，无开源内核、无私有化授权 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>四档：Standard → Enterprise → Business Critical → VPS，严格超集（Time Travel 天数、多集群仓库、物化视图、脱敏、HIPAA/PCI、私有连接等逐档解锁） <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>计费：credit 消费制（约 $2–4/credit，随版本与区域浮动），计算与存储分离计费，另有容量预购折扣；具体价格易变，本档案不写绝对价格 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> 中文资料丰富度 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>官方文档以英文为主，中文官方资料少；中文社区靠 CSDN/博客/数据工程手册类翻译与教程 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>新特性（Cortex、Dynamic Tables、Iceberg 全支持）中文内容滞后明显，查参数与版本边界以英文官方文档为准 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>国内直接使用受网络与合规限制，中文实践案例少于 AWS/阿里云数仓 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> 性能与延迟特征 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>列存微分区 + 自动聚簇（Automatic Clustering），TB 级宽表聚合秒级返回；官方口径 Gen-2 仓库同等 credit 约 2.1x 性价比 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>两级缓存：结果缓存（24h 精确匹配零 credit）+ 仓库本地 SSD 缓存（运行期间跨查询有效） <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>代价：60 秒计费下限使小查询偏贵；自动聚簇烧 credit（需监控）；冷启动（仓库 resume）有秒级延迟 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
+<li>点查/高频小写入不是设计目标，延迟与成本均不如 OLTP 或实时 OLAP 引擎 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">15</span> 合规与认证 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>SOC 1/2 Type II、ISO 27001、PCI DSS、GDPR、HITRUST；HIPAA 与客户管密钥（Tri-Secret）需 Business Critical 版 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>FedRAMP Moderate（政府版）；注意：FedRAMP High 暂无，要求 FedRAMP High / DoD IL4+ 的联邦场景存在合规天花板 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>无信创名录公开信息；国内合规落地依赖出海/海外业务场景 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">16</span> 成熟度与社区生态 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>2012 年成立，2020 年 NYSE 上市（SNOW），云数仓品类定义者之一 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>迭代快：Gen-2 仓库、Cortex AI、Dynamic Tables、Iceberg 全支持、Horizon Catalog 两年内密集 GA <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>合作伙伴/集成生态大（dbt、Fivetran、BI 全家桶），但开源社区属性弱于 Spark/Trino 系（闭源 SaaS 必然） <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">17</span> 标杆用户 <span class="verdict v-yes">有（互联网/金融多行业）</span></h3><div class="dim-body"><ul>
+<li>Datadog、Stripe、Cloudflare、Okta 等被社区广泛引用的重度用户 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>金融（Capital One 类）、零售、医疗、媒体多行业公开案例；Marketplace 数据交易是特色采用场景 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>具体客户名单以官方客户页为准，本档案不逐一枚举 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">18</span> 生态工具链 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>建模与转换：dbt（Snowflake 是 dbt 最成熟适配之一） <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>集成与 ELT：Fivetran、Airbyte、Kafka Connector、Openflow（NiFi 系） <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>IaC 与开发：Terraform Provider、VS Code 插件、Snowflake CLI；BI：Tableau/Power BI/Looker/Sigma 原生连接 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>注意：深度 FinOps/成本归因靠第三方工具（官方用量视图偏粗） <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">19</span> 云托管与 Serverless <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>AWS/Azure/GCP 三朵云全托管，同一产品同一 SQL，跨云复制可用 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Serverless：Snowpipe、Tasks（无仓库模式）、Dynamic Tables 增量刷新按实际消耗计费 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>硬边界：无 on-prem/私有云/专有云选项，数据必须落公有云（或政府版专区）；这是选型一票否决项 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">20</span> 数据接入与摄入 <span class="verdict v-yes">有（批量/连续/流式三档）</span></h3><div class="dim-body"><ul>
+<li>批量：<code>COPY INTO</code> 从 Stage（内部/外部 S3/ADLS/GCS）加载，CSV/JSON/Parquet/Avro 等 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>连续：Snowpipe（对象存储事件触发微批，serverless 计费） <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>流式：Snowpipe Streaming（行级直写、秒级延迟，Kafka Connector 默认走此通道，支持 schematization 自动建列） <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>注意：Snowpipe/Streaming 烧 credit 且不如仓库透明，重度实时摄入的成本需单独 POC 测算；2025-12 高性能 Kafka Connector 进入预览（多 GB/s 目标） <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">21</span> 外部数据访问 <span class="verdict v-yes">有（Iceberg 全支持是关键转向）</span></h3><div class="dim-body"><ul>
+<li>External Tables：直接读对象存储上的 Parquet/CSV（不搬数据，性能弱于内表） <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Iceberg 表：2025-04 宣布全支持（查询性能、数据共享、治理与内表拉齐），支持 Snowflake 托管 catalog 与外部 catalog（Glue/REST/Unity Catalog），2025-10 写支持 GA <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>意义：Snowflake 从&quot;专有格式围墙&quot;转向开放表格式，跨引擎（Spark/Trino/Flink/DuckDB）读同一份 Iceberg 成为可能；但&quot;全功能&quot;仍以 Snowflake 引擎为中心，外部写与 V3 特性在演进中 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">22</span> CDC 与下游同步 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
+<li>Streams：行级变更捕获（INSERT/UPDATE/DELETE），<code>METADATA$ACTION</code>/<code>METADATA$ISUPDATE</code>/<code>METADATA$ROW_ID</code>，消费即推进 offset；支持表/视图/外部表 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Tasks：定时 SQL（cron/间隔），<code>WHEN SYSTEM$STREAM_HAS_DATA</code> 条件触发，支持 DAG（AFTER 依赖），经典 CDC 链路为 Stream→Task→MERGE <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Dynamic Tables：声明式管道（&quot;我要这个查询结果，延迟不超过 X&quot;），<code>TARGET_LAG</code> 控制新鲜度与成本，自动增量刷新，替代手写 Stream+Task 样板 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>注意：Stream 未消费记录在克隆时不继承；Task 调度最小粒度与 serverless 计费细节按版本有差异，POC 实测为准 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><ul>
+<li>All micro-partition data encrypted at rest with AES-256 by default, keys managed by Snowflake, transparent to users <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Business Critical edition supports Tri-Secret Secure: customer-managed keys (CMK/HSM) for strong finance/healthcare compliance <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Key rotation and hierarchy handled by the platform — no &quot;lose the key, lose the data&quot; self-hosting risk on your side (at the cost of keys never being in your hands) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / transport encryption <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><ul>
+<li>TLS 1.2+ across the full path (client → cloud services → warehouse → storage) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Business Critical edition supports AWS PrivateLink / Azure Private Link so traffic never traverses the public internet <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No self-managed certificate burden (SaaS-hosted), but also no ability to customize TLS policy details <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> Auditing <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><ul>
+<li>ACCOUNT_USAGE views ACCESS_HISTORY / QUERY_HISTORY / LOGIN_HISTORY cover &quot;who, when, queried what&quot; <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Trust Center provides built-in risk/compliance posture scanning (a first-party audit signal) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Caveat: audit logs are hosted by the cloud services layer; users cannot build an independent tamper-proof archive. Extreme compliance scenarios should evaluate the &quot;player-and-referee&quot; boundary <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> Authentication &amp; authorization <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><ul>
+<li>RBAC: privileges granted to roles, roles granted to users, with role inheritance and future grants (auto-cover for future objects) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Column-level dynamic data masking, row access policies, secure views (Enterprise+) for sharing data without leaking detail <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>SSO/SAML, SCIM, MFA, OAuth, and key-pair authentication all available; key-pair is the recommended machine-account method <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> Backup &amp; recovery <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><ul>
+<li>Time Travel: 1 day on Standard, up to 90 days on Enterprise+ (<code>DATA_RETENTION_TIME_IN_DAYS</code>); <code>AT</code>/<code>BEFORE</code> for historical queries, <code>UNDROP</code> for accidentally dropped tables <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Fail-safe: fixed 7 days after Time Travel ends, recoverable only by Snowflake support (no self-service), permanent tables only <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Zero-copy cloning: <code>CLONE</code> duplicates a database/table in seconds (metadata pointers, copy-on-write), commonly used as &quot;logical backup / environment snapshot&quot; <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Cross-region/cross-cloud database replication + failover/failback (Business Critical) covers geo-DR <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> Observability <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><ul>
+<li>Snowsight Query Profile: operator-level timing, partitions scanned, spilling, visualized <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>ACCOUNT_USAGE: QUERY_HISTORY, WAREHOUSE_METERING_HISTORY, PIPE_USAGE_HISTORY covering queries, warehouses, and pipes <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Caveat: fine-grained &quot;how much did this query / this table cost&quot; attribution is weak; the community fills the gap with third-party FinOps tools. This is a major technical root of the cost controversy <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> Connection model <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><ul>
+<li>JDBC/ODBC, Python/Go/Node/.NET connectors, Snowflake CLI (<code>snow</code>), SnowSQL, Snowsight web UI, REST API <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No OLTP-style long transactional sessions or connection-pool semantics; concurrency comes from multi-cluster warehouses (Enterprise+, auto-scale 1–N clusters by concurrency) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Result cache: exact query matches (including parameter binding) served for 24 hours with zero warehouse credits <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> Transactions &amp; isolation levels <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><ul>
+<li>Explicit multi-statement transactions supported (BEGIN/COMMIT/ROLLBACK) with ACID semantics <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Isolation level is READ COMMITTED (statement-level snapshots); no serializable option <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Caveat: these are analytical transaction semantics (MERGE/multi-table writes in ETL), not an OLTP row-lock/high-concurrency short-transaction model. Don&#x27;t use it as a TP database <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> Replication &amp; consistency <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><ul>
+<li>Within a region: multiple warehouses read the same storage with architecturally zero contention (shared-data design, not replication) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Cross-region/cross-cloud: database replication + failover/failback (Business Critical); RPO depends on replication lag configuration <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Reads are snapshot-isolation consistent; replication is asynchronous — DR drills should measure actual RTO <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> Scaling <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><ul>
+<li>Compute: warehouses XS–6XL in 10 sizes; each step up doubles nodes and credits/hour (XS = 1 credit/hour); start/stop/resize anytime <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Concurrency: multi-cluster warehouses (Enterprise+) auto-scale clusters with queued queries; STANDARD vs ECONOMY scaling policies <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Storage: auto-scales, billed monthly on compressed average; compute and storage scale independently <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> Compatibility <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><ul>
+<li>Snowflake SQL: ANSI-compatible dialect with full analytical syntax (window functions, CTEs, QUALIFY) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Semi-structured VARIANT/OBJECT/ARRAY are first-class: dot-notation JSON access, FLATTEN for nested data <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No PostgreSQL/MySQL wire-protocol compatibility; many proprietary functions and DDL — migrating from traditional warehouses or PG requires SQL rewrites <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> License &amp; business model <span class="verdict v-neutral">Closed-source SaaS</span></h3><div class="dim-body"><ul>
+<li>Closed-source commercial software, pure SaaS; no open-source kernel, no self-hosting license <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>Four editions in strict superset order: Standard → Enterprise → Business Critical → VPS (Time Travel days, multi-cluster warehouses, materialized views, masking, HIPAA/PCI, private connectivity unlock per tier) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Billing: credit consumption (~$2–4/credit varying by edition and region), compute and storage billed separately, plus capacity pre-purchase discounts; prices change often, so this profile cites no absolute prices <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> Chinese-language resources <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><ul>
+<li>Official documentation is English-first with little official Chinese material; Chinese community relies on CSDN/blog translations and data-engineering handbook-style tutorials <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Chinese content lags badly on new features (Cortex, Dynamic Tables, full Iceberg support) — check parameters and version boundaries against English official docs <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Direct use from mainland China is constrained by network and compliance; fewer Chinese production case studies than AWS/Alibaba warehouses <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> Performance &amp; latency <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><ul>
+<li>Columnar micro-partitions + automatic clustering: TB-scale wide-table aggregations return in seconds; vendor claims Gen-2 warehouses deliver ~2.1x perf-per-dollar <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>Two-level caching: result cache (24h exact match, zero credits) + warehouse-local SSD cache (effective across queries while the warehouse runs) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Costs: the 60-second billing minimum makes small queries expensive; automatic clustering burns credits (must be monitored); cold start (warehouse resume) adds seconds of latency <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>.</li>
+<li>Point lookups / high-frequency small writes are not the design target — worse latency and cost than OLTP or real-time OLAP engines <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">15</span> Compliance &amp; certifications <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><ul>
+<li>SOC 1/2 Type II, ISO 27001, PCI DSS, GDPR, HITRUST; HIPAA and customer-managed keys (Tri-Secret) require Business Critical <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>FedRAMP Moderate (government edition); note: no FedRAMP High yet — a compliance ceiling for federal scenarios requiring FedRAMP High / DoD IL4+ <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>No public information on Chinese &quot;XinChuang&quot; catalog listings; China compliance落地 depends on overseas-business scenarios <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">16</span> Maturity &amp; community <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><ul>
+<li>Founded 2012, NYSE IPO 2020 (SNOW); one of the definers of the cloud data warehouse category <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Fast iteration: Gen-2 warehouses, Cortex AI, Dynamic Tables, full Iceberg support, Horizon Catalog all GA&#x27;d within about two years <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>Large partner/integration ecosystem (dbt, Fivetran, the full BI family), but weaker open-source community character than Spark/Trino (inevitable for closed SaaS) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">17</span> Notable adopters <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><ul>
+<li>Datadog, Stripe, Cloudflare, Okta are widely cited heavy users in the community <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Public cases across finance, retail, healthcare, and media; Marketplace data trading is a signature adoption pattern <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Customer lists change; refer to the official customers page — this profile doesn&#x27;t enumerate them one by one <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">18</span> Ecosystem tooling <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><ul>
+<li>Modeling &amp; transformation: dbt (one of the most mature dbt adapters is dbt-snowflake) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Integration &amp; ELT: Fivetran, Airbyte, Kafka Connector, Openflow (NiFi-based) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>IaC &amp; dev: Terraform provider, VS Code extension, Snowflake CLI; BI: native connectors for Tableau/Power BI/Looker/Sigma <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Caveat: deep FinOps/cost-attribution relies on third-party tools (official usage views are coarse) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">19</span> Managed &amp; serverless <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><ul>
+<li>Fully managed on AWS/Azure/GCP — same product, same SQL, cross-cloud replication available <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Serverless: Snowpipe, serverless Tasks, Dynamic Table incremental refreshes billed on actual consumption <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Hard boundary: no on-prem / private-cloud / sovereign-cloud option — data must land on public cloud (or the government enclave). A one-vote veto item for selection <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">20</span> Data ingestion <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><ul>
+<li>Batch: <code>COPY INTO</code> from stages (internal / external S3/ADLS/GCS), CSV/JSON/Parquet/Avro <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Continuous: Snowpipe (object-storage event-triggered micro-batches, serverless billing) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Streaming: Snowpipe Streaming (row-level direct writes, seconds-level latency; the Kafka Connector&#x27;s default path, with schematization for auto column creation) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Caveat: Snowpipe/Streaming burn credits less transparently than warehouses — heavy real-time ingestion needs its own cost POC; a high-performance Kafka Connector entered preview Dec 2025 (multi-GB/s target) <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">21</span> External data access <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><ul>
+<li>External Tables: query Parquet/CSV directly on object storage without moving data (weaker performance than internal tables) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Iceberg tables: full support announced April 2025 (query performance, data sharing, governance on par with internal tables), supporting Snowflake-managed and external catalogs (Glue/REST/Unity Catalog); write support GA October 2025 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>Significance: Snowflake pivoted from &quot;proprietary-format walls&quot; toward open table formats — cross-engine (Spark/Trino/Flink/DuckDB) reads of the same Iceberg data are now possible. But &quot;full&quot; remains Snowflake-engine-centric; external writes and V3 features are still evolving <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">22</span> CDC &amp; downstream <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><ul>
+<li>Streams: row-level change capture (INSERT/UPDATE/DELETE) with <code>METADATA$ACTION</code>/<code>METADATA$ISUPDATE</code>/<code>METADATA$ROW_ID</code>; consuming advances the offset; supported on tables/views/external tables <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Tasks: scheduled SQL (cron/interval), conditional <code>WHEN SYSTEM$STREAM_HAS_DATA</code>, DAG support via AFTER dependencies — the classic CDC chain is Stream → Task → MERGE <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Dynamic Tables: declarative pipelines (&quot;I want this query&#x27;s results, lag ≤ X&quot;), <code>TARGET_LAG</code> controlling freshness vs cost, automatic incremental refreshes — replacing hand-written Stream+Task boilerplate <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Caveat: unconsumed stream records don&#x27;t survive cloning; task scheduling granularity and serverless billing details vary by version — verify in POC <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="杀手特性" data-en="Killer features">杀手特性</span></h2>
+<div class="lang-block lang-zh">
+<blockquote>
+<p>写法要求：每个特性 = 它是什么 + 为什么是真本事 + 推到边缘会发生什么。</p>
+</blockquote>
+<ol>
+<li><strong>存算分离的三层架构：多仓库零争用读同一份数据</strong> 真本事：存储（微分区）、计算（虚拟仓库）、云服务（元数据/优化/鉴权）物理分离；ETL 仓库跑全量、BI 仓库跑大盘、ML 仓库跑特征，可以同时打同一份数据，互不抢资源——传统数仓&quot;ETL 窗口期 BI 卡死&quot;的问题架构级消失。 边缘真相：零争用的是&quot;读&quot;，不是&quot;钱包&quot;——仓库各自烧 credit，团队各自建仓库会导致闲置浪费（见深水区一）；跨云/跨区读要付数据传输费。</li>
+<li><strong>Time Travel + 零拷贝克隆：误操作的&quot;撤销键&quot;</strong> 真本事：微分区不可变，历史版本天然保留；<code>AT(OFFSET =&gt; -3600)</code> 查一小时前的数据、<code>UNDROP</code> 捡回误删表、<code>CLONE</code> 秒级复制出 TB 级测试环境（元数据指针，写时复制才占存储）。 边缘真相：Time Travel 是存储税——90 天保留 ≈ 存 90 份变更（见深水区三）；Fail-safe 只有官方能碰，别把它当备份策略；克隆的 stream 不继承未消费记录。</li>
+<li><strong>Secure Data Sharing：不搬数据的跨账户共享</strong> 真本事：Provider 共享的是元数据指针，Consumer 用自己的仓库查，Provider 不为对方的查询付钱；Marketplace 把数据变成可交易的商品；Reader Account 让没账号的乙方也能查。 边缘真相：共享的是&quot;访问&quot;不是&quot;复制&quot;，一旦 Consumer 落盘就是另一份数据；跨区共享有传输与延迟成本；共享对象的权限变更要双向审计。</li>
+<li><strong>VARIANT 半结构化一等公民</strong> 真本事：JSON/Avro/Parquet 直接进 VARIANT 列，点号访问、FLATTEN 展开，schema-on-read；日志/埋点/事件流&quot;先进来再建模&quot;，不用先定死表结构。 边缘真相：VARIANT 查询性能弱于强类型列，高频访问的字段应该抽成关系列；大 VARIANT 的存储与扫描成本高于预期时，建模债迟早要还。</li>
+<li><strong>Dynamic Tables：声明式管道替代手写 ETL 样板</strong> 真本事：<code>CREATE DYNAMIC TABLE ... TARGET_LAG = &#x27;5 minutes&#x27; AS SELECT ...</code>，平台自动增量刷新；中间层用 <code>TARGET_LAG = DOWNSTREAM</code>；Stream+Task 的样板代码（建流、写 MERGE、调度、监控）大幅减少。 边缘真相：TARGET_LAG 越短越贵（新鲜度直接定价）；复杂 DAG 的刷新语义与失败重试仍在演进；它替代的是&quot;简单 CDC 管道&quot;，不是 Airflow/dbt 的编排生态位。</li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<blockquote>
+<p>Each feature = what it is + why it&#x27;s genuinely good + what happens at the edge.</p>
+</blockquote>
+<ol>
+<li><strong>Three-layer storage/compute separation: zero-contention reads across warehouses</strong> Why it&#x27;s real: storage (micro-partitions), compute (virtual warehouses), and cloud services (metadata/optimization/auth) are physically separated; the ETL warehouse can run full loads, the BI warehouse dashboards, and the ML warehouse feature jobs against the same data simultaneously without starving each other — the classic &quot;ETL window freezes BI&quot; problem disappears architecturally. Edge truth: what&#x27;s contention-free is reads, not wallets — each warehouse burns its own credits, and per-team warehouse sprawl wastes idle spend (see Deep Water 1); cross-cloud/cross-region reads pay data-transfer fees.</li>
+<li><strong>Time Travel + zero-copy cloning: an &quot;undo button&quot; for mistakes</strong> Why it&#x27;s real: micro-partitions are immutable so history is retained naturally; <code>AT(OFFSET =&gt; -3600)</code> queries data as of an hour ago, <code>UNDROP</code> recovers dropped tables, <code>CLONE</code> spins up TB-scale test environments in seconds (metadata pointers; storage only on copy-on-write divergence). Edge truth: Time Travel is a storage tax — 90-day retention ≈ storing 90 copies of changes (see Deep Water 3); Fail-safe is support-only, don&#x27;t treat it as a backup strategy; cloned streams don&#x27;t inherit unconsumed records.</li>
+<li><strong>Secure Data Sharing: cross-account sharing without moving data</strong> Why it&#x27;s real: providers share metadata pointers; consumers query with their own warehouses and the provider never pays for consumer queries; Marketplace turns data into tradable product; Reader Accounts let consumers without accounts query too. Edge truth: what&#x27;s shared is access, not a copy — once the consumer lands it to disk it&#x27;s a second dataset; cross-region sharing has transfer and latency costs; permission changes on shared objects need two-sided auditing.</li>
+<li><strong>VARIANT: first-class semi-structured data</strong> Why it&#x27;s real: JSON/Avro/Parquet land directly in VARIANT columns with dot-notation access and FLATTEN for nesting — schema-on-read; logs/events can be ingested before the model is finalized, no upfront DDL required. Edge truth: VARIANT queries are slower than strongly-typed columns; hot fields should be extracted to relational columns; deeply nested VARIANT-at-scale amplifies scan cost — modeling debt comes due eventually.</li>
+<li><strong>Dynamic Tables: declarative pipelines replacing hand-written ETL boilerplate</strong> Why it&#x27;s real: <code>CREATE DYNAMIC TABLE ... TARGET_LAG = &#x27;5 minutes&#x27; AS SELECT ...</code> with platform-managed incremental refreshes; intermediate layers use <code>TARGET_LAG = DOWNSTREAM</code>; the Stream+Task boilerplate (create stream, write MERGE, schedule, monitor) largely disappears. Edge truth: shorter TARGET_LAG costs more directly (freshness is priced); refresh semantics and failure retries for complex DAGs are still evolving; it replaces simple CDC pipelines, not the orchestration niche of Airflow/dbt.</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="深水区" data-en="Deep dives">深水区</span></h2>
+<div class="lang-block lang-zh">
+<blockquote>
+<p>以下每条 = 领域 + 机制一句话 + 推到边缘会发生什么 + 选型含义。证据类型已标注。</p>
+</blockquote>
+<p><strong>深水区一：Credit 计费模型的&quot;黑箱&quot;——账单是算出来的，不是看出来的</strong></p>
+<ul>
+<li>领域：成本模型。</li>
+<li>机制一句话：计算按仓库档位 × 秒计费（60 秒下限）+ 存储按压缩后均值 + 云服务层超日 10% 计费 + Snowpipe/Cortex 等 serverless 单列。</li>
+<li>边缘行为：自动挂起（如 5 分钟）意味着每次查询会话尾部都在烧闲置 credit，一天数百次会话累积可观；60 秒下限下&quot;查完就关&quot;的高频小查询可能比常开更贵；云服务层（解析/元数据/鉴权）在大量小查询下稳定超 10% 阈值；Cortex 按 token 计费，一条大表 AI 函数查询可达数千美元且无预警。社区 FinOps 经验：不主动治理的团队普遍超付 30–50%。</li>
+<li>选型含义：POC 必须跑真实查询模式并看 WAREHOUSE_METERING_HISTORY；上线第一天就配 RESOURCE MONITOR（credit 配额 + 熔断）；仓库按&quot;XS 起步、用证据升级&quot;。</li>
+<li>来源：官方文档（计费）+ 社区 FinOps 实践。</li>
+</ul>
+<p><strong>深水区二：自动聚簇的 credit 燃烧——&quot;不用管分区&quot;的代价</strong></p>
+<ul>
+<li>领域：存储优化。</li>
+<li>机制一句话：Automatic Clustering 在后台按 clustering key 重写微分区，保持同类数据物理相邻。</li>
+<li>边缘行为：大表 + 选错 clustering key = 后台持续重写 + 查询依然扫全表，双输；聚簇 credits 在账单里单列，不细看根本发现不了；小表开自动聚簇纯属浪费。更隐蔽的是：频繁 DML 的表，聚簇永远在&quot;追赶&quot;，烧 credit 却不见效。</li>
+<li>选型含义：先测 <code>SYSTEM$CLUSTERING_INFORMATION</code>，聚簇收益为负就关掉；时间序列/事件表优先按时间天然有序设计，减少对聚簇的依赖。</li>
+<li>来源：官方文档 + 社区实测。</li>
+</ul>
+<p><strong>深水区三：Time Travel 的存储税——历史版本按量计费</strong></p>
+<ul>
+<li>领域：存储成本。</li>
+<li>机制一句话：微分区不可变，每次 DML 产生新分区、旧分区在保留期内计费。</li>
+<li>边缘行为：90 天保留 + 每日全量刷新（<code>COPY INTO</code> 覆盖写）的表，Time Travel 存储可达表本身的数十倍；staging/临时表不设 <code>DATA_RETENTION_TIME_IN_DAYS = 0</code> 等于为垃圾数据付 90 天保管费；Fail-safe 的 7 天是强制的（永久表），连&quot;opt-out&quot;都不行。</li>
+<li>选型含义：保留期按表分级（核心表 90 天、staging 0–1 天）；transient 表无 Fail-safe，适合中间数据；定期查存储视图找&quot;保留期刺客&quot;。</li>
+<li>来源：官方文档 + 社区成本优化实践。</li>
+</ul>
+<p><strong>深水区四：仓库选型的两难——XS 起步与 Gen-2 的性价比</strong></p>
+<ul>
+<li>领域：计算选型。</li>
+<li>机制一句话：仓库 10 档每档 credit 翻倍；Gen-2（2025-03 GA）同 credit 约 2.1x 性能（官方口径，TPC-DS 类负载）。</li>
+<li>边缘行为：无脑选大仓库 = 为闲置并行度付钱（MPP 不是越大越快，小查询在大仓库上反而受 60 秒下限拖累）；多集群仓库的 STANDARD 模式扩缩偏激进，ECONOMY 更省；Snowpark 内存型仓库 1.5x credit。</li>
+<li>选型含义：所有负载从 XS 起步，用 Query Profile 看&quot;排队 vs 执行&quot;再升级；BI 常驻与 ETL 批处理分开仓库，避免互相买单。</li>
+<li>来源：官方文档 + 社区实践。</li>
+</ul>
+<p><strong>深水区五：Stream 的 offset 语义——&quot;消费即推进&quot;的坑</strong></p>
+<ul>
+<li>领域：CDC 管道。</li>
+<li>机制一句话：Stream 记录的是&quot;上次消费点之后的变化&quot;，DML 消费即推进 offset；<code>APPEND_ONLY</code> 流只捕获插入。</li>
+<li>边缘行为：Task 失败重试可能重复消费（下游要幂等）；克隆含 stream 的表/库时，未消费的变更记录不继承（新 stream 从克隆点重新开始）；<code>SYSTEM$STREAM_HAS_DATA</code> 的 WHEN 条件写错会导致 Task 空转烧 credit。</li>
+<li>选型含义：CDC 管道必须有&quot;消费—去重—监控&quot;三件套；Dynamic Tables 能覆盖的场景优先用声明式，减少手写 offset 逻辑。</li>
+<li>来源：官方文档 + 社区实践。</li>
+</ul>
+<p><strong>深水区六：Iceberg&quot;全支持&quot;的边界——开放格式仍在施工中</strong></p>
+<ul>
+<li>领域：开放表格式。</li>
+<li>机制一句话：2025-04 宣布 Iceberg 表全支持（查询/共享/治理拉齐），2025-10 写支持 GA，支持 Snowflake 托管与外部 catalog。</li>
+<li>边缘行为：&quot;全支持&quot;以 Snowflake 引擎为中心：外部引擎（Spark/Trino）读写同一份 Iceberg 的互操作细节仍在演进；Iceberg V3（半结构化、行级 CDC、地理空间）支持在路上；从内表迁 Iceberg 是单向门（性能特征不同），POC 要测自己的查询模式而非官方 benchmark。</li>
+<li>选型含义：把 Iceberg 当&quot;逃生舱&quot;而非&quot;默认舱&quot;：新项目若看重跨引擎，先按 Iceberg 建表验证性能；存量内表不急着迁。</li>
+<li>来源：厂商口径 + 社区共识。</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<blockquote>
+<p>Each = domain + mechanism in one sentence + what happens at the edge + selection implication. Evidence types marked.</p>
+</blockquote>
+<p><strong>Deep Water 1: The credit billing &quot;black box&quot; — bills are computed, not observed</strong></p>
+<ul>
+<li>Domain: cost model.</li>
+<li>Mechanism in one sentence: compute billed per warehouse size × second (60-second minimum) + storage on compressed monthly average + cloud-services layer billed past 10% of daily compute + serverless lines (Snowpipe/Cortex) billed separately.</li>
+<li>Edge behavior: auto-suspend (e.g. 5 minutes) means every query session&#x27;s tail burns idle credits — hundreds of sessions a day add up; under the 60-second minimum, high-frequency tiny queries with suspend-on-idle can cost more than leaving the warehouse on; the cloud-services layer (parsing/metadata/auth) consistently exceeds the 10% threshold under many-small-queries workloads; Cortex bills per token — one large-table AI-function query can reach thousands of dollars with no warning. Community FinOps experience: teams without active governance routinely overpay 30–50%.</li>
+<li>Selection implication: POCs must run real query patterns and read WAREHOUSE_METERING_HISTORY; set RESOURCE MONITORs (credit quotas + circuit breakers) from day one; size warehouses &quot;start XS, upgrade on evidence&quot;.</li>
+<li>Source: official docs (billing) + community FinOps practice.</li>
+</ul>
+<p><strong>Deep Water 2: Automatic clustering credit burn — the price of &quot;no partition management&quot;</strong></p>
+<ul>
+<li>Domain: storage optimization.</li>
+<li>Mechanism in one sentence: Automatic Clustering rewrites micro-partitions in the background by clustering key to keep related data physically colocated.</li>
+<li>Edge behavior: big table + wrong clustering key = background rewrites forever while queries still scan everything — lose-lose; clustering credits appear as a separate bill line most teams never inspect; auto-clustering small tables is pure waste. More insidious: on frequently-DML&#x27;d tables, clustering perpetually &quot;catches up&quot;, burning credits with no visible effect.</li>
+<li>Selection implication: check <code>SYSTEM$CLUSTERING_INFORMATION</code> first; turn clustering off when the benefit is negative; design time-series/event tables to be naturally time-ordered to reduce clustering dependence.</li>
+<li>Source: official docs + community-tested.</li>
+</ul>
+<p><strong>Deep Water 3: Time Travel storage tax — history billed by volume</strong></p>
+<ul>
+<li>Domain: storage cost.</li>
+<li>Mechanism in one sentence: micro-partitions are immutable; every DML creates new partitions while old ones stay billable through the retention window.</li>
+<li>Edge behavior: 90-day retention + daily full refresh (<code>COPY INTO</code> overwrite) can make Time Travel storage tens of times the table itself; staging/temp tables left at default retention pay 90 days of保管 for garbage data (set <code>DATA_RETENTION_TIME_IN_DAYS = 0</code>); Fail-safe&#x27;s 7 days are mandatory on permanent tables — not even opt-out.</li>
+<li>Selection implication: tier retention by table (core tables 90 days, staging 0–1 day); transient tables skip Fail-safe and suit intermediate data; regularly scan storage views for &quot;retention assassins&quot;.</li>
+<li>Source: official docs + community cost-optimization practice.</li>
+</ul>
+<p><strong>Deep Water 4: Warehouse sizing dilemma — start XS, and Gen-2 value</strong></p>
+<ul>
+<li>Domain: compute selection.</li>
+<li>Mechanism in one sentence: 10 warehouse sizes with credits doubling per step; Gen-2 (GA March 2025) claims ~2.1x performance per credit (vendor claim, TPC-DS-class workloads).</li>
+<li>Edge behavior: blindly picking large warehouses = paying for idle parallelism (MPP isn&#x27;t &quot;bigger is faster&quot;; small queries on big warehouses suffer the 60-second minimum); multi-cluster STANDARD scaling is aggressive, ECONOMY is cheaper; Snowpark memory-optimized warehouses cost 1.5x credits.</li>
+<li>Selection implication: start every workload at XS; use Query Profile (&quot;queued vs executing&quot;) as upgrade evidence; separate BI-always-on from ETL-batch warehouses so they don&#x27;t buy each other&#x27;s bills.</li>
+<li>Source: official docs + community practice.</li>
+</ul>
+<p><strong>Deep Water 5: Stream offset semantics — the &quot;consume advances&quot; trap</strong></p>
+<ul>
+<li>Domain: CDC pipelines.</li>
+<li>Mechanism in one sentence: a stream records &quot;changes since last consumption point&quot;; DML consumption advances the offset; <code>APPEND_ONLY</code> streams capture inserts only.</li>
+<li>Edge behavior: failed task retries can double-consume (downstream must be idempotent); cloning a table/schema containing streams doesn&#x27;t inherit unconsumed records (new stream restarts at clone point); a wrong <code>WHEN SYSTEM$STREAM_HAS_DATA</code> condition makes tasks spin empty burning credits.</li>
+<li>Selection implication: CDC pipelines need the consume–dedupe–monitor trio; prefer Dynamic Tables where declarative semantics cover the case, reducing hand-written offset logic.</li>
+<li>Source: official docs + community practice.</li>
+</ul>
+<p><strong>Deep Water 6: The boundary of &quot;full&quot; Iceberg support — open formats still under construction</strong></p>
+<ul>
+<li>Domain: open table formats.</li>
+<li>Mechanism in one sentence: full Iceberg support announced April 2025 (query/sharing/governance on par), write support GA October 2025, with Snowflake-managed and external catalogs.</li>
+<li>Edge behavior: &quot;full&quot; is Snowflake-engine-centric — cross-engine (Spark/Trino) read/write interop details on the same Iceberg data are still evolving; Iceberg V3 (semi-structured, row-level CDC, geospatial) support is on the way; moving from internal tables to Iceberg is a one-way door (different performance characteristics) — POC your own query patterns, not vendor benchmarks.</li>
+<li>Selection implication: treat Iceberg as an &quot;escape hatch&quot;, not the default cabin — greenfield projects valuing cross-engine access should validate performance on Iceberg tables first; don&#x27;t rush migrating existing internal tables.</li>
+<li>Source: vendor claim + community consensus.</li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="用户最买账的 5 点" data-en="What users love most">用户最买账的 5 点</span></h2>
+<div class="lang-block lang-zh">
+
+</div>
+<div class="lang-block lang-en" hidden>
+<blockquote>
+<p>Each = why it&#x27;s true + edge/failure conditions + source.</p>
+</blockquote>
+<ol>
+<li><strong>Zero ops: no indexes, partitions, or vacuum to manage</strong> Why it&#x27;s true: micro-partitions auto-split, auto-cluster, auto-compress; the classic DBA trio (indexing, partitioning, vacuuming) doesn&#x27;t exist in Snowflake; SaaS rolling upgrades mean no patching. Edge/failure: what&#x27;s zero-ops is infrastructure, not cost — auto-clustering, warehouse sizing, and Time Travel retention are all paid knobs; nobody managing it doesn&#x27;t mean nobody pays the bill. Source: official docs + community consensus.</li>
+<li><strong>Elasticity and concurrency isolation: peak seasons don&#x27;t interfere</strong> Why it&#x27;s true: warehouses start/stop/resize independently; multi-cluster warehouses auto-scale with concurrency; ETL, BI, and ad-hoc each get their own warehouse so slow queries can&#x27;t kill someone else&#x27;s dashboard. Edge/failure: what&#x27;s isolated is performance, not cost — every warehouse burns credits independently; warehouse sprawl (one always-on large warehouse per team) is the #1 bill-explosion cause. Source: official docs + community consensus.</li>
+<li><strong>Engineering happiness from Time Travel/cloning</strong> Why it&#x27;s true: <code>UNDROP</code> for dropped tables, <code>AT</code> for history, second-level cloning of test environments — data engineers consistently describe it as &quot;can&#x27;t go back&quot;; pipeline debugging cost drops off a cliff. Edge/failure: happiness is billed by storage volume; 90-day retention on daily-full-refresh tables can make Time Travel storage multiples of the table itself. Source: official docs + community consensus.</li>
+<li><strong>Silky semi-structured handling</strong> Why it&#x27;s true: VARIANT + schema-on-read — JSON logs COPY in and are queryable immediately, <code>FLATTEN</code> unpacks nesting; iteration speed is an order of magnitude faster than &quot;define schema first&quot; warehouses. Edge/failure: weaker query performance and cost than typed columns; deeply nested VARIANT at extreme scale amplifies scans. Source: official docs + community consensus.</li>
+<li><strong>Most mature dbt seat</strong> Why it&#x27;s true: dbt-snowflake is among the most mature adapters; Dynamic Tables pair well with dbt incremental models; Fivetran/Airbyte one-click ELT — the default choice of the modern data stack. Edge/failure: dbt full-refresh models are big credit killers on Snowflake — incremental strategy must match; MDS tool subscriptions stack on top of the Snowflake bill, so total cost of ownership must be counted together. Source: community consensus.</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="吐槽清单" data-en="Complaints">吐槽清单</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>分类</th><th>吐槽</th><th>影响版本</th><th>状态</th></tr></thead>
+<tbody>
+<tr><td>成本</td><td>credit 消费不可预测：仓库蔓延、自动挂起延迟、60 秒计费下限叠加，账单经常超预期 30–50%</td><td>全版本</td><td>open</td></tr>
+<tr><td>成本</td><td>自动聚簇（Automatic Clustering）持续烧 credit，大表 clustering key 选错等于交&quot;聚簇税&quot;</td><td>全版本</td><td>open</td></tr>
+<tr><td>成本</td><td>Snowpipe / Snowpipe Streaming 的 serverless 摄入成本不透明，重度实时摄入可能接近仓库开销</td><td>全版本</td><td>open</td></tr>
+<tr><td>成本</td><td>Cortex AI 按 token 计费，单查询可烧掉数千美元（社区有 11.8 亿条记录 ≈ $5K 的案例），且无成熟预算熔断</td><td>Cortex 相关</td><td>open</td></tr>
+<tr><td>成本</td><td>云服务层&quot;超日 10% 才计费&quot;——重度用户（大量小查询/元数据操作）会稳定超过阈值被收费</td><td>全版本</td><td>open</td></tr>
+<tr><td>锁定</td><td>专有微分区格式：迁出要重写全部数据 + 重写 SQL，社区口径迁移项目 6–12 个月；Iceberg 支持缓解但未根除</td><td>全版本</td><td>partially-fixed</td></tr>
+<tr><td>部署</td><td>SaaS-only，无 on-prem/私有云/专有云选项；数据主权敏感行业一票否决</td><td>全版本</td><td>open</td></tr>
+<tr><td>小查询</td><td>60 秒计费下限：频繁启停查小数据，可能比常开更贵（反直觉）</td><td>全版本</td><td>open</td></tr>
+<tr><td>流</td><td>流式能力仍在成熟中：Snowpipe/Stream 重度实时场景常需外部 ETL 补，端到端延迟与成本不如 Flink 系</td><td>全版本</td><td>partially-fixed</td></tr>
+<tr><td>合规</td><td>FedRAMP High 暂无，联邦高合规场景有天花板；Cortex/Streaming 在政府版覆盖不全</td><td>政府版相关</td><td>open</td></tr>
+<tr><td>可观测</td><td>官方成本归因弱：&quot;这条查询花了多少钱&quot;要靠第三方 FinOps 工具</td><td>全版本</td><td>open</td></tr>
+<tr><td>事务</td><td>仅 READ COMMITTED，无可串行化；别拿它当 OLTP</td><td>全版本</td><td>open</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Category</th><th>Complaint</th><th>Affected versions</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Cost</td><td>Unpredictable credit burn: warehouse sprawl, auto-suspend delays, and the 60-second billing minimum stack up; bills routinely exceed expectations by 30–50%</td><td>All</td><td>open</td></tr>
+<tr><td>Cost</td><td>Automatic Clustering burns credits continuously; wrong clustering key on a big table = paying a &quot;clustering tax&quot;</td><td>All</td><td>open</td></tr>
+<tr><td>Cost</td><td>Snowpipe / Snowpipe Streaming serverless ingestion costs are opaque; heavy real-time ingestion can rival warehouse spend</td><td>All</td><td>open</td></tr>
+<tr><td>Cost</td><td>Cortex AI billed per token — a single query can burn thousands of dollars (community case: ~$5K for 1.18B records) with no mature budget circuit-breaker</td><td>Cortex-related</td><td>open</td></tr>
+<tr><td>Cost</td><td>Cloud services layer &quot;free up to 10% of daily compute&quot; — heavy users (many small queries/metadata ops) consistently exceed the threshold and get billed</td><td>All</td><td>open</td></tr>
+<tr><td>Lock-in</td><td>Proprietary micro-partition format: leaving means rewriting all data + rewriting SQL; community cites 6–12 month migration projects; Iceberg support mitigates but doesn&#x27;t eliminate</td><td>All</td><td>partially-fixed</td></tr>
+<tr><td>Deployment</td><td>SaaS-only, no on-prem/private-cloud/sovereign option; a one-vote veto for data-sovereignty industries</td><td>All</td><td>open</td></tr>
+<tr><td>Small queries</td><td>60-second billing minimum: frequent start-stop tiny queries can cost more than leaving the warehouse on (counter-intuitive)</td><td>All</td><td>open</td></tr>
+<tr><td>Streaming</td><td>Streaming still maturing: Snowpipe/Streams for heavy real-time often need external ETL supplementation; end-to-end latency and cost trail Flink-class systems</td><td>All</td><td>partially-fixed</td></tr>
+<tr><td>Compliance</td><td>No FedRAMP High yet — a ceiling for top-tier federal compliance; Cortex/Streaming coverage incomplete in the government edition</td><td>Gov-related</td><td>open</td></tr>
+<tr><td>Observability</td><td>Weak official cost attribution: &quot;how much did this query cost&quot; needs third-party FinOps tools</td><td>All</td><td>open</td></tr>
+<tr><td>Transactions</td><td>READ COMMITTED only, no serializable; don&#x27;t use it as OLTP</td><td>All</td><td>open</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="判决" data-en="Verdict">判决</span></h2>
+<div class="lang-block lang-zh">
+<p><strong>适合谁</strong>：云上 ELT 分析主力仓——BI 报表、ad-hoc 分析、数据共享/交易、半结构化日志分析；团队愿意为&quot;零运维 + 弹性&quot;付 SaaS 溢价，且有 FinOps 纪律（配额、熔断、分级保留期）；需要跨云/跨区统一 SQL 的多雲组织。</p>
+<p><strong>不适合谁</strong>：数据主权要求 on-prem/私有化的行业；成本极度敏感且无专人做 FinOps 的团队（账单会教育你）；高频小查询/OLTP/超低延迟实时场景；FedRAMP High 等顶级联邦合规；指望&quot;一个平台搞定流计算+ML 训练&quot;的团队（Cortex 是 SQL 内 AI，不是训练平台）。</p>
+<p><strong>迁移成本</strong>：中等。SQL 方言迁移相对平滑（ANSI 兼容），真正的成本在三处：(1) 计费心智重构——从&quot;买机器&quot;到&quot;管 credit&quot;；(2) 建模调整——VARIANT  schema-on-read 与聚簇/保留期策略；(3) 生态链路——dbt/Fivetran/BI 重新对接。从传统数仓（Teradata/Oracle）迁来，最大的坑是把&quot;常开大机&quot;的习惯带过来。</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<p><strong>Good for</strong>: cloud ELT analytics workhorses — BI reporting, ad-hoc analysis, data sharing/monetization, semi-structured log analysis; teams willing to pay the SaaS premium for &quot;zero ops + elasticity&quot; and able to maintain FinOps discipline (quotas, circuit breakers, tiered retention); multi-cloud organizations needing one SQL across clouds/regions.</p>
+<p><strong>Not for</strong>: industries requiring on-prem/private cloud for data sovereignty; extremely cost-sensitive teams without dedicated FinOps (the bill will educate you); high-frequency small queries / OLTP / ultra-low-latency real-time; top-tier federal compliance (FedRAMP High); teams expecting one platform to cover stream processing + ML training (Cortex is in-SQL AI, not a training platform).</p>
+<p><strong>Migration cost</strong>: medium. SQL dialect migration is relatively smooth (ANSI-compatible); the real costs are threefold: (1) billing mindset rebuild — from &quot;buying machines&quot; to &quot;managing credits&quot;; (2) modeling adjustments — VARIANT schema-on-read plus clustering/retention strategy; (3) ecosystem rewiring — dbt/Fivetran/BI reconnection. Migrating from traditional warehouses (Teradata/Oracle), the biggest trap is bringing the &quot;always-on big box&quot; habit along.</p>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="附录" data-en="Appendix">附录</span></h2>
+<div class="lang-block lang-zh">
+<blockquote>
+<p>写法要求：每条 = 为什么是真的 + 边缘与失效条件 + 来源。</p>
+</blockquote>
+<ol>
+<li><strong>零运维：没有索引、分区、 vacuum 要管</strong> 为什么是真的：微分区自动切分、自动聚簇、自动压缩，DBA 的传统三件套（建索引、调分区、做 vacuum）在 Snowflake 里不存在；SaaS 滚动升级，用户不打补丁。 边缘与失效条件：零运维的是&quot;基础设施&quot;，不是&quot;成本&quot;——自动聚簇、仓库选型、Time Travel 保留期全是花钱的旋钮；没人管不等于没人付账单。 来源：官方文档 + 社区共识。</li>
+<li><strong>弹性与并发隔离：大促/月结互不干扰</strong> 为什么是真的：仓库独立启停升降配，多集群仓库按并发自动扩；ETL、BI、ad-hoc 各用各的仓库，慢查询拖不死别人的大盘。 边缘与失效条件：隔离的是性能，不是成本——每个仓库独立烧 credit；仓库蔓延（每团队一个常开大仓库）是账单爆炸的头号原因。 来源：官方文档 + 社区共识。</li>
+<li><strong>Time Travel/克隆带来的工程幸福感</strong> 为什么是真的：误删表 <code>UNDROP</code>、查历史 <code>AT</code>、秒级克隆出测试环境——数据工程师第一次用都有&quot;回不去了&quot;的感觉；pipeline 调试成本断崖下降。 边缘与失效条件：幸福感按存储量计费；90 天保留 + 每日全量刷新的表，Time Travel 存储可能超过表本身数倍。 来源：官方文档 + 社区共识。</li>
+<li><strong>半结构化处理丝滑</strong> 为什么是真的：VARIANT + schema-on-read，JSON 日志直接 COPY 进来就能查，<code>FLATTEN</code> 展开嵌套；对比传统数仓&quot;先定 schema 再进数&quot;，迭代速度快一个数量级。 边缘与失效条件：查询性能与成本弱于强类型列；VARIANT 套 VARIANT 的深层嵌套在超大规模下会放大扫描。 来源：官方文档 + 社区共识。</li>
+<li><strong>dbt 生态位最成熟</strong> 为什么是真的：dbt-snowflake 适配器最成熟，Dynamic Tables 与 dbt 增量模型配合好；Fivetran/Airbyte 一键 ELT，现代数据栈（MDS）的默认选项。 边缘与失效条件：dbt 全量刷新（full-refresh）模型在 Snowflake 上是大 credit 杀手，增量策略必须配对；MDS 工具链的订阅费叠加 Snowflake 账单，总拥有成本要一起算。 来源：社区共识。</li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="来源与待验证清单" data-en="Sources & to-be-verified">来源与待验证清单</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li>官方文档：Snowflake 文档（仓库、Time Travel、克隆、Stream/Task、Dynamic Tables、Snowpipe、Iceberg 表、计费）。</li>
+<li>厂商口径：Gen-2 仓库博客（2025-03）、Iceberg 全支持发布（2025-04）、Cortex 定价页。</li>
+<li>社区实践：FinOps 优化清单（warehouse sizing、resource monitor、transient 表）、SnowPro 备考笔记（架构/协作域）、dbt-Snowflake 实践。</li>
+<li>第三方分析：Snowflake vs BigQuery/Databricks 成本对比（2026）、Cortex 单查询 $5K 案例（2025-10）。</li>
+<li>本轮明确未覆盖：VPS 版细节、国测/信创相关信息——标待验证，未写入结论。</li>
+<li>v1.0（2026-09-29）：首版建档。<code>last_reviewed: 2026-09-29</code>，评审基线：SaaS 持续交付（Gen-2 仓库为新账户默认）。</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li>Official docs: Snowflake documentation (warehouses, Time Travel, cloning, Streams/Tasks, Dynamic Tables, Snowpipe, Iceberg tables, billing).</li>
+<li>Vendor claims: Gen-2 warehouse blog (Mar 2025), Iceberg full-support announcement (Apr 2025), Cortex pricing page.</li>
+<li>Community practice: FinOps optimization checklists (warehouse sizing, resource monitors, transient tables), SnowPro exam notes (architecture/collaboration domains), dbt-Snowflake practice.</li>
+<li>Third-party analysis: Snowflake vs BigQuery/Databricks cost comparisons (2026), Cortex $5K single-query case (Oct 2025).</li>
+<li>Explicitly not covered this round: VPS edition details, China &quot;XinChuang&quot;/compliance specifics — marked to-be-verified, no conclusions written.</li>
+<li>v1.0 (2026-09-29): first edition. <code>last_reviewed: 2026-09-29</code>, review baseline: SaaS continuous delivery (Gen-2 warehouses default for new accounts).</li>
+</ul>
+</div>
+</section>
+</main>
+<footer class="footer">
+  <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
+</footer>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

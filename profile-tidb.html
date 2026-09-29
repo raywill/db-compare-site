@@ -13,8 +13,8 @@
     <nav class="mainnav">
 <a href="index.html" class="active" data-zh="首页" data-en="Home">首页</a>
 <a href="compare.html" class="" data-zh="维度对比" data-en="Compare">维度对比</a>
-<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
 <a href="advisor.html" class="" data-zh="AI选型" data-en="AI Selection">AI选型</a>
+<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
     </nav>
     <div class="cmp-tray">
       <button id="cmp-tray-btn" type="button" class="tray-btn" aria-expanded="false" aria-haspopup="true"><span data-zh="对比" data-en="Compare">对比</span> <b class="tray-count"><i id="cmp-count">0</i>/4</b></button>
@@ -82,22 +82,75 @@
 </table></div>
 </div>
 </section>
-<section class="doc-section"><h2><span data-zh="硬维度（14 项）" data-en="Hard dimensions (14)">硬维度（14 项）</span></h2>
+<section class="doc-section"><h2><span data-zh="硬维度（19 项）" data-en="Hard dimensions (19)">硬维度（19 项）</span></h2>
 <div class="lang-block lang-zh">
 <div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-yes">有（需逐组件开启）</span></h3><div class="dim-body"><p><strong>有（需逐组件开启）</strong>——TiKV 静态加密（v4.0+，AES-CTR 加密数据文件，主密钥经 AWS KMS 或本地文件提供，数据密钥自动轮换）；TiFlash / PD / BR 各有加密支持，&quot;全覆盖&quot;需逐组件配置。证据：官方 encryption-at-rest 文档（v7.5）。</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——TLS。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">3</span> 审计 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——TiDB Server 内置审计日志（<code>enable-audit</code> 开关，JSON 格式记录 SQL/登录事件）存在，见社区部署实践；<strong>细粒度合规审计能力与 TiDB Cloud 审计边界未找到可靠官方证据</strong>，本轮不下&quot;完整支持&quot;结论。证据：<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>（CSDN 部署实践），官方文档待复核。</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">4</span> 认证与权限 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——兼容 MySQL：用户/密码认证、GRANT/REVOKE 权限体系、角色（CREATE ROLE）；支持 SSL 客户端证书。<strong>LDAP/Kerberos 等外部认证支持情况未找到可靠证据</strong>。证据：官方兼容性文档逐项 + 社区共识。</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">5</span> 备份恢复 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——BR 快照物理备份、TiCDC 增量同步、Lightning 导入；GC safepoint 保障一致性备份。但快照备份慢（社区案例备份 &gt;8h）、恢复会占满集群资源（官方建议恢复到新集群）。证据：官方文档 + 社区实测。</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">6</span> 大版本升级 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——TiUP 滚动升级；<strong>原地升级不支持回退</strong>（查证：官方 FAQ 与社区实践一致）；跨大版本需递增升级；社区主流改用&quot;迁移升级&quot;（搭新集群 + TiCDC 同步，代价是双倍机器）。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（upgrade-tidb-using-tiup.md）+ 社区实测。</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">7</span> 可观测性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——TiDB Dashboard（热力图、Top SQL、慢查询）、Grafana 全套看板（PD TSO、Raft、TiFlash-Summary）、<code>ADMIN SHOW DDL JOBS</code>。证据：官方文档 + 社区共识。</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">8</span> 连接模型 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——TiDB Server 无状态接入（MySQL 协议 4000 端口），客户端直连或经 LB/代理；连接池通常靠应用或外部代理实现。<strong>官方 TiProxy 组件的细节未独立核实</strong>，待验证。证据：官方文档 + 社区共识。</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">9</span> 事务与隔离级别 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——Percolator 分布式事务，SI/RC 隔离级别（乐观事务默认，可切悲观 <code>tidb_txn_mode=&#x27;pessimistic&#x27;</code>）；单行 ≤6MB、单事务默认 ≤100MB（v8.0 bulk DML 可绕过）。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（transaction-overview.md）+ 社区共识。</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">10</span> 复制与一致性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——Multi-Raft（每 Region 一个 Raft Group），默认 3 副本强一致；官方口径 RPO=0、RTO≤30 秒（故障自动切换，非备份恢复——厂商口径）。证据：官方口径。</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">11</span> 扩展方式 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——原生 scale-out；计算（TiDB Server）与存储（TiKV）可独立扩缩，SQL 层无状态。证据：官方口径 + 社区共识。</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">12</span> 兼容性 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——MySQL 5.7 协议/语法高度兼容；官方兼容性矩阵明确列出<strong>不支持</strong>：存储过程/函数、触发器、事件、全文索引、GIS、XA、<code>CREATE TABLE AS SELECT</code>、<code>SKIP LOCKED</code> 等。证据：官方兼容性文档逐项。</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">13</span> 许可证与商业模式 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——Apache 2.0 全开源，内核无功能阉割；商业化 = PingCAP 订阅服务（技术支持/SLA），官方路线图脚注明确&quot;不同订阅版本功能可能有所不同&quot;，具体矩阵待验证。证据：官方口径。</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">14</span> 中文资料丰富度 <span class="verdict v-yes">有（丰富）</span></h3><div class="dim-body"><p><strong>有（丰富）</strong>——官方中文文档、AskTUG 社区、CSDN/掘金大量实践帖；英文资料同样丰富，出海友好。证据：<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> 可观测性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——TiDB Dashboard（热力图、Top SQL、慢查询）、Grafana 全套看板（PD TSO、Raft、TiFlash-Summary）、<code>ADMIN SHOW DDL JOBS</code>。证据：官方文档 + 社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> 连接模型 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——TiDB Server 无状态接入（MySQL 协议 4000 端口），客户端直连或经 LB/代理；连接池通常靠应用或外部代理实现。<strong>官方 TiProxy 组件的细节未独立核实</strong>，待验证。证据：官方文档 + 社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> 事务与隔离级别 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——Percolator 分布式事务，SI/RC 隔离级别（乐观事务默认，可切悲观 <code>tidb_txn_mode=&#x27;pessimistic&#x27;</code>）；单行 ≤6MB、单事务默认 ≤100MB（v8.0 bulk DML 可绕过）。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（transaction-overview.md）+ 社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> 复制与一致性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——Multi-Raft（每 Region 一个 Raft Group），默认 3 副本强一致；官方口径 RPO=0、RTO≤30 秒（故障自动切换，非备份恢复——厂商口径）。证据：官方口径。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> 扩展方式 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——原生 scale-out；计算（TiDB Server）与存储（TiKV）可独立扩缩，SQL 层无状态。证据：官方口径 + 社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> 兼容性 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——MySQL 5.7 协议/语法高度兼容；官方兼容性矩阵明确列出<strong>不支持</strong>：存储过程/函数、触发器、事件、全文索引、GIS、XA、<code>CREATE TABLE AS SELECT</code>、<code>SKIP LOCKED</code> 等。证据：官方兼容性文档逐项。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> 许可证与商业模式 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——Apache 2.0 全开源，内核无功能阉割；商业化 = PingCAP 订阅服务（技术支持/SLA），官方路线图脚注明确&quot;不同订阅版本功能可能有所不同&quot;，具体矩阵待验证。证据：官方口径。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> 中文资料丰富度 <span class="verdict v-yes">有（丰富）</span></h3><div class="dim-body"><p><strong>有（丰富）</strong>——官方中文文档、AskTUG 社区、CSDN/掘金大量实践帖；英文资料同样丰富，出海友好。证据：<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> 性能与延迟特征 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（分布式 HTAP；OLTP 延迟高于单机）。</p>
+<ul>
+<li>TPC-C 分布式纪录<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>；加 TiKV 节点即扩展 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>分布式事务 2PC：跨分片写入延迟明显高于单机 MySQL，单分片小事务接近单机水平 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>TiFlash 列存副本加速分析查询，一套集群跑 HTAP <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">15</span> 合规与认证 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（信通院可信云；分布式事务库测评）。</p>
+<ul>
+<li>通过中国信通院可信云、分布式事务型数据库能力测评<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span><span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>信创名录/集采目录版本以 PingCAP 官方公告为准 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>TiDB Cloud（海外）走国际合规体系，以公开页为准 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">16</span> 成熟度与社区生态 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（2015 年开源；分布式开源标杆）。</p>
+<ul>
+<li>2015 年开源（PingCAP）；现 7.x/8.x 代 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>GitHub stars 数万级，CNCF 毕业项目，社区活跃 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>商业公司 PingCAP 持续融资与投入；HTAP 与云是增长方向 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">17</span> 标杆用户 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（美团/知乎/小米等互联网与金融）。</p>
+<ul>
+<li>美团、知乎、小米等互联网公司公开案例<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span><span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>金融：部分银行核心/外围系统 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>海外：日本 PayPay 等<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span><span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">18</span> 生态工具链 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（BR/Dumpling/Lightning/DM/TiCDC；监控内置）。</p>
+<ul>
+<li>备份恢复：BR；逻辑：Dumpling/Lightning；迁移：DM（MySQL→TiDB）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>CDC：TiCDC（到 Kafka/下游 TiDB）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>监控：Prometheus + Grafana 内置 Dashboard，开箱即用 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">19</span> 云托管与 Serverless <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（TiDB Cloud（Serverless/Dedicated））。</p>
+<ul>
+<li>TiDB Cloud Serverless（按量）/ Dedicated（独享）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>覆盖 AWS/GCP，国内走腾讯云/阿里云 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>自建与云 API 一致，迁移顺滑 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">20</span> 数据接入与摄入 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（TiDB Lightning（物理/逻辑）；Dumpling；BR）。</p>
+<ul>
+<li>Lightning 物理导入模式（SST 直写）TB 级最快 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Dumpling 逻辑导出；BR 做备份恢复 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Lightning 逻辑模式兼容 mydumper 文件 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">21</span> 外部数据访问 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（Lightning 可从 S3/Parquet 导入；无联邦查询）。</p>
+<ul>
+<li>Lightning 支持从 S3/GCS 读 Parquet/CSV 导入 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无外部表/FDW 语义，跨源查询要先入 TiDB <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>实时联邦场景一般用 Doris/StarRocks 外表代替 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">22</span> CDC 与下游同步 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（TiCDC：Kafka/MySQL 下游一等公民）。</p>
+<ul>
+<li>TiCDC 捕获 TiKV 变更推到 Kafka/MySQL/Pulsar/对象存储 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>支持 Avro/Canal-JSON 等协议 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>大事务与 changefeed 延迟监控是运维重点 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
 <div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported (must be enabled per component)</strong> — TiKV encryption at rest (v4.0+, AES-CTR on data files, master key via AWS KMS or a local file, data keys auto-rotated); TiFlash / PD / BR each have their own encryption support — &quot;full coverage&quot; requires per-component configuration. Evidence: official encryption-at-rest docs (v7.5).</p></div></div>
@@ -105,15 +158,68 @@
 <div class="dim-item"><h3><span class="dim-num">3</span> Auditing <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — TiDB Server&#x27;s built-in audit log (<code>enable-audit</code> switch, JSON-format logging of SQL/login events) exists per community deployment practices; <strong>no reliable official evidence found for fine-grained compliance auditing capabilities and the TiDB Cloud auditing boundary</strong> — this round does not conclude &quot;full support.&quot; Evidence: community consensus (CSDN deployment practices), official docs pending re-verification.</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">4</span> Authentication &amp; authorization <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — MySQL-compatible: username/password authentication, GRANT/REVOKE permission system, roles (<code>CREATE ROLE</code>); SSL client certificates supported. <strong>No reliable evidence found for external authentication such as LDAP/Kerberos</strong>. Evidence: official compatibility docs (item by item) + community consensus.</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">5</span> Backup &amp; recovery <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — BR snapshot physical backups, TiCDC incremental replication, Lightning imports; GC safepoint guarantees consistent backups. Caveat: snapshot backups are slow (community case: backup &gt;8h) and restores saturate cluster resources (official guidance: restore to a new cluster). Evidence: official docs + community-tested.</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">6</span> Major-version upgrades <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — TiUP rolling upgrades; <strong>in-place upgrades do not support rollback</strong> (confirmed: official FAQ and community practice agree); cross-major-version upgrades must go incrementally; the community mainstream has switched to &quot;migration-based upgrades&quot; (new cluster + TiCDC sync, at the cost of double the machines). Evidence: official docs (upgrade-tidb-using-tiup.md) + community-tested.</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">7</span> Observability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — TiDB Dashboard (heatmaps, Top SQL, slow queries), full Grafana dashboard set (PD TSO, Raft, TiFlash-Summary), <code>ADMIN SHOW DDL JOBS</code>. Evidence: official docs + community consensus.</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">8</span> Connection model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — stateless access via TiDB Server (MySQL protocol, port 4000); clients connect directly or via LB/proxy; connection pooling is typically handled by the application or an external proxy. <strong>Details of the official TiProxy component have not been independently verified</strong> — to-be-verified. Evidence: official docs + community consensus.</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">9</span> Transactions &amp; isolation levels <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — Percolator distributed transactions, SI/RC isolation levels (optimistic transactions by default; switchable to pessimistic with <code>tidb_txn_mode=&#x27;pessimistic&#x27;</code>); single row ≤6MB, single transaction ≤100MB by default (v8.0 bulk DML bypasses this). Evidence: official docs (transaction-overview.md) + community consensus.</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">10</span> Replication &amp; consistency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — Multi-Raft (one Raft Group per Region), 3 replicas by default for strong consistency; official claim RPO=0, RTO≤30s (automatic failover on failure, not backup restore — vendor claim). Evidence: vendor claim.</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">11</span> Scaling <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — native scale-out; compute (TiDB Server) and storage (TiKV) scale independently; the SQL layer is stateless. Evidence: vendor claim + community consensus.</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">12</span> Compatibility <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — high MySQL 5.7 protocol/syntax compatibility; the official compatibility matrix explicitly lists as <strong>unsupported</strong>: stored procedures/functions, triggers, events, full-text indexes, GIS, XA, <code>CREATE TABLE AS SELECT</code>, <code>SKIP LOCKED</code>, etc. Evidence: official compatibility docs (item by item).</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">13</span> License &amp; business model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — Apache 2.0 fully open source, kernel not feature-crippled; commercialization = PingCAP subscription services (support/SLA); the official roadmap footnote states &quot;features may vary across subscription tiers&quot; — exact matrix to-be-verified. Evidence: vendor claim.</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">14</span> Chinese-language resources <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported (rich)</strong> — official Chinese docs, AskTUG community, many hands-on posts on CSDN/Juejin; English resources equally rich, friendly to teams expanding overseas. Evidence: community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> Observability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — TiDB Dashboard (heatmaps, Top SQL, slow queries), full Grafana dashboard set (PD TSO, Raft, TiFlash-Summary), <code>ADMIN SHOW DDL JOBS</code>. Evidence: official docs + community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> Connection model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — stateless access via TiDB Server (MySQL protocol, port 4000); clients connect directly or via LB/proxy; connection pooling is typically handled by the application or an external proxy. <strong>Details of the official TiProxy component have not been independently verified</strong> — to-be-verified. Evidence: official docs + community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> Transactions &amp; isolation levels <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — Percolator distributed transactions, SI/RC isolation levels (optimistic transactions by default; switchable to pessimistic with <code>tidb_txn_mode=&#x27;pessimistic&#x27;</code>); single row ≤6MB, single transaction ≤100MB by default (v8.0 bulk DML bypasses this). Evidence: official docs (transaction-overview.md) + community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> Replication &amp; consistency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — Multi-Raft (one Raft Group per Region), 3 replicas by default for strong consistency; official claim RPO=0, RTO≤30s (automatic failover on failure, not backup restore — vendor claim). Evidence: vendor claim.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> Scaling <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — native scale-out; compute (TiDB Server) and storage (TiKV) scale independently; the SQL layer is stateless. Evidence: vendor claim + community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> Compatibility <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — high MySQL 5.7 protocol/syntax compatibility; the official compatibility matrix explicitly lists as <strong>unsupported</strong>: stored procedures/functions, triggers, events, full-text indexes, GIS, XA, <code>CREATE TABLE AS SELECT</code>, <code>SKIP LOCKED</code>, etc. Evidence: official compatibility docs (item by item).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> License &amp; business model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — Apache 2.0 fully open source, kernel not feature-crippled; commercialization = PingCAP subscription services (support/SLA); the official roadmap footnote states &quot;features may vary across subscription tiers&quot; — exact matrix to-be-verified. Evidence: vendor claim.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> Chinese-language resources <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported (rich)</strong> — official Chinese docs, AskTUG community, many hands-on posts on CSDN/Juejin; English resources equally rich, friendly to teams expanding overseas. Evidence: community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> Performance &amp; latency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (distributed HTAP; OLTP latency above single-node).</p>
+<ul>
+<li>Distributed TPC-C record <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>; add TiKV nodes to scale <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>Distributed 2PC transactions: cross-shard write latency clearly above single-node MySQL; single-shard small transactions close to single-node <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>TiFlash columnar replicas accelerate analytical queries — HTAP on one cluster <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">15</span> Compliance &amp; certifications <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (CAICT Trusted Cloud; distributed-transaction DB testing).</p>
+<ul>
+<li>Passed CAICT Trusted Cloud and distributed-transactional-database capability tests <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>Trusted-innovation catalog / procurement listing status per PingCAP&#x27;s official announcements <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>TiDB Cloud (overseas) follows international compliance per its public pages <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">16</span> Maturity &amp; community <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (open-sourced 2015; the distributed open-source benchmark).</p>
+<ul>
+<li>Open-sourced 2015 (PingCAP); now generations 7.x/8.x <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Tens of thousands of GitHub stars; CNCF graduated project with an active community <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>PingCAP keeps raising and investing; HTAP and cloud are the growth bets <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">17</span> Notable adopters <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Meituan/Zhihu/Xiaomi; internet and finance).</p>
+<ul>
+<li>Public internet-company cases: Meituan, Zhihu, Xiaomi, etc. <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>Finance: core/peripheral systems at some banks <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>Overseas: PayPay (Japan) and others <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">18</span> Ecosystem tooling <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (BR/Dumpling/Lightning/DM/TiCDC; monitoring built in).</p>
+<ul>
+<li>Backup/restore: BR; logical: Dumpling/Lightning; migration: DM (MySQL→TiDB) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>CDC: TiCDC (to Kafka/downstream TiDB) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Monitoring: built-in Prometheus + Grafana dashboards, ready out of the box <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">19</span> Managed &amp; serverless <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (TiDB Cloud (Serverless/Dedicated)).</p>
+<ul>
+<li>TiDB Cloud Serverless (pay-per-use) / Dedicated <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>On AWS/GCP; in China via Tencent/Alibaba Cloud <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Self-hosted and cloud share APIs for smooth migration <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">20</span> Data ingestion <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (TiDB Lightning (physical/logical); Dumpling; BR).</p>
+<ul>
+<li>Lightning physical-import mode (direct SST writes) is fastest at TB scale <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Dumpling for logical export; BR for backup/restore <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Lightning logical mode accepts mydumper-format files <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">21</span> External data access <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (Lightning imports from S3/Parquet; no federated queries).</p>
+<ul>
+<li>Lightning imports Parquet/CSV from S3/GCS <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No external-table/FDW semantics; cross-source queries must land in TiDB first <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Real-time federation scenarios usually use Doris/StarRocks external tables instead <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">22</span> CDC &amp; downstream <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (First-class TiCDC to Kafka/MySQL).</p>
+<ul>
+<li>TiCDC captures TiKV changes into Kafka/MySQL/Pulsar/object storage <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Avro/Canal-JSON and other protocols supported <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Monitoring changefeed lag on huge transactions is an ops priority <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
 </div>
 </section>
 <section class="doc-section">
@@ -528,7 +634,7 @@
 <footer class="footer">
   <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
 </footer>
-<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
 
 <script src="assets/app.js"></script>
 </body>

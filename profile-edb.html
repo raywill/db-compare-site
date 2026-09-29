@@ -13,8 +13,8 @@
     <nav class="mainnav">
 <a href="index.html" class="active" data-zh="首页" data-en="Home">首页</a>
 <a href="compare.html" class="" data-zh="维度对比" data-en="Compare">维度对比</a>
-<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
 <a href="advisor.html" class="" data-zh="AI选型" data-en="AI Selection">AI选型</a>
+<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
     </nav>
     <div class="cmp-tray">
       <button id="cmp-tray-btn" type="button" class="tray-btn" aria-expanded="false" aria-haspopup="true"><span data-zh="对比" data-en="Compare">对比</span> <b class="tray-count"><i id="cmp-count">0</i>/4</b></button>
@@ -80,22 +80,75 @@
 </table></div>
 </div>
 </section>
-<section class="doc-section"><h2><span data-zh="硬维度（14 项）" data-en="Hard dimensions (14)">硬维度（14 项）</span></h2>
+<section class="doc-section"><h2><span data-zh="硬维度（19 项）" data-en="Hard dimensions (19)">硬维度（19 项）</span></h2>
 <div class="lang-block lang-zh">
 <div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——EPAS/PGE 15+ 内核级 TDE（数据文件 + WAL + 查询临时文件，对应用透明；密钥可经 PGDATAKEYWRAPCMD/UNWRAPCMD 对接外部 KMS）；initdb 时决定，事后难改。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（2026-09-28 查阅）。</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——TLS/SSL（继承 PG 机制，<code>ssl=on</code> + 证书配置）。证据：<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>（PG 机制沿用），官方文档待逐项复核。</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">3</span> 审计 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——<code>edb_audit</code>（xml/csv 输出）+ <code>edb_audit_statement</code>（ddl/dml/select/set/rollback/error 可按库/角色/库+角色粒度配置）+ <code>edb_audit_connect/disconnect</code> 完整审计参数体系。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（EPAS 13/14 审计日志章节，厂商口径）。</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">4</span> 认证与权限 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——继承 PG 认证体系（密码/SCRAM/证书/LDAP 等 via pg_hba）与角色权限模型；<strong>EPAS 专有增强（password_profiles 等）的完整矩阵未独立验证</strong>。证据：社区共识 + 待验证。</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">5</span> 备份恢复 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——物理备份（pgBackRest/Barman；BART 在 PG/EPAS 14+ 已退役）+ 逻辑备份 + WAL 归档 PITR；对 TDE 需按 pgBackRest 官方文档调参（关 <code>archive-header-check</code> 与 <code>checksum-page</code>）。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> + pgBackRest 官方文档。</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">6</span> 大版本升级 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——<code>pg_upgrade</code>（<code>--link</code> 硬链接，停机分钟级）；逻辑复制平滑切换；dump/restore。商业增强本身可成为升级 blocker（PGE 18.2.0 password_profiles 致 pg_upgrade 失败个案）；<strong>无</strong>官方原地回退（继承 PG，查证为无）。证据：官方 release notes<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>+ 社区共识。</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">7</span> 可观测性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——PEM（Postgres Enterprise Manager）商业管控平台；继承 PG <code>pg_stat_*</code> 视图族与 <code>pg_stat_statements</code>。用户反馈默认监控能力仍不足（PeerSpot）。证据：<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> + 用户评价。</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">8</span> 连接模型 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——继承 PG 进程模型（每连接一个后端 OS 进程），高并发需池化（深水区五）；EDB 官方安装介质自带 pgBouncer 包（<code>ppaspgbouncer16</code>），PEM 有 pgBouncer 配置指南。证据：官方安装指南<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>+ 社区共识。</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">9</span> 事务与隔离级别 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——单机 EPAS 继承 PostgreSQL 的 MVCC 与三档隔离级别（Read Committed/Repeatable Read/Serializable）；DDL 事务性同 PG。PGD 多主为最终一致语义，<strong>不是</strong>跨节点强一致事务的替代品。证据：PG 社区共识 + 官方口径。</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">10</span> 复制与一致性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——流复制主备（EFM 管理自动故障转移）；逻辑复制；PGD 多主（异步/最终收敛，带冲突管理）。证据：官方口径 + 第三方分析。</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">11</span> 扩展方式 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——纵向扩展 + 读副本/分区表为主；PGD 提供多主写入扩展，但语义代价高（见深水区八）。证据：官方口径 + 第三方分析。</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">12</span> 兼容性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——PostgreSQL 协议/生态兼容；EPAS 另有 Oracle 兼容模式（SPL、Oracle 数据类型/SQL/数据字典视图、MERGE、OCI/OCL 互操作），语义缺口见深水区一、二。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">13</span> 许可证与商业模式 <span class="verdict v-yes">有（商业订阅）</span></h3><div class="dim-body"><p><strong>有（商业订阅）</strong>——按 <code>uniCore</code>（物理核或分配给 VM 的 vCore/vCPU）或 <code>Server</code> 计量，以订单为准；非永久授权，订阅到期即失去商业软件使用权。<strong>当前公开材料未发现可靠统一标价，按惯例询价。</strong>证据：EDB 现行订阅协议（2026-09-28 查阅，官方口径）。</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">14</span> 中文资料丰富度 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——官方文档以英文为主；国内社区实践内容明显少于 MySQL / OceanBase。证据：编辑判断（待规模化采集验证）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> 可观测性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——PEM（Postgres Enterprise Manager）商业管控平台；继承 PG <code>pg_stat_*</code> 视图族与 <code>pg_stat_statements</code>。用户反馈默认监控能力仍不足（PeerSpot）。证据：<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> + 用户评价。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> 连接模型 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——继承 PG 进程模型（每连接一个后端 OS 进程），高并发需池化（深水区五）；EDB 官方安装介质自带 pgBouncer 包（<code>ppaspgbouncer16</code>），PEM 有 pgBouncer 配置指南。证据：官方安装指南<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>+ 社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> 事务与隔离级别 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——单机 EPAS 继承 PostgreSQL 的 MVCC 与三档隔离级别（Read Committed/Repeatable Read/Serializable）；DDL 事务性同 PG。PGD 多主为最终一致语义，<strong>不是</strong>跨节点强一致事务的替代品。证据：PG 社区共识 + 官方口径。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> 复制与一致性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——流复制主备（EFM 管理自动故障转移）；逻辑复制；PGD 多主（异步/最终收敛，带冲突管理）。证据：官方口径 + 第三方分析。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> 扩展方式 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——纵向扩展 + 读副本/分区表为主；PGD 提供多主写入扩展，但语义代价高（见深水区八）。证据：官方口径 + 第三方分析。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> 兼容性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——PostgreSQL 协议/生态兼容；EPAS 另有 Oracle 兼容模式（SPL、Oracle 数据类型/SQL/数据字典视图、MERGE、OCI/OCL 互操作），语义缺口见深水区一、二。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> 许可证与商业模式 <span class="verdict v-yes">有（商业订阅）</span></h3><div class="dim-body"><p><strong>有（商业订阅）</strong>——按 <code>uniCore</code>（物理核或分配给 VM 的 vCore/vCPU）或 <code>Server</code> 计量，以订单为准；非永久授权，订阅到期即失去商业软件使用权。<strong>当前公开材料未发现可靠统一标价，按惯例询价。</strong>证据：EDB 现行订阅协议（2026-09-28 查阅，官方口径）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> 中文资料丰富度 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——官方文档以英文为主；国内社区实践内容明显少于 MySQL / OceanBase。证据：编辑判断（待规模化采集验证）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> 性能与延迟特征 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（基线即 PG；Oracle 兼容模式有转义开销）。</p>
+<ul>
+<li>EPAS 性能基线与社区 PG 一致：并行查询、分区表、分片扩展能力相同 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>Oracle 兼容模式（存储过程/包/语法转义）有额外开销，性能关键路径建议实测 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>大对象/分区等企业特性不改变单机性能上限 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">15</span> 合规与认证 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（国际认证走 EDB 厂商体系；国内靠项目测评）。</p>
+<ul>
+<li>EDB 公开 SOC2 等企业合规信息（厂商口径，以官方合规页为准）<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>中国区：无信创名录公开信息；政企项目合规以上云/本地部署测评为准 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</li>
+<li>开源 PG 部分无官方认证，见 postgresql 条目 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">16</span> 成熟度与社区生态 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（2004 年成立；PG 商业化的老玩家）。</p>
+<ul>
+<li>EnterpriseDB 2004 年成立，EPAS 主打 Oracle 兼容迁移 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>2024 年被 Bain Capital 收购私有化，战略延续性待观察 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>社区声量小于云厂商 PG，强项是传统企业迁移项目 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">17</span> 标杆用户 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（传统企业去 O 迁移项目）。</p>
+<ul>
+<li>全球传统企业（金融/政府/制造）的 Oracle 迁移项目<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span><span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>公开点名的互联网大厂案例少 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>国内政企去 O 项目是主要阵地 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">18</span> 生态工具链 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（PG 工具链+EDB 迁移工具）。</p>
+<ul>
+<li>继承 PG 工具链（pgBackRest/Barman/Debezium）<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>迁移：EDB Migration Toolkit（Oracle→EPAS）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>监控：EDB Postgres Enterprise Manager <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">19</span> 云托管与 Serverless <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（EDB 托管云服务；各云也有 PG 托管）。</p>
+<ul>
+<li>EDB 提供托管云服务<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span><span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>各云厂商 RDS PG 可跑 EDB 兼容工作负载（需验证兼容层）<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>声量小于云厂商原生 PG 托管 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">20</span> 数据接入与摄入 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（PG 工具链全兼容；Migration Toolkit）。</p>
+<ul>
+<li>COPY、pg_dump/pg_restore、pgloader 等 PG 工具直接可用 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>EDB Migration Toolkit 支持 Oracle→EDB 迁移 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>大对象/分区表迁移注意并行度 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">21</span> 外部数据访问 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（postgres_fdw/mongo_fdw；EDB 扩展的 FDW 生态）。</p>
+<ul>
+<li>PG 原生 FDW（postgres_fdw/file_fdw/dblink）全可用 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>EDB 提供/维护 mongo_fdw 等扩展，可联邦查询 MongoDB <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>异构 FDW 下推能力看具体扩展实现 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">22</span> CDC 与下游同步 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（逻辑复制；PGD 多主靠逻辑复制；Debezium）。</p>
+<ul>
+<li>逻辑解码 + publication/subscription 与社区 PG 一致 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>EDB Postgres Distributed（PGD）内部用逻辑复制做多主 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Debezium 可直接消费 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
 <div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — EPAS/PGE 15+ kernel-level TDE (data files + WAL + query temp files, transparent to applications; keys can integrate with external KMS via PGDATAKEYWRAPCMD/UNWRAPCMD); decided at initdb time, hard to change afterwards. Evidence: official docs (reviewed 2026-09-28).</p></div></div>
@@ -103,15 +156,68 @@
 <div class="dim-item"><h3><span class="dim-num">3</span> Auditing <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — <code>edb_audit</code> (xml/csv output) + <code>edb_audit_statement</code> (ddl/dml/select/set/rollback/error configurable at database/role/database+role granularity) + <code>edb_audit_connect/disconnect</code> — a complete audit parameter system. Evidence: official docs (EPAS 13/14 audit logging chapters, vendor claim).</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">4</span> Authentication &amp; authorization <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — inherits the PG authentication system (password/SCRAM/certificate/LDAP etc. via pg_hba) and the role permission model; <strong>the complete matrix of EPAS-specific enhancements (e.g., password_profiles) has not been independently verified</strong>. Evidence: community consensus + to-be-verified.</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">5</span> Backup &amp; recovery <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — physical backups (pgBackRest/Barman; BART is retired on PG/EPAS 14+) + logical backups + WAL-archiving PITR; for TDE, parameters must be tuned per pgBackRest&#x27;s official docs (disable <code>archive-header-check</code> and <code>checksum-page</code>). Evidence: official docs + pgBackRest official docs.</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">6</span> Major-version upgrades <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — <code>pg_upgrade</code> (<code>--link</code> hard links, minutes of downtime); logical-replication cutover; dump/restore. Commercial enhancements can themselves become upgrade blockers (PGE 18.2.0 case: password_profiles broke pg_upgrade); <strong>no</strong> official in-place rollback (inherited from PG, confirmed absent). Evidence: official release notes <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> + community consensus.</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">7</span> Observability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — PEM (Postgres Enterprise Manager) commercial management platform; inherits the PG <code>pg_stat_*</code> view family and <code>pg_stat_statements</code>. Users report default monitoring is still insufficient (PeerSpot). Evidence: vendor claim + user reviews.</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">8</span> Connection model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — inherits the PG process model (one backend OS process per connection); high concurrency needs pooling (Deep Dive 5); EDB&#x27;s official installation media ships a pgBouncer package (<code>ppaspgbouncer16</code>), and PEM has a pgBouncer configuration guide. Evidence: official installation guide <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> + community consensus.</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">9</span> Transactions &amp; isolation levels <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — single-node EPAS inherits PostgreSQL&#x27;s MVCC and three isolation levels (Read Committed/Repeatable Read/Serializable); DDL is transactional as in PG. PGD multi-master uses eventual-consistency semantics and is <strong>not</strong> a substitute for cross-node strongly consistent transactions. Evidence: PG community consensus + vendor claim.</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">10</span> Replication &amp; consistency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — streaming-replication primary/standby (EFM-managed automatic failover); logical replication; PGD multi-master (async/eventual convergence with conflict management). Evidence: vendor claim + third-party analysis.</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">11</span> Scaling <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — vertical scaling + read replicas/partitioned tables as the main approaches; PGD offers multi-master write scaling at high semantic cost (see Deep Dive 8). Evidence: vendor claim + third-party analysis.</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">12</span> Compatibility <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — PostgreSQL protocol/ecosystem compatible; EPAS additionally offers an Oracle compatibility mode (SPL, Oracle data types/SQL/data-dictionary views, MERGE, OCI/OCL interop); semantic gaps: see Deep Dives 1–2. Evidence: official docs.</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">13</span> License &amp; business model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported (commercial subscription)</strong> — metered in <code>uniCore</code> (physical cores or vCores/vCPUs allocated to VMs) or <code>Server</code> units, per the order form; not a perpetual license — commercial software rights lapse when the subscription expires. <strong>No reliable unified list price found in current public materials; expect quote-based pricing.</strong> Evidence: EDB&#x27;s current subscription agreement (reviewed 2026-09-28, vendor claim).</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">14</span> Chinese-language resources <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — official docs are primarily in English; domestic community practice content is clearly sparser than for MySQL / OceanBase. Evidence: editorial judgment (pending scaled collection verification).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> Observability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — PEM (Postgres Enterprise Manager) commercial management platform; inherits the PG <code>pg_stat_*</code> view family and <code>pg_stat_statements</code>. Users report default monitoring is still insufficient (PeerSpot). Evidence: vendor claim + user reviews.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> Connection model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — inherits the PG process model (one backend OS process per connection); high concurrency needs pooling (Deep Dive 5); EDB&#x27;s official installation media ships a pgBouncer package (<code>ppaspgbouncer16</code>), and PEM has a pgBouncer configuration guide. Evidence: official installation guide <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> + community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> Transactions &amp; isolation levels <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — single-node EPAS inherits PostgreSQL&#x27;s MVCC and three isolation levels (Read Committed/Repeatable Read/Serializable); DDL is transactional as in PG. PGD multi-master uses eventual-consistency semantics and is <strong>not</strong> a substitute for cross-node strongly consistent transactions. Evidence: PG community consensus + vendor claim.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> Replication &amp; consistency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — streaming-replication primary/standby (EFM-managed automatic failover); logical replication; PGD multi-master (async/eventual convergence with conflict management). Evidence: vendor claim + third-party analysis.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> Scaling <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — vertical scaling + read replicas/partitioned tables as the main approaches; PGD offers multi-master write scaling at high semantic cost (see Deep Dive 8). Evidence: vendor claim + third-party analysis.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> Compatibility <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — PostgreSQL protocol/ecosystem compatible; EPAS additionally offers an Oracle compatibility mode (SPL, Oracle data types/SQL/data-dictionary views, MERGE, OCI/OCL interop); semantic gaps: see Deep Dives 1–2. Evidence: official docs.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> License &amp; business model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported (commercial subscription)</strong> — metered in <code>uniCore</code> (physical cores or vCores/vCPUs allocated to VMs) or <code>Server</code> units, per the order form; not a perpetual license — commercial software rights lapse when the subscription expires. <strong>No reliable unified list price found in current public materials; expect quote-based pricing.</strong> Evidence: EDB&#x27;s current subscription agreement (reviewed 2026-09-28, vendor claim).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> Chinese-language resources <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — official docs are primarily in English; domestic community practice content is clearly sparser than for MySQL / OceanBase. Evidence: editorial judgment (pending scaled collection verification).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> Performance &amp; latency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (baseline is PostgreSQL; Oracle-compat mode adds translation overhead).</p>
+<ul>
+<li>EPAS performance baseline matches community PostgreSQL: parallel queries, partitioning, sharding behave the same <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Oracle compatibility mode (procedures/packages/syntax translation) adds overhead — benchmark performance-critical paths <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Enterprise features (large objects, partitioning) don&#x27;t raise the single-node ceiling <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">15</span> Compliance &amp; certifications <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (international certs via EDB; China via project assessment).</p>
+<ul>
+<li>EDB publishes SOC2 and other enterprise compliance (vendor claim, per its compliance page) <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>China: no public trusted-innovation catalog information; government/enterprise compliance via cloud or on-premises assessment <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>.</li>
+<li>Open-source PostgreSQL parts carry no official certs — see the PostgreSQL entry <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">16</span> Maturity &amp; community <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (founded 2004; veteran of PostgreSQL commercialization).</p>
+<ul>
+<li>EnterpriseDB founded 2004; EPAS targets Oracle-compatible migrations <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Taken private by Bain Capital in 2024 — strategic continuity worth watching <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Quieter community than cloud PG offerings; strength is traditional enterprise migrations <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">17</span> Notable adopters <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (traditional-enterprise off-Oracle projects).</p>
+<ul>
+<li>Oracle-migration projects at traditional enterprises worldwide — finance, government, manufacturing <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>Few named public internet-scale cases <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Domestic government/enterprise off-Oracle projects are the main battleground <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">18</span> Ecosystem tooling <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (PG toolchain plus EDB migration tools).</p>
+<ul>
+<li>Inherits the PG toolchain (pgBackRest, Barman, Debezium) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Migration: EDB Migration Toolkit (Oracle→EPAS) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Monitoring: EDB Postgres Enterprise Manager <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">19</span> Managed &amp; serverless <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (EDB managed cloud; PG hosting on every cloud too).</p>
+<ul>
+<li>EDB offers a managed cloud service <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>Cloud RDS PostgreSQL can run EDB-compatible workloads (verify the compatibility layer) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Quieter than cloud-native PG hosting <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">20</span> Data ingestion <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Full PG toolchain; Migration Toolkit).</p>
+<ul>
+<li>COPY, pg_dump/pg_restore, pgloader and other PG tools work directly <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>EDB Migration Toolkit supports Oracle-to-EDB migration <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Watch parallelism for large objects/partitioned tables <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">21</span> External data access <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (postgres_fdw/mongo_fdw; EDB-extended FDW ecosystem).</p>
+<ul>
+<li>Native PG FDWs (postgres_fdw/file_fdw/dblink) all available <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>EDB ships/maintains mongo_fdw and others for federating into MongoDB <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Pushdown capability on heterogeneous FDWs depends on the extension <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">22</span> CDC &amp; downstream <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Logical replication; PGD multi-master on it; Debezium).</p>
+<ul>
+<li>Logical decoding + publication/subscription, same as community PG <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>EDB Postgres Distributed (PGD) uses logical replication internally for multi-master <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Debezium consumes directly <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
 </div>
 </section>
 <section class="doc-section">
@@ -484,7 +590,7 @@
 <footer class="footer">
   <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
 </footer>
-<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "databricks", "name": "Databricks", "domain": "olap"}, {"slug": "snowflake", "name": "Snowflake", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
 
 <script src="assets/app.js"></script>
 </body>
