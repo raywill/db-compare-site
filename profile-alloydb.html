@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Google AlloyDB（AlloyDB for PostgreSQL） - DB 选型参考</title>
+<link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">&#9672;</span> DB <span data-zh="选型参考" data-en="Compare">选型参考</span></a>
+    <nav class="mainnav">
+<a href="index.html" class="active" data-zh="首页" data-en="Home">首页</a>
+<a href="compare.html" class="" data-zh="维度对比" data-en="Compare">维度对比</a>
+<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
+<a href="advisor.html" class="" data-zh="AI选型" data-en="AI Selection">AI选型</a>
+    </nav>
+    <div class="cmp-tray">
+      <button id="cmp-tray-btn" type="button" class="tray-btn" aria-expanded="false" aria-haspopup="true"><span data-zh="对比" data-en="Compare">对比</span> <b class="tray-count"><i id="cmp-count">0</i>/4</b></button>
+      <div id="cmp-panel" class="tray-panel" hidden>
+        <div class="tray-sec"><span data-zh="已选" data-en="Selected">已选</span></div>
+        <div id="cmp-selected" class="tray-selected"></div>
+        <div class="tray-sec"><span data-zh="全部产品（最多选 4 款）" data-en="All products (up to 4)">全部产品（最多选 4 款）</span></div>
+        <div id="cmp-list" class="tray-list"></div>
+        <div class="tray-actions"><button id="cmp-clear" type="button" class="tray-clear"><span data-zh="清空选择" data-en="Clear selection">清空选择</span></button></div>
+      </div>
+    </div>
+    <button id="lang-toggle" class="lang-btn" type="button" aria-label="switch language">EN</button>
+  </div>
+</header>
+<main class="page">
+<div class="profile-hero">
+  <a class="back" href="index.html"><span data-zh="← 返回首页" data-en="← Back to home">← 返回首页</span></a>
+  <h1>Google AlloyDB（AlloyDB for PostgreSQL）</h1>
+  <div class="meta-row"><span class="cat cat-oltp" data-zh="关系型 OLTP" data-en="Relational OLTP">关系型 OLTP</span> <span class="tag">#云原生</span> <span class="tag">#PG兼容</span> <span class="tag">#HTAP</span> <span class="tag">#存算分离</span> <span class="tag">#列存</span> <span class="tag">#GCP</span> <span class="tag">#Omni</span></div>
+  <p class="oneliner"><div class="lang-block lang-zh">
+<p>Google Cloud 的 PG 兼容云原生数据库：计算存储分离 + 行存列存双引擎，定位是&quot;GCP 上的 Aurora，但只做 PostgreSQL 且带 HTAP&quot;；另有可下载的 AlloyDB Omni 版本跑在任意环境。</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<p>Google Cloud&#x27;s PostgreSQL-compatible cloud-native database: disaggregated compute and storage + dual row-store/column-store engines, positioned as &quot;Aurora on GCP, but PostgreSQL-only with HTAP&quot;; also available as a downloadable AlloyDB Omni edition that runs in any environment.</p>
+</div></p>
+  <div class="ai-dive-row" data-product="Google AlloyDB（AlloyDB for PostgreSQL）">
+    <span class="ai-dive-label" data-zh="用 AI 深挖这款：" data-en="Deep-dive with AI:">用 AI 深挖这款：</span>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('chatgpt', this)">ChatGPT <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('grok', this)">Grok <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('claude', this)">Claude <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn addcmp-btn" data-addcmp="alloydb"><span class="addcmp-label">＋ 对比</span></button>
+  </div>
+  <div class="legend"><span class="legend-label" data-zh="证据等级：" data-en="Evidence levels: ">证据等级：</span><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></div>
+</div>
+<section class="doc-section">
+<h2><span data-zh="基本信息" data-en="Basics">基本信息</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>项</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td>厂商</td><td>Google Cloud（美国）</td></tr>
+<tr><td>首次发布</td><td>2021-10 公布技术预览（Google Cloud Next），2022-05-11 GA</td></tr>
+<tr><td>许可证</td><td>托管版为商业云服务；Omni 为商业软件——免费下载，非生产（开发/测试）免费使用，生产环境需购买按 vCPU 计量的订阅</td></tr>
+<tr><td>主类型</td><td>关系型</td></tr>
+<tr><td>兼具类型</td><td>HTAP（行存+列存）、向量检索（AlloyDB AI / ScaNN）</td></tr>
+<tr><td>数据模型</td><td>关系型（PostgreSQL 兼容）</td></tr>
+<tr><td>一致性模型</td><td>单主 ACID（与社区 PG 相同的 MVCC 事务模型）；跨区为异步复制</td></tr>
+<tr><td>复制协议</td><td>区域内基于日志的分布式存储层同步复制；跨区为异步的 secondary cluster 复制</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Item</th><th>Content</th></tr></thead>
+<tbody>
+<tr><td>Vendor</td><td>Google Cloud (USA)</td></tr>
+<tr><td>First released</td><td>2021-10 announced technical preview (Google Cloud Next), GA 2022-05-11</td></tr>
+<tr><td>License</td><td>Managed edition is a commercial cloud service; Omni is commercial software — free download, free to use in non-production (dev/test), production requires a per-vCPU-metered subscription</td></tr>
+<tr><td>Primary type</td><td>Relational</td></tr>
+<tr><td>Also serves as</td><td>HTAP (row-store + column-store), vector search (AlloyDB AI / ScaNN)</td></tr>
+<tr><td>Data model</td><td>Relational (PostgreSQL compatible)</td></tr>
+<tr><td>Consistency model</td><td>Single-primary ACID (same MVCC transaction model as community PostgreSQL); asynchronous replication across regions</td></tr>
+<tr><td>Replication protocol</td><td>Log-based distributed storage-layer synchronous replication within a region; asynchronous secondary cluster replication across regions</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section"><h2><span data-zh="硬维度（14 项）" data-en="Hard dimensions (14)">硬维度（14 项）</span></h2>
+<div class="lang-block lang-zh">
+<div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。托管版数据默认由 Google 管理的密钥加密落盘；支持 CMEK——密钥存于 Cloud KMS（软件密钥或 Cloud HSM 硬件密钥），另支持 Cloud EKM 外部密钥管理与 KMS Autokey；加密覆盖数据库与备份。Omni 侧：Kubernetes operator 1.8.0（2026-07-15）TDE GA，加密数据文件、备份与缓存溢出到磁盘的数据；容器版 18.1.0 TDE 为 Preview。注意托管版官方口径不称&quot;TDE&quot;，但落盘加密+CMEK 的实质等价。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。AlloyDB Auth Proxy 可把非 TLS 连接透明升级为 TLS 1.3；语言连接器（Language Connectors）使用 mTLS；支持 VPC 私有连接。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> 审计 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。两层：① pgAudit 扩展做 SQL 级会话/对象审计，需开 <code>alloydb.enable_pgaudit</code> flag（实例重启生效），日志摄入速率上限 4MB/s，超限可能导致磁盘打满甚至丢审计日志；② Cloud Audit Logs 记录管理面操作（Admin Activity / Data Access / System Event）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> 认证与权限 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。支持 IAM 数据库认证（短时令牌，替代静态密码）与传统 PG 密码用户（BUILT_IN）并存；另支持无密码认证选项；Omni 容器版 17.5.0 起支持 AD 组授权（GA）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> 备份恢复 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。连续备份+PITR 默认开启，保留窗口 1–35 天可配，每日增量备份，微秒级时间点恢复<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>；支持按需全量备份、计划自动备份、升级前后自动生成的系统备份。关键限制：<strong>恢复永远生成一个新集群，不支持原地回滚</strong><span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> 大版本升级 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。支持原地大版本升级：总耗时 40 分钟–48 小时（随库大小增长，128TB 约 22 小时），主库停机典型 20 分钟–1 小时；升级前有预检，失败可在读池升级阶段前回滚（系统备份作为回滚点）。PG 18 Preview 暂不支持原地升级。Omni 自行负责，用标准 pg_upgrade 流程。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> 可观测性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。Cloud Monitoring 指标（CPU/存储/网络/内存/连接数）、Query Insights、pg_stat_statements、auto_explain flag；Omni 支持日志轮转（默认 200MB 轮转、归档保留 7 天）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> 连接模型 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。默认 max_connections=1000，可调至 240,000；官方建议每 vCPU 不超过 4 个并发查询；托管版提供内置托管连接池（默认 transaction 模式，默认池 50/库-用户对，最大客户端连接默认 5000）；短连接场景官方仍建议应用侧连接池（HikariCP/c3p0）或 PgBouncer；Omni Kubernetes 版提供 PgBouncer CRD。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> 事务与隔离级别 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。与社区 PG 相同的 MVCC 事务模型<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。来源等级：官方文档</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> 复制与一致性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。区域内基于日志的分布式存储层同步复制；跨区为异步 secondary cluster 复制。来源等级：官方文档</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> 扩展方式 <span class="verdict v-neutral">纵向为主 + 读横向扩展</span></h3><div class="dim-body"><p>纵向为主 + 读横向扩展。主实例纵向扩缩（官方称近乎无中断）；读扩展靠 read pool（全集群最多 20 个读节点，共享同一份存储，读副本不产生额外存储费用）；写扩展上限为主实例规格——不是 Spanner 式的无上限水平写扩展。来源等级：官方文档</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> 兼容性 <span class="verdict v-neutral">PostgreSQL 线协议/S</span></h3><div class="dim-body"><p>PostgreSQL 线协议/SQL 全兼容（官方口径&quot;100% PG compatible&quot;）；50+ 扩展（含 PostGIS、pgvector、自研 alloydb_scann、google_ml_integration、google_columnar_engine）；标准 PG 驱动/psql 即插即用。来源等级：官方口径</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> 许可证与商业模式 <span class="verdict v-no">无 I/O 费用</span></h3><div class="dim-body"><p>商业云服务 + Omni 商业软件订阅。按 vCPU + 内存 + 实际使用存储计费，<strong>无 I/O 费用</strong>（官方定价策略，厂商口径）；读副本不收存储费；1/3 年 committed use discount；Omni 生产按 vCPU 订阅、非生产免费。只描述模型，不引用具体标价。来源等级：官方口径</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> 中文资料丰富度 <span class="verdict v-neutral">中等</span></h3><div class="dim-body"><p><strong>中等</strong>。官方文档提供中文版；中文社区实战文章少于 Cloud SQL<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。来源等级：官方文档 + 社区共识</p></div></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. Managed edition data is encrypted at rest by default with Google-managed keys; CMEK supported — keys stored in Cloud KMS (software keys or Cloud HSM hardware keys), plus Cloud EKM external key management and KMS Autokey; encryption covers databases and backups. Omni side: Kubernetes operator 1.8.0 (2026-07-15) TDE is GA, encrypting data files, backups, and data spilled to disk from caches; container edition 18.1.0 TDE is Preview. Note the managed edition&#x27;s official documentation does not use the term &quot;TDE&quot;, but encryption at rest + CMEK is the substantive equivalent.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / transport encryption <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. AlloyDB Auth Proxy can transparently upgrade non-TLS connections to TLS 1.3; Language Connectors use mTLS; VPC private connectivity supported.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> Auditing <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. Two layers: ① the pgAudit extension for SQL-level session/object auditing, requires the <code>alloydb.enable_pgaudit</code> flag (takes effect after instance restart), with a log ingestion rate cap of 4MB/s — exceeding it can fill the disk or even lose audit logs; ② Cloud Audit Logs record control-plane operations (Admin Activity / Data Access / System Event).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> Authentication &amp; authorization <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. Supports IAM database authentication (short-lived tokens replacing static passwords) coexisting with traditional PostgreSQL password users (BUILT_IN); passwordless authentication option also supported; Omni container edition supports AD group authorization (GA) from 17.5.0.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> Backup &amp; recovery <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. Continuous backup + PITR enabled by default, configurable retention window of 1–35 days, daily incremental backups, microsecond-level point-in-time recovery; on-demand full backups, scheduled automatic backups, and system backups auto-generated before/after upgrades supported. Key limitation: <strong>recovery always creates a new cluster; in-place rollback is not supported</strong> <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> Major-version upgrades <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. Supports in-place major version upgrades: total duration 40 minutes–48 hours (grows with database size; ~22 hours for 128TB), typical primary downtime 20 minutes–1 hour; pre-upgrade checks available, rollback possible before the read-pool upgrade phase (system backups serve as rollback points). PG 18 Preview does not support in-place upgrades. Omni is self-managed with the standard pg_upgrade process.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> Observability <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. Cloud Monitoring metrics (CPU/storage/network/memory/connections), Query Insights, pg_stat_statements, auto_explain flag; Omni supports log rotation (default 200MB rotation, 7-day archive retention).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> Connection model <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. Default max_connections=1000, adjustable up to 240,000; official recommendation of no more than 4 concurrent queries per vCPU; the managed edition provides a built-in managed connection pool (default transaction mode, default pool 50 per database-user pair, default max client connections 5000); for short-lived connection workloads the official guidance still recommends application-side pooling (HikariCP/c3p0) or PgBouncer; the Omni Kubernetes edition provides a PgBouncer CRD.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> Transactions &amp; isolation levels <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes</strong>. Same MVCC transaction model as community PostgreSQL <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. Source level: official docs</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> Replication &amp; consistency <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes</strong>. Log-based distributed storage-layer synchronous replication within a region; asynchronous secondary cluster replication across regions. Source level: official docs</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> Scaling <span class="verdict v-neutral">Primarily vertical</span></h3><div class="dim-body"><p>Primarily vertical + read scale-out. Primary instance vertical scaling (officially described as near-zero-downtime); read scaling via read pools (up to 20 read nodes per cluster, sharing the same storage; read replicas incur no additional storage charges); write scaling ceiling is the primary instance size — not the unbounded horizontal write scaling of Spanner. Source level: official docs</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> Compatibility <span class="verdict v-neutral">PostgreSQL wire pr</span></h3><div class="dim-body"><p>PostgreSQL wire protocol/SQL fully compatible (official statement: &quot;100% PG compatible&quot;); 50+ extensions (including PostGIS, pgvector, in-house alloydb_scann, google_ml_integration, google_columnar_engine); standard PG drivers/psql work out of the box. Source level: official statement</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> License &amp; business model <span class="verdict v-no">no I/O charges</span></h3><div class="dim-body"><p>Commercial cloud service + Omni commercial software subscription. Billed on vCPU + memory + actual storage used, <strong>no I/O charges</strong> (official pricing policy, vendor claim); read replicas incur no storage charges; 1/3-year committed use discounts; Omni production billed per vCPU subscription, non-production free. Model described only, no absolute prices cited. Source level: official statement</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> Chinese-language resources <span class="verdict v-neutral">Moderate</span></h3><div class="dim-body"><p><strong>Moderate</strong>. Official documentation available in Chinese; fewer Chinese community hands-on articles than Cloud SQL <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>. Source level: official docs + community consensus</p></div></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="杀手特性" data-en="Killer features">杀手特性</span></h2>
+<div class="lang-block lang-zh">
+<ol>
+<li><strong>分离式日志型存储：故障恢复与库大小无关</strong> 真本事：计算与存储分离，WAL 日志处理下沉到区域级分布式存储层，计算节点只管执行。这带来两个结构性结果：读池节点共享同一份存储（加读节点不搬数据、不收存储费）、故障切换不 replay 本地 WAL。官方口径 60 秒内恢复且与库大小无关。 边缘真相：这是&quot;区域内&quot;的故事——跨区 secondary 是另一套异步复制机制，RPO 不再是 0；存储层是黑盒，单集群默认 16TiB 配额，超了要走配额流程；存储层自身的抖动你看不见也调不了，只能开 ticket。</li>
+<li><strong>列存引擎：同一份数据的 HTAP</strong> 真本事：内存列存 + 列式查询规划/执行器，与行存并存；auto-columnarization 按工作负载自动挑选热列入库；读池可单独开列存并做透明查询转发。OLTP 写入的同时跑分析查询，不用 ETL 到数仓。 边缘真相：见深水区一——列存是&quot;最终新鲜&quot;不是实时；频繁更新的表列存收益会被失效稀释；查询引用的列必须全部在列存里，缺一列就整体回退行存，优化器不会告诉你它&quot;差点就用了列存&quot;。</li>
+<li><strong>自治运维：adaptive autovacuum + index advisor</strong> 真本事：自适应 autovacuum 按实时负载自动调节 vacuum 的 CPU/IO/进程数/内存，主动防事务 ID 回卷（wraparound），还能检测长事务、孤儿 prepared 事务、孤儿复制槽并告警；index advisor 按真实查询负载推荐索引。PG 最经典的两个运维坑（vacuum 调优、索引拍脑袋）被产品化了。 边缘真相：见深水区二——自治的前提是&quot;它比你更懂你的负载&quot;，极端场景（超大单表、DDL 频繁）下自动策略可能与业务预期打架；关掉（<code>enable_google_adaptive_autovacuum=off</code>）就退回社区 PG 手动调优，等于为这个特性付了它本应省掉的钱。</li>
+<li><strong>无 I/O 账单的计费模型</strong> 真本事：只按 vCPU+内存+存储收费，不收 I/O 费用。官方原话是&quot;不透明的 I/O 费用可占到账单 60%&quot;<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>——把 I/O 风险留给自己，对 I/O 密集型负载这是实打实的成本可预测性。 边缘真相：见深水区五——没有 I/O 账单不等于便宜：按 vCPU 持续计费、无 serverless（截至 2026-09），低利用率实例的&quot;空转税&quot;可能超过省下的 I/O 钱；计费模型是&quot;可预测&quot;，不是&quot;便宜&quot;。</li>
+<li><strong>Omni：可下载的反锁定版本</strong> 真本事：同一套引擎打包成容器/K8s/RPM 可下载版本，跑在本地、笔记本、任意云，PG 驱动和扩展照常工作。这是 Aurora/Cosmos DB 们都没有的官方&quot;逃生舱&quot;：先在 GCP 跑托管版，合规要求来了可以整体搬到本地，应用不用改。 边缘真相：见深水区四——Omni 容器版用的是标准 PG 文件系统接口，没有托管版的分布式存储层，等于&quot;只有引擎、没有云底座&quot;；HA、备份、跨区都要自己搭（RPM 编排版/K8s operator 只是脚手架）；生产还要按 vCPU 买订阅，&quot;免费下载≠免费使用&quot;。</li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<ol>
+<li><strong>Disaggregated log-structured storage: failover time independent of database size</strong> Why it&#x27;s real: compute and storage are separated; WAL log processing is pushed down into the region-level distributed storage layer, and compute nodes only execute. This yields two structural results: read-pool nodes share the same storage (adding read nodes moves no data and incurs no storage charges), and failover does not replay local WAL. Official statement: recovery within 60 seconds, independent of database size. Edge truth: that&#x27;s the &quot;within one region&quot; story — cross-region secondary is a separate asynchronous replication mechanism, and RPO is no longer 0; the storage layer is a black box with a default 16TiB quota per cluster, exceeding it requires a quota request; storage-layer jitter is invisible and untunable — all you can do is open a ticket.</li>
+<li><strong>Columnar engine: HTAP on the same data</strong> Why it&#x27;s real: in-memory columnar storage + columnar query planner/executor coexisting with the row store; auto-columnarization automatically selects hot columns into the column store based on workload; read pools can enable the columnar engine separately with transparent query routing. Run analytics queries alongside OLTP writes without an ETL pipeline to a data warehouse. Edge truth: see Deep Water #1 — the columnar engine is &quot;eventually fresh&quot;, not real-time; frequently updated tables see columnar speedups diluted by invalidation; every column referenced by a query must be in the columnar store — one missing column and the whole query falls back to row-store execution, and the optimizer won&#x27;t tell you it &quot;almost used the columnar engine&quot;.</li>
+<li><strong>Autonomous operations: adaptive autovacuum + index advisor</strong> Why it&#x27;s real: adaptive autovacuum automatically tunes vacuum&#x27;s CPU/IO/process/memory based on live load, proactively prevents transaction ID wraparound, and can detect long transactions, orphaned prepared transactions, and orphaned replication slots with alerts; the index advisor recommends indexes based on real query load. PostgreSQL&#x27;s two classic operational pain points (vacuum tuning, index guesswork) are productized. Edge truth: see Deep Water #2 — autonomy assumes &quot;it knows your workload better than you do&quot;; in extreme scenarios (huge single tables, frequent DDL) automatic policies can fight business expectations; turning it off (<code>enable_google_adaptive_autovacuum=off</code>) reverts to manual community-PostgreSQL tuning — i.e., you paid for a feature to do the work it was supposed to save you from.</li>
+<li><strong>A billing model with no I/O line item</strong> Why it&#x27;s real: billed only on vCPU + memory + storage, no I/O charges. The official line is that &quot;opaque I/O charges can account for 60% of the bill&quot; <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> — Google absorbs the I/O risk, which is genuine cost predictability for I/O-intensive workloads. Edge truth: see Deep Water #5 — no I/O line item doesn&#x27;t mean cheap: per-vCPU continuous billing with no serverless (as of 2026-09); the &quot;idle tax&quot; on low-utilization instances can exceed the I/O savings; the billing model is &quot;predictable&quot;, not &quot;cheap&quot;.</li>
+<li><strong>Omni: a downloadable anti-lock-in edition</strong> Why it&#x27;s real: the same engine packaged as container/K8s/RPM downloadable editions, running on-prem, on a laptop, or on any cloud, with PG drivers and extensions working as usual. This is an official &quot;escape hatch&quot; that Aurora and Cosmos DB don&#x27;t offer: start on the GCP managed edition, and if compliance requirements arrive, move everything on-prem with no application changes. Edge truth: see Deep Water #4 — the Omni container edition uses the standard PostgreSQL filesystem interface with no distributed storage layer, i.e., &quot;the engine without the cloud substrate&quot;; HA, backups, and cross-region replication must all be built yourself (the RPM-orchestrated edition / K8s operator is just scaffolding); production still requires a per-vCPU subscription — &quot;free download ≠ free use&quot;.</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="深水区" data-en="Deep dives">深水区</span></h2>
+<div class="lang-block lang-zh">
+<p><strong>深水区一：列存引擎——&quot;100x&quot;的三个前提与失效条件</strong>（domain：存储引擎）</p>
+<ul>
+<li>机制：列存是内存中的一份列式副本，默认占实例内存 30%（Omni 默认 1GB），可调至最高 70%（推荐上限 50%）；超配额部分自动溢出到实例缓存层；auto-columnarization 每小时评估一次按查询热度增删列；写入不直接更新列存，而是把受影响块标记失效，后台按&quot;50% 内容失效&quot;阈值刷新（可调，可手动 <code>google_columnar_engine_refresh()</code>）。</li>
+<li>推到边缘：① 高频更新的表：失效块堆积，列存加速比持续衰减，直到后台刷新追上——HTAP 在&quot;写多读也多&quot;的表上是 T+分钟级新鲜，不是实时；② 查询引用的列只要有一列不在列存里，整个查询回退行存执行（官方文档明确），且优化器对&quot;有索引的列&quot;可能主动选行存；③ 分区表只支持叶子分区逐个入库、非叶子分区表/外部表/5000 行以下小表直接不支持、不支持的数据类型静默忽略——schema 设计不适配，列存等于不存在。</li>
+<li>选型含义：列存最适合&quot;写入低频、分析高频&quot;的大宽表；写入洪峰型业务先看失效-刷新比（<code>g_columnar_relations</code> 的 invalid_block_count），别信 100x（厂商口径，第三方实测未能复现）。</li>
+<li>来源：官方文档（columnar engine about/configure/freshness 三篇），benchant.com 第三方实测</li>
+</ul>
+<p><strong>深水区二：自适应 autovacuum——自治的边界</strong>（domain：运维/自治）</p>
+<ul>
+<li>机制：默认开启的 adaptive autovacuum 替代社区 PG 的固定阈值策略，实时感知负载自动调节 vacuum 资源；监控事务 ID 消耗速度，必要时全库 vacuum 以阻止 wraparound；自动检测三类&quot;vacuum 杀手&quot;（长事务、孤儿 prepared 事务、孤儿复制槽）并在日志告警。</li>
+<li>推到边缘：社区实测（hardbyte/awa，2026-09）发现 PG 17 的 AlloyDB 上，维护循环的 <code>ACCESS EXCLUSIVE</code> 锁（ring-rotation）会让 <code>AccessShareLock</code> 等待者排队，4 vCPU 实例吞吐被硬限制在约 2000 jobs/s，原地升级到 PG 18 后限制消失、吞吐回到与 Cloud SQL PG 18 相同的约 5000 jobs/s。这说明&quot;自适应&quot;不等于&quot;无干扰&quot;——维护任务与业务负载的锁竞争在特定版本真实存在，且与底层 PG 大版本行为耦合。</li>
+<li>选型含义：把 vacuum 交给自治是省心的，但版本升级（尤其 PG 大版本）后要重新验证维护窗口行为；超高频小事务场景建议做混沌/压测验证。</li>
+<li>来源：官方文档（adaptive autovacuum），社区实测（hardbyte/awa deploying-on-managed-postgres.md，2026-09）</li>
+</ul>
+<p><strong>深水区三：与 Cloud SQL、Spanner 的定位三角</strong>（domain：定位与选型）</p>
+<ul>
+<li>机制：Google Cloud 官方自己把三者并排：Cloud SQL = 标准开源 PG/MySQL/SQL Server 全托管（最便宜、lift-and-shift 最容易）；AlloyDB = PG only，高性能 + HTAP（官方口径 4x 事务、100x 分析）；Spanner = 无限水平扩展 + 全球强一致 + 99.999% SLA。</li>
+<li>推到边缘：选错的代价是结构性的——① 小规模 PG 负载上 AlloyDB：按 vCPU 持续计费且无 serverless，账单可能数倍于 Cloud SQL，性能优势在低负载下感知为零；② 需要全球多写/超 16TiB 单库/无限扩展：AlloyDB 写扩展天花板是主实例规格，跨区是异步，硬上等于用错工具，这时 Spanner 才是答案；③ MySQL/SQL Server 团队：AlloyDB 是 PG only，没有退路，Cloud SQL 才是同构选项。</li>
+<li>选型含义：三选一的决策树应该是&quot;先定引擎（PG/MySQL）→ 再定规模（单机够/要弹性读/要全球写）→ 最后定要不要 HTAP&quot;，而不是&quot;哪个新用哪个&quot;。</li>
+<li>来源：官方产品页对比表，社区共识（HN、readmedium 对比长文）</li>
+</ul>
+<p><strong>深水区四：Omni——&quot;同一引擎&quot;是真的，&quot;同一服务&quot;是假的</strong>（domain：部署形态）</p>
+<ul>
+<li>机制：Omni 与托管版共享核心引擎和扩展（ScaNN、google_ml_integration、列存），但容器版走标准 PG 文件系统接口，没有分布式存储层；HA 靠 RPM 编排版的三节点同步流复制 + etcd + HAProxy（官方口径 zone 级故障 near-zero RPO/RTO，厂商口径），或 K8s operator；备份/PITR、低停机维护、TDE 在 operator 1.8.0（2026-07）才 GA。</li>
+<li>推到边缘：① 托管版的招牌能力（60 秒故障恢复与库大小无关、读池零存储成本、跨区 secondary）是存储层给的，Omni 没有存储层，这些能力全部要自己重建；② 版本节奏不同步：托管版 PG 17 GA 于 2025-09，Omni PG 17 GA 于 2025-12，Omni 容器版各版本功能有差异（如 TDE 在容器版长期 Preview）；③ 生产授权是按 vCPU 订阅，operator 会上报遥测（可关闭），合规审计时要把&quot;Google 的遥测 agent&quot;纳入评估。</li>
+<li>选型含义：Omni 适合&quot;要 AlloyDB 引擎但数据不能上 GCP&quot;的合规/多云场景，以及开发测试；把它当&quot;免费的托管版平替&quot;是误解——省的是云账单，花的是运维人力。</li>
+<li>来源：官方文档（Omni overview、release notes、RPM 编排版架构页）</li>
+</ul>
+<p><strong>深水区五：计费模型——&quot;无 I/O 账单&quot;的另一面</strong>（domain：成本）</p>
+<ul>
+<li>机制：计费三要素 vCPU + 内存 + 实际存储；无 I/O 费用；读副本不收存储费；1/3 年 committed use discount；存储自动增长按用量收。</li>
+<li>推到边缘：① 无 serverless（截至 2026-09，托管版按配置持续计费），潮汐型负载低谷期的空转成本是纯支出——HN 社区把这列为相对 Aurora 的明确短板；② 2026-09 Google 推出&quot;PostgreSQL for agents&quot;新架构预览，agent 实例可缩容到零（dbta 报道，Preview，待验证实际计费细则），说明 Google 自己也意识到持续计费是短板，但 GA 时间未知；③ 列存默认吃掉 30% 实例内存——为分析能力付的内存费，在纯 OLTP 负载上是浪费，关掉列存才能把钱花在刀刃上。</li>
+<li>选型含义：成本建模时按&quot;峰值 vCPU × 24h&quot;估算，不要按平均负载；I/O 密集型选 AlloyDB 省心，低利用率型先算 Cloud SQL 的账。</li>
+<li>来源：官方产品页/定价策略，社区共识（HN），dbta 新闻（2026-09-26，Preview）</li>
+</ul>
+<p><strong>深水区六：PG 大版本跟进滞后</strong>（domain：兼容/升级）</p>
+<ul>
+<li>机制：AlloyDB 的 PG 大版本 GA 明显晚于社区：PG 15 社区 2022-10 → AlloyDB GA 2024-01；PG 16 社区 2023-09 → 2024-10；PG 17 社区 2024-09 → 2025-09-22（约 12 个月）；PG 18 社区 2025-09 → 截至 2026-09 仍为 Preview（AlloyDB 18.1），且 Preview 不支持逻辑复制/DMS/原地升级。</li>
+<li>推到边缘：社区 PG 新特性的红利（PG 17/18 的 vacuum、I/O、锁改进——深水区二的实测案例正是 PG 18 修了 PG 17 的问题）在 AlloyDB 上要等约一年；原地大版本升级主库停机 20 分钟–1 小时、大库总耗时可达 22 小时（128TB，官方文档），升级窗口本身就是一次小型停机演练；Preview 版本功能残缺（无逻辑复制），生产无法提前验证。</li>
+<li>选型含义：把&quot;AlloyDB 的 PG 版本&quot;当作独立的产品版本来跟踪，而不是&quot;PG 17 出了 = 我能用 PG 17&quot;；依赖新版本特性的规划至少留 12 个月缓冲。</li>
+<li>来源：官方文档（db-version-policies 时间表），社区实测（awa PG17→18 对比）</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<p><strong>Deep Water #1: The columnar engine — the three prerequisites and failure conditions behind &quot;100x&quot;</strong> (domain: storage engine)</p>
+<ul>
+<li>Mechanism: the columnar store is an in-memory columnar copy of data, defaulting to 30% of instance memory (Omni default 1GB), adjustable up to 70% (recommended cap 50%); over-quota portions spill automatically to the instance cache layer; auto-columnarization evaluates query heat hourly to add/remove columns; writes don&#x27;t update the columnar store directly — affected blocks are marked invalid and refreshed in the background once the &quot;50% content invalid&quot; threshold is hit (tunable, or manual <code>google_columnar_engine_refresh()</code>).</li>
+<li>Pushed to the edge: ① frequently updated tables: invalid blocks accumulate, columnar speedup decays until background refresh catches up — HTAP on &quot;write-heavy and read-heavy&quot; tables is T+minutes freshness, not real-time; ② if any column referenced by a query is missing from the columnar store, the entire query falls back to row-store execution (explicit in official docs), and the optimizer may actively choose row-store for &quot;columns with indexes&quot;; ③ partitioned tables only support loading leaf partitions individually; non-leaf partitioned tables, foreign tables, and tables under 5000 rows are not supported at all; unsupported data types are silently ignored — if the schema isn&#x27;t designed to fit, the columnar engine effectively doesn&#x27;t exist.</li>
+<li>Selection implication: the columnar engine fits &quot;low-write, high-analytics&quot; wide tables best; for write-burst workloads, check the invalidation-to-refresh ratio first (<code>invalid_block_count</code> in <code>g_columnar_relations</code>) and don&#x27;t believe 100x (vendor claim, not reproduced in third-party tests).</li>
+<li>Sources: official docs (three columnar-engine articles: about/configure/freshness), benchant.com third-party test</li>
+</ul>
+<p><strong>Deep Water #2: Adaptive autovacuum — the limits of autonomy</strong> (domain: operations/autonomy)</p>
+<ul>
+<li>Mechanism: adaptive autovacuum (on by default) replaces community PostgreSQL&#x27;s fixed-threshold policy, sensing live load to tune vacuum resources in real time; monitors transaction ID consumption rate and runs full-database vacuum when necessary to prevent wraparound; automatically detects three &quot;vacuum killers&quot; (long transactions, orphaned prepared transactions, orphaned replication slots) and alerts in logs.</li>
+<li>Pushed to the edge: community testing (hardbyte/awa, 2026-09) found that on PG 17 AlloyDB, the maintenance cycle&#x27;s <code>ACCESS EXCLUSIVE</code> lock (ring-rotation) makes <code>AccessShareLock</code> waiters queue up, hard-capping a 4-vCPU instance at ~2000 jobs/s; after an in-place upgrade to PG 18 the cap disappeared and throughput returned to ~5000 jobs/s — the same as Cloud SQL PG 18. This shows &quot;adaptive&quot; doesn&#x27;t mean &quot;non-intrusive&quot; — lock contention between maintenance tasks and business load is real in specific versions and coupled to the underlying PG major-version behavior.</li>
+<li>Selection implication: handing vacuum to autonomy is convenient, but maintenance-window behavior must be re-validated after version upgrades (especially PG major versions); ultra-high-frequency small-transaction workloads warrant chaos/stress testing.</li>
+<li>Sources: official docs (adaptive autovacuum), community test (hardbyte/awa deploying-on-managed-postgres.md, 2026-09)</li>
+</ul>
+<p><strong>Deep Water #3: The positioning triangle with Cloud SQL and Spanner</strong> (domain: positioning &amp; selection)</p>
+<ul>
+<li>Mechanism: Google Cloud itself places the three side by side: Cloud SQL = standard open-source PG/MySQL/SQL Server fully managed (cheapest, easiest lift-and-shift); AlloyDB = PG only, high performance + HTAP (official statement: 4x transactions, 100x analytics); Spanner = infinite horizontal scaling + global strong consistency + 99.999% SLA.</li>
+<li>Pushed to the edge: picking wrong is structural — ① small PG workloads on AlloyDB: continuous per-vCPU billing with no serverless means the bill can be several times Cloud SQL&#x27;s while the performance advantage is imperceptible at low load; ② workloads needing global multi-write / single databases over 16TiB / unbounded scaling: AlloyDB&#x27;s write ceiling is the primary instance size and cross-region is asynchronous — forcing it means using the wrong tool, and Spanner is the right answer; ③ MySQL/SQL Server teams: AlloyDB is PG only with no way back — Cloud SQL is the like-for-like option.</li>
+<li>Selection implication: the three-way decision tree should be &quot;first pick the engine (PG/MySQL) → then pick the scale (single node enough / need elastic reads / need global writes) → finally decide whether HTAP is needed&quot; — not &quot;whichever is newest&quot;.</li>
+<li>Sources: official product page comparison table, community consensus (Hacker News, readmedium comparison long-form)</li>
+</ul>
+<p><strong>Deep Water #4: Omni — &quot;same engine&quot; is real, &quot;same service&quot; is not</strong> (domain: deployment form factor)</p>
+<ul>
+<li>Mechanism: Omni shares the core engine and extensions with the managed edition (ScaNN, google_ml_integration, columnar engine), but the container edition uses the standard PostgreSQL filesystem interface with no distributed storage layer; HA relies on the RPM-orchestrated edition&#x27;s three-node synchronous streaming replication + etcd + HAProxy (official statement: near-zero RPO/RTO for zone-level failures — vendor claim), or the K8s operator; backup/PITR, low-downtime maintenance, and TDE only went GA in operator 1.8.0 (2026-07).</li>
+<li>Pushed to the edge: ① the managed edition&#x27;s signature capabilities (failover in 60 seconds independent of database size, zero-storage-cost read pools, cross-region secondary) come from the storage layer — Omni has no storage layer, so all of them must be rebuilt by you; ② version cadence is out of sync: managed PG 17 went GA 2025-09, Omni PG 17 went GA 2025-12, and feature sets differ across Omni container editions (e.g., TDE long in Preview on the container edition); ③ production licensing is a per-vCPU subscription, and the operator reports telemetry (can be disabled) — compliance audits must account for &quot;Google&#x27;s telemetry agent&quot;.</li>
+<li>Selection implication: Omni fits compliance/multi-cloud scenarios where &quot;AlloyDB&#x27;s engine is wanted but data can&#x27;t go to GCP&quot;, plus dev/test; treating it as a &quot;free managed-edition substitute&quot; is a misunderstanding — you save the cloud bill and spend the operational headcount.</li>
+<li>Sources: official docs (Omni overview, release notes, RPM-orchestrated edition architecture page)</li>
+</ul>
+<p><strong>Deep Water #5: The billing model — the other side of &quot;no I/O bill&quot;</strong> (domain: cost)</p>
+<ul>
+<li>Mechanism: three billing dimensions — vCPU + memory + actual storage; no I/O charges; read replicas incur no storage charges; 1/3-year committed use discounts; auto-growing storage billed by usage.</li>
+<li>Pushed to the edge: ① no serverless (as of 2026-09, the managed edition bills continuously on provisioned capacity) — low-trough idle cost for tidal workloads is pure spend; Hacker News lists this as a clear weakness relative to Aurora; ② in 2026-09 Google launched the &quot;PostgreSQL for agents&quot; preview, where agent instances can scale to zero (dbta report, Preview, actual billing details to-be-verified) — Google itself recognizes continuous billing as a weakness, but GA timing is unknown; ③ the columnar engine eats 30% of instance memory by default — memory paid for analytics capability is wasted on pure-OLTP workloads; only by disabling the columnar engine can you spend the money where it matters.</li>
+<li>Selection implication: model costs on &quot;peak vCPU × 24h&quot;, not average load; I/O-intensive workloads are at ease on AlloyDB, low-utilization workloads should price Cloud SQL first.</li>
+<li>Sources: official product/pricing pages, community consensus (Hacker News), dbta news (2026-09-26, Preview)</li>
+</ul>
+<p><strong>Deep Water #6: PG major-version lag</strong> (domain: compatibility/upgrades)</p>
+<ul>
+<li>Mechanism: AlloyDB&#x27;s PG major-version GA lags community significantly: PG 15 community 2022-10 → AlloyDB GA 2024-01; PG 16 community 2023-09 → 2024-10; PG 17 community 2024-09 → 2025-09-22 (~12 months); PG 18 community 2025-09 → still Preview as of 2026-09 (AlloyDB 18.1), and Preview doesn&#x27;t support logical replication/DMS/in-place upgrades.</li>
+<li>Pushed to the edge: community PostgreSQL&#x27;s new-version dividends (PG 17/18 vacuum, I/O, and lock improvements — the Deep Water #2 test case is exactly a PG 18 fix for a PG 17 problem) take about a year to arrive on AlloyDB; in-place major-version upgrades bring 20 minutes–1 hour of primary downtime, with total duration up to ~22 hours for large databases (128TB, official docs) — the upgrade window is itself a small downtime drill; Preview versions have incomplete features (no logical replication), so production can&#x27;t validate ahead of time.</li>
+<li>Selection implication: track &quot;AlloyDB&#x27;s PG version&quot; as its own product version, not as &quot;PG 17 is out = I can use PG 17&quot;; plans depending on new-version features should leave at least a 12-month buffer.</li>
+<li>Sources: official docs (db-version-policies timeline), community test (awa PG17→18 comparison)</li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="用户最买账的 5 点" data-en="What users love most">用户最买账的 5 点</span></h2>
+<div class="lang-block lang-zh">
+<ol>
+<li><strong>PG 兼容到&quot;零改代码&quot;迁移</strong> 为什么是真的：线协议与 SQL 全兼容，psql、JDBC、ORM、PostGIS/pgvector 等 50+ 扩展即插即用；Database Migration Service 做 PG→AlloyDB 持续迁移，表级 dump 锁&lt;10 秒、CDC 追增量，停机主要是最后的停写切换窗口。 边缘与限度：兼容的是 PG，不是 Oracle/MySQL——异构迁移仍要改写；PG 大版本滞后（深水区六）意味着&quot;社区 PG 已 GA 的特性&quot;我这没有；DMS 对无主键表的 CDC 只复制 INSERT，UPDATE/DELETE 要手工补。 来源：官方文档（DMS 迁移页），社区共识。观察版本：PG 17</li>
+<li><strong>读扩展是真的&quot;加节点就行&quot;</strong> 为什么是真的：读池节点共享同一份分布式存储，加节点不复制数据、不收存储费，全集群最多 20 个读节点；还可对读池单独开列存 + 透明查询转发，把 BI 流量物理隔离到读池。 边缘与限度：写扩展没有这回事——天花板是主实例规格；20 个节点是全集群上限（含所有读池实例）；跨区读要靠 secondary cluster，那是异步复制不是读池。 来源：官方文档（sizing/read pool），社区 skill 文档共识。观察版本：PG 17</li>
+<li><strong>备份与 PITR 默认开启、不用求人</strong> 为什么是真的：连续备份+PITR 默认开（1–35 天可配），每日增量、微秒级时间点恢复；升级前后自动打系统备份当回滚点。对比自建 PG&quot;备份脚本是 DBA 的祖传手艺&quot;，这是开箱即用的省心。 边缘与限度：恢复只能生成新集群——想&quot;回滚到 10 分钟前&quot;意味着要切流量到新集群，没有原地 rewind；PITR 必须在事发前就开着，事后开救不了历史。 来源：官方文档（backup overview），社区实测（nullstone-modules）。观察版本：PG 17</li>
+<li><strong>vacuum 和索引有人管了</strong> 为什么是真的：adaptive autovacuum 自动调优、防 wraparound、自动揪出长事务/孤儿复制槽；index advisor 按真实负载推荐索引。PG DBA 两大心病被产品化。 边缘与限度：自治策略与业务预期的冲突只能靠 flag 关掉再手动调（等于退回社区 PG）；维护循环的锁竞争问题真实存在过（深水区二）；index advisor 的推荐仍需人工评审，建错索引的代价它不承担。 来源：官方文档，社区实测（awa）。观察版本：PG 17</li>
+<li><strong>Omni 给了&quot;不上 GCP 也能用&quot;的退路</strong> 为什么是真的：同一引擎可下载，跑在本地/K8s/其他云，开发测试免费；对数据驻留合规、多云战略的团队，这是 Aurora/Cosmos DB 给不了的官方逃生舱。 边缘与限度：逃的是&quot;云锁定&quot;，不是&quot;运维&quot;——HA/备份/跨区全得自己搭；生产按 vCPU 订阅，&quot;免费下载&quot;有授权边界；容器版没有分布式存储层，托管版的核心优势带不走。 来源：官方文档（Omni license/production 页），社区共识。观察版本：Omni 18.1.0 / operator 1.8.0</li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<ol>
+<li><strong>PG compatibility to &quot;zero-code-change&quot; migration</strong> Why it&#x27;s real: wire-protocol and SQL fully compatible; psql, JDBC, ORMs, PostGIS/pgvector and 50+ other extensions work out of the box; Database Migration Service does continuous PG→AlloyDB migration with table-level dump locks under 10 seconds and CDC catch-up — downtime is mostly the final write-stop cutover window. Edge and limits: what&#x27;s compatible is PG, not Oracle/MySQL — heterogeneous migrations still require rewrites; PG major-version lag (Deep Water #6) means &quot;features GA in community PG&quot; aren&#x27;t here yet; DMS&#x27;s CDC for tables without primary keys only replicates INSERTs — UPDATE/DELETE must be backfilled manually. Sources: official docs (DMS migration page), community consensus. Observed version: PG 17</li>
+<li><strong>Read scaling that really is &quot;just add nodes&quot;</strong> Why it&#x27;s real: read-pool nodes share the same distributed storage — adding nodes copies no data and incurs no storage charges, up to 20 read nodes per cluster; read pools can also enable the columnar engine separately with transparent query routing, physically isolating BI traffic to the read pool. Edge and limits: there&#x27;s no such thing for writes — the ceiling is the primary instance size; 20 nodes is the whole-cluster cap (including all read-pool instances); cross-region reads rely on secondary clusters, which are asynchronous replication, not read pools. Sources: official docs (sizing/read pool), community skill-doc consensus. Observed version: PG 17</li>
+<li><strong>Backups and PITR on by default, no DBA required</strong> Why it&#x27;s real: continuous backup + PITR on by default (1–35 days configurable), daily incrementals, microsecond-level point-in-time recovery; system backups are auto-taken before/after upgrades as rollback points. Compared to self-managed PostgreSQL&#x27;s &quot;backup scripts are the DBA&#x27;s inherited craft&quot;, this is out-of-the-box peace of mind. Edge and limits: recovery can only create a new cluster — &quot;rolling back to 10 minutes ago&quot; means cutting traffic to the new cluster; there&#x27;s no in-place rewind; PITR must have been on before the incident — enabling it afterwards doesn&#x27;t save history. Sources: official docs (backup overview), community test (nullstone-modules). Observed version: PG 17</li>
+<li><strong>Vacuum and indexes are taken care of</strong> Why it&#x27;s real: adaptive autovacuum auto-tunes, prevents wraparound, and automatically catches long transactions/orphaned replication slots; the index advisor recommends indexes from real workload. The two biggest PostgreSQL DBA headaches are productized. Edge and limits: conflicts between autonomous policies and business expectations can only be resolved by flipping the flag off and tuning manually (back to community PG); the maintenance-cycle lock contention issue genuinely happened (Deep Water #2); index advisor recommendations still need human review — it doesn&#x27;t pay for wrongly built indexes. Sources: official docs, community test (awa). Observed version: PG 17</li>
+<li><strong>Omni offers an &quot;off-GCP&quot; exit</strong> Why it&#x27;s real: the same engine is downloadable, running on-prem/K8s/other clouds, free for dev/test; for teams with data-residency compliance or multi-cloud strategies, this is an official escape hatch Aurora/Cosmos DB can&#x27;t provide. Edge and limits: what you escape is &quot;cloud lock-in&quot;, not &quot;operations&quot; — HA/backups/cross-region all must be built yourself; production is per-vCPU subscription, so &quot;free download&quot; has licensing boundaries; the container edition has no distributed storage layer, so the managed edition&#x27;s core advantages don&#x27;t come along. Sources: official docs (Omni license/production pages), community consensus. Observed version: Omni 18.1.0 / operator 1.8.0</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="吐槽清单" data-en="Complaints">吐槽清单</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>分类</th><th>吐槽</th><th>影响版本</th><th>状态</th></tr></thead>
+<tbody>
+<tr><td>性能坑</td><td>&quot;4x 事务、100x 分析&quot;（厂商口径的官方宣传数字）复现不了（第三方独立测试称无法验证）</td><td>Omni</td><td>open</td></tr>
+<tr><td>性能坑</td><td>PG 17 上实测存在维护循环锁竞争导致的吞吐硬上限（4 vCPU 约 2000 jobs/s），原地升级到 PG 18 后消失</td><td>AlloyDB PG 17</td><td>partially-fixed（PG 18 缓解，官方未明确承认为 bug 修复，待验证）</td></tr>
+<tr><td>成本坑</td><td>无 serverless，按 vCPU 持续计费；低利用率/潮汐负载下&quot;空转税&quot;高，被社区列为相对 Aurora 的明确短板</td><td>全版本</td><td>open（2026-09 推出的 PostgreSQL for agents 预览支持缩容到零，但未 GA，待验证）</td></tr>
+<tr><td>运维坑</td><td>备份/PITR 恢复只能生成新集群，不支持原地恢复/回滚，故障恢复 playbook 必须包含&quot;切流量到新集群&quot;一步</td><td>全版本</td><td>open</td></tr>
+<tr><td>运维坑</td><td>原地大版本升级主库停机 20 分钟–1 小时，128TB 库总耗时可达约 22 小时；回滚只支持到读池升级阶段之前</td><td>全版本</td><td>open</td></tr>
+<tr><td>兼容/版本坑</td><td>PG 大版本跟进滞后社区约 7–12 个月（PG 17 滞后约 12 个月），Preview 版功能残缺（无逻辑复制/DMS/原地升级）</td><td>PG 15/16/17/18</td><td>open</td></tr>
+<tr><td>授权坑</td><td>Omni&quot;免费下载≠免费使用&quot;——生产环境必须按 vCPU 购买订阅，容易误解</td><td>Omni 全版本</td><td>open</td></tr>
+<tr><td>生态/运维坑</td><td>公网连接与连接易用性弱于 Cloud SQL（历史上仅私网 IP，公网能力后补），小应用上 AlloyDB 属于&quot;杀鸡用牛刀&quot;的复杂度</td><td>全版本</td><td>partially-fixed</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Category</th><th>Complaint</th><th>Affected Versions</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Performance</td><td>&quot;4x transactions, 100x analytics&quot; not reproducible (independent third-party tests say the officially advertised performance numbers couldn&#x27;t be verified)</td><td>Omni</td><td>open</td></tr>
+<tr><td>Performance</td><td>PG 17 test showed a maintenance-cycle lock-contention throughput hard cap (~2000 jobs/s on 4 vCPU), gone after in-place upgrade to PG 18</td><td>AlloyDB PG 17</td><td>partially-fixed (PG 18 mitigates; Google has not explicitly confirmed it as a bug fix, to-be-verified)</td></tr>
+<tr><td>Cost</td><td>No serverless; continuous per-vCPU billing; high &quot;idle tax&quot; for low-utilization/tidal workloads — listed by the community as a clear weakness vs. Aurora</td><td>All versions</td><td>open (the 2026-09 PostgreSQL for agents preview supports scale-to-zero, but not GA, to-be-verified)</td></tr>
+<tr><td>Operations</td><td>Backup/PITR recovery can only create a new cluster; in-place recovery/rollback unsupported — the failure-recovery playbook must include a &quot;cut traffic to the new cluster&quot; step</td><td>All versions</td><td>open</td></tr>
+<tr><td>Operations</td><td>In-place major-version upgrades: 20 minutes–1 hour primary downtime; total duration up to ~22 hours for 128TB; rollback only supported before the read-pool upgrade phase</td><td>All versions</td><td>open</td></tr>
+<tr><td>Compatibility/version</td><td>PG major versions lag community by ~7–12 months (PG 17 lagged ~12 months); Preview versions have incomplete features (no logical replication/DMS/in-place upgrades)</td><td>PG 15/16/17/18</td><td>open</td></tr>
+<tr><td>Licensing</td><td>Omni &quot;free download ≠ free use&quot; — production requires a per-vCPU subscription, easily misunderstood</td><td>All Omni versions</td><td>open</td></tr>
+<tr><td>Ecosystem/operations</td><td>Public connectivity and connection ease weaker than Cloud SQL (private-IP-only historically, public connectivity backfilled later); AlloyDB is overkill complexity for small apps</td><td>All versions</td><td>partially-fixed</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="判决" data-en="Verdict">判决</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li><strong>一句话定位</strong>：GCP 上&quot;又要 PG 兼容、又要性能、还要实时分析&quot;的答案；但它是 PG only 的高端托管，不是万能数据库，规模和成本的上限要先算清楚。</li>
+<li><strong>适合谁</strong>：<ul>
+<li>GCP 上的核心 OLTP 系统，PG 单机性能到顶、想无改代码上云原生架构的团队</li>
+<li>需要在同一套 PG 上同时跑交易和分析（实时风控、用户实时看板、推荐特征），想砍掉 T+1 ETL 链路的团队</li>
+<li>以 PG/向量检索为底座构建 RAG/Agent 应用的团队（ScaNN + Vertex AI 集成）</li>
+<li>数据不能出本地但想要 AlloyDB 引擎的合规/多云团队（走 Omni，但接受自运维）</li>
+</ul></li>
+<li><strong>不适合谁</strong>：<ul>
+<li>MySQL / SQL Server 技术栈的团队（AlloyDB 是 PG only）</li>
+<li>小规模、低利用率、对成本敏感的负载（Cloud SQL for PostgreSQL 更便宜、更简单）</li>
+<li>需要全球多写、无限水平写扩展、99.999% 的超大规模 OLTP（Spanner 才是对应工具）</li>
+<li>指望 serverless 按量付费的潮汐型负载（截至 2026-09 未 GA）</li>
+</ul></li>
+<li><strong>迁移成本</strong>：<ul>
+<li>PostgreSQL → 低：线协议兼容，DMS 支持低停机持续迁移；注意无主键表的 CDC 限制与 PG 大版本对齐问题</li>
+<li>MySQL → 中高：需先过 PG 方言关（无 MySQL 协议兼容），DMS + Gemini 可辅助异构迁移与代码转换</li>
+<li>Oracle → 高：AlloyDB 无 Oracle 兼容层（不像 EDB/OceanBase），PL/SQL、包、专有语法需重写；适合借迁移机会彻底 PG 化、不适合&quot;零改动替换 Oracle&quot;的诉求</li>
+</ul></li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li><strong>One-line positioning</strong>: the answer on GCP for &quot;PG compatibility + performance + real-time analytics&quot;; but it&#x27;s a premium PG-only managed database, not a universal one — compute the scale and cost ceilings first.</li>
+<li><strong>Good for</strong>:<ul>
+<li>Core OLTP systems on GCP where standalone PG performance has topped out and teams want to move to a cloud-native architecture without code changes</li>
+<li>Teams needing to run transactions and analytics on the same PG (real-time risk control, real-time user dashboards, recommendation features) wanting to kill the T+1 ETL pipeline</li>
+<li>Teams building RAG/agent applications on PG/vector search (ScaNN + Vertex AI integration)</li>
+<li>Compliance/multi-cloud teams that can&#x27;t take data off-prem but want the AlloyDB engine (via Omni, accepting self-operation)</li>
+</ul></li>
+<li><strong>Not good for</strong>:<ul>
+<li>MySQL / SQL Server technology stacks (AlloyDB is PG only)</li>
+<li>Small-scale, low-utilization, cost-sensitive workloads (Cloud SQL for PostgreSQL is cheaper and simpler)</li>
+<li>Hyperscale OLTP needing global multi-write, unbounded horizontal write scaling, 99.999% (Spanner is the corresponding tool)</li>
+<li>Tidal workloads expecting serverless pay-per-use (not GA as of 2026-09)</li>
+</ul></li>
+<li><strong>Migration cost</strong>:<ul>
+<li>PostgreSQL → Low: wire-protocol compatible; DMS supports low-downtime continuous migration; note the no-primary-key CDC limitation and PG major-version alignment issues</li>
+<li>MySQL → Medium-high: must first clear the PG dialect hurdle (no MySQL protocol compatibility); DMS + Gemini can assist heterogeneous migration and code conversion</li>
+<li>Oracle → High: AlloyDB has no Oracle compatibility layer (unlike EDB/OceanBase); PL/SQL, packages, and proprietary syntax need rewrites; fits teams that want to use the migration to go all-in on PG, not teams wanting &quot;zero-change Oracle replacement&quot;</li>
+</ul></li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="来源与待验证清单" data-en="Sources & to-be-verified">来源与待验证清单</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li>官方文档：AlloyDB db-version-policies、backup overview、in-place major version upgrade、columnar engine（about/configure/freshness）、adaptive autovacuum（Omni）、security-privacy-compliance、pgAudit、quotas、sizing recommendations、managed connection pooling、cross-region replication、Omni release notes（containers 18.1.0 / k8s operator 1.8.0）、Omni license terms、Omni RPM 编排版架构页</li>
+<li>官方产品页：cloud.google.com/alloydb（含 Cloud SQL / Spanner 对比表）</li>
+<li>社区实测：hardbyte/awa deploying-on-managed-postgres.md（2026-09，PG17 锁竞争）、benchant.com AlloyDB Omni 评测（性能口径未复现）、nullstone-modules（恢复模型）、juspay/hyperswitch（secondary 拓扑）</li>
+<li>社区共识：Hacker News（无 serverless、按 vCPU 计费）、readmedium PG on GCP 对比、akkologlu GCP 手册、vezril/warunk9 skill 文档</li>
+<li>新闻：SiliconANGLE（2022-05-11 GA）、dbta（2026-09-26，PostgreSQL for agents 预览）、Google Cloud Blog（Omni 技术预览 2022-10）</li>
+<li>待验证项：PostgreSQL for agents 的 scale-to-zero 实际计费细则与 GA 时间；awa 实测的 PG17 锁竞争是否为官方确认的 bug 修复；中文社区资料丰富度的精确评估</li>
+<li>last_reviewed：2026-09-29；reviewed_version：托管版 PG 17（默认）/ PG 18 Preview，Omni 18.1.0</li>
+<li>changelog_watch：AlloyDB 托管版 release notes、Omni release notes（Google Cloud 文档站）</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li>Official docs: AlloyDB db-version-policies, backup overview, in-place major version upgrade, columnar engine (about/configure/freshness), adaptive autovacuum (Omni), security-privacy-compliance, pgAudit, quotas, sizing recommendations, managed connection pooling, cross-region replication, Omni release notes (containers 18.1.0 / k8s operator 1.8.0), Omni license terms, Omni RPM-orchestrated edition architecture page</li>
+<li>Official product page: cloud.google.com/alloydb (including the Cloud SQL / Spanner comparison table)</li>
+<li>Community tests: hardbyte/awa deploying-on-managed-postgres.md (2026-09, PG17 lock contention), benchant.com AlloyDB Omni review (performance claims not reproduced), nullstone-modules (recovery model), juspay/hyperswitch (secondary topology)</li>
+<li>Community consensus: Hacker News (no serverless, per-vCPU billing), readmedium PG-on-GCP comparison, akkologlu GCP handbook, vezril/warunk9 skill docs</li>
+<li>News: SiliconANGLE (2022-05-11 GA), dbta (2026-09-26, PostgreSQL for agents preview), Google Cloud Blog (Omni technical preview 2022-10)</li>
+<li>To-be-verified: scale-to-zero actual billing details and GA timing for PostgreSQL for agents; whether the PG17 lock contention observed by awa is an officially confirmed bug fix; precise assessment of Chinese-language resource richness</li>
+<li>last_reviewed: 2026-09-29; reviewed_version: managed PG 17 (default) / PG 18 Preview, Omni 18.1.0</li>
+<li>changelog_watch: AlloyDB managed release notes, Omni release notes (Google Cloud docs site)</li>
+</ul>
+</div>
+</section>
+</main>
+<footer class="footer">
+  <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
+</footer>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
