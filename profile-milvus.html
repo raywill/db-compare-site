@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Milvus - DB 选型参考</title>
+<link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">&#9672;</span> DB <span data-zh="选型参考" data-en="Compare">选型参考</span></a>
+    <nav class="mainnav">
+<a href="index.html" class="active" data-zh="首页" data-en="Home">首页</a>
+<a href="compare.html" class="" data-zh="维度对比" data-en="Compare">维度对比</a>
+<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
+<a href="advisor.html" class="" data-zh="AI选型" data-en="AI Selection">AI选型</a>
+    </nav>
+    <div class="cmp-tray">
+      <button id="cmp-tray-btn" type="button" class="tray-btn" aria-expanded="false" aria-haspopup="true"><span data-zh="对比" data-en="Compare">对比</span> <b class="tray-count"><i id="cmp-count">0</i>/4</b></button>
+      <div id="cmp-panel" class="tray-panel" hidden>
+        <div class="tray-sec"><span data-zh="已选" data-en="Selected">已选</span></div>
+        <div id="cmp-selected" class="tray-selected"></div>
+        <div class="tray-sec"><span data-zh="全部产品（最多选 4 款）" data-en="All products (up to 4)">全部产品（最多选 4 款）</span></div>
+        <div id="cmp-list" class="tray-list"></div>
+        <div class="tray-actions"><button id="cmp-clear" type="button" class="tray-clear"><span data-zh="清空选择" data-en="Clear selection">清空选择</span></button></div>
+      </div>
+    </div>
+    <button id="lang-toggle" class="lang-btn" type="button" aria-label="switch language">EN</button>
+  </div>
+</header>
+<main class="page">
+<div class="profile-hero">
+  <a class="back" href="index.html"><span data-zh="← 返回首页" data-en="← Back to home">← 返回首页</span></a>
+  <h1>Milvus</h1>
+  <div class="meta-row"><span class="cat cat-aidb" data-zh="AI 数据库" data-en="AI databases">AI 数据库</span> <span class="tag">#向量数据库</span> <span class="tag">#分布式</span> <span class="tag">#ANN</span> <span class="tag">#HNSW</span> <span class="tag">#混合检索</span> <span class="tag">#开源</span> <span class="tag">#RAG</span></div>
+  <p class="oneliner"><div class="lang-block lang-zh">
+<p>Zilliz 开源的分布式向量数据库，为十亿级向量检索而生：索引类型矩阵（HNSW / IVF / DiskANN / 稀疏 / BM25）和存算分离架构是它的真本事；但它把复杂度拆成协调、消息队列、对象存储、segment、索引构建等多条链路——数据量尚未逼近 pgvector 边界时，这些能力只是额外的运维税。</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<p>Zilliz&#x27;s open-source distributed vector database, built for billion-scale vector search: its index-type matrix (HNSW / IVF / DiskANN / sparse / BM25) and storage-compute separation are the real deal — but the complexity is split across coordination, message queues, object storage, segments, and index building. If your data volume hasn&#x27;t pushed past pgvector&#x27;s limits, those capabilities are just extra ops tax.</p>
+</div></p>
+  <div class="ai-dive-row" data-product="Milvus">
+    <span class="ai-dive-label" data-zh="用 AI 深挖这款：" data-en="Deep-dive with AI:">用 AI 深挖这款：</span>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('chatgpt', this)">ChatGPT <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('grok', this)">Grok <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('claude', this)">Claude <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn addcmp-btn" data-addcmp="milvus"><span class="addcmp-label">＋ 对比</span></button>
+  </div>
+  <div class="legend"><span class="legend-label" data-zh="证据等级：" data-en="Evidence levels: ">证据等级：</span><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></div>
+</div>
+<section class="doc-section">
+<h2><span data-zh="基本信息" data-en="Basics">基本信息</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>项</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td>厂商</td><td>Zilliz（项目发起方，主导贡献）</td></tr>
+<tr><td>国家</td><td>中国（Zilliz，中国团队主导研发）</td></tr>
+<tr><td>起源</td><td>2019 年开源；v1.x 为早期架构（元数据依赖 MySQL）；v2.0（2021 年底）重写为云原生分布式架构；v3.0 于 2026-07-16 GA</td></tr>
+<tr><td>许可证</td><td>Apache 2.0 全开源</td></tr>
+<tr><td>商业版说明</td><td>无&quot;企业版内核&quot;；商业化 = Zilliz Cloud 托管服务</td></tr>
+<tr><td>托管服务</td><td>Zilliz Cloud（Serverless / Dedicated / BYOC）</td></tr>
+<tr><td>主类型</td><td>向量数据库（原生分布式）</td></tr>
+<tr><td>兼具类型</td><td>全文检索（BM25）、混合检索（dense + sparse + 标量过滤）</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Item</th><th>Content</th></tr></thead>
+<tbody>
+<tr><td>Vendor</td><td>Zilliz (project originator, lead contributor)</td></tr>
+<tr><td>Country</td><td>China (Zilliz, R&amp;D led by the China team)</td></tr>
+<tr><td>History</td><td>Open-sourced in 2019; v1.x was the early architecture (metadata on MySQL); v2.0 (end of 2021) rewrote it as a cloud-native distributed architecture; v3.0 went GA on 2026-07-16</td></tr>
+<tr><td>License</td><td>Apache 2.0, fully open source</td></tr>
+<tr><td>Commercial edition</td><td>No &quot;enterprise kernel&quot;; commercialization = Zilliz Cloud managed service</td></tr>
+<tr><td>Managed service</td><td>Zilliz Cloud (Serverless / Dedicated / BYOC)</td></tr>
+<tr><td>Primary type</td><td>Vector database (natively distributed)</td></tr>
+<tr><td>Secondary types</td><td>Full-text search (BM25), hybrid search (dense + sparse + scalar filtering)</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section"><h2><span data-zh="硬维度（14 项）" data-en="Hard dimensions (14)">硬维度（14 项）</span></h2>
+<div class="lang-block lang-zh">
+<div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-tbd">未找到证据</span></h3><div class="dim-body"><p><strong>未找到证据</strong>——本轮未找到开源 Milvus 内核级 TDE（数据文件落盘加密）的可靠官方证据；数据实际落在对象存储、etcd、消息队列，可依赖 S3 / MinIO / 磁盘 / KMS 等基础设施层加密，但这不能称为 Milvus 的产品能力。证据：本轮官方文档检索无结果（待复核）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——支持客户端 TLS、双向 TLS（mTLS）及内部组件间 TLS。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（adminGuide/tls.md）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> 审计 <span class="verdict v-tbd">未找到证据</span></h3><div class="dim-body"><p><strong>未找到证据</strong>——开源内核无合规级数据访问审计日志的可靠官方证据；注意边界：Zilliz Cloud 提供托管 Audit Logs（已 GA，开启后额外计费），Attu 仅记录其自身 UI / 服务端发起的写操作（存于 Attu SQLite），两者都不是开源内核能力。证据：本轮官方文档检索无结果 + Zilliz 官方博客（托管侧）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> 认证与权限 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——用户名 / 密码认证 + RBAC（用户、角色、权限组）。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> + SDK 最佳实践。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> 备份恢复 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——milvus-backup 支持在线 collection / cluster 级备份与恢复；但：恢复索引可能需 <code>--rebuild_index</code>（索引重建计入 RTO）；恢复走 bulk insert；仅支持恢复到同版本或更高版本（2.2+ 的备份可恢复到 2.5 / 2.6 / 3.0.1+，3.0.0 不在支持列表）。证据：milvus-backup 官方 README（zilliztech）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> 大版本升级 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——2.6.x → 3.0.1 有官方验证的 Helm / Operator 升级路径（以 chart 5.0.22 / operator 1.3.0 为验证基准）；但约束多：升级过程必须保持 Helm chart 版本与消息队列类型不变；3.0 写数据后不支持镜像回滚（只能靠升级前备份恢复）；Docker 部署 2.6 以 root 运行、3.x 以 UID/GID 999 运行，需改数据卷属主；2.1 以下需先做元数据迁移。证据：官方升级文档。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> 可观测性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——Prometheus metrics、Grafana 看板、日志、Attu 管理 UI（拓扑 / 慢查询 / 任务队列）；支持 OpenTelemetry / Jaeger 链路追踪。注意 Attu 更偏管理 UI 而非完整诊断平台。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> + 社区实践。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> 连接模型 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——SDK 经 gRPC 连接无状态 Proxy（默认 19530 端口）；PyMilvus 的 MilvusClient 为统一入口；另有 RESTful API v2 / HTTP 接口；不是 SQL 连接模型，无连接池语义可比。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> + SDK 文档。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> 事务与隔离级别 <span class="verdict v-neutral">不适用</span></h3><div class="dim-body"><p><strong>不适用</strong>——Milvus 没有 SQL 意义的多语句 ACID 事务原语，batch insert 可能部分成功（第三方技术记录）；它提供的是四级可调<strong>读取一致性</strong>：Strong、Bounded Staleness（默认）、Session、Eventually，基于 GuaranteeTs 时间戳机制（Strong 读会等待 QueryNode 追上最新时间戳；Session 保证 read-your-writes；Eventually 跳过可见性等待）。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（tune_consistency.md、consistency.md）+ 第三方技术记录。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> 复制与一致性 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——协调与元数据走 etcd（Raft 强一致）；数据耐久性横跨消息队列（Pulsar / Kafka / Woodpecker / RocksMQ）与对象存储两条链路；查询侧 segment 多副本按需加载，四级读取一致性可调。没有&quot;单一复制协议管全部数据&quot;的传统模型，耐久性是链路问题不是单点问题。证据：官方架构文档 + 社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> 扩展方式 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——原生 scale-out；无状态 Proxy，Query / Data / Index（2.6 起索引构建收敛）/ 协调服务角色可独立扩展；存算分离，seal 后的 segment 沉到对象存储。注意：扩容不等于索引和 segment 立即就位（见深水区五）。证据：官方架构文档 + 社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> 兼容性 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——多语言 SDK（Python / Java / Go / Node.js / Rust / C++）、RESTful v2、LangChain / LlamaIndex 等 AI 生态集成成熟；但不兼容 SQL / PG wire 协议；2.x → 3.0 有 SDK major line、protobuf、schema 边界（Rust SDK 3.0 明确为 3.x 首个 major line，2.6.x 继续维护）。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> + SDK release notes。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> 许可证与商业模式 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——内核 Apache 2.0 全开源；商业化 = Zilliz Cloud 托管：Serverless 按读写 vCU 消耗 + 存储计费（单次操作有最小 vCU 计量），Dedicated 按 CU × 运行时长 + 存储计费（无操作也计费），备份 / 网络传输 / 审计日志可形成额外计量边界。本档案只写计费模型，不写绝对价格。证据：官方仓库 + Zilliz 计费说明。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> 中文资料丰富度 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——官方中文文档、中文社区教程（CSDN / 腾讯云开发者社区）、discuss 论坛存在；但部分官方页面明确标注&quot;暂时没有中文版本&quot;，深水区（索引调优、故障排查）资料明显少于英文。证据：<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</p></div></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-no">No evidence found</span></h3><div class="dim-body"><p><strong>No evidence found</strong> — this round found no reliable official evidence of kernel-level TDE (on-disk data file encryption) in open-source Milvus. Data physically lands on object storage, etcd, and the message queue; infrastructure-layer encryption (S3 / MinIO / disk / KMS) is available, but that is not a Milvus product capability. Evidence: no results in this round&#x27;s official-docs search (pending re-verification).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / transport encryption <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — client TLS, mutual TLS (mTLS), and TLS between internal components. Evidence: official docs (adminGuide/tls.md).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> Auditing <span class="verdict v-no">No evidence found</span></h3><div class="dim-body"><p><strong>No evidence found</strong> — no reliable official evidence of compliance-grade data-access audit logging in the open-source kernel. Mind the boundaries: Zilliz Cloud offers managed Audit Logs (GA, billed extra when enabled), and Attu only records write operations initiated from its own UI / server functions (stored in Attu&#x27;s SQLite) — neither is an open-source kernel capability. Evidence: no results in this round&#x27;s official-docs search + Zilliz official blog (managed side).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> Authentication &amp; authorization <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — username / password authentication + RBAC (users, roles, privilege groups). Evidence: official docs + SDK best practices.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> Backup &amp; recovery <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — milvus-backup supports online collection / cluster-level backup and restore; caveats: restoring indexes may require <code>--rebuild_index</code> (index rebuild counts toward RTO); restore goes through bulk insert; restores are only supported to the same or a higher version (backups from 2.2+ restore to 2.5 / 2.6 / 3.0.1+, while 3.0.0 is not on the support list). Evidence: milvus-backup official README (zilliztech).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> Major-version upgrades <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — 2.6.x → 3.0.1 has an officially validated Helm / Operator upgrade path (validated baseline: chart 5.0.22 / operator 1.3.0); but the constraints are many: the Helm chart version and message-queue type must stay unchanged during the upgrade; image-only rollback is not supported after 3.0 writes data (recovery means restoring pre-upgrade backups); Docker deployments run as root on 2.6 but as UID/GID 999 on 3.x, requiring data-volume ownership changes; below 2.1 requires a metadata migration first. Evidence: official upgrade docs.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> Observability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — Prometheus metrics, Grafana dashboards, logs, Attu management UI (topology / slow queries / task queue); OpenTelemetry / Jaeger tracing is supported. Note Attu leans toward a management UI rather than a full diagnostics platform. Evidence: official docs + community practice.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> Connection model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — SDKs connect over gRPC to the stateless Proxy (default port 19530); PyMilvus&#x27;s MilvusClient is the unified entry point; a RESTful API v2 / HTTP interface also exists. Not a SQL connection model; no comparable connection-pool semantics. Evidence: official docs + SDK docs.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> Transactions &amp; isolation levels <span class="verdict v-neutral">N/A — Milvus has n</span></h3><div class="dim-body"><p><strong>N/A</strong> — Milvus has no multi-statement ACID transaction primitive in the SQL sense; a batch insert can partially succeed (third-party technical record). What it offers instead is four tunable <strong>read consistency</strong> levels: Strong, Bounded Staleness (default), Session, Eventually, built on the GuaranteeTs timestamp mechanism (Strong reads wait until QueryNodes catch up to the latest timestamp; Session guarantees read-your-writes; Eventually skips the visibility wait). Evidence: official docs (tune_consistency.md, consistency.md) + third-party technical record.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> Replication &amp; consistency <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — coordination and metadata go through etcd (Raft, strongly consistent); data durability spans two links, the message queue (Pulsar / Kafka / Woodpecker / RocksMQ) and object storage; on the query side, segment replicas load on demand with four tunable read-consistency levels. There is no &quot;one replication protocol covers all data&quot; traditional model — durability is a chain problem, not a single point. Evidence: official architecture docs + community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> Scaling <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — native scale-out; stateless Proxy, with Query / Data / Index (index building converged in 2.6) / coordination roles independently scalable; storage-compute separation, sealed segments sink to object storage. Note: scaling out does not mean indexes and segments are immediately in place (see Deep Waters 5). Evidence: official architecture docs + community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> Compatibility <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — multi-language SDKs (Python / Java / Go / Node.js / Rust / C++), RESTful v2, and mature AI-ecosystem integrations (LangChain / LlamaIndex); but no SQL / PG wire-protocol compatibility; 2.x → 3.0 has SDK major-line, protobuf, and schema boundaries (Rust SDK 3.0 is declared the first major line for 3.x; 2.6.x stays maintained). Evidence: official docs + SDK release notes.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> License &amp; business model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — kernel fully open source under Apache 2.0; commercialization = Zilliz Cloud: Serverless billed on read/write vCU consumption + storage (minimum vCU metering per operation), Dedicated billed on CU × duration + storage (billed even with zero operations), with backup / network transfer / audit logs as additional metering boundaries. This profile records billing models only, no absolute prices. Evidence: official repos + Zilliz billing references.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> Chinese-language resources <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — official Chinese docs, Chinese community tutorials (CSDN / Tencent Cloud developer community), and the discuss forum exist; but some official pages are explicitly marked &quot;no Chinese version yet&quot;, and deep-dive material (index tuning, troubleshooting) is noticeably thinner in Chinese than in English. Evidence: community consensus.</p></div></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="杀手特性" data-en="Killer features">杀手特性</span></h2>
+<div class="lang-block lang-zh">
+<blockquote>
+<p>写法要求：每个特性 = 它是什么 + 为什么是真本事 + 推到边缘会发生什么。</p>
+</blockquote>
+<ol>
+<li><strong>索引类型全景：从 FLAT 到 DiskANN 的完整光谱</strong> 真本事：官方索引选择覆盖 FLAT（精确）、IVF_FLAT / IVF_PQ / IVF_SQ8、HNSW 家族（HNSW / HNSW_SQ / HNSW_PQ / HNSW_PRQ）、SCANN、DiskANN，以及稀疏向量的 SPARSE_INVERTED_INDEX；CPU / GPU / 磁盘（NVMe）三条路径；AUTOINDEX 自动选型降低入门门槛。 边缘真相：索引是 per-segment 构建的，segment 碎则索引总开销被放大；HNSW 内存约为原始向量的 1.5–2 倍（厂商 / 社区口径）；DiskANN 省内存但把成本转嫁给尾延迟、磁盘 IOPS 和构建时间——没有免费的索引，只有不同的账单。</li>
+<li><strong>存算分离 + segment / object storage 架构</strong> 真本事：写入先进消息队列（WAL），growing segment 在内存，seal 后落对象存储为不可变文件；QueryNode 按需加载；冷热分离天然成立，mmap 还能把原始数据与索引映射到磁盘缓解内存压力。 边缘真相：见深水区二、五、六——&quot;删了数据空间不释放&quot;&quot;刚写入搜不到&quot;&quot;扩容后查询没变快&quot;三大经典困惑都源于这条链路；growing / sealed、flush、compaction、handoff 任一环节落后都会变成延迟或空间问题。</li>
+<li><strong>Dense + Sparse / BM25 + 标量的混合检索</strong> 真本事：一个 collection 可有多路向量字段（multi-vector），同时建 dense 向量索引、稀疏向量索引（SPARSE_INVERTED_INDEX，支持 IP / BM25）、标量倒排 / BITMAP 索引；一次 hybrid_search + RRF / 加权 rerank 把语义召回和关键词召回融合成一次请求；BM25 function 可在写入时自动从文本派生稀疏向量。 边缘真相：BM25 / analyzer 必须在建表时配置，事后加不上；过滤执行位置（ANN 前 / 中 / 后）决定候选空间与正确性；高选择性过滤后候选极少时，ANN 图遍历反而跑不过 FLAT 暴力扫——&quot;混合&quot;二字是调优工作量，不是免费午餐。</li>
+<li><strong>四级可调读取一致性</strong> 真本事：Strong / Bounded Staleness（默认）/ Session / Eventually，基于 GuaranteeTs；RAG 场景用 Bounded 换延迟，写后读场景用 Session 或 Strong，分级清晰。 边缘真相：Strong 把&quot;ingest → MQ → segment → QueryNode 可见&quot;的落后时间计入查询延迟（社区 50k QPS 实测 p95 翻倍）；第三方集成可能忽略你指定的 consistency level（2026-08 semantic-router issue 实锤）；Milvus Lite 只有 Strong 可选——&quot;可调&quot;是分布式的特性。</li>
+<li><strong>3.0 的 lake-native 与 open table format（明确 3.x）</strong> 真本事：3.0（2026-07-16 GA）引入 lake-native 数据访问与 open table format，检索引擎能力增强，目标是让向量数据直接落在数据湖格式上，减少&quot;导一份专用格式&quot;的 ETL。 边缘真相：3.x 是新 major line——Rust SDK 明确 3.0 为首个 3.x major line、2.6.x 继续维护；2.6 → 3.0.1 升级有 MQ 类型不可变、chart 版本不可变、写后不可镜像回滚三条硬约束；milvus-backup 对 3.0 的支持从 3.0.1 才开始。尝鲜前先在测试环境完整演练升级 + 回滚预案。</li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<blockquote>
+<p>Each feature = what it is + why it&#x27;s genuinely strong + what happens at the edge.</p>
+</blockquote>
+<ol>
+<li><strong>The full index spectrum: from FLAT to DiskANN</strong> Why it&#x27;s real: the official index-selection guide covers FLAT (exact), IVF_FLAT / IVF_PQ / IVF_SQ8, the HNSW family (HNSW / HNSW_SQ / HNSW_PQ / HNSW_PRQ), SCANN, DiskANN, plus SPARSE_INVERTED_INDEX for sparse vectors; CPU / GPU / disk (NVMe) paths; AUTOINDEX lowers the entry barrier so newcomers don&#x27;t have to read the index papers on day one. At the edge: indexes are built per segment, so fragmented small segments amplify total index overhead; HNSW memory runs ~1.5–2× the raw vectors (vendor / community figure); DiskANN saves memory but shifts cost to tail latency, disk IOPS, and build time — there is no free index, only different bills.</li>
+<li><strong>Storage-compute separation + segment / object-storage architecture</strong> Why it&#x27;s real: writes go to the message queue (WAL) first, growing segments live in memory, sealed segments land on object storage as immutable files; QueryNodes load on demand; hot-cold separation holds naturally, and mmap can map raw data and indexes to disk to relieve memory pressure. At the edge: see Deep Waters 2, 5, 6 — the three classic confusions (&quot;deleted data doesn&#x27;t free space&quot;, &quot;just-written data isn&#x27;t searchable&quot;, &quot;queries didn&#x27;t get faster after scaling out&quot;) all come from this pipeline; any lag in growing / sealed transitions, flush, compaction, or handoff becomes a latency or space problem.</li>
+<li><strong>Dense + sparse / BM25 + scalar hybrid search</strong> Why it&#x27;s real: one collection can hold multiple vector fields (multi-vector) with dense vector indexes, sparse vector indexes (SPARSE_INVERTED_INDEX, IP / BM25 metrics), and scalar inverted / BITMAP indexes side by side; a single hybrid_search with RRF / weighted reranking fuses semantic and keyword recall into one request; the BM25 function auto-derives sparse vectors from text at write time. At the edge: BM25 / analyzers must be declared at collection creation and cannot be added later; where filtering executes (before / during / after ANN) determines the candidate space and correctness; with highly selective filters leaving only hundreds of candidates, ANN graph traversal loses to a FLAT brute-force scan — &quot;hybrid&quot; is tuning work, not a free lunch.</li>
+<li><strong>Four tunable read-consistency levels</strong> Why it&#x27;s real: Strong / Bounded Staleness (default) / Session / Eventually, built on GuaranteeTs; RAG workloads trade latency with Bounded, write-then-read flows use Session or Strong — clean tiering. At the edge: Strong folds the entire ingest → MQ → segment → QueryNode visibility lag into query latency (community test: 2× p95 at 50k QPS); third-party integrations may silently ignore your consistency_level (confirmed in a 2026-08 semantic-router issue); Milvus Lite only offers Strong — &quot;tunability&quot; is a distributed-system feature.</li>
+<li><strong>3.0&#x27;s lake-native and open table format (explicitly 3.x)</strong> Why it&#x27;s real: 3.0 (GA 2026-07-16) introduces lake-native data access and open table formats with a stronger retrieval engine, aiming to let vector data live directly in data-lake formats and cut the &quot;export a dedicated copy&quot; ETL. At the edge: 3.x is a new major line — the Rust SDK declares 3.0 the first major line for 3.x while 2.6.x stays maintained; the 2.6 → 3.0.1 upgrade has three hard constraints (message-queue type immutable, chart version immutable, no image-only rollback after writes); milvus-backup supports 3.0 only from 3.0.1. Rehearse upgrade + rollback in a test environment before touching production.</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="深水区" data-en="Deep dives">深水区</span></h2>
+<div class="lang-block lang-zh">
+<blockquote>
+<p>以下每条 = 机制 + 推到边缘会发生什么 + 选型含义。证据类型已标注。</p>
+</blockquote>
+<p><strong>深水区一：向量索引算法——没有&quot;最好&quot;，只有&quot;账单不同&quot;</strong></p>
+<ul>
+<li>机制：索引按 segment 独立构建，索引文件随 segment 落对象存储，查询时由 QueryNode 加载。HNSW 图索引：<code>M</code>（每节点连接数）、<code>efConstruction</code>（构建期搜索宽度）决定图质量与内存 / 构建时间，查询期 <code>ef</code> 决定召回 / 延迟。IVF：<code>nlist</code>（聚类中心数）、<code>nprobe</code>（扫描的中心数），<code>nprobe</code> 越大召回越高、延迟线性上涨。DiskANN：图放 SSD，内存只留压缩导航结构。FLAT：精确暴力搜索。</li>
+<li>推到边缘：<ul>
+<li>HNSW 内存约为原始向量的 1.5–2 倍（厂商 / 社区口径）：十亿级 768 维向量，单是索引内存就是 TB 级账单——这就是 DiskANN 和 IVF_PQ 存在的理由；mmap 能把部分压力转给磁盘，但换的是延迟。</li>
+<li>segment 碎（小 segment 多）时，每个 segment 一份索引，索引总开销被放大；compaction 合并小 segment 既是空间优化也是索引成本优化。</li>
+<li>IVF 的 <code>nlist</code> 选错，<code>nprobe</code> 怎么调都救不回来——聚类阶段的信息损失不可逆；索引参数在建索引时确定，改参数 = 重建索引 = 重交构建成本。</li>
+<li>DiskANN 查询的尾延迟看 SSD：NVMe 换成普通云盘，P99 翻倍不止；构建时间也数倍于内存索引。</li>
+</ul></li>
+<li>选型含义：POC 必须用真实数据分布 + 真实 topK 做 recall@k / P99 网格实测；索引选型是&quot;内存账单 vs 延迟 vs 构建成本&quot;的三方谈判，没有银弹。</li>
+<li>来源：官方文档（index_selection.md，含 HNSW 调优示例 M=16 / efConstruction=200 / 查询期 ef）；社区成本优化指南（内存倍数口径已标注为厂商 / 社区口径）。</li>
+</ul>
+<p><strong>深水区二：删除与 compaction——&quot;删了&quot;不等于&quot;没了&quot;</strong></p>
+<ul>
+<li>机制：Milvus 是 append-only 存储，只支持逻辑删除——delete 写入删除标记（delta log），查询时按时间戳过滤被标记实体；物理清除靠 compaction（DataCoord 触发、DataNode 执行）把未删除数据写入新 segment 并淘汰旧 segment。</li>
+<li>推到边缘：<ul>
+<li>官方 release notes 原话：滥用删除会导致搜索性能暴跌、存储用量暴涨——每次查询都要先过一遍删除标记。</li>
+<li>&quot;删了数据空间不释放&quot;的经典困惑：compaction 是有触发阈值和节奏的后台任务；做 GDPR&quot;删除权&quot;合规时，必须端到端验证物理清除真的发生，不能只看查询结果。</li>
+<li>更新 = 删除 + 插入：高频更新场景的删除标记堆积速度远超直觉；2026-07 的 mutable-columns 设计稿试图做列级更新（写入路径描述为&quot;带 payload 的删除&quot;），仍在设计阶段——GA 前不要当已发布能力用。</li>
+<li>compaction 合并 segment 会触发 QueryCoord 的 target 更新与 segment handoff（先加载新 segment 再卸载旧 segment），不是完全无感的后台任务。</li>
+</ul></li>
+<li>选型含义：有高频删除 / 更新的业务，必须做 compaction 策略与删除标记堆积的压测；合规删除需求要验证到对象存储层。</li>
+<li>来源：官方 release notes（v2.0.0，逻辑删除警告）；compaction 设计文档；load-segment-pipeline 归档文档（handoff 流程）；mutable-columns 设计稿（2026-07，设计阶段）。</li>
+</ul>
+<p><strong>深水区三：标量过滤与混合检索——过滤写在哪，决定了你搜到什么</strong></p>
+<ul>
+<li>机制：标量字段可建 INVERTED / BITMAP 等索引；hybrid_search 支持多路 ANN + RRF / 加权 rerank；过滤表达式（expr / filter）可与向量搜索组合；partition key 功能（启用时默认 64 分区）可做租户路由。</li>
+<li>推到边缘：<ul>
+<li>过滤的执行位置改变候选空间：高选择性过滤（过滤后只剩几百条）时，ANN 图遍历的剪枝优势消失，FLAT 暴力扫反而更快更准——&quot;索引越强越好&quot;在此失效。</li>
+<li>IVF + 过滤组合：<code>nprobe</code> 扫的是聚类中心，被过滤掉的向量不参与召回计算——过滤比例极高时有效 <code>nprobe</code> 被稀释，召回无声下跌；解法是调大 <code>nprobe</code> 或改用 HNSW / FLAT，代价是延迟 / 内存。</li>
+<li>多租户隔离（tenant_id 过滤）是典型的高基数低选择性过滤：必须用真实租户数据分布验证召回，不能拿均匀分布的 benchmark 当证据。</li>
+<li>BM25 / analyzer 必须在建表时声明，事后无法追加——schema 设计时就要想清楚&quot;以后要不要全文检索&quot;，否则重建 collection + 重导数据。</li>
+</ul></li>
+<li>选型含义：混合检索的 POC 必须带上真实过滤表达式和真实数据倾斜一起测；只测纯向量 recall 的 benchmark 对 RAG 生产没有指导意义。</li>
+<li>来源：官方文档（index_selection.md、标量索引文档）；社区实践（2026-08 BM25 hybrid search 设计实测记录，基于 v2.5.0 + SDK 3.0.4 验证）。</li>
+</ul>
+<p><strong>深水区四：召回率调优——recall@k 是谈判桌，不是仪表盘</strong></p>
+<ul>
+<li>机制：近似检索的本质是用精度换速度；可调旋钮分三层：索引构建参数（HNSW 的 <code>M</code> / <code>efConstruction</code>、IVF 的 <code>nlist</code>）、查询参数（HNSW 的 <code>ef</code>、IVF 的 <code>nprobe</code>）、数据面（segment 大小、compaction 程度）。</li>
+<li>推到边缘：<ul>
+<li>构建参数改一次 = 索引重建一次：<code>efConstruction</code> 从 200 调到 400，构建时间翻倍不止，十亿级上就是一次以天计的窗口。</li>
+<li>查询参数是唯一&quot;免费&quot;的旋钮：<code>ef</code> / <code>nprobe</code> 在查询时可调，适合按业务分级（核心流量高召回、长尾流量低延迟）——但前提是 SDK / 网关真的透传了 search_params。</li>
+<li>官方文档的&quot;推荐值&quot;是起点不是终点：M=16 / efConstruction=200 这类默认值在 768 维文本向量上合理，在 2048 维图像向量上可能是另一个故事——维度、数据分布、topK 三者共同决定最优值，没有跨场景银弹。</li>
+<li>召回率必须和过滤一起谈（见深水区三）：单测 ANN recall 99% 的系统，加上生产过滤可能掉到 90% 以下——验收标准要写&quot;带过滤的端到端 recall@k&quot;，不是&quot;裸 ANN recall&quot;。</li>
+</ul></li>
+<li>选型含义：把&quot;recall@k / nDCG + P95 / P99 + 真实 query set&quot;写进验收标准；索引参数调优要留出重建窗口的预算。</li>
+<li>来源：官方文档（index_selection.md，HNSW 调优示例）；社区共识。</li>
+</ul>
+<p><strong>深水区五：十亿级扩展——&quot;能扩展&quot;和&quot;扩展了就有数&quot;之间隔着三条链路</strong></p>
+<ul>
+<li>机制：Proxy / QueryNode / DataNode / 协调服务可独立扩展；segment 是最小调度单位，QueryCoord 负责 target 管理与 handoff；seal 后的数据沉对象存储。</li>
+<li>推到边缘：<ul>
+<li>扩 QueryNode 不等于查询变快：新节点要先 load segment、加载索引，handoff 完成前新节点是&quot;摆设&quot;；扩容期的 segment 迁移吃网络和内存，高峰期扩容可能先抖再稳。</li>
+<li>写入侧：growing segment 靠 flush 密封，flush 落后则内存堆积；3.0 开发版曾出现 write buffer 等待慢 segment sync、insert QPS 掉到 0 的 issue（#48974，状态待最终核验）——持续写入的背压链路是生产第一杀手。</li>
+<li>外部依赖是扩展性的隐形天花板：etcd（元数据）、Pulsar / Kafka（消息）、对象存储任一环节到瓶颈，向量节点再多也白搭——&quot;分布式&quot;意味着瓶颈分析要横跨五个组件。</li>
+<li>Standalone（单机 + MinIO / RocksMQ）与 Cluster 是两种运维物种：从 Standalone 切 Cluster 是换部署拓扑，不是改个配置。</li>
+</ul></li>
+<li>选型含义：十亿级 POC 必须压&quot;持续写入 + 查询 + 扩容&quot;三并发场景；监控要覆盖 MQ 积压、flush 落后、handoff 进度，而不仅是 QPS。</li>
+<li>来源：官方架构文档；load-segment-pipeline 归档文档；GitHub issue #48974（3.0 开发版，状态待核验）。</li>
+</ul>
+<p><strong>深水区六：一致性与可见性——&quot;写入成功&quot;和&quot;搜得到&quot;之间隔着 GuaranteeTs</strong></p>
+<ul>
+<li>机制：写入先进 MQ（WAL），growing segment 在内存中可查，seal / flush 后落盘；查询的 GuaranteeTs 决定&quot;等到多新&quot;：Strong 等 QueryNode 的 service time 追上最新时间戳；Session 用本会话上次写入时间戳（read-your-writes）；Bounded（默认）允许有界陈旧；Eventually 跳过等待。Milvus Lite 只有 Strong 可选。</li>
+<li>推到边缘：<ul>
+<li>默认 Bounded 下&quot;刚写入搜不到&quot;是 feature 不是 bug；切 Strong 能解，但 Strong 把整条 ingest → 可见链路的落后时间计入每次查询延迟——社区 50k QPS 实测 Strong 让 p95 翻倍。</li>
+<li>第三方集成可能吞掉你指定的 consistency_level（2026-08 semantic-router issue #2821：指定 Strong 未生效，后修复）——&quot;可调&quot;的前提是链路真的透传参数。</li>
+<li>强一致场景下，ingest 侧的任何落后（MQ 积压、segment 未及时 seal）都会直接变成查询延迟——可见性延迟是全链路问题，不只在查询侧。</li>
+</ul></li>
+<li>选型含义：RAG 的&quot;写后即搜&quot;需求要在 POC 里显式验证可见性延迟；一致性级别要写进 SDK 封装层，而不是依赖每个调用方自觉。</li>
+<li>来源：官方文档（tune_consistency.md、consistency.md；SDK 文档注明 Milvus Lite 限制）；社区 issue（semantic-router #2821，2026-08）；社区生产实践（Datadog 集成案例）。</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<blockquote>
+<p>Each entry = mechanism + what happens at the edge + what it means for selection. Evidence types labeled.</p>
+</blockquote>
+<p><strong>Deep Waters 1: Vector index algorithms — no &quot;best&quot;, only different bills</strong></p>
+<ul>
+<li>Mechanism: indexes are built independently per segment; index files land on object storage with their segments and are loaded by QueryNodes. HNSW graph index: <code>M</code> (connections per node) and <code>efConstruction</code> (build-time search width) determine graph quality vs. memory / build time; query-time <code>ef</code> determines recall / latency. IVF: <code>nlist</code> (cluster centers), <code>nprobe</code> (centers scanned) — larger <code>nprobe</code> means higher recall and linearly higher latency. DiskANN: graph on SSD, only compressed navigation structures in memory. FLAT: exact brute-force search.</li>
+<li>At the edge:<ul>
+<li>HNSW memory is ~1.5–2× the raw vectors (vendor / community figure): at billion-scale 768-dim vectors, index memory alone is a TB-level bill — which is why DiskANN and IVF_PQ exist; mmap shifts some pressure to disk at the cost of latency.</li>
+<li>Fragmented segments (many small ones) multiply index overhead since each segment carries its own index; compacting small segments is index-cost optimization as much as space optimization.</li>
+<li>Pick <code>nlist</code> wrong for IVF and no <code>nprobe</code> tuning will save you — clustering-stage information loss is irreversible; index parameters are fixed at build time, changing them means rebuilding and paying build cost again.</li>
+<li>DiskANN tail latency follows the SSD: swap NVMe for ordinary cloud disks and P99 more than doubles; build time is also multiples of in-memory indexes.</li>
+</ul></li>
+<li>What it means: POCs must grid-test recall@k / P99 on real data distributions with real topK; index selection is a three-way negotiation between memory bill, latency, and build cost — no silver bullet.</li>
+<li>Sources: official docs (index_selection.md, incl. the HNSW tuning example M=16 / efConstruction=200 / query-time ef); community cost-optimization guide (memory multiple labeled as vendor / community figure).</li>
+</ul>
+<p><strong>Deep Waters 2: Deletion and compaction — &quot;deleted&quot; doesn&#x27;t mean &quot;gone&quot;</strong></p>
+<ul>
+<li>Mechanism: Milvus is append-only and supports logical deletion only — deletes write deletion markers (delta logs), and queries filter marked entities by timestamp; physical removal relies on compaction (triggered by DataCoord, executed by DataNode), which writes live data into new segments and retires old ones.</li>
+<li>At the edge:<ul>
+<li>Official release notes, verbatim: abusing deletion tanks search performance and explodes storage usage — every query must first walk the deletion markers.</li>
+<li>The classic &quot;deleted data doesn&#x27;t free space&quot; confusion: compaction is a background task with trigger thresholds and its own cadence; for GDPR right-to-erasure compliance you must verify physical removal end to end, not just query results.</li>
+<li>Update = delete + insert: deletion-marker pileup in high-update workloads is far faster than intuition suggests; the 2026-07 mutable-columns design draft proposes column-level updates (write path described as &quot;a delete with a payload&quot;) but is still at design stage — don&#x27;t treat it as shipped.</li>
+<li>Compacting segments triggers QueryCoord target updates and segment handoff (load the new segment before unloading the old) — not a fully invisible background task.</li>
+</ul></li>
+<li>What it means: workloads with heavy deletes / updates need compaction-strategy and marker-pileup load testing; compliance deletion must be verified down to the object-storage layer.</li>
+<li>Sources: official v2.0.0 release notes (logical-deletion warning); compaction design docs; archived load-segment-pipeline doc (compaction / handoff flow); mutable-columns design draft (2026-07, design stage).</li>
+</ul>
+<p><strong>Deep Waters 3: Scalar filtering and hybrid search — where the filter runs decides what you find</strong></p>
+<ul>
+<li>Mechanism: scalar fields can carry INVERTED / BITMAP indexes; hybrid_search supports multi-path ANN with RRF / weighted reranking; filter expressions (expr / filter) compose with vector search; the partition-key feature (64 partitions by default when enabled) supports tenant routing.</li>
+<li>At the edge:<ul>
+<li>Filter placement changes the candidate space: with highly selective filters (hundreds of candidates left), ANN graph traversal&#x27;s pruning advantage evaporates and a FLAT brute-force scan is faster and more accurate — &quot;stronger index is always better&quot; fails here.</li>
+<li>IVF + filtering: <code>nprobe</code> scans cluster centers, and filtered-out vectors don&#x27;t count toward recall — with extreme filter ratios the effective <code>nprobe</code> is diluted and recall drops silently; the fix is larger <code>nprobe</code> or switching to HNSW / FLAT, paid for in latency / memory.</li>
+<li>Multi-tenant isolation (tenant_id filters) is the classic high-cardinality, low-selectivity filter: recall must be validated on real tenant data distributions, never on uniform-distribution benchmarks.</li>
+<li>BM25 / analyzers must be declared at table creation and can&#x27;t be added later — schema design has to anticipate &quot;will we ever need full-text search&quot;, or it&#x27;s rebuild-collection + reimport.</li>
+</ul></li>
+<li>What it means: hybrid-search POCs must test with real filter expressions and real data skew together; pure-vector-recall benchmarks say nothing about RAG production.</li>
+<li>Sources: official docs (index_selection.md, scalar-index docs); community practice (2026-08 BM25 hybrid-search design record, verified on v2.5.0 + SDK 3.0.4).</li>
+</ul>
+<p><strong>Deep Waters 4: Recall tuning — recall@k is a negotiation table, not a dashboard</strong></p>
+<ul>
+<li>Mechanism: approximate retrieval trades accuracy for speed; the knobs come in three layers: index-build parameters (HNSW <code>M</code> / <code>efConstruction</code>, IVF <code>nlist</code>), query parameters (HNSW <code>ef</code>, IVF <code>nprobe</code>), and the data plane (segment size, compaction level).</li>
+<li>At the edge:<ul>
+<li>Changing a build parameter once means rebuilding the index once: raising <code>efConstruction</code> from 200 to 400 more than doubles build time — at billion scale that&#x27;s a multi-day window.</li>
+<li>Query parameters are the only &quot;free&quot; knob: <code>ef</code> / <code>nprobe</code> tune at query time, enabling per-tier traffic (high recall for core traffic, low latency for the long tail) — provided the SDK / gateway actually forwards search_params.</li>
+<li>The official docs&#x27; &quot;recommended values&quot; are starting points, not destinations: defaults like M=16 / efConstruction=200 that suit 768-dim text vectors may be a different story on 2048-dim image vectors — dimension, data distribution, and topK jointly determine the optimum; no cross-scenario silver bullet.</li>
+<li>Recall must be discussed together with filtering (see Deep Waters 3): a system scoring 99% bare ANN recall can drop below 90% under production filters — acceptance criteria should read &quot;end-to-end recall@k with filters&quot;, not &quot;bare ANN recall&quot;.</li>
+</ul></li>
+<li>What it means: write &quot;recall@k / nDCG + P95 / P99 + real query set&quot; into acceptance criteria; budget rebuild windows for index-parameter tuning.</li>
+<li>Sources: official docs (index_selection.md, HNSW tuning example); community consensus.</li>
+</ul>
+<p><strong>Deep Waters 5: Billion-scale expansion — three links between &quot;can scale&quot; and &quot;scaled and serving&quot;</strong></p>
+<ul>
+<li>Mechanism: Proxy / QueryNode / DataNode / coordination scale independently; the segment is the smallest scheduling unit, with QueryCoord owning target management and handoff; sealed data sinks to object storage.</li>
+<li>At the edge:<ul>
+<li>Adding QueryNodes doesn&#x27;t make queries faster by itself: new nodes must first load segments and indexes; before handoff completes the new node is decoration; segment migration during scale-out eats network and memory, so scaling at peak can wobble before stabilizing.</li>
+<li>On the write side: growing segments seal via flush, and lagging flush piles up memory; a 3.0 dev build once showed write buffers waiting on slow segment sync with insert QPS dropping to 0 (issue #48974, final status pending verification) — the sustained-write backpressure chain is production&#x27;s #1 killer.</li>
+<li>External dependencies are the invisible ceiling: if etcd (metadata), Pulsar / Kafka (messaging), or object storage bottlenecks, more vector nodes buy nothing — &quot;distributed&quot; means bottleneck analysis spans five components.</li>
+<li>Standalone (single node + MinIO / RocksMQ) and Cluster are two different ops species: moving from Standalone to Cluster is a topology change, not a config tweak.</li>
+</ul></li>
+<li>What it means: billion-scale POCs must load-test &quot;sustained writes + queries + scale-out&quot; concurrently; monitoring must cover MQ backlog, flush lag, and handoff progress — not just QPS.</li>
+<li>Sources: official architecture docs; archived load-segment-pipeline doc; GitHub issue #48974 (3.0 dev build, status pending verification).</li>
+</ul>
+<p><strong>Deep Waters 6: Consistency and visibility — GuaranteeTs sits between &quot;write succeeded&quot; and &quot;searchable&quot;</strong></p>
+<ul>
+<li>Mechanism: writes enter the MQ (WAL) first, growing segments are queryable in memory, sealed / flushed data lands on disk; a query&#x27;s GuaranteeTs decides &quot;how new to wait for&quot;: Strong waits until QueryNodes&#x27; service time catches the latest timestamp; Session uses the session&#x27;s last write timestamp (read-your-writes); Bounded (default) allows bounded staleness; Eventually skips the wait. Milvus Lite only offers Strong.</li>
+<li>At the edge:<ul>
+<li>Under the default Bounded level, &quot;just-written data isn&#x27;t searchable&quot; is a feature, not a bug; switching to Strong fixes it but folds the entire ingest → visibility lag into every query&#x27;s latency — a community test at 50k QPS saw Strong double p95.</li>
+<li>Third-party integrations may swallow your consistency_level (2026-08 semantic-router issue #2821: Strong specified but not honored, later fixed) — &quot;tunable&quot; requires the parameter to actually propagate.</li>
+<li>Under strong consistency, any ingest-side lag (MQ backlog, unsealed segments) becomes query latency directly — visibility delay is a full-pipeline problem, not query-side only.</li>
+</ul></li>
+<li>What it means: RAG &quot;write-then-search&quot; requirements need explicit visibility-latency validation in POCs; bake the consistency level into the SDK wrapper instead of relying on every caller to remember.</li>
+<li>Sources: official docs (tune_consistency.md, consistency.md; SDK docs note the Milvus Lite limitation); community issue (semantic-router #2821, 2026-08); community production practice (Datadog integration case).</li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="用户最买账的 5 点" data-en="What users love most">用户最买账的 5 点</span></h2>
+<div class="lang-block lang-zh">
+<blockquote>
+<p>好的也要有深度。每条 = 为什么是真的 + 边缘与限度。</p>
+</blockquote>
+<ol>
+<li><strong>索引矩阵全，&quot;选型不用换库&quot;</strong><ul>
+<li>为什么是真的：从 FLAT 精确到 IVF_PQ 省内存、HNSW 高召回、DiskANN 超内存、稀疏 / BM25 全文，一套系统覆盖；AUTOINDEX 让新手不用第一天就读完索引论文。</li>
+<li>边缘与限度：矩阵全 = 调优空间大 = 踩坑面大；per-segment 建索引意味着小 segment 放大索引成本；索引参数改一次重建一次，选错的代价是重建窗口。以及厂商 / 社区的&quot;降本 80%&quot;类数字是特定调优场景口径，不是普遍承诺。</li>
+<li>来源：官方文档（index_selection.md）；社区成本优化指南。观察版本：2.6.x。</li>
+</ul></li>
+<li><strong>横向扩展是架构原生能力</strong><ul>
+<li>为什么是真的：存算分离 + 无状态 Proxy + 角色独立扩展，segment 级调度；十亿级是设计目标不是口号。</li>
+<li>边缘与限度：扩容 ≠ 立即就位（handoff / 索引加载）；外部依赖（etcd / MQ / 对象存储）任一瓶颈则白扩；小规模用 Cluster 是&quot;大炮打蚊子&quot;，Standalone 到一定规模要换拓扑。</li>
+<li>来源：官方架构文档；社区共识。观察版本：2.6.x。</li>
+</ul></li>
+<li><strong>混合检索一次请求搞定</strong><ul>
+<li>为什么是真的：dense + sparse + 标量过滤 + RRF rerank 一次 hybrid_search 完成，省掉&quot;调两次再融合&quot;的应用层代码；BM25 function 写入时自动派生稀疏向量。</li>
+<li>边缘与限度：BM25 建表时定、事后加不上；过滤 + ANN 的召回互动必须实测（见深水区三）；RRF 的 k 参数本身也要调。</li>
+<li>来源：官方文档；社区实测（2026-08，v2.5.0）。观察版本：2.5+。</li>
+</ul></li>
+<li><strong>SDK 与 AI 生态开箱即用</strong><ul>
+<li>为什么是真的：PyMilvus MilvusClient 统一入口，Java / Go / Node.js / Rust / C++ 全覆盖，RESTful v2；LangChain / LlamaIndex 等 RAG 生态集成成熟；Milvus Lite（pip install）本地就能跑通原型。</li>
+<li>边缘与限度：生态集成可能吞掉高级参数（consistency_level 未透传实锤）；Milvus Lite 只有 Strong 一致性且功能受限，生产还是要上分布式；2.x → 3.0 SDK 要换 major line。</li>
+<li>来源：SDK 文档；社区 issue（semantic-router #2821）。观察版本：2.6.x。</li>
+</ul></li>
+<li><strong>可观测性与工具链完整</strong><ul>
+<li>为什么是真的：Prometheus + Grafana、Attu 管理 UI（拓扑 / 慢查询 / 任务队列 / 备份）、OpenTelemetry / Jaeger 链路追踪，定位问题有章可循。</li>
+<li>边缘与限度：Attu 是管理 UI 不是诊断平台，深水区问题（handoff 卡住、compaction 落后）最终要读日志和源码；指标多不等于会看，MQ 积压 / flush 落后这些关键信号要专门配告警。</li>
+<li>来源：官方文档；社区实践。观察版本：2.6.x。</li>
+</ul></li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<blockquote>
+<p>Depth on the good stuff too. Each = why it&#x27;s true + edges and limits.</p>
+</blockquote>
+<ol>
+<li><strong>Full index matrix — &quot;no need to switch databases as you grow&quot;</strong><ul>
+<li>Why it&#x27;s true: one system covers FLAT exact search through memory-saving IVF_PQ, high-recall HNSW, over-memory DiskANN, and sparse / BM25 full text; AUTOINDEX means newcomers don&#x27;t read the index papers on day one.</li>
+<li>Edges and limits: a full matrix means a large tuning surface means a large pitfall surface; per-segment index building amplifies index cost on small segments; changing an index parameter means rebuilding — picking wrong costs a rebuild window. And vendor / community &quot;cut costs 80%&quot; figures are specific-tuning-scenario claims, not general promises.</li>
+<li>Source: official docs (index_selection.md); community cost-optimization guide. Observed version: 2.6.x.</li>
+</ul></li>
+<li><strong>Horizontal scaling as native architecture</strong><ul>
+<li>Why it&#x27;s true: storage-compute separation + stateless Proxy + independently scalable roles, segment-level scheduling; billion-scale is a design target, not a slogan.</li>
+<li>Edges and limits: scaling out ≠ immediately serving (handoff / index loading); any bottleneck in external dependencies (etcd / MQ / object storage) nullifies new nodes; running Cluster at small scale is overkill, and Standalone eventually needs a topology change.</li>
+<li>Source: official architecture docs; community consensus. Observed version: 2.6.x.</li>
+</ul></li>
+<li><strong>Hybrid search in a single request</strong><ul>
+<li>Why it&#x27;s true: dense + sparse + scalar filtering + RRF rerank complete in one hybrid_search, eliminating &quot;query twice and fuse in app code&quot;; the BM25 function auto-derives sparse vectors at write time.</li>
+<li>Edges and limits: BM25 is fixed at table creation and can&#x27;t be added later; filter × ANN recall interactions must be measured (see Deep Waters 3); RRF&#x27;s k parameter needs tuning too.</li>
+<li>Source: official docs; community testing (2026-08, v2.5.0). Observed version: 2.5+.</li>
+</ul></li>
+<li><strong>SDKs and AI ecosystem work out of the box</strong><ul>
+<li>Why it&#x27;s true: PyMilvus MilvusClient as the unified entry point, full coverage of Java / Go / Node.js / Rust / C++, RESTful v2; mature RAG-ecosystem integrations (LangChain / LlamaIndex); Milvus Lite (pip install) runs a prototype locally.</li>
+<li>Edges and limits: ecosystem integrations may swallow advanced parameters (consistency_level non-propagation confirmed); Milvus Lite is Strong-only and feature-limited — production still needs the distributed deployment; 2.x → 3.0 requires switching SDK major lines.</li>
+<li>Source: SDK docs; community issue (semantic-router #2821). Observed version: 2.6.x.</li>
+</ul></li>
+<li><strong>Complete observability and tooling</strong><ul>
+<li>Why it&#x27;s true: Prometheus + Grafana, Attu management UI (topology / slow queries / task queue / backups), OpenTelemetry / Jaeger tracing — problems are locatable by the book.</li>
+<li>Edges and limits: Attu is a management UI, not a diagnostics platform; deep-water problems (stuck handoff, lagging compaction) ultimately need log and source reading; many metrics ≠ knowing which to watch — MQ backlog / flush lag need dedicated alerts.</li>
+<li>Source: official docs; community practice. Observed version: 2.6.x.</li>
+</ul></li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="吐槽清单" data-en="Complaints">吐槽清单</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>分类</th><th>吐槽</th><th>影响版本</th><th>状态</th></tr></thead>
+<tbody>
+<tr><td>运维坑</td><td>组件多（Proxy / QueryNode / DataNode / 协调 / etcd / MQ / 对象存储），概念陡峭（segment / growing-sealed / compaction / handoff / GuaranteeTs），DBA 上手慢</td><td>全版本</td><td>open</td></tr>
+<tr><td>运维坑</td><td>外部依赖重：etcd、Pulsar / Kafka / Woodpecker、对象存储任一出问题都影响服务；相对 pgvector 这是主要运维税</td><td>全版本</td><td>open（架构固有）</td></tr>
+<tr><td>运维坑</td><td>3.0 开发版集群持续写入后 write buffer 等待慢 segment sync，insert QPS 可掉到 0、请求长时间挂住</td><td>3.0 开发版</td><td>open（issue #48974，待最终状态核验）</td></tr>
+<tr><td>运维坑</td><td>升级后搜索变慢排障难：WPS 从 2.2.16 升到 2.5.16 暴露旧版 Proxy 查询解析崩溃，升级前后需全量备份 + 召回基线对照</td><td>2.2→2.5</td><td>partially-fixed（社区排障记录沉淀为经验）</td></tr>
+<tr><td>运维坑</td><td>2.6 → 3.0.1 升级约束多：MQ 类型 / Helm chart 版本不可变、写后不可镜像回滚、Docker 需改数据卷属主（root→999:999）</td><td>2.6→3.0</td><td>open（按官方升级文档逐步验证）</td></tr>
+<tr><td>性能坑</td><td>滥用删除导致搜索性能暴跌、存储暴涨（官方 release notes 原话）；&quot;删了空间不释放&quot;取决于 compaction 后台节奏</td><td>全版本</td><td>open（机制固有，需 compaction 规划）</td></tr>
+<tr><td>性能坑</td><td>默认 Bounded 一致性下&quot;刚写入搜不到&quot;；切 Strong 则 p95 翻倍（社区 50k QPS 实测）——可见性延迟是显式 trade-off</td><td>全版本</td><td>open（按场景选一致性级别）</td></tr>
+<tr><td>性能坑</td><td>十亿级 HNSW 内存账单：约为原始向量 1.5–2 倍（厂商 / 社区口径）；内存不够只能换 IVF_PQ / DiskANN 拿召回或尾延迟换</td><td>全版本</td><td>open（架构固有）</td></tr>
+<tr><td>兼容坑</td><td>2.x → 3.0 SDK 要换 major line（Rust SDK 3.0 声明），protobuf / schema 有边界；旧数据迁移需专门规划（OpenRAG 2→3 要求先迁数据）</td><td>2.x→3.0</td><td>open</td></tr>
+<tr><td>兼容坑</td><td>BM25 / analyzer 必须建表时声明，事后无法追加；想加全文检索 = 重建 collection + 重导数据</td><td>2.5+</td><td>open</td></tr>
+<tr><td>兼容坑</td><td>不兼容 SQL / PG wire；从 pgvector 迁过来要重写访问层（无 SQL、无 JOIN、无多语句事务）</td><td>全版本</td><td>open（架构固有）</td></tr>
+<tr><td>生态坑</td><td>深水区中文资料少于英文；部分官方页面明确&quot;暂时没有中文版本&quot;</td><td>全版本</td><td>open</td></tr>
+<tr><td>成本坑</td><td>Zilliz Cloud Serverless 按 vCU 计量（单次操作有最小计量），Dedicated 无操作也按 CU × 时长计费；备份 / 网络 / 审计日志可额外计量</td><td>托管版</td><td>open（计费模型，按官方计费说明）</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Category</th><th>Complaint</th><th>Affected versions</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Ops</td><td>Many components (Proxy / QueryNode / DataNode / coordinators / etcd / MQ / object storage) and a steep concept curve (segment / growing-sealed / compaction / handoff / GuaranteeTs) — slow DBA onboarding</td><td>All</td><td>open</td></tr>
+<tr><td>Ops</td><td>Heavy external dependencies: any failure in etcd, Pulsar / Kafka / Woodpecker, or object storage affects serving; this is the main ops tax vs. pgvector</td><td>All</td><td>open (architectural)</td></tr>
+<tr><td>Ops</td><td>3.0 dev build: sustained writes made write buffers wait on slow segment sync, insert QPS could drop to 0 with requests hanging</td><td>3.0 dev</td><td>open (issue #48974, final status pending verification)</td></tr>
+<tr><td>Ops</td><td>Post-upgrade search slowdowns are hard to diagnose: WPS&#x27;s 2.2.16 → 2.5.16 upgrade exposed an old-Proxy query-parsing crash; upgrades need full backups plus recall-baseline comparison</td><td>2.2→2.5</td><td>partially-fixed (community troubleshooting write-up)</td></tr>
+<tr><td>Ops</td><td>2.6 → 3.0.1 upgrade has many constraints: MQ type / Helm chart version immutable, no image-only rollback after writes, Docker data-volume ownership change (root → 999:999)</td><td>2.6→3.0</td><td>open (verify step by step per official upgrade docs)</td></tr>
+<tr><td>Performance</td><td>Abusing deletes tanks search performance and explodes storage (official release notes, verbatim); &quot;deleted space not freed&quot; follows the background compaction cadence</td><td>All</td><td>open (mechanism-inherent; needs compaction planning)</td></tr>
+<tr><td>Performance</td><td>Default Bounded consistency: &quot;just-written data isn&#x27;t searchable&quot;; switching to Strong doubled p95 in a community 50k-QPS test — visibility latency is an explicit trade-off</td><td>All</td><td>open (pick consistency level per scenario)</td></tr>
+<tr><td>Performance</td><td>Billion-scale HNSW memory bill: ~1.5–2× raw vectors (vendor / community figure); short on memory means trading recall or tail latency via IVF_PQ / DiskANN</td><td>All</td><td>open (architectural)</td></tr>
+<tr><td>Compatibility</td><td>2.x → 3.0 requires switching SDK major lines (per Rust SDK 3.0 announcement), with protobuf / schema boundaries; legacy data migration needs dedicated planning (OpenRAG 2→3 requires migrating data first)</td><td>2.x→3.0</td><td>open</td></tr>
+<tr><td>Compatibility</td><td>BM25 / analyzers must be declared at table creation and can&#x27;t be added later; adding full-text search later = rebuild collection + reimport</td><td>2.5+</td><td>open</td></tr>
+<tr><td>Compatibility</td><td>No SQL / PG wire compatibility; migrating from pgvector means rewriting the access layer (no SQL, no JOINs, no multi-statement transactions)</td><td>All</td><td>open (architectural)</td></tr>
+<tr><td>Ecosystem</td><td>Deep-dive Chinese-language material is thinner than English; some official pages are explicitly &quot;no Chinese version yet&quot;</td><td>All</td><td>open</td></tr>
+<tr><td>Cost</td><td>Zilliz Cloud Serverless meters vCU (minimum metering per operation), Dedicated bills CU × duration even idle; backup / network / audit logs can meter extra</td><td>Managed</td><td>open (billing model, per official billing references)</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="判决" data-en="Verdict">判决</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li><strong>一句话定位</strong>：为十亿级向量检索而生的分布式系统——索引矩阵和横向扩展是真本事，但它把复杂度拆成协调、消息、对象存储、segment、索引构建等多条链路；数据量没逼近 pgvector 边界时，这些能力只是额外的运维税。</li>
+<li><strong>适合谁</strong>：<ul>
+<li>向量规模千万到十亿级、单机内存 / HNSW 压不住的 RAG / 搜索 / 推荐业务；</li>
+<li>需要 dense + sparse / BM25 + 标量过滤混合检索，且过滤 / 召回需要独立调优的场景；</li>
+<li>需要索引内存、查询、写入独立扩展，或已有 K8s / SRE 团队能 hold 住多组件分布式系统；</li>
+<li>愿意用 Zilliz Cloud 托管、把运维外包的团队。</li>
+</ul></li>
+<li><strong>不适合谁</strong>：<ul>
+<li>百万级小规模 RAG——pgvector / 单机方案更快、更便宜、更省心；</li>
+<li>团队已深度绑定 PG 且强依赖事务 / SQL / JOIN（Milvus 无 SQL、无多语句事务）；</li>
+<li>无专职平台 / SRE 团队、希望&quot;装完不管&quot;的团队；</li>
+<li>有合规级审计 / TDE 硬性要求且只能用开源自建版的场景（本轮未找到开源内核证据）。</li>
+</ul></li>
+<li><strong>迁移成本</strong>：<ul>
+<li>pgvector → 中高：不止搬 embedding——schema、过滤表达式、索引参数、recall@k 基线要重建；无 SQL，访问层重写；迁移前必须用真实 query set 做 recall@k / nDCG / P95 / P99 对照，配双写 + 回滚预案。</li>
+<li>Elasticsearch（向量场景）→ 中：BM25 / 全文能力可对接，但 ES 的 DSL / 分片习惯要重学；dense 向量部分需重建索引调优。</li>
+<li>自研 FAISS / ScaNN 服务 → 中低：索引算法概念相通，主要是把&quot;自己管的索引进程&quot;换成&quot;分布式 segment / compaction / handoff&quot;的心智；运维复杂度上升，但省掉自研调度。</li>
+</ul></li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li><strong>One-liner</strong>: A distributed system built for billion-scale vector search — the index matrix and horizontal scaling are genuinely strong, but complexity is split across coordination, messaging, object storage, segments, and index building; below pgvector&#x27;s limits, those capabilities are just extra ops tax.</li>
+<li><strong>Best for</strong>:<ul>
+<li>RAG / search / recommendation workloads at ten-million to billion vector scale, where single-node memory / HNSW can&#x27;t hold;</li>
+<li>Scenarios needing dense + sparse / BM25 + scalar-filter hybrid retrieval with independently tunable filtering and recall;</li>
+<li>Teams needing index memory, query, and write to scale independently, or with K8s / SRE capacity to run a multi-component distributed system;</li>
+<li>Teams happy to use Zilliz Cloud and outsource operations.</li>
+</ul></li>
+<li><strong>Not for</strong>:<ul>
+<li>Small-scale RAG in the low millions — pgvector / single-node options are faster, cheaper, and simpler;</li>
+<li>Teams deeply invested in Postgres relying on transactions / SQL / JOINs (Milvus has no SQL, no multi-statement transactions);</li>
+<li>Teams with no dedicated platform / SRE staff hoping to &quot;install and forget&quot;;</li>
+<li>Scenarios with hard compliance-audit / TDE requirements restricted to self-hosted open source (no open-source kernel evidence found this round).</li>
+</ul></li>
+<li><strong>Migration cost</strong>:<ul>
+<li>pgvector → medium-high: it&#x27;s not just moving embeddings — schema, filter expressions, index parameters, and recall@k baselines must be rebuilt; no SQL means rewriting the access layer; compare recall@k / nDCG / P95 / P99 on a real query set before migrating, with dual-write + rollback plans.</li>
+<li>Elasticsearch (vector use cases) → medium: BM25 / full-text capabilities map over, but ES DSL / sharding habits must be relearned; dense-vector indexes need rebuilding and tuning.</li>
+<li>Self-built FAISS / ScaNN services → medium-low: index-algorithm concepts transfer; the main shift is from &quot;index processes I manage&quot; to distributed segment / compaction / handoff thinking; ops complexity rises, but self-built scheduling goes away.</li>
+</ul></li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="来源与待验证清单" data-en="Sources & to-be-verified">来源与待验证清单</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li>版本信息：GitHub milvus-io/milvus releases（v3.0.1；3.0 于 2026-07-16 GA）；milvus-sdk-rust v3.0.0 release notes（3.x 首个 major line，2.6.x 继续维护）</li>
+<li>架构与组件：官方架构文档；kubeblocks-addons milvus README（Standalone / Cluster 依赖矩阵：etcd + MinIO/S3 + RocksMQ / Pulsar / Kafka）</li>
+<li>索引与调优：官方文档 index_selection.md（含 HNSW M / efConstruction / 查询期 ef 调优示例、sparse / scalar 索引）；v2.6.x reference/index.md（FLAT / IVF 家族 / HNSW 家族 / SCANN / SPARSE_INVERTED_INDEX 矩阵；SPARSE_WAND 自 2.5.4 弃用）</li>
+<li>一致性：官方文档 tune_consistency.md、consistency.md（四级一致性、Bounded 默认、GuaranteeTs）；SDK 文档（Milvus Lite 仅 Strong）；第三方技术记录（druce/dbengines：无事务原语、batch insert 可部分成功）</li>
+<li>删除与 compaction：官方 v2.0.0 release notes（逻辑删除警告）；load-segment-pipeline 归档文档（compaction / handoff 流程）；mutable-columns 设计稿（2026-07，设计阶段）</li>
+<li>混合检索：官方标量索引文档；社区实测（2026-08 BM25 hybrid search 设计记录，v2.5.0 + SDK 3.0.4）；vector-anchored-join 设计稿（2026-07）</li>
+<li>安全：官方 adminGuide/tls.md（客户端 TLS / mTLS / 内部组件 TLS）；SDK 最佳实践（RBAC）；Zilliz 官方博客（Zilliz Cloud Audit Logs GA，托管侧额外计费）；Attu README（Attu 自身审计日志边界）</li>
+<li>备份恢复：zilliztech/milvus-backup README（在线备份恢复、--rebuild_index、同版或更高版本恢复、3.0 支持自 3.0.1 起）</li>
+<li>升级：官方升级文档（upgrade_milvus_standalone-helm / cluster-helm / operator；2.6.20→3.0.1 验证基准；MQ 类型与 chart 版本不可变；写后不可镜像回滚）；milvus-helm README（2.5.16 mixCoordinator → 2.6.x 路径）；OpenRAG 迁移文档（2.6 root→3.x 需改数据卷属主；旧数据迁移要求）</li>
+<li>可观测性：官方文档（Prometheus / Grafana / Attu）；社区实践（Datadog 集成案例，Strong 一致性 p95 翻倍；OpenTelemetry / Jaeger 链路追踪博客）</li>
+<li>吐槽来源：GitHub issue #48974（3.0 开发版写入背压，状态待核验）；社区博客（WPS 2.2.16→2.5.16 升级排障）；semantic-router issue #2821（consistency_level 未透传，2026-08）</li>
+<li>计费模型：Zilliz 计费说明（Serverless vCU + 存储；Dedicated CU × 时长 + 存储；备份 / 网络 / 审计日志计量边界）——本档案不收录绝对价格</li>
+<li>中文资料：官方中文文档站（部分页面&quot;暂时没有中文版本&quot;）；CSDN / 腾讯云开发者社区中文教程；discuss.milvus.io 论坛</li>
+<li>下次评审：跟踪 3.x GA 后的 lake-native 落地进展与 2.6.x 维护分支状态；复核开源内核审计 / TDE 是否有官方能力发布；复核 issue #48974 最终状态</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li>Version info: GitHub milvus-io/milvus releases (v3.0.1; 3.0 GA 2026-07-16); milvus-sdk-rust v3.0.0 release notes (first major line for 3.x; 2.6.x stays maintained)</li>
+<li>Architecture &amp; components: official architecture docs; kubeblocks-addons milvus README (Standalone / Cluster dependency matrix: etcd + MinIO/S3 + RocksMQ / Pulsar / Kafka)</li>
+<li>Indexes &amp; tuning: official index_selection.md (HNSW M / efConstruction / query-time ef tuning example; sparse / scalar indexes); v2.6.x reference/index.md (FLAT / IVF family / HNSW family / SCANN / SPARSE_INVERTED_INDEX matrix; SPARSE_WAND deprecated since 2.5.4)</li>
+<li>Consistency: official tune_consistency.md, consistency.md (four levels, Bounded default, GuaranteeTs); SDK docs (Milvus Lite Strong-only); third-party technical record (druce/dbengines: no transaction primitive, batch insert can partially succeed)</li>
+<li>Deletion &amp; compaction: official v2.0.0 release notes (logical-deletion warning); load-segment-pipeline archived doc (compaction / handoff flow); mutable-columns design draft (2026-07, design stage)</li>
+<li>Hybrid search: official scalar-index docs; community testing (2026-08 BM25 hybrid-search design record, v2.5.0 + SDK 3.0.4); vector-anchored-join design draft (2026-07)</li>
+<li>Security: official adminGuide/tls.md (client TLS / mTLS / inter-component TLS); SDK best practices (RBAC); Zilliz official blog (Zilliz Cloud Audit Logs GA, extra billing on the managed side); Attu README (Attu&#x27;s own audit-log boundary)</li>
+<li>Backup &amp; recovery: zilliztech/milvus-backup README (online backup/restore, --rebuild_index, same-or-higher-version restores, 3.0 support from 3.0.1)</li>
+<li>Upgrades: official upgrade docs (upgrade_milvus_standalone-helm / cluster-helm / operator; 2.6.20→3.0.1 validated baseline; MQ-type and chart-version immutability; no image-only rollback after writes); milvus-helm README (2.5.16 mixCoordinator → 2.6.x path); OpenRAG migration docs (2.6 root → 3.x data-volume ownership change; legacy data migration requirement)</li>
+<li>Observability: official docs (Prometheus / Grafana / Attu); community practice (Datadog integration case, Strong consistency doubling p95; OpenTelemetry / Jaeger tracing blog)</li>
+<li>Complaint sources: GitHub issue #48974 (3.0 dev-build write backpressure, status pending verification); community blog (WPS 2.2.16→2.5.16 upgrade troubleshooting); semantic-router issue #2821 (consistency_level not propagated, 2026-08)</li>
+<li>Billing models: Zilliz billing references (Serverless vCU + storage; Dedicated CU × duration + storage; backup / network / audit-log metering boundaries) — no absolute prices recorded in this profile</li>
+<li>Chinese resources: official Chinese docs site (some pages &quot;no Chinese version yet&quot;); CSDN / Tencent Cloud developer community tutorials; discuss.milvus.io forum</li>
+<li>Next review: track 3.x lake-native progress and the 2.6.x maintenance branch after 3.x GA; re-verify whether the open-source kernel gains official audit / TDE capabilities; re-verify the final status of issue #48974</li>
+</ul>
+</div>
+</section>
+</main>
+<footer class="footer">
+  <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
+</footer>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
