@@ -156,6 +156,12 @@ if (items) h2 += '<div class="tray-group"><div class="tray-group-h">' + escHtml(
 list.innerHTML = h2;
 }
 paintLabels(lang);
+var coBtn = document.getElementById('cmp-checkout');
+if (coBtn) {
+coBtn.hidden = sel.length === 0;
+var coLab = document.getElementById('cmp-checkout-label');
+if (coLab) coLab.textContent = (lang === 'zh'? '去对比（' + sel.length + ' 款）→': 'Compare (' + sel.length + ') →');
+}
 }
 
 function paintAddCmpButtons() {
