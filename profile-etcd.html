@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>etcd - DB 选型参考</title>
+<link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">&#9672;</span> DB <span data-zh="选型参考" data-en="Compare">选型参考</span></a>
+    <nav class="mainnav">
+<a href="index.html" class="active" data-zh="首页" data-en="Home">首页</a>
+<a href="compare.html" class="" data-zh="维度对比" data-en="Compare">维度对比</a>
+<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
+<a href="advisor.html" class="" data-zh="AI选型" data-en="AI Selection">AI选型</a>
+    </nav>
+    <div class="cmp-tray">
+      <button id="cmp-tray-btn" type="button" class="tray-btn" aria-expanded="false" aria-haspopup="true"><span data-zh="对比" data-en="Compare">对比</span> <b class="tray-count"><i id="cmp-count">0</i>/4</b></button>
+      <div id="cmp-panel" class="tray-panel" hidden>
+        <div class="tray-sec"><span data-zh="已选" data-en="Selected">已选</span></div>
+        <div id="cmp-selected" class="tray-selected"></div>
+        <div class="tray-sec"><span data-zh="全部产品（最多选 4 款）" data-en="All products (up to 4)">全部产品（最多选 4 款）</span></div>
+        <div id="cmp-list" class="tray-list"></div>
+        <div class="tray-actions"><button id="cmp-clear" type="button" class="tray-clear"><span data-zh="清空选择" data-en="Clear selection">清空选择</span></button></div>
+      </div>
+    </div>
+    <button id="lang-toggle" class="lang-btn" type="button" aria-label="switch language">EN</button>
+  </div>
+</header>
+<main class="page">
+<div class="profile-hero">
+  <a class="back" href="index.html"><span data-zh="← 返回首页" data-en="← Back to home">← 返回首页</span></a>
+  <h1>etcd</h1>
+  <div class="meta-row"><span class="cat cat-kvdoc" data-zh="KV · 宽列 · 文档" data-en="KV · Wide-column · Document">KV · 宽列 · 文档</span> <span class="tag">#KV</span> <span class="tag">#Raft强一致</span> <span class="tag">#K8s元数据底座</span> <span class="tag">#配置中心</span> <span class="tag">#分布式协调</span> <span class="tag">#CNCF毕业</span> <span class="tag">#开源</span></div>
+  <p class="oneliner"><div class="lang-block lang-zh">
+<p>CNCF 毕业的分布式 KV 存储，Raft 强一致，主打元数据 / 协调 / 配置场景——Kubernetes 的元数据底座。&quot;无聊的可靠性&quot;本身：把野心限制在元数据，它几乎不背锅；把野心放到数据面，它的每个设计约束都会变成你的故障复盘标题。</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<p>CNCF-graduated distributed KV store with Raft strong consistency, aimed at metadata / coordination / configuration scenarios — the metadata foundation of Kubernetes. &quot;Boring reliability&quot; itself: keep your ambitions within metadata and it almost never takes the blame; point your ambitions at the data plane and every one of its design constraints becomes a title in your postmortem.</p>
+</div></p>
+  <div class="ai-dive-row" data-product="etcd">
+    <span class="ai-dive-label" data-zh="用 AI 深挖这款：" data-en="Deep-dive with AI:">用 AI 深挖这款：</span>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('chatgpt', this)">ChatGPT <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('grok', this)">Grok <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('claude', this)">Claude <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn addcmp-btn" data-addcmp="etcd"><span class="addcmp-label">＋ 对比</span></button>
+  </div>
+  <div class="legend"><span class="legend-label" data-zh="证据等级：" data-en="Evidence levels: ">证据等级：</span><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></div>
+</div>
+<section class="doc-section">
+<h2><span data-zh="基本信息" data-en="Basics">基本信息</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>项</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td>厂商</td><td>CNCF（原 CoreOS 发起）</td></tr>
+<tr><td>国家</td><td>美国（开源社区）</td></tr>
+<tr><td>起源</td><td>2013 年 CoreOS 为容器集群协调而创建；2018 年 CNCF 毕业</td></tr>
+<tr><td>许可证</td><td>Apache-2.0，纯开源，无官方商业版、无功能阉割</td></tr>
+<tr><td>托管服务</td><td>无官方托管；随各云厂商托管 K8s 内含</td></tr>
+<tr><td>主类型</td><td>KV（分布式、强一致）</td></tr>
+<tr><td>兼具类型</td><td>变更流（watch）、分布式协调原语（lease、分布式锁）</td></tr>
+<tr><td>数据模型</td><td>key-value，单 value 建议 KB 级；单请求 ≤1.5MB</td></tr>
+<tr><td>一致性模型</td><td>强一致（Raft 线性一致）；CP 系统</td></tr>
+<tr><td>复制协议</td><td>Raft（etcd-io/raft 独立库）</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Item</th><th>Content</th></tr></thead>
+<tbody>
+<tr><td>Vendor</td><td>CNCF (originally initiated by CoreOS)</td></tr>
+<tr><td>Country</td><td>USA (open-source community)</td></tr>
+<tr><td>Origin</td><td>Created in 2013 by CoreOS for container-cluster coordination; graduated from CNCF in 2018</td></tr>
+<tr><td>License</td><td>Apache-2.0, purely open source, no official commercial edition, no feature crippling</td></tr>
+<tr><td>Managed service</td><td>No official managed offering; bundled with each cloud vendor&#x27;s managed Kubernetes</td></tr>
+<tr><td>Primary type</td><td>KV (distributed, strongly consistent)</td></tr>
+<tr><td>Secondary types</td><td>Change stream (watch), distributed coordination primitives (lease, distributed lock)</td></tr>
+<tr><td>Data model</td><td>key-value, single value recommended at KB scale; single request ≤1.5MB</td></tr>
+<tr><td>Consistency model</td><td>Strong consistency (Raft linearizability); CP system</td></tr>
+<tr><td>Replication protocol</td><td>Raft (etcd-io/raft standalone library)</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section"><h2><span data-zh="硬维度（14 项）" data-en="Hard dimensions (14)">硬维度（14 项）</span></h2>
+<div class="lang-block lang-zh">
+<div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-no">无（查证为无）</span></h3><div class="dim-body"><p>etcd 本体<strong>不提供任何静态加密</strong>：bbolt 数据文件、WAL、快照文件均为明文落盘。Kubernetes SIG 2019 年安全审计明确写&quot;not encrypted at rest&quot;，加密职责上移到 kube-apiserver 层的 EncryptionConfiguration（aescbc/aesgcm/KMS v2 插件）。 <strong>选型含义</strong>：把 etcd 当通用 KV 用、且数据敏感时，必须自己在应用层加密或依赖磁盘加密；<code>etcdctl snapshot save</code> 产出的快照是明文 bbolt 文件，备份外泄=数据外泄。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p>client 与 peer 通信均可配置 TLS，可开 mTLS（<code>--client-cert-auth</code>，以客户端证书 CN 作为用户名参与认证）。v3.6.13/3.6.14 连续修复了 CRL 绕过（GHSA-3wh4-j44w-pg92）与 TLS 握手无 deadline 导致 goroutine 耗尽的 DoS（GHSA-6vch-q96h-7gc3）。 <strong>机制一句话</strong>：Go 标准 TLS 栈，证书热加载支持有限，生产必须配齐双向 TLS，否则&quot;拿到证书=拿到全部数据&quot;。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> 审计 <span class="verdict v-no">无（查证为无）</span></h3><div class="dim-body"><p>etcd server 自身<strong>没有审计日志功能</strong>：谁在何时读写了哪个 key，etcd 不记录。K8s 场景的审计靠 kube-apiserver 的 audit log。 <strong>选型含义</strong>：合规要求操作留痕时，etcd 只能依赖前置代理/网关或主机层审计，原生能力是空白。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> 认证与权限 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p>有 RBAC：user/role 模型，权限粒度为 <strong>key 范围（range）读写</strong>，认证方式为密码或 TLS 客户端证书 CN；<code>root</code> 用户为超级用户，需先建 root 再 <code>etcdctl auth enable</code>。 <strong>缺口</strong>：① 默认关闭，K8s 默认部署也不启用（靠网络隔离+证书）；② 粒度只到 key 前缀，无字段级、无行级；③ 无 LDAP/OIDC 原生集成；④ 权限绕过出过 CVE（嵌套 Txn 绕过 RBAC 检查 CVE-2026-33343，v3.5.28 修复；watch 越权 GHSA-xg4h-6gfc-h4m8，v3.6.14 修复）。 <strong>机制一句话</strong>：鉴权在 v3rpc 层按 key range 做允许/拒绝判断，简单但粗。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> 备份恢复 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p>备份：<code>etcdctl snapshot save</code> 在线对单成员取一致性快照。恢复：v3.6 起 <code>etcdctl snapshot restore/status</code> 已移除，改由 <strong><code>etcdutl</code></strong> 承担离线恢复；恢复本质是<strong>停机重建</strong>——用快照起一个新集群（或作为新成员加入），不支持在线单 key/表级恢复、不支持 PITR。恢复速度取决于快照大小与成员重放 WAL 的速度。 <strong>机制一句话</strong>：快照=bbolt 文件拷贝级备份，恢复=重建集群，没有逻辑备份/增量备份概念。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> 大版本升级 <span class="verdict v-yes">有（滚动升级 + 3.6 起支持降级）</span></h3><div class="dim-body"><p>3.5→3.6 为<strong>零停机滚动升级</strong>（逐个替换成员），官方要求先把 3.5 升到 3.5.32+ 再升 3.6。前置条件：v2store 不得含非成员数据（<code>etcdutl check v2store</code> 检查；<code>--enable-v2</code> 在 3.6 被删除）。 <strong>v3.6.0 是首个完整支持降级的版本</strong>：<code>etcdctl downgrade validate/enable 3.5</code> 做数据 schema 回迁后再滚动降级。 <strong>回退成本</strong>：降级是显式两阶段操作，不是&quot;重装旧版就行&quot;（3.6 拒绝跑在更新版本的数据目录上）。另：v3.7 线已发布（v3.7.0 GA 2026-07-08，v2 相关代码彻底删除），3.4 已于 2026 年 6 月停止维护。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> 可观测性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><code>/metrics</code> 暴露 Prometheus 指标（<code>--metrics=extensive</code> 开全量：Raft、WAL fsync、mvcc、watcher 等）；<code>etcdctl endpoint health/status</code> 看成员健康与 db 大小；<code>etcdctl check perf</code> 做写入压测；3.6 新增 <code>/livez</code> <code>/readyz</code>（对齐 K8s 探针语义）与 Kubernetes 风格 feature gates；<code>--enable-pprof</code>；3.6 引入 OpenTelemetry 追踪。 <strong>关键指标</strong>：<code>etcd_disk_wal_fsync_duration_seconds</code> p99（&gt;10ms 即危险）、<code>etcd_server_leader_changes_seen_total</code>、dbSize/dbSizeInUse。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> 连接模型 <span class="verdict v-yes">有（gRPC 长连接）</span></h3><div class="dim-body"><p>2379 端口 gRPC（HTTP/2 多路复用），单连接承载多 stream；clientv3 支持多 endpoint 配置与 round-robin 负载均衡、断线重连；watch 是<strong>长生命周期 server-stream</strong>。连接开销低，不需要也不建议应用层连接池（一个 client 实例复用即可）。 <strong>注意</strong>：watch 数量直接转化为服务端内存与 fanout 开销（见深水区二）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> 事务与隔离级别 <span class="verdict v-partial">部分支持（KV 语义的事务）</span></h3><div class="dim-body"><p>etcd 的&quot;事务&quot;= <strong>Txn：If（多条件比较）/Then/Else 原子执行</strong>，单 Raft round-trip 内对多 key 做 CAS（比较维度：value/version/createRevision/modRevision/lease）。 <strong>隔离级别</strong>：写一律线性一致（经 leader + quorum + WAL fsync）；读分两档——linearizable（默认走 quorum/ReadIndex）与 serializable（leader 本地读，可能读到旧值但不加延迟）。 <strong>没有</strong>多语句交互式事务、没有回滚段、没有关系型意义上的隔离级别矩阵；客户端 STM（如 Go concurrency 包、Node 的 microsoft/etcd3 的 software transactional memory）是<strong>基于 Txn 在客户端拼出的乐观并发</strong>，不等同于服务端事务。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> 复制与一致性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p>Raft（etcd-io/raft 独立库）：所有写经 leader 写 WAL 并 fsync 后复制到多数派才提交；<strong>CP 系统</strong>，分区时少数派侧写不可用、线性一致读失败，<strong>不存在脑裂写</strong>。读优化：leader 租约读（lease-based read）避免每次读都走 quorum。成员变更走 Raft conf change，支持 <strong>learner</strong>（无投票权、追上日志后转正）实现安全加节点。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> 扩展方式 <span class="verdict v-no">无分片、无横向写扩展</span></h3><div class="dim-body"><p>官方推荐 <strong>3 或 5 成员</strong>，最多 7（再多收益递减、延迟上升）；<strong>无分片、无横向写扩展</strong>——加成员不增加写吞吐，反而增加 quorum 延迟。扩容=加成员（在线，经 learner），是可用性扩容不是容量扩容。容量靠纵向：调大 <code>--quota-backend-bytes</code>（默认 2GB，建议上限 8GB，超 8GB 启动告警）。<strong>部分支持</strong>。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> 兼容性 <span class="verdict v-yes">有（v3 API 稳定；v2 已移除）</span></h3><div class="dim-body"><p>v3 gRPC API 为稳定接口；v2 API/v2store 在 3.6 被移除（<code>--enable-v2</code> 删除，残留非成员数据会拒绝启动），3.7 彻底删除 v2 代码。客户端生态：Go clientv3（官方）、Java jetcd、Python（python-etcd3 等）、Node microsoft/etcd3、Rust etcd-client。 <strong>迁移注意</strong>：3.5→3.6 混跑期间以 3.5 特性集为准；K8s apiserver 对 etcd 3.5/3.6 均有支持矩阵要求（以 K8s 官方矩阵为准，待验证具体版本对应）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> 许可证与商业模式 <span class="verdict v-yes">有（纯开源）</span></h3><div class="dim-body"><p>Apache-2.0，CNCF 毕业项目，<strong>无官方商业版、无功能阉割</strong>。商业模式=云厂商托管 K8s 内含 + 生态公司运维支持。 <strong>选型含义</strong>：不存在&quot;企业版才有 TDE/审计&quot;这类差异，缺的能力是真缺，不是付费能解锁的。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> 中文资料丰富度 <span class="verdict v-neutral">中等偏低｜<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></span></h3><div class="dim-body"><p>官方文档英文为主；有社区中文翻译项目但版本滞后；中文博客/书籍多集中在&quot;K8s 运维中的 etcd&quot;（备份、compact、调优），对其 Raft/MVCC 源码级机制的中文深度资料少。<strong>低于</strong> MySQL/PG/Redis 的中文生态。</p></div></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-neutral">None</span></h3><div class="dim-body"><p>etcd itself provides <strong>no data-at-rest encryption whatsoever</strong>: bbolt data files, WAL, and snapshot files are all written in plaintext. The 2019 Kubernetes SIG security audit explicitly states &quot;not encrypted at rest&quot;; encryption duty moves up to the kube-apiserver-layer EncryptionConfiguration (aescbc/aesgcm/KMS v2 plugins). <strong>Selection implication</strong>: if you use etcd as a general-purpose KV store and the data is sensitive, you must encrypt at the application layer yourself or rely on disk encryption; snapshots produced by <code>etcdctl snapshot save</code> are plaintext bbolt files — a leaked backup means leaked data.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / transport encryption <span class="verdict v-neutral">Yes｜official docs</span></h3><div class="dim-body"><p>Both client and peer communication can be configured with TLS, and mTLS is available (<code>--client-cert-auth</code>, using the client certificate CN as the username in authentication). v3.6.13/v3.6.14 fixed two consecutive issues: a CRL bypass (GHSA-3wh4-j44w-pg92) and a DoS where a TLS handshake without a deadline could exhaust goroutines (GHSA-6vch-q96h-7gc3). <strong>Mechanism in one line</strong>: Go standard TLS stack with limited certificate hot-reload support; production must configure mutual TLS completely, otherwise &quot;having the certificate = having all the data&quot;.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> Auditing <span class="verdict v-no">no audit-logging functionality</span></h3><div class="dim-body"><p>The etcd server itself has <strong>no audit-logging functionality</strong>: who read or wrote which key at what time is not recorded by etcd. In Kubernetes scenarios, auditing relies on kube-apiserver&#x27;s audit log. <strong>Selection implication</strong>: when compliance requires an audit trail of operations, etcd can only rely on a front proxy/gateway or host-level auditing — native capability is a blank.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> Authentication &amp; authorization <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p>Has RBAC: user/role model, permission granularity at <strong>key range read/write</strong>, authentication via password or TLS client-certificate CN; the <code>root</code> user is the superuser, requiring root to be created first and then <code>etcdctl auth enable</code>. <strong>Gaps</strong>: ① disabled by default, and not enabled in default Kubernetes deployments either (relying on network isolation + certificates); ② granularity only reaches key prefixes — no field-level, no row-level; ③ no native LDAP/OIDC integration; ④ authorization bypasses have had CVEs (nested Txn bypassing RBAC checks, CVE-2026-33343, fixed in v3.5.28; watch privilege escalation GHSA-xg4h-6gfc-h4m8, fixed in v3.6.14). <strong>Mechanism in one line</strong>: authorization does allow/deny decisions per key range at the v3rpc layer — simple but coarse.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> Backup &amp; recovery <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p>Backup: <code>etcdctl snapshot save</code> takes a consistent snapshot online against a single member. Restore: starting with v3.6, <code>etcdctl snapshot restore/status</code> was removed and offline restore is now handled by <strong><code>etcdutl</code></strong>; restore is fundamentally <strong>downtime rebuild</strong> — bootstrap a new cluster from the snapshot (or join it as a new member); no online single-key/table-level restore, no PITR. Restore speed depends on snapshot size and how fast members replay WAL. <strong>Mechanism in one line</strong>: snapshot = bbolt-file-level-copy backup; restore = rebuild the cluster; there is no notion of logical or incremental backup.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> Major-version upgrades <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p>3.5→3.6 is a <strong>zero-downtime rolling upgrade</strong> (replace members one by one); the official requirement is to upgrade 3.5 to 3.5.32+ before moving to 3.6. Prerequisite: v2store must contain no non-member data (<code>etcdutl check v2store</code> check; <code>--enable-v2</code> was removed in 3.6). <strong>v3.6.0 is the first version with full downgrade support</strong>: <code>etcdctl downgrade validate/enable 3.5</code> performs data-schema migration back before rolling downgrade. <strong>Rollback cost</strong>: downgrade is an explicit two-phase operation — not &quot;just reinstall the old version&quot; (3.6 refuses to run on a data directory from a newer version). Also: the v3.7 line has been released (v3.7.0 GA 2026-07-08, v2-related code fully removed), and 3.4 stopped maintenance in June 2026.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> Observability <span class="verdict v-neutral">Yes｜official docs</span></h3><div class="dim-body"><p><code>/metrics</code> exposes Prometheus metrics (<code>--metrics=extensive</code> enables the full set: Raft, WAL fsync, mvcc, watcher, etc.); <code>etcdctl endpoint health/status</code> checks member health and db size; <code>etcdctl check perf</code> runs write load tests; 3.6 added <code>/livez</code> <code>/readyz</code> (aligned with Kubernetes probe semantics) and Kubernetes-style feature gates; <code>--enable-pprof</code>; 3.6 introduced OpenTelemetry tracing. <strong>Key metrics</strong>: <code>etcd_disk_wal_fsync_duration_seconds</code> p99 (&gt;10ms is dangerous), <code>etcd_server_leader_changes_seen_total</code>, dbSize/dbSizeInUse.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> Connection model <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p>gRPC on port 2379 (HTTP/2 multiplexing), multiple streams over a single connection; clientv3 supports multi-endpoint configuration with round-robin load balancing and reconnect-on-failure; watch is a <strong>long-lived server-stream</strong>. Connection overhead is low — no application-level connection pool is needed or recommended (reuse one client instance). <strong>Note</strong>: watch count translates directly into server-side memory and fanout cost (see deep-dive II).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> Transactions &amp; isolation levels <span class="verdict v-neutral">Partially supporte</span></h3><div class="dim-body"><p>etcd&#x27;s &quot;transaction&quot; = <strong>Txn: If (multi-condition comparisons) / Then / Else executed atomically</strong>, performing CAS (compare-and-swap) across multiple keys within a single Raft round-trip (comparison dimensions: value/version/createRevision/modRevision/lease). <strong>Isolation levels</strong>: all writes are linearizable (via leader + quorum + WAL fsync); reads come in two grades — linearizable (default, goes through quorum/ReadIndex) and serializable (leader local read; may return stale values but adds no latency). <strong>What it doesn&#x27;t have</strong>: multi-statement interactive transactions, no rollback segments, no relational-style isolation-level matrix; client-side STM (e.g., the Go concurrency package, Node&#x27;s microsoft/etcd3 software transactional memory) is <strong>optimistic concurrency assembled client-side on top of Txn</strong> — not equivalent to server-side transactions.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> Replication &amp; consistency <span class="verdict v-neutral">Yes｜official docs</span></h3><div class="dim-body"><p>Raft (etcd-io/raft standalone library): all writes go through the leader, are fsynced to WAL, replicated to a majority before committing; <strong>CP system</strong> — during a partition the minority side cannot write and linearizable reads fail; <strong>no split-brain writes can occur</strong>. Read optimization: leader lease-based reads avoid going through quorum for every read. Membership changes go through Raft conf change, with <strong>learner</strong> support (no voting rights, promoted once it catches up on the log) for safely adding nodes.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> Scaling <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p>Official recommendation is <strong>3 or 5 members</strong>, at most 7 (diminishing returns and rising latency beyond that); <strong>no sharding, no horizontal write scaling</strong> — adding members does not increase write throughput, it increases quorum latency. Expanding = adding members (online, via learner); this is availability scaling, not capacity scaling. Capacity comes vertically: raise <code>--quota-backend-bytes</code> (default 2GB, recommended upper limit 8GB, startup warns above 8GB). <strong>Partially supported</strong>.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> Compatibility <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p>The v3 gRPC API is the stable interface; v2 API/v2store were removed in 3.6 (<code>--enable-v2</code> deleted; residual non-member data refuses to start), and v2 code was fully deleted in 3.7. Client ecosystem: Go clientv3 (official), Java jetcd, Python (python-etcd3, etc.), Node microsoft/etcd3, Rust etcd-client. <strong>Migration note</strong>: during the 3.5→3.6 mixed-version period, the 3.5 feature set applies; Kubernetes apiserver has support-matrix requirements for etcd 3.5/3.6 (per the official Kubernetes matrix — exact version mapping to-be-verified).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> License &amp; business model <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p>Apache-2.0, CNCF-graduated project, <strong>no official commercial edition, no feature crippling</strong>. Business model = bundled with cloud vendors&#x27; managed Kubernetes + operations support from ecosystem companies. <strong>Selection implication</strong>: there is no such thing as &quot;enterprise edition unlocks TDE/auditing&quot; — capabilities that are missing are genuinely missing, not paywalled.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> Chinese-language resources <span class="verdict v-neutral">Medium-low｜communi</span></h3><div class="dim-body"><p>Official docs are primarily in English; there are community Chinese translation projects but they lag versions; Chinese blogs/books mostly focus on &quot;etcd in Kubernetes operations&quot; (backup, compact, tuning), with few Chinese-language deep materials on Raft/MVCC source-level internals. <strong>Below</strong> the Chinese ecosystem of MySQL/PG/Redis.</p></div></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="杀手特性" data-en="Killer features">杀手特性</span></h2>
+<div class="lang-block lang-zh">
+<ol>
+<li><strong>Revision 语义的变更流</strong>：全局单调 revision + 任意历史位点 watch，是&quot;天然 CDC&quot;。竞品（Redis stream/ZK watch）要么没全局序，要么 watch 语义弱。这是 etcd 当配置中心/服务发现底座的真正壁垒。</li>
+<li><strong>Lease（TTL 心跳）原语</strong>：key 绑定租约、过期自动删，分布式&quot;心跳-故障检测&quot;不需要应用层轮询。K8s node lease、分布式锁、选主全 built on this。</li>
+<li><strong>Raft 强一致 + 3 节点开箱即用</strong>：不调优就有线性一致，运维心智负担远低于&quot;最终一致+冲突解决&quot;系统。代价是写吞吐天花板低——这是 trade-off，不是缺点。</li>
+<li><strong>Txn CAS</strong>：单 round-trip 多 key 原子比较交换，无锁乐观并发的原子原语，锁/屏障/队列配方都从这里长出来。</li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<ol>
+<li><strong>Revision-semantics change stream</strong>: globally monotonic revision + watch from any historical point — a &quot;natural CDC&quot;. Competitors (Redis stream/ZK watch) either lack a global order or have weak watch semantics. This is the real moat that makes etcd the configuration-center/service-discovery foundation.</li>
+<li><strong>Lease (TTL heartbeat) primitive</strong>: keys bind to a lease and are auto-deleted on expiry — distributed &quot;heartbeat–failure detection&quot; without application-level polling. Kubernetes node leases, distributed locks, and leader election are all built on this.</li>
+<li><strong>Raft strong consistency, 3-node out of the box</strong>: linearizability without tuning; far lower operations cognitive load than &quot;eventual consistency + conflict resolution&quot; systems. The cost is a low write-throughput ceiling — that&#x27;s a trade-off, not a flaw.</li>
+<li><strong>Txn CAS</strong>: single-round-trip atomic compare-and-swap across multiple keys, the atomic primitive for lock-free optimistic concurrency — lock/barrier/queue recipes all grow out of here.</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="深水区" data-en="Deep dives">深水区</span></h2>
+<div class="lang-block lang-zh">
+<h3>深水区一（一致性/可用性）：Raft 实现与选主——&quot;1 秒的沉默税&quot;</h3>
+<ul>
+<li><strong>机制</strong>：leader 每 100ms（<code>--heartbeat-interval</code>，默认）发空 AppendEntries 心跳；follower 超过 1000ms（<code>--election-timeout</code>，默认，实际随机化到 1000–2000ms）没收到心跳即发起选举。写路径：client→leader→WAL 落盘 fsync→复制到多数派→apply 到 bbolt→返回。读分 linearizable（走 ReadIndex/quorum 确认仍是 leader）与 serializable（本地直接读）。</li>
+<li><strong>推到边缘</strong>：① leader 进程被 kill：写停顿至少 1 个选举超时，实测干净故障下 1–3 秒写不可用，分裂投票时 5–10 秒；② <strong>更常见的是&quot;假死&quot;</strong>：磁盘 fsync 毛刺 &gt; election timeout → follower 误判 leader 死亡 → 频繁选主（<code>leader_changes</code> 暴涨），apiserver 写抖动、watch 重连风暴。有生产 runbook 记录 leader 在写负载下连 100ms 心跳都发不出，被迫把心跳调到 250ms/选举调到 2500ms 止血——治标，病根是控制面磁盘 sync 写延迟。③ 脑裂分区：少数派侧写直接失败，不会产生分叉数据，这是 CP 的代价也是价值。</li>
+<li><strong>选型含义</strong>：etcd 的可用性下限由磁盘 fsync 决定，不是 CPU/内存。把它和 I/O 密集型应用放同一块盘，等于给选主定时器埋雷。</li>
+<li><strong>来源</strong>：官方 tuning 文档（100ms/1000ms 默认值）；社区 runbook（心跳失败 499 次/6h 实测）；OpenShift etcd 性能文档（磁盘延迟→丢心跳→选主链条）。</li>
+</ul>
+<h3>深水区二（性能边缘）：watch 机制与大规模 watch 的压力——&quot;变更流是免费的，直到它不是&quot;</h3>
+<ul>
+<li><strong>机制</strong>：watch 是服务端保持的 gRPC 长流；每个 watcher 按 key range 注册，服务端按 revision 顺序 fanout 事件；支持<strong>从任意历史 revision 起播</strong>（MVCC 赋予的能力）；客户端可发 progress 请求保活。watch 事件走 mvcc 的事件队列，<strong>每个 watcher 有独立缓冲</strong>。</li>
+<li><strong>推到边缘</strong>：① watcher 数量：官方口径&quot;典型 &lt;1 万，测试过 10 万+&quot;（第三方整理，待验证官方原文）；内存随 watcher 数 × key churn 线性涨，bbolt mmap 之外再叠 watcher fanout，<strong>内存常为 db 文件的数倍</strong>（OpenShift 文档明确&quot;完全正常&quot;）。② K8s 放大器：每个 kubelet/apiserver informer 都是 etcd watcher，大集群下 apiserver 的 list+watch 风暴直接打到 etcd；曾有 AKS 级案例：API 负载→etcd 内存超 20GiB 告警→级联劣化。③ 语义坑：从<strong>已被 compact 的 revision</strong> 起 watch 会直接失败（ErrCompacted），客户端必须重建 watch 并全量 list——client-go 的 watch 重连+resync 逻辑就是为这个擦屁股；v3.6.2 刚修过&quot;watch 未来 revision 返回旧事件&quot;的 bug。</li>
+<li><strong>选型含义</strong>：把 etcd 当&quot;配置中心推送底座&quot;很香，但 key churn 高 × watcher 多时，先算内存账再算功能账；auto-compaction 保留窗口必须大于最慢消费者的 watch 延迟，否则消费者永远在&quot;重建-全量-再被 compact&quot;里打转。</li>
+<li><strong>来源</strong>：etcd 官方 FAQ（compact 后 watch 语义）；OpenShift cluster-etcd-operator 性能文档；v3.6.2 Changelog（watch bug 修复）；Azure AKS 故障排查文档（etcd 内存告警案例）。</li>
+</ul>
+<h3>深水区三（运维/存储）：MVCC 修订版本与 compact/defrag——&quot;只增不减的账本&quot;</h3>
+<ul>
+<li><strong>机制</strong>：每次写（put/delete）全局 revision+1；每个 key 保留多代版本（keyIndex：generation→revision 列表）；历史版本用于 watch 回放与历史读。<strong>compact</strong> 删除指定 revision 之前的旧版本（只标记内部可复用，<strong>不归还磁盘空间</strong>）；<strong>defrag</strong> 重写整个 bbolt 文件才真正把空间还给 OS。K8s apiserver 默认每 5 分钟 compact 一次、保留 10 分钟窗口。</li>
+<li><strong>推到边缘</strong>：① 不 compact：MVCC 历史随<strong>写入量</strong>线性膨胀（不是数据量），bbolt 文件顶到 <code>--quota-backend-bytes</code>（默认 2GB）→ 触发 <strong>NOSPACE alarm → 全集群拒绝一切写</strong>，<code>kubectl apply</code> 全部报 <code>etcdserver: mvcc: database space exceeded</code>，控制面&quot;冻住&quot;。恢复三件套：compact→逐成员 defrag→<code>alarm disarm</code>，缺一不可。② defrag 本身<strong>阻塞该成员的读写</strong>，必须逐个成员滚动做；v3.6.5 修复了&quot;applySnapshot 与 defrag 并发导致潜在数据损坏&quot;——说明 defrag 路径历史上真出过损坏。③ 碎片常态：db 文件 4–8GB 而 live 数据仅 2GB 是常见现象，<code>dbSize - dbSizeInUse &gt; 40%</code> 就该计划 defrag。</li>
+<li><strong>选型含义</strong>：etcd 的运维核心就两件事——<strong>compact 策略 + 磁盘水位</strong>。auto-compaction 不是可选项，是生存项；监控必须看 dbSizeInUse 而不是文件大小。</li>
+<li><strong>来源</strong>：etcd 官方 FAQ（&quot;mvcc: database space exceeded&quot; 词条）；v3.6.5 Changelog（快照/defrag 并发损坏修复）；社区 etcd 运维资料（NOSPACE 恢复流程）。</li>
+</ul>
+<h3>深水区四（扩展/容量）：单集群规模上限与&quot;扩容悖论&quot;</h3>
+<ul>
+<li><strong>机制</strong>：硬性边界——单请求 ≤1.5MB（<code>--max-request-bytes</code>）；backend 配额默认 2GB、建议上限 8GB（超 8GB 启动告警，性能退化自负）；成员数 3/5 最佳、7 为实际上限。内存：全 key 的内存 B-tree 索引常驻（约每 key 百字节级，百万 key 约数百 MB 量级，社区估算）。</li>
+<li><strong>推到边缘</strong>：① <strong>2 成员集群不如 1 成员</strong>：quorum=2，一个挂就全挂，容错为 0 却付了复制的延迟税——新手最常见的拓扑错误。② 加成员≠扩容：5→7 成员，quorum 从 3→4，写延迟上升、吞吐下降，换来的是多容 1 台。想要更高写吞吐，etcd 给你的答案是&quot;换更快的盘&quot;，不是&quot;加节点&quot;。③ 8GB 之上：官方只说&quot;建议别超&quot;，超了之后 mvcc 索引/watcher 内存、defrag 时间（重写 8GB+ 文件）都会变成运维噩梦；真到这一步，正确动作是拆 key 空间/降 churn，不是调大配额。</li>
+<li><strong>选型含义</strong>：etcd 是<strong>纵向扩展</strong>系统，容量规划=磁盘配额+内存+fsync 三者的木桶。把它当通用 KV 存大 value/高吞吐写，是选型错误，不是调优问题。</li>
+<li><strong>来源</strong>：官方 system limits 文档（2GB/8GB/1.5MB）；官方 FAQ（奇数成员与 quorum 解释）；社区容量规划资料。</li>
+</ul>
+<h3>深水区五（故障/恢复）：K8s 大规模集群下的 etcd 故障模式</h3>
+<ul>
+<li><strong>机制</strong>：K8s 把所有集群状态（pod/spec/secret/lease/events）押在 3–5 个 etcd 成员上；apiserver 是 etcd 唯一重客户端（外加 controller 的 lease 心跳）。</li>
+<li><strong>推到边缘的真实模式</strong>：① <strong>慢盘型</strong>：云盘 IOPS 被邻居挤占→WAL fsync p99 从 5ms 飙到 50ms+→<code>etcd_disk_wal_fsync_duration_seconds</code> 告警→频繁选主→apiserver 写超时→<code>kubectl</code> 卡顿。Azure AKS 官方排障文档把&quot;etcd 慢&quot;列为 apiserver 故障的独立根因大类。② <strong>空间型</strong>：events/CRD 失控写入（如话痨 operator 每秒刷 events）→ MVCC 膨胀→NOSPACE→全集群只读。K8s 把 events TTL 设为 1 小时，本质就是给 etcd 擦屁股。③ <strong>内存型</strong>：大集群全量 list（列出所有 pod）→ apiserver/etcd 内存尖刺→OOM 级联。OpenShift 文档点名&quot;list all pods in large cluster&quot;是 etcd 内存杀手。④ <strong>人为型</strong>：<code>etcdctl defrag --cluster</code> 全集群一起做、快照恢复时新老集群 peer 地址混淆（官方 FAQ 警告&quot;不同集群 peer 地址必须不相交&quot;）。</li>
+<li><strong>选型含义</strong>：etcd 故障的 blast radius = 整个 K8s 控制面。生产 checklist 收敛为四条：独立 SSD（fsync p99&lt;10ms）、quota 显式设 8GB、auto-compaction 必开、watch/list 限流。</li>
+<li><strong>来源</strong>：Azure AKS apiserver/etcd 排障官方文档；OpenShift etcd 性能文档；etcd 官方 FAQ；社区故障诊断手册。</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<h3>Deep-Dive I (Consistency/Availability): Raft implementation and leader election — &quot;the one-second silence tax&quot;</h3>
+<ul>
+<li><strong>Mechanism</strong>: the leader sends empty AppendEntries heartbeats every 100ms (<code>--heartbeat-interval</code>, default); a follower that receives no heartbeat for 1000ms (<code>--election-timeout</code>, default, randomized in practice to 1000–2000ms) starts an election. Write path: client→leader→WAL disk fsync→replicate to majority→apply to bbolt→return. Reads split into linearizable (via ReadIndex/quorum confirmation that it is still the leader) and serializable (local read directly).</li>
+<li><strong>At the edge</strong>: ① leader process killed: writes stall for at least one election timeout — in practice 1–3 seconds of write unavailability under a clean failure, 5–10 seconds during split votes; ② <strong>more common is &quot;false death&quot;</strong>: disk fsync jitter exceeding the election timeout → followers misjudge the leader as dead → frequent elections (<code>leader_changes</code> spikes), apiserver write jitter, watch reconnect storms. One production runbook records a leader under write load that couldn&#x27;t even emit 100ms heartbeats, forcing heartbeats to 250ms / elections to 2500ms as a stopgap — treating the symptom; the root cause is control-plane disk sync-write latency. ③ Split-brain partition: the minority side&#x27;s writes fail outright, no divergent data is produced — that&#x27;s the cost and the value of CP.</li>
+<li><strong>Selection implication</strong>: etcd&#x27;s availability floor is determined by disk fsync, not CPU/memory. Putting it on the same disk as I/O-intensive applications is burying a mine under the election timer.</li>
+<li><strong>Sources</strong>: official tuning docs (100ms/1000ms defaults); community runbook (heartbeat-failure 499-times-in-6h measurement); OpenShift etcd performance docs (disk-latency→missed-heartbeat→election chain).</li>
+</ul>
+<h3>Deep-Dive II (Performance Edge): watch mechanism and large-scale watch pressure — &quot;the change stream is free until it isn&#x27;t&quot;</h3>
+<ul>
+<li><strong>Mechanism</strong>: watch is a server-held gRPC long-lived stream; each watcher registers by key range, and the server fans out events in revision order; supports <strong>replay from any historical revision</strong> (a capability granted by MVCC); clients can send progress requests as keepalive. Watch events flow through mvcc&#x27;s event queue, and <strong>each watcher has an independent buffer</strong>.</li>
+<li><strong>At the edge</strong>: ① watcher count: official guidance &quot;typically &lt;10k, tested beyond 100k+&quot; (third-party compilation, official source text to-be-verified); memory grows linearly with watcher count × key churn — on top of bbolt mmap, watcher fanout stacks up, and <strong>memory is routinely several times the db file</strong> (OpenShift docs explicitly call this &quot;completely normal&quot;). ② Kubernetes amplifier: every kubelet/apiserver informer is an etcd watcher; in large clusters the apiserver list+watch storm hits etcd directly; there was an AKS-scale case: API load→etcd memory over 20GiB alert→cascading degradation. ③ Semantic pitfall: watching from a <strong>compacted revision</strong> fails outright (ErrCompacted) — the client must rebuild the watch and do a full list; client-go&#x27;s watch-reconnect+resync logic exists precisely to clean up this mess; v3.6.2 just fixed a bug where &quot;watching a future revision returned stale events&quot;.</li>
+<li><strong>Selection implication</strong>: etcd as a &quot;config-center push foundation&quot; is sweet, but with high key churn × many watchers, do the memory math before the feature math; the auto-compaction retention window must exceed the slowest consumer&#x27;s watch lag, otherwise consumers spin forever in &quot;rebuild–full-list–compacted-again&quot;.</li>
+<li><strong>Sources</strong>: etcd official FAQ (watch semantics after compact); OpenShift cluster-etcd-operator performance docs; v3.6.2 Changelog (watch bug fix); Azure AKS troubleshooting docs (etcd memory alert case).</li>
+</ul>
+<h3>Deep-Dive III (Operations/Storage): MVCC revisions and compact/defrag — &quot;a ledger that only grows&quot;</h3>
+<ul>
+<li><strong>Mechanism</strong>: every write (put/delete) bumps the global revision by 1; each key retains multiple generations (keyIndex: generation→revision list); historical versions serve watch replay and historical reads. <strong>Compact</strong> deletes old versions before a given revision (only marks them internally reusable — <strong>does not return disk space</strong>); only <strong>defrag</strong>, which rewrites the entire bbolt file, truly returns space to the OS. Kubernetes apiserver compacts every 5 minutes by default with a 10-minute retention window.</li>
+<li><strong>At the edge</strong>: ① no compact: MVCC history expands linearly with <strong>write volume</strong> (not data volume); the bbolt file hits <code>--quota-backend-bytes</code> (default 2GB) → triggers <strong>NOSPACE alarm → the whole cluster rejects all writes</strong>, <code>kubectl apply</code> all fail with <code>etcdserver: mvcc: database space exceeded</code>, the control plane &quot;freezes&quot;. The recovery trio: compact→defrag each member→<code>alarm disarm</code>, all three required. ② Defrag itself <strong>blocks reads and writes on that member</strong>, so it must be done member-by-member in a rolling fashion; v3.6.5 fixed &quot;concurrent applySnapshot and defrag causing potential data corruption&quot; — which shows the defrag path genuinely had corruption history. ③ Fragmentation is the norm: a 4–8GB db file with only 2GB of live data is common; when <code>dbSize - dbSizeInUse &gt; 40%</code>, plan a defrag.</li>
+<li><strong>Selection implication</strong>: etcd&#x27;s operations core is just two things — <strong>compact strategy + disk watermark</strong>. Auto-compaction isn&#x27;t optional, it&#x27;s survival; monitoring must watch dbSizeInUse, not file size.</li>
+<li><strong>Sources</strong>: etcd official FAQ (the &quot;mvcc: database space exceeded&quot; entry); v3.6.5 Changelog (snapshot/defrag concurrent-corruption fix); community etcd operations materials (NOSPACE recovery procedure).</li>
+</ul>
+<h3>Deep-Dive IV (Scaling/Capacity): single-cluster scale limits and the &quot;scaling paradox&quot;</h3>
+<ul>
+<li><strong>Mechanism</strong>: hard boundaries — single request ≤1.5MB (<code>--max-request-bytes</code>); backend quota default 2GB, recommended upper limit 8GB (startup warns above 8GB, performance degradation at your own risk); 3/5 members optimal, 7 the practical ceiling. Memory: the in-memory B-tree index over all keys is resident (roughly ~100 bytes per key; ~millions of keys ≈ hundreds of MB, community estimate).</li>
+<li><strong>At the edge</strong>: ① <strong>a 2-member cluster is worse than a 1-member one</strong>: quorum=2, one failure kills everything — zero fault tolerance while paying the replication latency tax — the most common topology mistake for newcomers. ② Adding members ≠ scaling: going 5→7 members moves quorum from 3→4, write latency rises, throughput falls, in exchange for surviving one more failure. For higher write throughput, etcd&#x27;s answer is &quot;get a faster disk&quot;, not &quot;add nodes&quot;. ③ Above 8GB: the official guidance just says &quot;don&#x27;t exceed&quot;; beyond that, mvcc index/watcher memory and defrag time (rewriting an 8GB+ file) all become operations nightmares; at that point the correct action is splitting key space/reducing churn, not raising the quota.</li>
+<li><strong>Selection implication</strong>: etcd is a <strong>vertically-scaled</strong> system; capacity planning = the wooden bucket of disk quota + memory + fsync. Using it as a general KV store for large values/high-throughput writes is a selection error, not a tuning problem.</li>
+<li><strong>Sources</strong>: official system limits docs (2GB/8GB/1.5MB); official FAQ (odd-member and quorum explanation); community capacity-planning materials.</li>
+</ul>
+<h3>Deep-Dive V (Failure/Recovery): etcd failure modes under large-scale Kubernetes</h3>
+<ul>
+<li><strong>Mechanism</strong>: Kubernetes puts all cluster state (pod/spec/secret/lease/events) on 3–5 etcd members; apiserver is etcd&#x27;s only heavy client (plus controller lease heartbeats).</li>
+<li><strong>Real patterns at the edge</strong>: ① <strong>Slow-disk type</strong>: cloud-disk IOPS squeezed by neighbors→WAL fsync p99 spikes from 5ms to 50ms+→<code>etcd_disk_wal_fsync_duration_seconds</code> alert→frequent elections→apiserver write timeouts→<code>kubectl</code> hangs. Azure AKS&#x27;s official troubleshooting docs list &quot;slow etcd&quot; as an independent root-cause category for apiserver failures. ② <strong>Space type</strong>: uncontrolled events/CRD writes (e.g., a chatty operator flushing events every second)→MVCC inflation→NOSPACE→whole cluster read-only. Kubernetes sets events TTL to 1 hour — essentially cleaning up after etcd. ③ <strong>Memory type</strong>: large-cluster full list (listing all pods)→apiserver/etcd memory spike→OOM cascade. OpenShift docs single out &quot;list all pods in large cluster&quot; as an etcd memory killer. ④ <strong>Human type</strong>: running <code>etcdctl defrag --cluster</code> against the whole cluster at once; confusing old and new cluster peer addresses during snapshot restore (official FAQ warns &quot;peer addresses of different clusters must not overlap&quot;).</li>
+<li><strong>Selection implication</strong>: etcd failure blast radius = the entire Kubernetes control plane. The production checklist converges to four items: dedicated SSD (fsync p99&lt;10ms), quota explicitly set to 8GB, auto-compaction always on, watch/list rate limiting.</li>
+<li><strong>Sources</strong>: Azure AKS apiserver/etcd troubleshooting official docs; OpenShift etcd performance docs; etcd official FAQ; community failure-diagnosis manuals.</li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="用户最买账的 5 点" data-en="What users love most">用户最买账的 5 点</span></h2>
+<div class="lang-block lang-zh">
+<ol>
+<li><strong>&quot;K8s 选中它&quot;带来的信任</strong> 机制：Raft 线性一致 + 长期生产验证。价值：选型免举证。 边缘/失效条件：这种信任常被误读为&quot;etcd 适合一切 KV 场景&quot;，大 value/高吞吐一上就翻车。</li>
+<li><strong>Watch 推送范式</strong> 机制：长连接 fanout + revision 回放。价值：配置变更秒级触达、无轮询。 失效条件：watch 断在 compact 位点后必须全量重建，消费者必须实现重连+resync。</li>
+<li><strong>Lease 心跳</strong> 机制：TTL + keepalive 自动续约。价值：节点/进程存活的权威信号。 边缘：网络分区时 lease 续不上会<strong>误判死亡</strong>（K8s node NotReady 经典 case），续约间隔与网络质量强相关。</li>
+<li><strong>单二进制、运维简单（小规模）</strong> 机制：无外部依赖、3 节点 Raft。价值：小团队也能 hold 住。 边缘：规模/负载上去后，&quot;简单&quot;的反面是&quot;可调参少&quot;，到 8GB/高 churn 就是另一套运维。</li>
+<li><strong>gRPC API + 多语言客户端</strong> 机制：protobuf 强契约。价值：嵌入各类控制面。 边缘：v2→v3 的 API 断代史提醒：跟紧大版本，3.6 删 v2 store 是前车之鉴。</li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<ol>
+<li><strong>Trust from &quot;Kubernetes chose it&quot;</strong> Mechanism: Raft linearizability + long production validation. Value: selection without needing to argue the case. Edge/failure conditions: this trust is often misread as &quot;etcd fits every KV scenario&quot; — big values/high throughput flip the story immediately.</li>
+<li><strong>Watch push paradigm</strong> Mechanism: long-lived-connection fanout + revision replay. Value: config changes reach consumers in seconds, no polling. Failure conditions: a watch broken at a compacted point must be fully rebuilt; consumers must implement reconnect + resync.</li>
+<li><strong>Lease heartbeat</strong> Mechanism: TTL + keepalive auto-renewal. Value: the authoritative signal for node/process liveness. Edge: during a network partition a lease that can&#x27;t renew triggers <strong>false death detection</strong> (the classic Kubernetes node NotReady case); renewal interval and network quality are tightly coupled.</li>
+<li><strong>Single binary, simple operations (at small scale)</strong> Mechanism: no external dependencies, 3-node Raft. Value: small teams can hold it down. Edge: once scale/load grows, the flip side of &quot;simple&quot; is &quot;few tunables&quot; — at 8GB/high churn it&#x27;s a different operations game.</li>
+<li><strong>gRPC API + multi-language clients</strong> Mechanism: protobuf strong contract. Value: embeds into all kinds of control planes. Edge: the v2→v3 API generation-break history is a reminder — keep up with major versions; 3.6 deleting the v2 store is a cautionary tale.</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="吐槽清单" data-en="Complaints">吐槽清单</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>#</th><th>吐槽</th><th>影响版本</th><th>状态</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>默认 2GB 配额，顶满后 NOSPACE 全集群拒绝写，控制面冻结</td><td>全版本</td><td>open（设计如此；v3.6.3 优化了配额 flag 的帮助文案，治标）</td></tr>
+<tr><td>2</td><td>无原生静态加密：数据文件/WAL/快照全明文</td><td>全版本</td><td>open</td></tr>
+<tr><td>3</td><td>无审计日志：谁读写了 key 无从追溯</td><td>全版本</td><td>open</td></tr>
+<tr><td>4</td><td>在线 defrag 阻塞该成员读写，需逐成员滚动</td><td>全版本</td><td>open</td></tr>
+<tr><td>5</td><td>快照恢复=停机重建集群，无在线/PITR/单 key 恢复</td><td>全版本</td><td>open</td></tr>
+<tr><td>6</td><td>写不能水平扩展，加成员反而降写吞吐</td><td>全版本</td><td>open（架构约束）</td></tr>
+<tr><td>7</td><td>watch 鉴权绕过：有单 key 读权限可收到该前缀所有 key 的 watch 事件</td><td>≤v3.6.13/≤v3.5.32</td><td><strong>fixed-in-v3.6.14</strong>（GHSA-xg4h-6gfc-h4m8）</td></tr>
+<tr><td>8</td><td>嵌套 Txn 绕过 RBAC 鉴权检查</td><td>v3.5.x</td><td>fixed-in-v3.5.28（CVE-2026-33343；v3.6 是否曾受影响待验证）</td></tr>
+<tr><td>9</td><td>TLS 握手无 deadline，未认证连接可耗尽 goroutine 致 DoS</td><td>≤v3.6.13</td><td><strong>fixed-in-v3.6.14</strong>（GHSA-6vch-q96h-7gc3）</td></tr>
+<tr><td>10</td><td>applySnapshot 与 defrag 并发造成潜在数据损坏</td><td>≤v3.6.4</td><td><strong>fixed-in-v3.6.5</strong></td></tr>
+<tr><td>11</td><td>watch 未来 revision 返回旧事件/通知</td><td>≤v3.6.1</td><td><strong>fixed-in-v3.6.2</strong></td></tr>
+<tr><td>12</td><td>磁盘慢=集群抖：fsync 毛刺直接触发选主，无缓冲余地</td><td>全版本</td><td>open（架构约束，靠硬件+调参缓解）</td></tr>
+<tr><td>13</td><td>内存可达 db 文件数倍（mmap+mvcc 索引+watcher fanout），OOM 风险隐蔽</td><td>全版本</td><td>open</td></tr>
+<tr><td>14</td><td>单请求 1.5MB 上限，大 value 场景天然不适配</td><td>全版本</td><td>open（设计约束）</td></tr>
+<tr><td>15</td><td>RBAC 粒度只到 key range，无 LDAP/OIDC，多租户场景捉襟见肘</td><td>全版本</td><td>open</td></tr>
+<tr><td>16</td><td>v2 API 在 3.6 被移除，老客户端/工具链有迁移成本</td><td>v3.6</td><td>open（迁移一次性）</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>#</th><th>Complaint</th><th>Affected versions</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Default 2GB quota; when full, NOSPACE makes the whole cluster reject writes and the control plane freezes</td><td>All versions</td><td>open (by design; v3.6.3 improved the quota flag&#x27;s help text, cosmetic)</td></tr>
+<tr><td>2</td><td>No native data-at-rest encryption: data files/WAL/snapshots all plaintext</td><td>All versions</td><td>open</td></tr>
+<tr><td>3</td><td>No audit log: no way to trace who read/wrote a key</td><td>All versions</td><td>open</td></tr>
+<tr><td>4</td><td>Online defrag blocks reads/writes on that member; must be done member-by-member in a rolling fashion</td><td>All versions</td><td>open</td></tr>
+<tr><td>5</td><td>Snapshot restore = downtime cluster rebuild; no online/PITR/single-key restore</td><td>All versions</td><td>open</td></tr>
+<tr><td>6</td><td>Writes cannot scale horizontally; adding members actually reduces write throughput</td><td>All versions</td><td>open (architectural constraint)</td></tr>
+<tr><td>7</td><td>Watch authorization bypass: read permission on a single key could receive watch events for all keys under that prefix</td><td>≤v3.6.13/≤v3.5.32</td><td><strong>fixed-in-v3.6.14</strong> (GHSA-xg4h-6gfc-h4m8)</td></tr>
+<tr><td>8</td><td>Nested Txn bypasses RBAC authorization checks</td><td>v3.5.x</td><td>fixed-in-v3.5.28 (CVE-2026-33343; whether v3.6 was ever affected to-be-verified)</td></tr>
+<tr><td>9</td><td>TLS handshake without deadline; unauthenticated connections could exhaust goroutines causing DoS</td><td>≤v3.6.13</td><td><strong>fixed-in-v3.6.14</strong> (GHSA-6vch-q96h-7gc3)</td></tr>
+<tr><td>10</td><td>Concurrent applySnapshot and defrag causing potential data corruption</td><td>≤v3.6.4</td><td><strong>fixed-in-v3.6.5</strong></td></tr>
+<tr><td>11</td><td>Watching a future revision returning stale events/notifications</td><td>≤v3.6.1</td><td><strong>fixed-in-v3.6.2</strong></td></tr>
+<tr><td>12</td><td>Slow disk = jittery cluster: fsync jitter triggers elections directly, no buffer margin</td><td>All versions</td><td>open (architectural constraint; mitigated by hardware + tuning)</td></tr>
+<tr><td>13</td><td>Memory can reach several times the db file (mmap+mvcc index+watcher fanout); OOM risk is hidden</td><td>All versions</td><td>open</td></tr>
+<tr><td>14</td><td>1.5MB single-request limit; inherently unfit for large-value scenarios</td><td>All versions</td><td>open (design constraint)</td></tr>
+<tr><td>15</td><td>RBAC granularity only reaches key range; no LDAP/OIDC; multi-tenant scenarios are a stretch</td><td>All versions</td><td>open</td></tr>
+<tr><td>16</td><td>v2 API removed in 3.6; migration cost for old clients/toolchains</td><td>v3.6</td><td>open (one-time migration)</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="判决" data-en="Verdict">判决</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li><strong>用 etcd，当且仅当</strong>：① 数据是<strong>小规模元数据/协调状态</strong>（KB 级 key，总量 &lt;8GB）；② 需要<strong>强一致</strong>（选主、分布式锁、配置权威源）；③ 需要 <strong>watch 变更流</strong>或 <strong>lease 心跳</strong>语义；④ 能接受&quot;写吞吐不扩展、容量靠纵向&quot;的天花板。K8s 元数据、服务发现、配置中心、分布式协调是它的主场。</li>
+<li><strong>不要用 etcd，当</strong>：① 单 value 大（MB 级）或总量预期超 8GB；② 写吞吐要求随业务线性增长；③ 需要审计、静态加密、PITR 等企业合规能力（原生全缺）；④ 需要复杂查询/二级索引。此时应看 TiKV/Redis/DynamoDB 等，而非调 etcd 参数。</li>
+<li><strong>版本建议</strong>：新部署直接上 <strong>v3.6.x（≥v3.6.14）</strong>——拿 downgrade 支持、v3store 唯一真相源、livez/readyz 与当年累计的安全修复；3.4 已 EOL 必须迁走；3.5 用户按官方 checklist（先升 3.5.32+、清 v2store）再滚动到 3.6。</li>
+<li><strong>一句话</strong>：etcd 是&quot;无聊的可靠性&quot;本身——把野心限制在元数据，它几乎不背锅；把野心放到数据面，它的每个设计约束都会变成你的故障复盘标题。</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li><strong>Use etcd, if and only if</strong>: ① the data is <strong>small-scale metadata/coordination state</strong> (KB-scale keys, total &lt;8GB); ② you need <strong>strong consistency</strong> (leader election, distributed locks, authoritative configuration source); ③ you need <strong>watch change-stream</strong> or <strong>lease heartbeat</strong> semantics; ④ you accept the ceiling of &quot;writes don&#x27;t scale, capacity goes vertical&quot;. Kubernetes metadata, service discovery, config centers, and distributed coordination are its home turf.</li>
+<li><strong>Don&#x27;t use etcd when</strong>: ① single values are large (MB-scale) or total volume is expected to exceed 8GB; ② write throughput must grow linearly with the business; ③ you need audit, data-at-rest encryption, PITR or other enterprise compliance capabilities (all natively absent); ④ you need complex queries/secondary indexes. Then look at TiKV/Redis/DynamoDB, not at etcd tuning flags.</li>
+<li><strong>Version advice</strong>: new deployments go straight to <strong>v3.6.x (≥v3.6.14)</strong> — for downgrade support, the v3store single source of truth, livez/readyz, and the year&#x27;s accumulated security fixes; 3.4 is EOL and must be migrated away; 3.5 users follow the official checklist (upgrade to 3.5.32+ first, clean v2store) then roll to 3.6.</li>
+<li><strong>One-liner</strong>: etcd is &quot;boring reliability&quot; itself — keep your ambitions within metadata and it almost never takes the blame; point your ambitions at the data plane and every one of its design constraints becomes a title in your postmortem.</li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="来源与待验证清单" data-en="Sources & to-be-verified">来源与待验证清单</span></h2>
+<div class="lang-block lang-zh">
+<p>① etcd raft 是否默认开启 pre-vote；② <code>--max-concurrent-streams</code> 等服务端流控 flag 默认值；③ v3.7 线 GA 后的 K8s 官方支持矩阵对应关系；④ watch 10 万级测试数据的官方出处原文；⑤ v3.6 是否曾受 CVE-2026-33343（嵌套 Txn 鉴权绕过）影响。</p>
+<ul>
+<li>官方文档 / 博客 / Changelog（证据等级&quot;官方文档&quot;）：etcd 官方文档（tuning、system limits、FAQ）、v3.6.x Changelog（v3.6.2/v3.6.5/v3.6.14 安全与 bug 修复）、Kubernetes SIG 2019 安全审计</li>
+<li>社区运维资料（&quot;社区实测/社区共识&quot;）：OpenShift cluster-etcd-operator 性能文档、Azure AKS apiserver/etcd 排障文档、社区 runbook（心跳失败实测）、社区容量规划资料</li>
+<li>下次评审：跟踪 v3.7 线 GA 后的 K8s 支持矩阵；跟踪 CVE-2026-33343 在 v3.6 的影响确认；跟踪 watch 大规模测试官方出处</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<p>① Whether etcd&#x27;s Raft enables pre-vote by default; ② default values of server-side flow-control flags like <code>--max-concurrent-streams</code>; ③ the official Kubernetes support-matrix mapping after the v3.7 line goes GA; ④ the official source text for the 100k-level watch test data; ⑤ whether v3.6 was ever affected by CVE-2026-33343 (nested Txn authorization bypass).</p>
+<ul>
+<li>Official docs / blogs / Changelogs (evidence level &quot;official docs&quot;): etcd official docs (tuning, system limits, FAQ), v3.6.x Changelogs (v3.6.2/v3.6.5/v3.6.14 security and bug fixes), 2019 Kubernetes SIG security audit</li>
+<li>Community operations materials (&quot;community-tested / community consensus&quot;): OpenShift cluster-etcd-operator performance docs, Azure AKS apiserver/etcd troubleshooting docs, community runbook (heartbeat-failure measurement), community capacity-planning materials</li>
+<li>Next review: track the Kubernetes support matrix after the v3.7 line goes GA; confirm the CVE-2026-33343 impact on v3.6; track the official source for large-scale watch test data</li>
+</ul>
+</div>
+</section>
+</main>
+<footer class="footer">
+  <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
+</footer>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
