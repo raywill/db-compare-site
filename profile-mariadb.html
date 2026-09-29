@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>MariaDB - DB 选型参考</title>
+<link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">&#9672;</span> DB <span data-zh="选型参考" data-en="Compare">选型参考</span></a>
+    <nav class="mainnav">
+<a href="index.html" class="active" data-zh="首页" data-en="Home">首页</a>
+<a href="compare.html" class="" data-zh="维度对比" data-en="Compare">维度对比</a>
+<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
+<a href="advisor.html" class="" data-zh="AI选型" data-en="AI Selection">AI选型</a>
+    </nav>
+    <div class="cmp-tray">
+      <button id="cmp-tray-btn" type="button" class="tray-btn" aria-expanded="false" aria-haspopup="true"><span data-zh="对比" data-en="Compare">对比</span> <b class="tray-count"><i id="cmp-count">0</i>/4</b></button>
+      <div id="cmp-panel" class="tray-panel" hidden>
+        <div class="tray-sec"><span data-zh="已选" data-en="Selected">已选</span></div>
+        <div id="cmp-selected" class="tray-selected"></div>
+        <div class="tray-sec"><span data-zh="全部产品（最多选 4 款）" data-en="All products (up to 4)">全部产品（最多选 4 款）</span></div>
+        <div id="cmp-list" class="tray-list"></div>
+        <div class="tray-actions"><button id="cmp-clear" type="button" class="tray-clear"><span data-zh="清空选择" data-en="Clear selection">清空选择</span></button></div>
+      </div>
+    </div>
+    <button id="lang-toggle" class="lang-btn" type="button" aria-label="switch language">EN</button>
+  </div>
+</header>
+<main class="page">
+<div class="profile-hero">
+  <a class="back" href="index.html"><span data-zh="← 返回首页" data-en="← Back to home">← 返回首页</span></a>
+  <h1>MariaDB</h1>
+  <div class="meta-row"><span class="cat cat-oltp" data-zh="关系型 OLTP" data-en="Relational OLTP">关系型 OLTP</span> <span class="tag">#MySQL兼容</span> <span class="tag">#开源GPL</span> <span class="tag">#主从复制</span> <span class="tag">#Galera多主</span> <span class="tag">#MariaDB公司私有化</span></div>
+  <p class="oneliner"><div class="lang-block lang-zh">
+<p>MySQL 的嫡系 fork（创始人 Monty Widenius 主导），2010 年代初曾是&quot;MySQL 的 drop-in 替代&quot;，如今已与 Oracle MySQL 实质分化为两个独立演进的产品；社区版慷慨、公司刚经历私有化动荡。</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<p>The legitimate fork of MySQL (led by founder Monty Widenius). In the early 2010s it was &quot;a drop-in replacement for MySQL&quot;; today it has substantively diverged from Oracle MySQL into two independently evolving products. Generous community edition; the company has just gone through privatization turbulence.</p>
+</div></p>
+  <div class="ai-dive-row" data-product="MariaDB">
+    <span class="ai-dive-label" data-zh="用 AI 深挖这款：" data-en="Deep-dive with AI:">用 AI 深挖这款：</span>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('chatgpt', this)">ChatGPT <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('grok', this)">Grok <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('claude', this)">Claude <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn addcmp-btn" data-addcmp="mariadb"><span class="addcmp-label">＋ 对比</span></button>
+  </div>
+  <div class="legend"><span class="legend-label" data-zh="证据等级：" data-en="Evidence levels: ">证据等级：</span><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></div>
+</div>
+<section class="doc-section">
+<h2><span data-zh="基本信息" data-en="Basics">基本信息</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>项</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td>厂商</td><td>MariaDB Corporation（K1 Investment Management 旗下私有公司；开源项目由独立的 MariaDB Foundation 治理）</td></tr>
+<tr><td>国家</td><td>芬兰（起源）/ 美国（公司运营）</td></tr>
+<tr><td>首次发布</td><td>2009（5.1 起）；MariaDB Foundation 成立于 2012</td></tr>
+<tr><td>许可证</td><td>社区版 GPLv2；企业版向订阅客户分发；MaxScale 等周边为 BSL</td></tr>
+<tr><td>托管服务</td><td>MariaDB Cloud（SkySQL 2025-08 被重新收购后并入云战略）；AWS RDS / Azure / GCP 均有托管</td></tr>
+<tr><td>主类型</td><td>关系型（行存，InnoDB）</td></tr>
+<tr><td>兼具类型</td><td>列存分析（ColumnStore）、向量检索（11.8+ 自研 VECTOR + HNSW）</td></tr>
+<tr><td>一致性模型</td><td>主从异步=最终一致；半同步=低丢失；Galera=零丢失多主</td></tr>
+<tr><td>复制协议</td><td>binlog 主从复制；Galera wsrep 认证复制</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Item</th><th>Content</th></tr></thead>
+<tbody>
+<tr><td>Vendor</td><td>MariaDB Corporation (privately held under K1 Investment Management; the open-source project is governed by the independent MariaDB Foundation)</td></tr>
+<tr><td>Country</td><td>Finland (origin) / USA (company operations)</td></tr>
+<tr><td>First release</td><td>2009 (starting from 5.1); MariaDB Foundation established 2012</td></tr>
+<tr><td>License</td><td>Community edition GPLv2; Enterprise edition distributed only to subscription customers; surrounding components such as MaxScale under BSL</td></tr>
+<tr><td>Managed services</td><td>MariaDB Cloud (SkySQL re-acquired in 2025-08 and folded into the cloud strategy); managed offerings on AWS RDS / Azure / GCP</td></tr>
+<tr><td>Primary type</td><td>Relational (row store, InnoDB)</td></tr>
+<tr><td>Secondary types</td><td>Column-store analytics (ColumnStore), vector search (11.8+ in-house VECTOR + HNSW)</td></tr>
+<tr><td>Consistency model</td><td>Async primary-replica = eventual consistency; semi-sync = low data loss; Galera = zero-loss multi-primary</td></tr>
+<tr><td>Replication protocol</td><td>binlog primary-replica replication; Galera wsrep certification-based replication</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section"><h2><span data-zh="硬维度（14 项）" data-en="Hard dimensions (14)">硬维度（14 项）</span></h2>
+<div class="lang-block lang-zh">
+<div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>——10.1 起实例级静态加密：InnoDB 表空间（<code>innodb_encrypt_tables</code>）、redo log（<code>innodb_encrypt_log</code>）、临时文件、binlog（<code>encrypt_binlog</code>，10.5+）；插件式密钥管理：file_key_management（社区版自带，密钥存本地文件，合规性弱）/ AWS KMS 插件（企业版限定，GPL 与 AWS SDK 许可证冲突故社区二进制不分发）。<strong>备份文件本身的加密未找到证据</strong>，视为需外部手段解决。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>——社区版原生 TLS，可按用户 <code>REQUIRE SSL/X509</code> 强制或全局 <code>require_secure_transport=ON</code>。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> 审计 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>——server_audit 插件<strong>社区版自带</strong>（与 MySQL 企业版限定审计形成对比）；更细粒度的 MariaDB Enterprise Audit 为企业版，两者不可混装。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> 认证与权限 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>——插件式认证（mysql_native_password / ed25519 / unix_socket / pam / gssapi）；10.4 起权限存储迁至 <code>mysql.global_priv</code>（JSON）；完整角色模型，10.11 新增 PUBLIC 伪角色。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> 备份恢复 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>——mariabackup（XtraBackup fork）在线热物理备份，支持全量+链式增量，物理恢复为文件拷贝故速度快；mariadb-dump 做逻辑备份（库表级粒度、可跨版本、恢复慢）；binlog 做 PITR。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> 大版本升级 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>——二进制替换 + <code>mariadb-upgrade</code> 升级系统表，跨大版本 in-place 可行但需停机；<strong>回退查证为无官方支持</strong>（&quot;not designed for downgrading&quot;），回退唯一可靠方式是升级前逻辑备份+重建。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> 可观测性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（官方文档；PFS 滞后为社区共识）——慢查询日志、general log 完整；PFS 10.6 起默认开启、sys schema 10.6 起内置；但 PFS 相对 MySQL 8 实现滞后、部分 instruments 缺失，重度依赖 PFS 的监控工具需实测。无官方 APM，靠 Prometheus mysqld_exporter 等第三方。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> 连接模型 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>——默认 one-thread-per-connection；<strong>线程池内核自带、社区版可用</strong>（官方原话：MySQL 的线程池仅企业版，MariaDB 全版本可用）。官方无自带池化代理（MaxScale 为 BSL 商业产品）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> 事务与隔离级别 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>——InnoDB MVCC，四档隔离级别，RR 为默认，支持 XA。<strong>注意 11.6.2 起 <code>innodb_snapshot_isolation</code> 默认 ON</strong>：RR 下对并发修改过的行做写写冲突检测，命中报 <code>ER_CHECKREAD (1020)</code> 并整个事务回滚——应用重试逻辑必须把 1020 与死锁 1213 同等处理（12.3 实测案例）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> 复制与一致性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>——异步主从 + 半同步（社区版自带）+ Galera Cluster。GTID 为域式 <code>domain-server_id-sequence</code>，<strong>与 MySQL 的 UUID 式 GTID 完全不互通</strong>。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> 扩展方式 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>——纵向无缝；读扩展在线成熟（主从+读写分离、Galera 加节点）；<strong>写横向扩展为短板，查证为无官方自动分片方案</strong>（Spider 引擎运维复杂、生态小）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> 兼容性 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>——MySQL 线协议兼容，驱动/ORM/GUI 通用；但 SQL 层&quot;drop-in replacement&quot;已是过时说法。查证缺失的 MySQL 8.x 关键特性：原生二进制 JSON、JSON_TABLE、JSON 多值索引、事务性数据字典、Group Replication、caching_sha2_password 默认认证。MariaDB 独有：sequences、系统版本表、INSERT...RETURNING、invisible columns、Oracle 兼容模式、VECTOR+HNSW（11.8+，反超 MySQL 一步）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> 许可证与商业模式 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（官方文档/媒体报道）——社区版 GPLv2；企业版仅向订阅客户分发；MaxScale 等 BSL；订阅制计费（官网未公开价目，待验证）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> 中文资料丰富度 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong><span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>——官方 KB 以英文为主、无官方中文文档；中文内容散见云厂商文档、dbaplus、墨天轮、CSDN，多停留在 10.x 时代；11/12 新特性中文资料稀缺。</p></div></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> — instance-level encryption since 10.1: InnoDB tablespaces (<code>innodb_encrypt_tables</code>), redo log (<code>innodb_encrypt_log</code>), temporary files, binlog (<code>encrypt_binlog</code>, 10.5+); plugin-based key management: file_key_management (bundled with the community edition, keys stored in a local file, weak compliance posture) / AWS KMS plugin (Enterprise-only; not distributed in community binaries due to the GPL vs AWS SDK license conflict). <strong>No evidence found for encryption of backup files themselves</strong> — treat as requiring external measures.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / transport encryption <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes</strong> (official docs / community-tested) — community edition has native TLS; enforceable per-user via <code>REQUIRE SSL/X509</code> or globally with <code>require_secure_transport=ON</code>.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> Auditing <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> — the server_audit plugin <strong>ships with the community edition</strong> (a contrast to MySQL, where audit is an Enterprise-only paid feature); the finer-grained MariaDB Enterprise Audit is Enterprise-only, and the two cannot be installed together.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> Authentication &amp; authorization <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> — pluggable authentication (mysql_native_password / ed25519 / unix_socket / pam / gssapi); since 10.4 privilege storage moved to <code>mysql.global_priv</code> (JSON); full role model, with the PUBLIC pseudo-role added in 10.11.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> Backup &amp; recovery <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> — mariabackup (an XtraBackup fork) for online hot physical backups, supporting full + chained incremental backups; physical restore is a file copy, hence fast; mariadb-dump for logical backups (database/table granularity, cross-version, slower restores); binlog-based PITR.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> Major-version upgrades <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> — binary replacement + <code>mariadb-upgrade</code> for system tables; cross-major in-place upgrades are possible but require downtime; <strong>rollback is verified to have no official support</strong> (&quot;not designed for downgrading&quot;); the only reliable rollback is a logical backup taken before upgrade plus rebuild.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> Observability <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes</strong> (official docs; PFS lag is community consensus) — slow query log and general log are complete; PFS enabled by default since 10.6, sys schema built in since 10.6; but PFS lags the MySQL 8 implementation with some instruments missing — monitoring tools heavily dependent on PFS need testing. No official APM; relies on third parties such as Prometheus mysqld_exporter.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> Connection model <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> — default one-thread-per-connection; <strong>thread pool is built into the server and available in the community edition</strong> (official statement: MySQL&#x27;s thread pool is Enterprise-only, MariaDB&#x27;s is available in all editions). No official bundled pooling proxy (MaxScale is a commercial product under BSL).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> Transactions &amp; isolation levels <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes</strong> (official docs / community-tested) — InnoDB MVCC, four isolation levels, RR (REPEATABLE READ) by default, XA supported. <strong>Note: since 11.6.2 <code>innodb_snapshot_isolation</code> defaults to ON</strong>: under RR, write-write conflict detection applies to concurrently modified rows; on a hit the server reports <code>ER_CHECKREAD (1020)</code> and rolls back the entire transaction — application retry logic must treat 1020 the same as deadlock 1213 (12.3 real-world case).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> Replication &amp; consistency <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> — async primary-replica + semi-sync (bundled in community edition) + Galera Cluster. GTID format is domain-style <code>domain-server_id-sequence</code>, <strong>completely incompatible with MySQL&#x27;s UUID-style GTID</strong>.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> Scaling <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (official docs / community consensus) — vertical scaling is seamless; read scaling online and mature (primary-replica + read/write splitting, Galera node addition); <strong>horizontal write scaling is a weak spot — verified to have no official automatic sharding solution</strong> (Spider engine is operationally complex with a small ecosystem).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> Compatibility <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (official docs / community consensus) — MySQL wire-protocol compatible; drivers/ORMs/GUI tools are largely interchangeable; but the SQL-layer &quot;drop-in replacement&quot; claim is outdated. Verified missing MySQL 8.x key features: native binary JSON, JSON_TABLE, JSON multi-valued indexes, transactional data dictionary, Group Replication, caching_sha2_password default authentication. MariaDB-only features: sequences, system-versioned tables, INSERT...RETURNING, invisible columns, Oracle compatibility mode, VECTOR+HNSW (11.8+, one step ahead of MySQL).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> License &amp; business model <span class="verdict v-neutral">Yes</span></h3><div class="dim-body"><p><strong>Yes</strong> (official docs / media report) — community edition GPLv2; Enterprise distributed only to subscription customers; MaxScale and others under BSL; subscription-based pricing (no public price list on the website, to-be-verified).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> Chinese-language resources <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> — the official KB is predominantly English with no official Chinese documentation; Chinese content is scattered across cloud vendor docs, dbaplus, MoTianLun, and CSDN, mostly stuck in the 10.x era; Chinese material on 11/12 new features is scarce.</p></div></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="杀手特性" data-en="Killer features">杀手特性</span></h2>
+<div class="lang-block lang-zh">
+<ol>
+<li><strong>社区版慷慨：审计、线程池、静态加密全免费</strong> 真本事：server_audit、线程池、实例级静态加密在 MariaDB 社区版全部自带——这三样在 Oracle MySQL 那边是企业版（付费）的墙内能力。对预算敏感又需要合规基线的团队，这是实打实的差异。 边缘真相：慷慨不等于企业级——server_audit 的过滤能力弱于 Enterprise Audit；file_key_management 的密钥存本地文件，过等保/PCI 这类强合规还是要上 KMS（企业版墙内）。以及&quot;免费&quot;的前提是公司还活着（见深水区二）。</li>
+<li><strong>协议层 MySQL 兼容 + 独立演进的 SQL 方言</strong> 真本事：MySQL 线协议兼容，现有驱动、ORM、GUI 工具基本不用换；同时 10.2 起窗口函数/CTE 首发早于 MySQL 8.0，11.8 自研向量检索反超，Oracle PL/SQL 兼容模式是独家。 边缘真相：协议兼容掩盖了语义分化——GTID 不互通、JSON 是 LONGTEXT 别名、优化器代价模型独立（11.0 起基于时间），从 MySQL 8.0 迁过来复杂 SQL 必须重测。别把&quot;连得上&quot;当成&quot;跑得一样&quot;。</li>
+<li><strong>Galera Cluster：官方背书的多主同步复制</strong> 真本事：2025 年 6 月 MariaDB 直接收购了 Galera Cluster（原 Codership 独立产品），官方 2026 年确认长期保留在社区版——同机房多活 + 自动故障转移，RPO=0。 边缘真相：见深水区四——它是&quot;乐观多写&quot;不是&quot;同步魔法&quot;：热点行跨节点写会认证冲突回滚、大事务拖住全集群、流控让最慢节点决定集群写入速度。生产正解是单写+多读。</li>
+<li><strong>Temporal 表（系统版本表）与 Oracle 兼容模式</strong> 真本事：系统版本表（AS OF 查询历史数据）是 SQL:2011 标准能力，MySQL 至今没有；Oracle 兼容模式（PL/SQL 语法）给&quot;去 O&quot;场景留了一条低成本路。 边缘真相：两者都是&quot;有但浅&quot;——temporal 表的历史数据膨胀需要分区/清理策略，否则存储翻倍；Oracle 模式覆盖的是语法子集，重度 PL/SQL 仍要逐项 POC。适合轻量场景，重度依赖别当救命稻草。</li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<ol>
+<li><strong>Generous community edition: audit, thread pool, and data-at-rest encryption all free</strong> The real deal: server_audit, thread pool, and instance-level encryption all ship with the MariaDB community edition — the same three are behind the paid Enterprise wall on Oracle MySQL. For budget-sensitive teams that still need a compliance baseline, this is a real difference. Edge truth: generous does not mean enterprise-grade — server_audit&#x27;s filtering is weaker than Enterprise Audit; file_key_management keeps keys in a local file, so strong compliance regimes like 等保 (China&#x27;s MLPS cybersecurity classification) or PCI still need KMS (behind the Enterprise wall). And &quot;free&quot; assumes the company stays alive (see Deep-water area 2).</li>
+<li><strong>Protocol-level MySQL compatibility + independently evolving SQL dialect</strong> The real deal: MySQL wire-protocol compatible — existing drivers, ORMs, and GUI tools mostly work unchanged; meanwhile window functions/CTEs shipped starting 10.2, earlier than MySQL 8.0, the 11.8 in-house vector search leapfrogged ahead, and the Oracle PL/SQL compatibility mode is exclusive to MariaDB. Edge truth: protocol compatibility masks semantic divergence — GTIDs are incompatible, JSON is a LONGTEXT alias, the optimizer cost model is independent (time-based since 11.0); complex SQL migrated from MySQL 8.0 must be retested. Don&#x27;t mistake &quot;connects&quot; for &quot;runs the same&quot;.</li>
+<li><strong>Galera Cluster: officially endorsed multi-primary synchronous replication</strong> The real deal: in June 2025 MariaDB acquired Galera Cluster outright (previously an independent Codership product), and the official 2026 statement confirms it stays in the community edition long-term — same-datacenter active-active + automatic failover, RPO=0. Edge truth: see Deep-water area 4 — it&#x27;s &quot;optimistic multi-writer&quot;, not &quot;synchronous magic&quot;: hot-row writes across nodes roll back on certification conflicts, large transactions hold up the whole cluster, and flow control lets the slowest node dictate cluster write speed. The production-correct pattern is single-writer + multi-reader.</li>
+<li><strong>Temporal tables (system-versioned tables) and Oracle compatibility mode</strong> The real deal: system-versioned tables (AS OF queries over historical data) are SQL:2011 standard capability that MySQL still lacks; the Oracle compatibility mode (PL/SQL syntax) leaves a low-cost path for &quot;de-O&quot; (removing Oracle) scenarios. Edge truth: both are &quot;present but shallow&quot; — temporal tables&#x27; historical data bloat needs a partitioning/purging strategy or storage doubles; the Oracle mode covers a syntax subset, and heavy PL/SQL still needs item-by-item POC. Fine for lightweight scenarios; don&#x27;t treat it as a lifeline for heavy dependencies.</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="深水区" data-en="Deep dives">深水区</span></h2>
+<div class="lang-block lang-zh">
+<p><strong>深水区一：GTID 不兼容——迁移的第一道墙</strong>（domain：复制与迁移）</p>
+<ul>
+<li>机制：MariaDB GTID 是 <code>domain-id – server-id – sequence</code> 三元组<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>，MySQL 是 <code>server_uuid:transaction_id</code>，两套 ID 体系互不识别。</li>
+<li>推到边缘：MariaDB 可做 MySQL 主库的从库（走传统位点），但 MySQL 不能做 MariaDB 主库的从库<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>；GTID 模式下跨库复制直接失效。若现有架构依赖 GTID 做主从切换/多源复制/故障转移编排（如 Orchestrator），迁移等于复制拓扑全部重做，不存在连续 GTID 跟踪的平滑迁移<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>选型含义：从 MySQL 迁 MariaDB 必须按&quot;异构数据库&quot;做迁移评估，而非&quot;升级&quot;；双写或渐进迁移需要应用层或逻辑复制工具做转换层。</li>
+<li>来源：官方文档（mariadb.com GTID 页面）；社区迁移技能文档多份交叉</li>
+</ul>
+<p><strong>深水区二：公司商业模式与 SkySQL 的起落——最大风险不在技术</strong>（domain：商业模式）</p>
+<ul>
+<li>机制：MariaDB Corporation 走订阅制（Enterprise Server + 支持 + 云）；社区版由独立的 MariaDB Foundation 治理。</li>
+<li>推到边缘：时间线（多家媒体交叉：TechCrunch/The Register/SiliconANGLE）——2022-12 SPAC 上市首日破发；2023-10 裁员 28%、砍掉 SkySQL 与 Xpand（SkySQL 2023-12 剥离为独立公司）；2024-02 K1 出价收购（媒体口径）、完成私有化后 NYSE 退市，CEO 换为 Rohit de Souza。私有化后反而扩张：2025-01 Enterprise Platform 2025、2025-06 收购 Galera、2025-08 回购 SkySQL、2026-03 收购 GridGain。</li>
+<li>选型含义：生存风险已解除，但两点需警惕：① 私有化后无公开财报，财务健康度不可见<span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>；② 战略重心转向 AI/向量/RAG 叙事，传统 OLTP 投入占比可能被稀释。社区版路线图由 Foundation 保障，但企业版功能越来越向 AI workload 倾斜。</li>
+<li>来源：TechCrunch 2024-09-10；The Register；SiliconANGLE 2026-03-09；官方新闻稿</li>
+</ul>
+<p><strong>深水区三：存储引擎现状——&quot;引擎动物园&quot;的代价</strong>（domain：存储引擎）</p>
+<ul>
+<li>机制：MariaDB 曾以多引擎为卖点；10.4 起系统表默认引擎为 Aria（MyISAM 的崩溃安全替代，WAL 重放恢复，无事务、表级锁）；ColumnStore（InfiniDB fork）是 MPP 列存 OLAP 引擎。</li>
+<li>推到边缘：① Aria 没有行级锁，高并发写入表锁串行化，绝不能当 OLTP 事务引擎；系统表放 Aria 上意味着 <code>mysql</code> 库本身无事务保护<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。② ColumnStore 未停滞但转向企业版/云优先：2026-08 企业版 release notes 仍在集成 25.10.6，主仓库仍有提交；但官方 Docker 镜像自 2023 年停更，社区被迫自建镜像；分布式部署需 CMAPI + 多节点编排，运维成本接近一套独立 MPP 数仓<span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。③ 勘误：10.6 移除的是 TokuDB（10.5 禁用、10.6 移除，MDEV-19780）和 Cassandra SE，不是 MyRocks；MyRocks 至今在代码树中但长期停留 Alpha/Beta、从未生产级<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>——&quot;引擎动物园&quot;的代价是每个引擎都要跟随主版本适配，分叉越远维护成本越高，最终只能放弃。</li>
+<li>选型含义：生产只认 InnoDB；Aria 限归档/只读表；ColumnStore 按&quot;独立 MPP 系统&quot;做运维预算，分析 workload 更务实的选择仍是 ClickHouse/DuckDB 等外部系统；Spider/CONNECT/MyRocks/S3 视为无人维护。</li>
+<li>来源：官方文档（MDEV-19780）；mariadb.com 企业版博客；社区实测（docker-mariadb-columnstore）；2026-09 Medium 综述</li>
+</ul>
+<p><strong>深水区四：Galera Cluster——乐观多写，不是同步魔法</strong>（domain：复制与一致性）</p>
+<ul>
+<li>机制：wsrep 认证复制——事务在发起节点本地执行，COMMIT 时把写集广播全节点，各节点用确定性算法认证行级冲突，全节点独立得出相同结论。先本地执行、提交时全局认证，是乐观并发控制。</li>
+<li>推到边缘：① 跨节点写同一热点行→认证冲突，后提交事务被回滚，驱动层看到死锁错误，需应用层重试（社区实测：passbolt 多主下双管理员操作可稳定复现 500 错误；标准解法是单写节点）。② 大事务：写集原子认证，超大写集（社区经验值 ~12.8 万行以上）拖住全集群认证，官方建议拆几千行一批；整个写集在内存组装/传输。③ Flow control：某节点 apply 跟不上（<code>wsrep_local_recv_queue_avg</code> 持续增长）会触发流控让全集群暂停写——最慢节点决定集群写入速度，<code>wsrep_flow_control_paused</code> 应接近 0。④ 节点故障：短期离线用 IST（依赖 gcache 大小），覆盖不了则 SST 全量同步，donor 节点被 desync/阻塞。⑤ 脑裂：Primary Component 算法，只有加权多数（&gt;50%）分区可写；<strong>2 节点集群任何分区下两边都变只读</strong>，偶数节点 2/2 分区同样全停；解法是 3 节点 / garbd 仲裁 / 非对称权重<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。⑥ 限制清单（官方文档+社区实测）：不支持 XA；复制表必须有主键（认证靠主键定位）；DDL 是 TOI 全局锁，阻塞整个集群；只有 InnoDB 表被复制。</li>
+<li>选型含义：Galera 解决的是同机房/同城多活+自动故障转移，代价是写延迟、热点行冲突、运维面（SST/IST/流控/quorum）。单写路径、能容忍秒级 RPO 的场景，异步复制 + 自动故障转移综合成本远低于 Galera<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。选前先回答：有没有跨节点写同一行？有没有大事务？</li>
+<li>来源：Codership 官方文档（weighted-quorum）；MariaDB 官方博客；coroot inspections；社区运维指南</li>
+</ul>
+<p><strong>深水区五：版本支持策略——清晰但有断裂带</strong>（domain：运维与升级）</p>
+<ul>
+<li>机制：MariaDB 自 11.x 起&quot;每季度滚动版 + 每年 LTS&quot;节奏；短期版约 1 年维护，是下一 LTS 的试验田，<strong>不要上生产</strong><span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。LTS 线（社区实测 endoflife.date，采集 2026-09-29）：10.6 LTS 已于 2026-07-06 EOL（不到 3 个月前）；10.11（EOL 2028-02-16）、11.4（EOL 2029-05-29，最长 runway）、11.8（EOL 2028-06-04）、12.3（EOL 2029-06-12）支持中。</li>
+<li>推到边缘：10.x→11.0 是架构断裂带——优化器代价模型改写（查询计划可能变化，升级前必须抓 EXPLAIN 基线）、<code>GRANT SUPER</code> 不再隐含细分权限（自动化脚本升级后报 access-denied）、<code>innodb_change_buffering</code> 等已移除参数残留会阻止启动<span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。升级真正成本不在 <code>mariadb-upgrade</code> 本身，而在三件事：my.cnf 参数审计、优化器回归测试、权限/认证模型变更（10.4 global_priv、11.0 SUPER 解耦）。另注意 12.x 破坏性默认变更：<code>innodb_snapshot_isolation=ON</code>（1020 错误需应用层重试）、新增保留字。</li>
+<li>选型含义：新部署选 11.4/11.8/12.3 LTS；10.x→11.x 按架构升级做预算，不是按补丁做；MariaDB 版本号不再传递任何与 MySQL 的对应关系，迁移过来的人要重建版本心智模型。</li>
+<li>来源：endoflife.date；AWS 迁移技能文档；社区实测（dev.to 12.3 升级案例）</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<p><strong>Deep-water area 1: GTID incompatibility — the first wall of migration</strong> (domain: replication &amp; migration)</p>
+<ul>
+<li>Mechanism: MariaDB GTID is the <code>domain-id – server-id – sequence</code> triplet <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>; MySQL&#x27;s is <code>server_uuid:transaction_id</code>. The two ID schemes don&#x27;t recognize each other.</li>
+<li>Pushed to the edge: MariaDB can serve as a replica of a MySQL primary (via traditional position-based replication), but MySQL cannot serve as a replica of a MariaDB primary <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>; cross-vendor replication simply breaks in GTID mode. If your architecture relies on GTID for primary-replica switchover, multi-source replication, or failover orchestration (e.g., Orchestrator), migration means redoing the entire replication topology — there is no smooth migration with continuous GTID tracking <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Selection implication: migrating from MySQL to MariaDB must be evaluated as a &quot;heterogeneous database&quot; migration, not an &quot;upgrade&quot;; dual-write or incremental migration needs an application-layer or logical-replication conversion layer.</li>
+<li>Sources: official docs (mariadb.com GTID page); multiple community migration skill docs, cross-referenced</li>
+</ul>
+<p><strong>Deep-water area 2: the company business model and the rise-and-fall of SkySQL — the biggest risk isn&#x27;t technical</strong> (domain: business model)</p>
+<ul>
+<li>Mechanism: MariaDB Corporation runs a subscription model (Enterprise Server + support + cloud); the community edition is governed by the independent MariaDB Foundation.</li>
+<li>Pushed to the edge: timeline (cross-referenced across TechCrunch / The Register / SiliconANGLE) — Dec 2022: SPAC listing broke issue on day one; Oct 2023: 28% layoffs, SkySQL and Xpand cut (SkySQL spun out as an independent company in Dec 2023); Feb 2024: K1 offered $0.55/share (~$37M, media report) for acquisition; 2024-09-10: acquisition completed, delisted from NYSE and privatized, CEO changed to Rohit de Souza. Paradoxically, the post-privatization period brought expansion: Jan 2025 Enterprise Platform 2025, Jun 2025 acquisition of Galera, Aug 2025 SkySQL buy-back, Mar 2026 acquisition of GridGain.</li>
+<li>Selection implication: survival risk is off the table, but two things warrant caution: ① with no public financials after privatization, financial health is invisible <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>; ② the strategic focus is shifting toward the AI/vector/RAG narrative, so investment in traditional OLTP may be diluted. The community edition roadmap is safeguarded by the Foundation, but Enterprise features are increasingly tilting toward AI workloads.</li>
+<li>Sources: TechCrunch 2024-09-10; The Register; SiliconANGLE 2026-03-09; official press releases</li>
+</ul>
+<p><strong>Deep-water area 3: storage engine landscape — the price of the &quot;engine zoo&quot;</strong> (domain: storage engine)</p>
+<ul>
+<li>Mechanism: MariaDB once marketed multi-engine support; since 10.4 system tables default to the Aria engine (MyISAM&#x27;s crash-safe replacement, WAL-replay recovery, no transactions, table-level locking); ColumnStore (an InfiniDB fork) is an MPP column-store OLAP engine.</li>
+<li>Pushed to the edge: ① Aria has no row-level locking — high-concurrency writes serialize on table locks; it must never be used as an OLTP transactional engine; system tables sitting on Aria means the <code>mysql</code> database itself has no transactional protection <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>. ② ColumnStore isn&#x27;t stagnant but is shifting Enterprise/cloud-first: the Aug 2026 Enterprise release notes still integrate 25.10.6, and the main repository still receives commits; but the official Docker image hasn&#x27;t been updated since 2023, forcing the community to build its own images; distributed deployment needs CMAPI + multi-node orchestration, with operational cost approaching that of an independent MPP data warehouse <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>. ③ Correction: what 10.6 removed was TokuDB (disabled in 10.5, removed in 10.6, MDEV-19780) and Cassandra SE — not MyRocks; MyRocks remains in the code tree but has lingered in Alpha/Beta status and never reached production grade <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> — the &quot;engine zoo&quot; price is that every engine must be ported along with each major version; the further a fork drifts, the higher the maintenance cost, until it can only be abandoned.</li>
+<li>Selection implication: production means InnoDB only; Aria is limited to archive/read-only tables; budget ColumnStore as an &quot;independent MPP system&quot; — for analytical workloads, the more pragmatic choices remain external systems like ClickHouse/DuckDB; treat Spider/CONNECT/MyRocks/S3 as unmaintained.</li>
+<li>Sources: official docs (MDEV-19780); mariadb.com Enterprise blog; community-tested (docker-mariadb-columnstore); Sep 2026 Medium roundup</li>
+</ul>
+<p><strong>Deep-water area 4: Galera Cluster — optimistic multi-writer, not synchronous magic</strong> (domain: replication &amp; consistency)</p>
+<ul>
+<li>Mechanism: wsrep certification-based replication — transactions execute locally on the originating node; at COMMIT the writeset is broadcast to all nodes, and each node deterministically certifies row-level conflicts, all nodes independently reaching the same conclusion. Execute locally first, certify globally at commit — optimistic concurrency control.</li>
+<li>Pushed to the edge: ① cross-node writes to the same hot row → certification conflict, the later transaction is rolled back, the driver sees a deadlock error, and the application layer must retry (community-tested: passbolt under multi-primary reliably reproduces 500 errors when two admins operate concurrently; the standard fix is single-writer). ② Large transactions: writesets are certified atomically; oversized writesets (community rule of thumb: above ~128K rows) hold up certification cluster-wide — the official guidance is a few thousand rows per batch; the entire writeset is assembled/transmitted in memory. ③ Flow control: when a node can&#x27;t keep up applying (<code>wsrep_local_recv_queue_avg</code> keeps growing), flow control pauses writes cluster-wide — the slowest node dictates cluster write speed; <code>wsrep_flow_control_paused</code> should stay near 0. ④ Node failure: short outages use IST (depends on gcache size); if it can&#x27;t cover, SST does a full resync and the donor node is desynced/blocked. ⑤ Split-brain: the Primary Component algorithm — only a weighted-majority (&gt;50%) partition stays writable; <strong>in a 2-node cluster, any partition turns both sides read-only</strong>; an even 2/2 split likewise halts everything; fixes are 3 nodes / garbd arbitration / asymmetric weights <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. ⑥ Restriction list (official docs + community-tested): no XA; replicated tables must have a primary key (certification locates rows by PK); DDL is a TOI global lock that blocks the whole cluster; only InnoDB tables are replicated.</li>
+<li>Selection implication: Galera solves same-datacenter/same-city active-active + automatic failover, at the price of write latency, hot-row conflicts, and operational surface (SST/IST/flow control/quorum). For single-write paths that can tolerate second-level RPO, async replication + automatic failover costs far less overall <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>. Before choosing, answer first: are there cross-node writes to the same row? Are there large transactions?</li>
+<li>Sources: Codership official docs (weighted-quorum); MariaDB official blog; coroot inspections; community operations guides</li>
+</ul>
+<p><strong>Deep-water area 5: version support policy — clear, but with a fracture zone</strong> (domain: operations &amp; upgrades)</p>
+<ul>
+<li>Mechanism: since 11.x, MariaDB ships on a &quot;quarterly rolling releases + one LTS per year&quot; cadence; short-term releases get about 1 year of maintenance and serve as the proving ground for the next LTS — <strong>don&#x27;t run them in production</strong> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>. LTS lines (community-tested via endoflife.date, collected 2026-09-29): 10.6 LTS reached EOL on 2026-07-06 (less than 3 months ago); 10.11 (EOL 2028-02-16), 11.4 (EOL 2029-05-29, the longest runway), 11.8 (EOL 2028-06-04), 12.3 (EOL 2029-06-12) remain supported.</li>
+<li>Pushed to the edge: 10.x→11.0 is an architectural fracture zone — the optimizer cost model was rewritten (query plans may change; capture EXPLAIN baselines before upgrading), <code>GRANT SUPER</code> no longer implies the fine-grained privileges (automation scripts fail with access-denied after upgrade), and leftover removed parameters like <code>innodb_change_buffering</code> will prevent startup <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>. The real cost of upgrading isn&#x27;t <code>mariadb-upgrade</code> itself but three things: my.cnf parameter audit, optimizer regression testing, and privilege/authentication-model changes (10.4 global_priv, 11.0 SUPER decoupling). Also note destructive default changes in 12.x: <code>innodb_snapshot_isolation=ON</code> (error 1020 needs application-layer retry), new reserved words.</li>
+<li>Selection implication: new deployments should pick the 11.4/11.8/12.3 LTS lines; treat 10.x→11.x as a generational upgrade in budget terms, not a patch; MariaDB version numbers no longer imply any correspondence with MySQL — migrating users need to rebuild their version mental model.</li>
+<li>Sources: endoflife.date; AWS migration skill docs; community-tested (dev.to 12.3 upgrade case)</li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="用户最买账的 5 点" data-en="What users love most">用户最买账的 5 点</span></h2>
+<div class="lang-block lang-zh">
+<ol>
+<li><strong>&quot;比 MySQL 更开源&quot;的信任感</strong><ul>
+<li>为什么是真的：创始人嫡系、GPLv2、Foundation 独立治理；Oracle 收购 MySQL 后的&quot;逃离 Oracle&quot;情绪是 MariaDB 早年增长的核心燃料，AWS 成为 Foundation 首个 diamond 赞助商。</li>
+<li>边缘与限度：信任的是&quot;开源&quot;，不是&quot;公司&quot;——Corporation 刚经历私有化动荡，财务不可见；且&quot;逃离 Oracle&quot;叙事在 2026 年已是十年前的故事，新用户应基于 12.x 的产品力而非 2013 年的情绪做决策。</li>
+<li>来源：社区共识；TechCrunch 2024-09-10。评审版本：12.3 LTS</li>
+</ul></li>
+<li><strong>社区版功能慷慨</strong><ul>
+<li>为什么是真的：审计插件、线程池、静态加密、半同步复制全在社区版——MySQL 那边同等能力要企业版付费。对预算敏感的团队，合规基线（审计+加密）零成本达成。</li>
+<li>边缘与限度：慷慨的是&quot;有&quot;，不是&quot;强&quot;——社区审计过滤能力弱于企业版；file_key_management 密钥存本地文件，强合规仍需 KMS（企业版墙内）；线程池调优（thread_pool_size 等）仍需 DBA 手艺。</li>
+<li>来源：官方文档；社区共识。评审版本：12.3 LTS</li>
+</ul></li>
+<li><strong>MySQL 生态平滑接入</strong><ul>
+<li>为什么是真的：线协议兼容，DBeaver/phpMyAdmin/WordPress/PMM 等工具基本不用换；MySQL 5.7 时代用户迁过来曾是近乎 drop-in。</li>
+<li>边缘与限度：&quot;连得上&quot;≠&quot;跑得一样&quot;——GTID 不互通、JSON 语义差异、优化器分化，MySQL 8.0 用户迁过来已是&quot;换发动机&quot;级别改造（逻辑 dump 重建 + 用户授权手工迁移 + 全量回归）。生态兼容的是工具链，不是语义。</li>
+<li>来源：社区迁移实测文档多份交叉。评审版本：12.3 LTS</li>
+</ul></li>
+<li><strong>Galera 多活口碑</strong><ul>
+<li>为什么是真的：同机房多节点可写、自动故障转移、RPO=0，在对&quot;双活&quot;有执念的传统行业（尤其国内部分金融/政企）口碑深厚；2025 年官方收购 Galera 后背书更强。</li>
+<li>边缘与限度：口碑成立的前提是 workload 友好——无跨节点热点写、无大事务、无频繁 DDL；否则认证冲突、流控、TOI 锁会把&quot;多活&quot;变成&quot;多坑&quot;。很多团队真正需要的是&quot;故障自动切换&quot;而非&quot;多点写入&quot;，异步+编排更便宜。</li>
+<li>来源：社区运维共识；Codership 官方文档。评审版本：12.3 LTS</li>
+</ul></li>
+<li><strong>LTS 节奏可预测</strong><ul>
+<li>为什么是真的：每年一个 LTS、5 年社区维护，节奏固定；11.4（EOL 2029-05-29）给了最长的 runway。</li>
+<li>边缘与限度：可预测的是&quot;时间&quot;，不是&quot;平滑&quot;——10.x→11.x 是架构断裂带，升级预算要按&quot;换代&quot;做；12.x 每个次版本都可能含破坏性变更（snapshot isolation 默认 ON 就是 12.x 的坑），LTS 不等于&quot;无感升级&quot;。</li>
+<li>来源：endoflife.date（采集 2026-09-29）；社区升级实测。评审版本：12.3 LTS</li>
+</ul></li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<ol>
+<li><strong>The trust of being &quot;more open-source than MySQL&quot;</strong><ul>
+<li>Why it&#x27;s real: the founder&#x27;s lineage, GPLv2, independent Foundation governance; the post-Oracle-acquisition &quot;escape Oracle&quot; sentiment was the core fuel of MariaDB&#x27;s early growth, and AWS became the Foundation&#x27;s first diamond sponsor.</li>
+<li>Edge &amp; limits: the trust is in &quot;open source&quot;, not in &quot;the company&quot; — the Corporation just went through privatization turbulence and its financials are invisible; and the &quot;escape Oracle&quot; narrative is a ten-year-old story in 2026 — new users should decide on 12.x product merit, not 2013 emotions.</li>
+<li>Sources: community consensus; TechCrunch 2024-09-10. Reviewed version: 12.3 LTS</li>
+</ul></li>
+<li><strong>Generous community edition features</strong><ul>
+<li>Why it&#x27;s real: audit plugin, thread pool, data-at-rest encryption, and semi-sync replication all ship in the community edition — the MySQL equivalents require paid Enterprise. For budget-sensitive teams, the compliance baseline (audit + encryption) costs zero.</li>
+<li>Edge &amp; limits: what&#x27;s generous is &quot;having it&quot;, not &quot;having it strong&quot; — community audit filtering is weaker than Enterprise; file_key_management keeps keys in a local file, so strong compliance still needs KMS (behind the Enterprise wall); thread pool tuning (thread_pool_size etc.) still needs DBA craft.</li>
+<li>Sources: official docs; community consensus. Reviewed version: 12.3 LTS</li>
+</ul></li>
+<li><strong>Smooth MySQL ecosystem onboarding</strong><ul>
+<li>Why it&#x27;s real: wire-protocol compatibility — DBeaver/phpMyAdmin/WordPress/PMM and other tools mostly work unchanged; MySQL 5.7-era users once migrated nearly drop-in.</li>
+<li>Edge &amp; limits: &quot;connects&quot; ≠ &quot;runs the same&quot; — GTID incompatibility, JSON semantic differences, optimizer divergence: MySQL 8.0 users now face an &quot;engine swap&quot;-level migration (logical dump rebuild + manual user/privilege migration + full regression). What&#x27;s compatible is the toolchain, not the semantics.</li>
+<li>Sources: multiple community migration field docs, cross-referenced. Reviewed version: 12.3 LTS</li>
+</ul></li>
+<li><strong>Galera active-active reputation</strong><ul>
+<li>Why it&#x27;s real: multi-node writability in the same datacenter, automatic failover, RPO=0 — a deep reputation in traditional industries fixated on &quot;active-active&quot; (especially parts of China&#x27;s finance and government sectors); the official Galera acquisition in 2025 strengthened the endorsement.</li>
+<li>Edge &amp; limits: the reputation holds only when the workload is friendly — no cross-node hot-row writes, no large transactions, no frequent DDL; otherwise certification conflicts, flow control, and TOI locks turn &quot;active-active&quot; into &quot;multi-pit&quot;. Many teams really need &quot;automatic failover on failure&quot; rather than &quot;multi-point writes&quot; — async + orchestration is cheaper.</li>
+<li>Sources: community operations consensus; Codership official docs. Reviewed version: 12.3 LTS</li>
+</ul></li>
+<li><strong>Predictable LTS cadence</strong><ul>
+<li>Why it&#x27;s real: one LTS per year with 5 years of community maintenance, a fixed cadence; 11.4 (EOL 2029-05-29) gives the longest runway.</li>
+<li>Edge &amp; limits: what&#x27;s predictable is &quot;timing&quot;, not &quot;smoothness&quot; — 10.x→11.x is an architectural fracture zone, so budget the upgrade as a generation change; each 12.x minor release may carry breaking changes (snapshot isolation default ON is one of 12.x&#x27;s pitfalls) — LTS does not mean &quot;painless upgrade&quot;.</li>
+<li>Sources: endoflife.date (collected 2026-09-29); community upgrade field reports. Reviewed version: 12.3 LTS</li>
+</ul></li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="吐槽清单" data-en="Complaints">吐槽清单</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>分类</th><th>吐槽</th><th>影响版本</th><th>状态</th></tr></thead>
+<tbody>
+<tr><td>兼容坑</td><td>GTID 与 MySQL 完全不互通，跨库复制/迁移无平滑路径，复制拓扑推倒重来</td><td>全版本</td><td>open</td></tr>
+<tr><td>兼容坑</td><td>JSON 是 LONGTEXT 别名+CHECK 约束，非二进制存储；<code>-&gt;&gt;</code>/<code>JSON_TABLE</code>/多值索引缺失，迁移后需给 JSON 列补 CHECK 约束否则静默写坏</td><td>全版本</td><td>open</td></tr>
+<tr><td>兼容坑</td><td>11.4 之前无 caching_sha2_password 兼容插件，MySQL 8 用户密码需轮换重建</td><td>&lt;11.4</td><td>partially-fixed（11.4.9+/11.8.4+ 有迁移插件，12.1 有完整插件，成熟度待验证）</td></tr>
+<tr><td>兼容坑</td><td>10.4 起 mysql.user 变视图、权限迁至 mysql.global_priv，监控/审计/备份脚本需重写</td><td>10.4+</td><td>open（按新模型适配）</td></tr>
+<tr><td>性能坑</td><td>11.0 起优化器代价模型改写，升级后查询计划可能变差，多表 join/大范围扫描最受影响，需抓 EXPLAIN 基线</td><td>11.x/12.x</td><td>open（升级前回归测试）</td></tr>
+<tr><td>性能坑</td><td>Galera 跨节点热点写认证冲突回滚、流控让最慢节点决定写入速度、大事务拖住全集群</td><td>全版本</td><td>open（单写+多读规避）</td></tr>
+<tr><td>运维坑</td><td>Galera DDL 是 TOI 全局锁，阻塞整个集群；RSU 滚动升级让集群短暂分叉</td><td>全版本</td><td>open</td></tr>
+<tr><td>运维坑</td><td>Galera 2 节点集群任何网络分区下两边都变只读，无安全双节点配置</td><td>全版本</td><td>open（需 3 节点/garbd/加权 quorum）</td></tr>
+<tr><td>运维坑</td><td>大版本升级无官方回退支持，redo log/系统表格式升级不可逆</td><td>全版本</td><td>open</td></tr>
+<tr><td>运维坑</td><td>PFS 相对 MySQL 8 实现滞后、部分 instruments 缺失，重度依赖 PFS 的监控工具需实测</td><td>全版本</td><td>open</td></tr>
+<tr><td>版本坑</td><td>10.6 LTS 已于 2026-07-06 EOL，仍在跑 10.6 的生产库需尽快规划升级</td><td>10.6</td><td>open</td></tr>
+<tr><td>版本坑</td><td>12.x 引入 <code>innodb_snapshot_isolation</code> 默认 ON，应用层需把 1020 错误与死锁同等重试，否则并发更新报错</td><td>11.6.2+/12.x</td><td>open（应用层适配）</td></tr>
+<tr><td>生态坑</td><td>中文资料少一个量级且多停留 10.x 时代，11/12 新特性中文资料稀缺，深水区问题需读英文文档/Jira</td><td>全版本</td><td>open</td></tr>
+<tr><td>生态坑</td><td>ColumnStore 官方 Docker 镜像自 2023 年停更，社区版 OLAP 用户需自建镜像、无人值守跑 MPP</td><td>全版本</td><td>open</td></tr>
+<tr><td>授权坑</td><td>AWS KMS 插件、Enterprise Audit/Backup、128 索引上限等为企业版墙内；MaxScale BSL 生产使用受限</td><td>全版本</td><td>open</td></tr>
+<tr><td>成本坑</td><td>公司私有化后无公开财报，长期路线图可信度标注&quot;厂商口径&quot;；战略转向 AI/向量，传统 OLTP 投入占比待观察</td><td>2024-09 后</td><td>open<span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Category</th><th>Complaint</th><th>Affected versions</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Compatibility</td><td>GTID completely incompatible with MySQL — no smooth path for cross-vendor replication/migration; replication topologies must be rebuilt from scratch</td><td>All versions</td><td>open</td></tr>
+<tr><td>Compatibility</td><td>JSON is a LONGTEXT alias + CHECK constraint, not binary storage; <code>-&gt;&gt;</code>/<code>JSON_TABLE</code>/multi-valued indexes missing; after migration you must add CHECK constraints to JSON columns or writes silently corrupt</td><td>All versions</td><td>open</td></tr>
+<tr><td>Compatibility</td><td>Before 11.4 there was no caching_sha2_password compatibility plugin — MySQL 8 users&#x27; passwords must be rotated and rebuilt</td><td>&lt;11.4</td><td>partially-fixed (migration plugin in 11.4.9+/11.8.4+, full plugin in 12.1, maturity to-be-verified)</td></tr>
+<tr><td>Compatibility</td><td>Since 10.4 mysql.user became a view and privileges moved to mysql.global_priv — monitoring/audit/backup scripts need rewriting</td><td>10.4+</td><td>open (adapt to the new model)</td></tr>
+<tr><td>Performance</td><td>Since 11.0 the optimizer cost model was rewritten — query plans may degrade after upgrade; multi-table joins/large range scans are most affected; EXPLAIN baselines are required</td><td>11.x/12.x</td><td>open (regression testing before upgrade)</td></tr>
+<tr><td>Performance</td><td>Galera cross-node hot-row write certification conflicts roll back; flow control lets the slowest node dictate write speed; large transactions hold up the whole cluster</td><td>All versions</td><td>open (mitigated by single-write + multi-read)</td></tr>
+<tr><td>Operations</td><td>Galera DDL is a TOI global lock blocking the entire cluster; RSU rolling upgrades briefly fork the cluster</td><td>All versions</td><td>open</td></tr>
+<tr><td>Operations</td><td>In a 2-node Galera cluster any network partition turns both sides read-only — there is no safe two-node configuration</td><td>All versions</td><td>open (needs 3 nodes / garbd / weighted quorum)</td></tr>
+<tr><td>Operations</td><td>Major-version upgrades have no officially supported rollback; redo log/system table format upgrades are irreversible</td><td>All versions</td><td>open</td></tr>
+<tr><td>Operations</td><td>PFS lags the MySQL 8 implementation with some instruments missing; monitoring tools heavily dependent on PFS need field testing</td><td>All versions</td><td>open</td></tr>
+<tr><td>Version</td><td>10.6 LTS reached EOL on 2026-07-06 — production fleets still on 10.6 need upgrade planning ASAP</td><td>10.6</td><td>open</td></tr>
+<tr><td>Version</td><td>12.x turns <code>innodb_snapshot_isolation</code> ON by default — application layers must retry error 1020 the same as deadlocks, or concurrent updates fail</td><td>11.6.2+/12.x</td><td>open (application-layer adaptation)</td></tr>
+<tr><td>Ecosystem</td><td>Chinese-language resources are an order of magnitude scarcer and mostly stuck in the 10.x era; 11/12 new-feature Chinese material is rare — deep-water questions require reading English docs/Jira</td><td>All versions</td><td>open</td></tr>
+<tr><td>Ecosystem</td><td>ColumnStore&#x27;s official Docker image hasn&#x27;t been updated since 2023 — community OLAP users must build their own images and run MPP unattended</td><td>All versions</td><td>open</td></tr>
+<tr><td>Licensing</td><td>AWS KMS plugin, Enterprise Audit/Backup, the 128-index limit, etc. are behind the Enterprise wall; MaxScale BSL restricts production use</td><td>All versions</td><td>open</td></tr>
+<tr><td>Cost</td><td>No public financials after privatization — long-term roadmap credibility is labeled &quot;vendor statement&quot; (official statement); the strategy pivots toward AI/vector while traditional OLTP investment share is yet to be seen</td><td>After 2024-09</td><td>open <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="判决" data-en="Verdict">判决</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li><strong>一句话定位</strong>：MySQL 协议兼容、社区版慷慨的独立关系型数据库，但与 MySQL 8.x 已是两个产品；公司刚走出动荡，技术债可控、商业连续性待观察。</li>
+<li><strong>适合谁</strong>：预算敏感但需要审计/加密合规基线的团队；MySQL 5.7 存量大、想摆脱 Oracle 授权的团队；需要同机房多活且 workload 友好（无热点跨节点写）并接受 Galera 运维面的团队；WordPress/PHP 生态（MariaDB 仍是默认推荐）。</li>
+<li><strong>不适合谁</strong>：深度绑定 MySQL 8.x 特性（原生 JSON、Group Replication、caching_sha2_password 生态）且不愿做异构迁移的团队；需要官方自动分片写扩展的团队；把&quot;云原生 DBaaS 稳定性&quot;放在首位的团队（MariaDB Cloud 是 2025-08 才买回重建的，连续性风险待验证）；重度依赖中文资料的新手团队。</li>
+<li><strong>迁移成本</strong>：MySQL 5.7 → 低（曾近乎 drop-in，但注意目标版本已 EOL 的 10.6 不要选）；MySQL 8.0 → 中高（GTID/认证/JSON/字符集四处硬分化，逻辑 dump 重建 + 全量回归，按异构数据库对待）；Oracle → 中（Oracle 兼容模式覆盖语法子集，重度 PL/SQL 逐项 POC）；PostgreSQL → 高（无 PG 兼容，走应用层改造）。</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li><strong>One-line positioning</strong>: A MySQL-protocol-compatible, generously community-licensed independent relational database — but it and MySQL 8.x are now two different products; the company has just emerged from turbulence, technical debt is under control, commercial continuity is to-be-watched.</li>
+<li><strong>Good for</strong>: budget-sensitive teams that need an audit/encryption compliance baseline; teams with large MySQL 5.7 estates wanting out of Oracle licensing; teams needing same-datacenter active-active with a friendly workload (no hot cross-node writes) that accept Galera&#x27;s operational surface; the WordPress/PHP ecosystem (MariaDB remains the default recommendation).</li>
+<li><strong>Not good for</strong>: teams deeply bound to MySQL 8.x features (native JSON, Group Replication, caching_sha2_password ecosystem) unwilling to do a heterogeneous migration; teams needing official automatic sharded write scaling; teams that put cloud-native DBaaS stability first (MariaDB Cloud was only bought back and rebuilt in Aug 2025 — continuity risk to-be-verified); novice teams heavily dependent on Chinese-language resources.</li>
+<li><strong>Migration cost</strong>: MySQL 5.7 → low (was once nearly drop-in, but don&#x27;t pick 10.6 as the target since it has reached EOL); MySQL 8.0 → medium-high (GTID/auth/JSON/charset diverge in four hard places; logical dump rebuild + full regression — treat it as a heterogeneous database); Oracle → medium (Oracle compatibility mode covers a syntax subset; heavy PL/SQL needs item-by-item POC); PostgreSQL → high (no PG compatibility — application-layer rewrite).</li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="来源与待验证清单" data-en="Sources & to-be-verified">来源与待验证清单</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li>版本基线：endoflife.date MariaDB 页面（12.3.3，2026-08-24 发布；12.3 LTS EOL 2029-06-12）；WordPress hosting-handbook 兼容性表</li>
+<li>公司与组织：TechCrunch 2024-09-10（K1 收购/私有化/CEO 变更）；The Register 2023-05-16（商业与开源走钢丝）；SiliconANGLE 2026-03-09（收购 GridGain）；官方新闻稿（回购 SkySQL 2025-08、企业版 12.3 beta）</li>
+<li>固定题库：MariaDB 官方文档（静态加密/TLS/server_audit/线程池/mariabackup/升级指南）；社区实测（TLS 配置范式、PFS 滞后、1020 错误案例 dev.to）</li>
+<li>深水区：官方文档（GTID、MDEV-19780 TokuDB 移除、Galera 长期保留声明）；Codership weighted-quorum 文档；coroot inspections；passbolt 多主实测；mariadb-corporation 官方迁移工具文档（2026-09 仍在更新）；AWS 迁移技能文档；2026-09 Medium 引擎综述</li>
+<li>待验证项：<code>wsrep_max_ws_size</code> 默认值；K1 私有化后真实财务状况；12.1 caching_sha2_password 完整插件的生产成熟度；ColumnStore 社区版长期投入强度；企业版订阅价目</li>
+<li>下次评审：建议跟踪 13.0 LTS（预计 2027 年中）发布后更新版本策略条目；跟踪 MariaDB Cloud（SkySQL 回购后）的连续性表现</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li>Version baseline: endoflife.date MariaDB page (12.3.3, released 2026-08-24; 12.3 LTS EOL 2029-06-12); WordPress hosting-handbook compatibility table</li>
+<li>Company &amp; organization: TechCrunch 2024-09-10 (K1 acquisition/privatization/CEO change); The Register 2023-05-16 (the tightrope between business and open source); SiliconANGLE 2026-03-09 (GridGain acquisition); official press releases (SkySQL buy-back Aug 2025, Enterprise 12.3 beta)</li>
+<li>Fixed questionnaire: MariaDB official docs (data-at-rest encryption / TLS / server_audit / thread pool / mariabackup / upgrade guide); community-tested (TLS configuration patterns, PFS lag, error-1020 case on dev.to)</li>
+<li>Deep water: official docs (GTID, MDEV-19780 TokuDB removal, Galera long-term commitment); Codership weighted-quorum docs; coroot inspections; passbolt multi-primary field test; mariadb-corporation official migration tooling docs (still updated Sep 2026); AWS migration skill docs; Sep 2026 Medium engine roundup</li>
+<li>Complaint-collection direction (pending large-scale validation by the LLM pipeline): GitHub Issues (mariadb/server), DBA communities, V2EX/Zhihu field posts</li>
+<li>To-be-verified items: <code>wsrep_max_ws_size</code> default value; K1&#x27;s true post-privatization financials; production maturity of the 12.1 caching_sha2_password full plugin; long-term community-edition investment intensity in ColumnStore; Enterprise subscription price list</li>
+<li>Next review: track version-policy updates after the 13.0 LTS release (expected mid-2027); track MariaDB Cloud (post-SkySQL-buy-back) continuity performance</li>
+</ul>
+</div>
+</section>
+</main>
+<footer class="footer">
+  <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
+</footer>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
