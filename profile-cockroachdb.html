@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>CockroachDB - DB 选型参考</title>
+<link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">&#9672;</span> DB <span data-zh="选型参考" data-en="Compare">选型参考</span></a>
+    <nav class="mainnav">
+<a href="index.html" class="active" data-zh="首页" data-en="Home">首页</a>
+<a href="compare.html" class="" data-zh="维度对比" data-en="Compare">维度对比</a>
+<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
+<a href="advisor.html" class="" data-zh="AI选型" data-en="AI Selection">AI选型</a>
+    </nav>
+    <div class="cmp-tray">
+      <button id="cmp-tray-btn" type="button" class="tray-btn" aria-expanded="false" aria-haspopup="true"><span data-zh="对比" data-en="Compare">对比</span> <b class="tray-count"><i id="cmp-count">0</i>/4</b></button>
+      <div id="cmp-panel" class="tray-panel" hidden>
+        <div class="tray-sec"><span data-zh="已选" data-en="Selected">已选</span></div>
+        <div id="cmp-selected" class="tray-selected"></div>
+        <div class="tray-sec"><span data-zh="全部产品（最多选 4 款）" data-en="All products (up to 4)">全部产品（最多选 4 款）</span></div>
+        <div id="cmp-list" class="tray-list"></div>
+        <div class="tray-actions"><button id="cmp-clear" type="button" class="tray-clear"><span data-zh="清空选择" data-en="Clear selection">清空选择</span></button></div>
+      </div>
+    </div>
+    <button id="lang-toggle" class="lang-btn" type="button" aria-label="switch language">EN</button>
+  </div>
+</header>
+<main class="page">
+<div class="profile-hero">
+  <a class="back" href="index.html"><span data-zh="← 返回首页" data-en="← Back to home">← 返回首页</span></a>
+  <h1>CockroachDB</h1>
+  <div class="meta-row"><span class="cat cat-oltp" data-zh="关系型 OLTP" data-en="Relational OLTP">关系型 OLTP</span> <span class="tag">#分布式</span> <span class="tag">#NewSQL</span> <span class="tag">#强一致</span> <span class="tag">#Serializable</span> <span class="tag">#多地域</span> <span class="tag">#PG协议兼容</span> <span class="tag">#Raft</span> <span class="tag">#商业许可</span></div>
+  <p class="oneliner"><div class="lang-block lang-zh">
+<p>Cockroach Labs 出品的 Spanner 式强一致分布式 SQL 数据库：默认 Serializable、跨地域多活接入、PostgreSQL 线协议——但&quot;多活接入&quot;不等于&quot;跨洋写本地完成&quot;，&quot;PG 兼容&quot;不等于&quot;PostgreSQL&quot;。</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<p>A Spanner-style strongly consistent distributed SQL database from Cockroach Labs: Serializable by default, multi-active access across regions, PostgreSQL wire protocol — but &quot;multi-active access&quot; does not mean &quot;cross-ocean writes complete locally,&quot; and &quot;PG compatible&quot; does not mean &quot;PostgreSQL.&quot;</p>
+</div></p>
+  <div class="ai-dive-row" data-product="CockroachDB">
+    <span class="ai-dive-label" data-zh="用 AI 深挖这款：" data-en="Deep-dive with AI:">用 AI 深挖这款：</span>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('chatgpt', this)">ChatGPT <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('grok', this)">Grok <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('claude', this)">Claude <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn addcmp-btn" data-addcmp="cockroachdb"><span class="addcmp-label">＋ 对比</span></button>
+  </div>
+  <div class="legend"><span class="legend-label" data-zh="证据等级：" data-en="Evidence levels: ">证据等级：</span><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></div>
+</div>
+<section class="doc-section">
+<h2><span data-zh="基本信息" data-en="Basics">基本信息</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>项</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td>厂商</td><td>Cockroach Labs</td></tr>
+<tr><td>国家</td><td>美国</td></tr>
+<tr><td>起源</td><td>2015 年创立，v1.0 发布于 2017 年；受 Google Spanner 论文启发</td></tr>
+<tr><td>许可证</td><td>CockroachDB Software License（2024 年起统一；2019–2024 为 BSL）；年收入 &lt; 1000 万美元的组织可免费使用 Enterprise</td></tr>
+<tr><td>源码状态</td><td><strong>2026 年起新版本转入私有仓库开发，不再公开新源码</strong>；GitHub 旧仓库仅保留为历史快照、不再更新。当前版本是&quot;闭源分发 + 商业许可&quot;，不是&quot;开源&quot;</td></tr>
+<tr><td>托管服务</td><td>CockroachDB Cloud（Basic / Standard / Advanced 三档；原 Serverless 2024-09-25 更名为 Basic）</td></tr>
+<tr><td>主类型</td><td>关系型（原生分布式，NewSQL）</td></tr>
+<tr><td>兼具类型</td><td>向量检索（v24.3 起）、CDC / Changefeed、企业级多地域</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Item</th><th>Details</th></tr></thead>
+<tbody>
+<tr><td>Vendor</td><td>Cockroach Labs</td></tr>
+<tr><td>Country</td><td>United States</td></tr>
+<tr><td>Origin</td><td>Founded in 2015, v1.0 released in 2017; inspired by the Google Spanner paper</td></tr>
+<tr><td>License</td><td>CockroachDB Software License (unified since 2024; BSL during 2019–2024); organizations with annual revenue &lt; $10M can use Enterprise for free</td></tr>
+<tr><td>Source status</td><td><strong>Since 2026, new versions are developed in a private repository — new source code is no longer public</strong>; the old GitHub repo is kept only as a historical snapshot and is no longer updated. Current releases are &quot;closed-source distribution + commercial license,&quot; not &quot;open source&quot;</td></tr>
+<tr><td>Managed service</td><td>CockroachDB Cloud (Basic / Standard / Advanced tiers; Serverless renamed to Basic on 2024-09-25)</td></tr>
+<tr><td>Primary type</td><td>Relational (natively distributed, NewSQL)</td></tr>
+<tr><td>Also covers</td><td>Vector search (since v24.3), CDC / Changefeed, enterprise multi-region</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section"><h2><span data-zh="硬维度（14 项）" data-en="Hard dimensions (14)">硬维度（14 项）</span></h2>
+<div class="lang-block lang-zh">
+<div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>。数据文件落盘加密有引擎内机制（<code>--enterprise-encryption</code> 启动参数，多 store 需逐个配置；存储层 RFC 显示文件状态记录在 <code>COCKROACHDB_REGISTRY</code>）；备份可用 passphrase / KMS 加密。但 WAL / 临时文件的覆盖边界、密钥轮换与 KMS 矩阵需对照 v26.3 文档复核。来源等级：官方文档（旧版本）+ 待验证</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。TLS 双向认证（节点证书 + 客户端证书），<code>--insecure</code> 仅限开发测试。来源等级：官方文档</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> 审计 <span class="verdict v-yes">有（多为付费墙内）</span></h3><div class="dim-body"><p><strong>有（多为付费墙内）</strong>。<code>sql.log.user_audit</code> / <code>sql.log.admin_audit.enabled</code> 等 cluster settings 存在（官方 skills 仓库的 CIS 审计样例报告可证）；具体自托管 / Cloud 各 tier 的能力边界待官方复核。来源等级：官方仓库资料 + 待验证</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> 认证与权限 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。密码（SCRAM-SHA-256）、证书认证、RBAC 角色；OIDC/SSO、Kerberos 等多为 Enterprise / Cloud 付费层能力，具体矩阵待复核。来源等级：官方仓库资料 + 待验证</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> 备份恢复 <span class="verdict v-yes">有（部分需 Enterprise）</span></h3><div class="dim-body"><p><strong>有（部分需 Enterprise）</strong>。<code>BACKUP</code> / <code>RESTORE</code> SQL、增量备份、计划备份、PITR；全集群恢复需 enterprise license（Cockroach Labs 官方 university skill 明确）；恢复速度官方口径待复核；Cloud 提供托管备份（各 tier 保留期/能力待复核）。来源等级：官方仓库资料 + 待验证</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> 大版本升级 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。滚动升级（逐节点停→换二进制→起）；升级后需显式 <code>SET CLUSTER SETTING version</code> finalize；finalize 前可经 <code>cluster.preserve_downgrade_option</code> 回退，finalize 后不可回退；版本火车快（一年多个大版本，v25.4→v26.1→v26.2→v26.3）；是否允许跳大版本待官方复核。来源等级：社区实测（运维手册、helm chart）+ 待验证</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> 可观测性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。DB Console（:8080）、SQL Activity、statement diagnostics、Prometheus metrics 端点。但注意：<strong><code>pg_stat_statements</code> 不可用</strong>（PG 生态监控工具链迁移时的明确缺口）。来源等级：官方文档 + 社区共识</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> 连接模型 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>。每个节点都是 SQL 网关，客户端应配置多节点地址或经 LB 分散连接；官方对接 PG 驱动生态（port 26257）；官方是否自带连接池（pgBouncer 式）未找到证据——<strong>未找到证据</strong>，待验证。来源等级：官方文档 + 待验证</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> 事务与隔离级别 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。默认 <strong>Serializable</strong>；v23.2 起可选 READ COMMITTED（v26.3 的默认与语义细节待官方复核）。机制：MVCC + write intents + transaction record，多 Range 事务走 2PC，Parallel Commits 把提交关键路径压到约 1 轮共识 RTT。来源等级：官方文档 + 第三方技术资料</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> 复制与一致性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。每 Range 一个 Raft group + leaseholder 协调读写，默认强一致；另有 follower reads（<code>AS OF SYSTEM TIME follower_read_timestamp()</code>）提供有界陈旧读。来源等级：官方设计文档 / RFC + 第三方资料</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> 扩展方式 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。横向 scale-out 在线扩容，加节点后 Range 自动 rebalance；节点纵向升级配置亦可。来源等级：官方文档 + 社区共识</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> 兼容性 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>。PostgreSQL wire protocol v3 + 多数 PG 语法/工具可用，但不是 PG 内核。v26.3 官方文档明确缺口：range types、events、drop primary key、XML functions、列级权限、XA、template 建库、FDW、session-scoped advisory locks（仅 transaction-scoped 支持）。来源等级：官方文档（v26.3）</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> 许可证与商业模式 <span class="verdict v-yes">有（商业许可，非开源）</span></h3><div class="dim-body"><p><strong>有（商业许可，非开源）</strong>。Apache 2.0（2017–2019）→ BSL（2019–2024）→ CockroachDB Software License（2024–今）；2024-11 起年收入 &lt; $10M 组织免费 Enterprise；2026 起新版本源码私有。Cloud 按 RU/存储计费（Basic 层级含免费额度，第三方口径，待官方复核）；自托管商业授权价格不公开（询价）。来源等级：官方博客 + 第三方报道 + 待验证</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> 中文资料丰富度 <span class="verdict v-partial">部分支持（偏少）</span></h3><div class="dim-body"><p><strong>部分支持（偏少）</strong>（编辑判断）。官方文档以英文为主，中文社区实践帖远少于 OceanBase/TiDB。来源等级：编辑判断，待规模化采集验证</p></div></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong>. On-disk data-file encryption has an in-engine mechanism (<code>--enterprise-encryption</code> startup flag, must be configured per store for multi-store setups; a storage-layer RFC shows file state recorded in <code>COCKROACHDB_REGISTRY</code>); backups can be encrypted with passphrase / KMS. But coverage boundaries for WAL / temp files, key rotation, and the KMS matrix need verification against v26.3 docs. Evidence level: official docs (older versions) + to-be-verified</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / transport encryption <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>. Mutual TLS (node certificates + client certificates); <code>--insecure</code> is for development/testing only. Evidence level: official docs</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> Auditing <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported (mostly behind a paywall)</strong>. <code>sql.log.user_audit</code> / <code>sql.log.admin_audit.enabled</code> cluster settings exist (confirmed by a CIS audit sample in the official skills repo); exact capability boundaries across self-hosted / Cloud tiers pending official verification. Evidence level: official repo materials + to-be-verified</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> Authentication &amp; authorization <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>. Passwords (SCRAM-SHA-256), certificate auth, RBAC roles; OIDC/SSO, Kerberos, etc. are mostly Enterprise / Cloud paid-tier capabilities — exact matrix pending verification. Evidence level: official repo materials + to-be-verified</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> Backup &amp; recovery <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported (partially Enterprise-only)</strong>. <code>BACKUP</code> / <code>RESTORE</code> SQL, incremental backups, scheduled backups, PITR; full-cluster restore requires an enterprise license (stated explicitly in Cockroach Labs&#x27; official university skill); restore-speed figures pending verification against official statements; Cloud offers managed backups (retention/capability per tier pending verification). Evidence level: official repo materials + to-be-verified</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> Major-version upgrades <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>. Rolling upgrades (stop node → swap binary → start, one node at a time); after upgrade, explicitly <code>SET CLUSTER SETTING version</code> to finalize; before finalize you can roll back via <code>cluster.preserve_downgrade_option</code>; after finalize there is no rollback; release train is fast (multiple majors per year: v25.4 → v26.1 → v26.2 → v26.3); whether skipping major versions is allowed pending official verification. Evidence level: community-tested (ops handbooks, helm charts) + to-be-verified</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> Observability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>. DB Console (:8080), SQL Activity, statement diagnostics, Prometheus metrics endpoint. But note: <strong><code>pg_stat_statements</code> is NOT available</strong> (an explicit gap when migrating the PG ecosystem monitoring toolchain). Evidence level: official docs + community consensus</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> Connection model <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong>. Every node is an SQL gateway; clients should configure multiple node addresses or spread connections via an LB; official integration targets the PG driver ecosystem (port 26257); whether the official distribution ships a built-in connection pooler (pgBouncer-style) — <strong>no evidence found</strong>, to-be-verified. Evidence level: official docs + to-be-verified</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> Transactions &amp; isolation levels <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>. Default is <strong>Serializable</strong>; READ COMMITTED became optional in v23.2 (v26.3 default and semantic details pending official verification). Mechanism: MVCC + write intents + transaction record; multi-Range transactions go through 2PC; Parallel Commits compresses the commit critical path to roughly 1 round of consensus RTT. Evidence level: official docs + third-party statement</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> Replication &amp; consistency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>. One Raft group per Range + leaseholder coordinating reads/writes, strongly consistent by default; plus follower reads (<code>AS OF SYSTEM TIME follower_read_timestamp()</code>) for bounded-staleness reads. Evidence level: official design docs / RFCs + third-party statement</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> Scaling <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>. Horizontal scale-out is online — new nodes are added and Ranges automatically rebalance; vertical node upgrades are also possible. Evidence level: official docs + community consensus</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> Compatibility <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong>. PostgreSQL wire protocol v3 + most PG syntax/tools work, but it is not a PG kernel. v26.3 official docs list explicit gaps: range types, events, drop primary key, XML functions, column-level privileges, XA, template databases, FDW, session-scoped advisory locks (only transaction-scoped supported). Evidence level: official docs (v26.3)</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> License &amp; business model <span class="verdict v-neutral">Commercial license</span></h3><div class="dim-body"><p><strong>Commercial license (not open source)</strong>. Apache 2.0 (2017–2019) → BSL (2019–2024) → CockroachDB Software License (2024–present, free Enterprise for organizations under $10M revenue since 2024-11); since 2026 new-version source is private. Cloud is billed by RU/storage (third parties report a free allowance for the Basic tier — pending official verification); self-hosted commercial license pricing is not public (request a quote). Evidence level: official blog + third-party statement + to-be-verified</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> Chinese-language resources <span class="verdict v-neutral">Partially supporte</span></h3><div class="dim-body"><p><strong>Partially supported (on the scarce side)</strong> (editorial judgment). Official docs are primarily English; Chinese community practice posts are far fewer than for OceanBase/TiDB. Evidence level: editorial judgment, pending scaled data collection</p></div></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="杀手特性" data-en="Killer features">杀手特性</span></h2>
+<div class="lang-block lang-zh">
+<blockquote>
+<p>每个特性 = 它是什么 + 为什么是真本事 + 边缘真相。</p>
+</blockquote>
+<ol>
+<li><strong>跨地域/跨云的强一致分布式 SQL（multi-active 接入）</strong> 真本事：各地域节点都能接 SQL，Range 的 leaseholder 按负载/地域分布，配合 <code>REGIONAL BY ROW</code> 让行级数据贴着访问它的地域放；<code>SURVIVE ZONE/REGION FAILURE</code> 声明式表达容灾目标。 边缘真相：multi-active 是&quot;接入多活&quot;，不是&quot;写本地完成&quot;。跨地域写仍要等 Raft 多数派/所触及 Range 的共识；SURVIVE REGION FAILURE 直接把&quot;至少一次跨地域 RTT&quot;写进每一次健康日的写延迟。选型时必须把&quot;容灾目标&quot;翻译成&quot;延迟预算&quot;。</li>
+<li><strong>默认 Serializable 的跨节点 ACID</strong> 真本事：MVCC + HLC（无需 TrueTime 专用硬件）+ write intents + 跨 Range 2PC + Parallel Commits（约 1 RTT 提交），默认隔离级别就是最高档；2021 年 Jepsen 报告通过是正确性口碑的硬背书。 边缘真相：Serializable 的代价是热点冲突下 <code>40001</code> / restart transaction 抛给应用——重试逻辑是应用的税，不是数据库的；HLC 的代价是时钟不确定性窗口和严格的 NTP 运维，时钟偏移超阈值（第三方资料称默认约 500ms，待官方复核）节点会自我保护。把&quot;默认最强一致&quot;读作&quot;默认零心智负担&quot;是误读。</li>
+<li><strong>Range 自动 split / merge / rebalance（免手工分片）</strong> 真本事：KV keyspace 按 Range 分片，超阈值（第三方称约 512MB，待官方复核 v26.3 默认值）自动分裂，负载型拆分还能按 QPS 拆；小 Range 合并（merge queue 与 split 启发式联动，避免抖动），节点增减自动搬 Range。应用层基本告别分库分表。 边缘真相：拆分治得了&quot;数据量大&quot;，治不了&quot;单 key 热&quot;。顺序递增主键会把写入钉死在一个 Range/leaseholder 上——这时多数节点 CPU 空闲、总吞吐却卡住，是 CockroachDB 最经典的&quot;看起来有劲使不出&quot;现场。UUID/hash-sharded index 能打散，但牺牲顺序扫描局部性。</li>
+<li><strong>PostgreSQL wire protocol 生态接入</strong> 真本事：psycopg2、SQLAlchemy、Prisma、Hibernate、ActiveRecord 等 PG 驱动/ORM 基本直连（port 26257），迁移的&quot;接口成本&quot;低。 边缘真相：协议兼容 ≠ 行为兼容。session-scoped advisory locks 不支持（Authentik 这类依赖它的应用直接跑不起来，上游 issue 2026-06 仍 open）、无触发器/存储过程（PL/pgSQL）、无 FDW、无 LISTEN/NOTIFY、无 SEQUENCE（用 UUID/<code>unique_rowid()</code>）。Storj 历史迁移（v19.2 时代）花了一个全职开发月处理兼容差异——pgwire 省的是&quot;重写连接层&quot;，不是&quot;零改造成本&quot;。</li>
+<li><strong>声明式多地域数据布局（REGIONAL BY ROW / GLOBAL）</strong> 真本事：行级地域亲和 + GLOBAL 表（读多写少的引用数据全地域放），是&quot;全球一张表&quot;场景里完成度最高的数据布局抽象之一；follower reads 让远地域读走本地副本、避开 WAN。 边缘真相：GLOBAL 表写要从主地域走，写放大的账要算；REGIONAL BY ROW 要求 schema 设计时就把&quot;地域&quot;建模进主键/分区键，事后补救等于重做数据建模；follower reads 是有界陈旧读，读到旧数据是 feature 不是 bug——用错地方就是线上事故。</li>
+</ol><blockquote>
+<p>先有固定题库基线，再看差异。以下是不宜塞进杀手特性、但选型时值得知道的&quot;第二梯队&quot;：</p>
+</blockquote>
+<ul>
+<li><strong>向量检索（v24.3+）</strong>：PGvector 兼容函数 + DiskANN 索引，官方 2024-11 GA。差异点：TP  workload 顺手做向量召回；但别把它当专用向量库——大规模 ANN 性能与生态（LangChain 等集成深度）待实测验证。来源等级：官方口径 + 待验证</li>
+<li><strong>Follower reads / non-voting replicas</strong>：读多地域场景的延迟杀器；non-voting 副本 historically 为企业特性。来源等级：官方 RFC + 待验证（tier 边界）</li>
+<li><strong>Row-level TTL</strong>：行级自动过期删除，日志/事件类表的&quot;自动清理&quot;刚需。来源等级：官方文档，版本细节待复核</li>
+<li><strong>Continuum（2026-01 发布）</strong>：Cockroach Labs 新推出的&quot;AI agent 舰队&quot;产品，面向 AI workload 的数据基础设施；2026 年战略转向 AI 的信号。GA 状态与定价待验证，本档案不计入判决依据</li>
+<li><strong>多租户架构（Cloud Basic）</strong>：Basic 层用存储层虚拟化实现多租户，低成本入口；代价是性能隔离与版本跟随策略弱于 Standard/Advanced。来源等级：第三方架构资料 + 待官方复核</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<blockquote>
+<p>Each feature = what it is + why it&#x27;s genuinely strong + the edge-case truth.</p>
+</blockquote>
+<ol>
+<li><strong>Cross-region / cross-cloud strongly consistent distributed SQL (multi-active access)</strong> Why it&#x27;s genuinely strong: nodes in every region can serve SQL; each Range&#x27;s leaseholder is distributed by load/region; with <code>REGIONAL BY ROW</code>, row-level data sits next to the region that accesses it; <code>SURVIVE ZONE/REGION FAILURE</code> declaratively expresses disaster-recovery goals. Edge-case truth: multi-active means &quot;multi-active access,&quot; not &quot;writes complete locally.&quot; Cross-region writes still wait for the Raft quorum / consensus of every Range touched; SURVIVE REGION FAILURE writes &quot;at least one cross-region RTT&quot; into every write&#x27;s latency budget on every healthy day. In selection, &quot;disaster-recovery goal&quot; must be translated into &quot;latency budget.&quot;</li>
+<li><strong>ACID across nodes with Serializable by default</strong> Why it&#x27;s genuinely strong: MVCC + HLC (no TrueTime dedicated hardware needed) + write intents + cross-Range 2PC + Parallel Commits (~1 RTT commit); the default isolation level is the strongest one; passing the 2021 Jepsen report is a hard endorsement of its correctness reputation. Edge-case truth: Serializable&#x27;s price is that under hot contention, <code>40001</code> / restart-transaction is thrown to the application — retry logic is the application&#x27;s tax, not the database&#x27;s; HLC&#x27;s price is the clock-uncertainty window and strict NTP operations — nodes protect themselves when clock skew exceeds the threshold (third-party materials say the default is ~500ms, pending official verification). Reading &quot;strongest by default&quot; as &quot;zero cognitive load by default&quot; is a misreading.</li>
+<li><strong>Automatic Range split / merge / rebalance (no manual sharding)</strong> Why it&#x27;s genuinely strong: the KV keyspace is sharded into Ranges; oversized Ranges split automatically (third parties say ~512MB, pending verification of the v26.3 default); load-based splits can split by QPS; small Ranges merge (the merge queue works with split heuristics to avoid flapping); Ranges move automatically when nodes are added or removed. The application layer can largely say goodbye to sharding. Edge-case truth: splitting cures &quot;large data volume,&quot; not &quot;single hot key.&quot; Sequential auto-increment primary keys pin all writes to a single Range/leaseholder — most nodes sit idle on CPU while total throughput is capped. This is CockroachDB&#x27;s most classic &quot;plenty of strength but nowhere to apply it&quot; scene. UUID / hash-sharded indexes can scatter the load but sacrifice sequential-scan locality.</li>
+<li><strong>PostgreSQL wire-protocol ecosystem access</strong> Why it&#x27;s genuinely strong: PG drivers/ORMs like psycopg2, SQLAlchemy, Prisma, Hibernate, ActiveRecord basically connect directly (port 26257), so the &quot;interface cost&quot; of migration is low. Edge-case truth: protocol compatibility ≠ behavior compatibility. Session-scoped advisory locks are unsupported (apps that depend on them, like Authentik, won&#x27;t run — the upstream issue was still open as of 2026-06), plus no triggers/stored procedures (PL/pgSQL), no FDW, no LISTEN/NOTIFY, no SEQUENCE (use UUID/<code>unique_rowid()</code>). Storj&#x27;s historical migration (v19.2 era) took one full-time developer-month to handle compatibility differences — pgwire saves you &quot;rewriting the connection layer,&quot; not &quot;zero migration cost.&quot;</li>
+<li><strong>Declarative multi-region data placement (REGIONAL BY ROW / GLOBAL)</strong> Why it&#x27;s genuinely strong: row-level region affinity + GLOBAL tables (read-heavy reference data replicated in every region) is one of the most complete data-placement abstractions for the &quot;one global table&quot; scenario; follower reads let far-region reads use local replicas and skip the WAN. Edge-case truth: GLOBAL table writes go through the home region — do the write-amplification math; REGIONAL BY ROW requires &quot;region&quot; to be modeled into the primary/partition key at schema-design time — retrofitting later means redoing the data model; follower reads are bounded-staleness reads — reading stale data is a feature, not a bug — used in the wrong place it&#x27;s a production incident.</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="深水区" data-en="Deep dives">深水区</span></h2>
+<div class="lang-block lang-zh">
+<p><strong>深水区一（存储引擎）：Range 拆分救得了数据量，救不了单 key 热</strong></p>
+<ul>
+<li>机制：Range 超容量/负载阈值由 leaseholder 选 split key、经 Raft 发起分裂；merge queue 定期扫描本 store 持有 lease 的 Range，与右邻合成假设合并 Range，若 split 队列会立刻再拆则不合并（天然防抖动）；小 Range（默认 &lt;8MB 不参与合并判断的阈值，可按 zone 配）合并。</li>
+<li>推到边缘：顺序递增主键 → 新写入全部落到最右 Range → 该 Range 的 leaseholder 成为单点写瓶颈；Range 分裂对&quot;单 key&quot;无效（key 再热也只属于一个 Range）；此时集群 CPU 大片空闲但写吞吐封顶，看 Hot Ranges / <code>SHOW RANGES</code> 才能定位。缓解靠 UUID 主键或 hash-sharded index，代价是范围扫描变 scatter-gather。</li>
+<li>选型含义：凡是有&quot;全局递增 ID&quot;习惯的 MySQL/PG 迁移，第一件事就是改主键策略；热点压测必须按真实 key 分布打，不能只看均匀压测。</li>
+<li>来源：官方 range-merges tech note、design.md；社区运维总结（sanoy24）；HN 历史讨论（2019，历史社区观察）</li>
+</ul>
+<p><strong>深水区二（复制与一致性）：leaseholder 是延迟的指挥棒，follower reads 是陈旧读</strong></p>
+<ul>
+<li>机制：强读走 leaseholder（本地读，无需 Raft）；写由 leaseholder 提案，经 Raft 多数派确认；follower reads 基于 closed timestamp 让 follower 副本 serving 有界陈旧读，避开 WAN 跳和 leaseholder 热点（但解决不了&quot;单 key 写热&quot;）。</li>
+<li>推到边缘：跨地域部署中，若某 Range 的 leaseholder 在远地域，每次强读/写都是一次 WAN RTT；<code>SURVIVE REGION FAILURE</code> 要求共识跨地域，写延迟下限 = 到最近必需副本的往返。节点故障时 lease 重新选举有秒级窗口（第三方笔记称约 4.5s 心跳超时量级，待官方复核），期间相关 Range 写不可用——这是&quot;CP 系统&quot;的正常表现，不是 bug。</li>
+<li>选型含义：多地域方案必须回答&quot;leaseholder 在哪&quot;和&quot;读能不能接受陈旧&quot;；延迟 SLA 要按&quot;拓扑实测&quot;签，不能按&quot;单地域 benchmark&quot;签。</li>
+<li>来源：官方 follower reads RFC（2020）、non-blocking txns 提案；cockroachlabs 官方 skills（multi-region）；Medium 第三方分析（2026-08）</li>
+</ul>
+<p><strong>深水区三（事务与时间）：Parallel Commits 压的是 RTT 次数，不是光速；HLC 的税是时钟</strong></p>
+<ul>
+<li>机制：跨 Range 事务 2PC，Parallel Commits 把&quot;写 intents（1 RTT）+ 提交 transaction record（1 RTT）&quot;折叠，让事务在第一阶段返回后即可向客户端确认提交，关键路径约 1 RTT；HLC = 物理时钟 + 逻辑计数器，用不确定性窗口代替 TrueTime 硬件。</li>
+<li>推到边缘：① 单地域 2 RTT→1 RTT 是实打实的延迟减半；跨洋事务 1 RTT 仍是 100–300ms 量级（第三方估算，按拓扑实测），Parallel Commits 不消灭地理。② 时钟偏移超过 max-offset（第三方称默认 500ms，待官方复核）节点自我保护/拒绝服务——NTP 是生产前置条件，虚拟机时钟漂移是隐形杀手。③ 高冲突下事务在不确定性窗口内被 restart，应用看到 <code>40001</code>；重试必须由应用做，且&quot;重试外部副作用&quot;（发邮件、调支付）是应用自己的坑，数据库只保证&quot;数据库内工作可重做&quot;。</li>
+<li>选型含义：事务模型 POC 必须包含&quot;跨地域事务延迟分布&quot;和&quot;热点冲突重试率&quot;两项；任何在 commit 前做外部调用的代码，迁移过来都要重写。</li>
+<li>来源：官方设计文档；第三方工程手册（max-offset）；Medium 2026-08 分析（PG vs CRDB 地域故障）</li>
+</ul>
+<p><strong>深水区四（SQL 层/兼容）：pgwire 是&quot;方言兼容&quot;，缺口清单是迁移的真实工作量</strong></p>
+<ul>
+<li>机制：自研 SQL 层实现 PG wire protocol v3 + 多数 PG 语法，非 PG 内核 fork。</li>
+<li>推到边缘（v26.3 官方兼容文档明确缺口）：range types、events、drop primary key、XML functions、列级权限、XA、template 建库、FDW、session-scoped advisory locks 不支持。另：<code>SERIAL</code> 行为差异、默认 INT8、自动 rowid 主键、PostGIS 等扩展生态缺失、<code>pg_stat_statements</code> 不可用（监控工具链迁移缺口）。历史案例：Storj 迁移花约 1 人月处理兼容/迁移脚本（v19.2 时代，仅作历史参考）；Authentik 因 session advisory locks 无法直接运行（2026-06 上游 issue 仍 open）。</li>
+<li>选型含义：PG 迁移必须逐项跑兼容矩阵，尤其是触发器、存储过程、advisory locks、FDW、扩展；&quot;Django/Rails 能跑&quot;不等于&quot;你的 PG 能跑&quot;。</li>
+<li>来源：官方 postgresql-compatibility（v26.3）；社区迁移案例</li>
+</ul>
+<p><strong>深水区五（运维/升级）：版本火车快，finalize 是单行道</strong></p>
+<ul>
+<li>机制：滚动升级逐节点进行；全部节点换完二进制后显式 <code>SET CLUSTER SETTING version</code> finalize；finalize 前可用 <code>cluster.preserve_downgrade_option</code> 保住回退，finalize 后不可回退。</li>
+<li>推到边缘：一年多个大版本（v25.4→v26.1→v26.2→v26.3），升级是&quot;日常操作&quot;不是&quot;年度项目&quot;——跟不上的团队会长期停在旧大版本；finalize 后发现问题只能向前修不能向后退，升级前必须有完整备份 + 回滚预案（向前）。证书管理是持续吐槽点（社区运维手册单列&quot;证书过期需全量重签发+重启&quot;流程）。</li>
+<li>选型含义：把&quot;升级演练&quot;写进 SLA，把证书轮换写进 on-call 手册；Cloud Basic 自动跟随新稳定版（第三方称，待官方复核），要&quot;版本 pin 住&quot;得看 Standard/Advanced 的能力边界。</li>
+<li>来源：社区运维手册（rolling upgrade 实操）；rancher helm chart 文档（preserve_downgrade_option）</li>
+</ul>
+<p><strong>深水区六（成本/授权）：许可证三年三变，2026 年源码转私有是分水岭</strong></p>
+<ul>
+<li>机制：Apache 2.0（2017–2019）→ BSL（2019–2024，限竞争性 DBaaS，旧版本到期转 Apache）→ CockroachDB Software License（2024–今，年收入 &lt;$10M 免费 Enterprise）→ 2026 年新版本转私有仓库开发、公开仓库只留历史快照。</li>
+<li>推到边缘：&quot;自托管可移植&quot; ≠ &quot;自主可控&quot;。BSL 时代至少还能看源码、到期转 Apache；2026 后新版本无源码可看、无社区可提核心 PR——线上遇到内核级 bug，你的选项只剩&quot;等官方修/买支持&quot;，和闭源商业数据库一致。收入口径（关联公司、$10M 线）、用途限制、审计条款必须在合同里抠字眼，不能按博客标题理解。</li>
+<li>选型含义：把 CockroachDB 当&quot;商业数据库&quot;做 TCO 和退出预案；需要源码级自主修复能力的团队（如信创/强监管），这条是硬门槛。</li>
+<li>来源：官方博客（licensing-update-2024、source-code-protection 2026）；SDTimes、The Register 报道</li>
+</ul>
+<p><strong>深水区七（成本/计费）：RU 是抽象货币，跨地域复制是隐形税</strong></p>
+<ul>
+<li>机制：Cloud 按 RU（请求单元）+ 存储计费；RU 把 CPU/IO/网络抽象成统一货币。</li>
+<li>推到边缘：RU 抽象让预算难预测——同样的 SQL，索引选错、跨 Range fan-out、跨地域流量都会让 RU 膨胀；多地域写入在&quot;计算+网络+存储&quot;三处重复花钱；自托管躲开了 RU，但起步就是 3 节点 + 跨 AZ 流量 + 商业授权/运维人力。<strong>历史公开价格（2024 年第三方口径）已不适用，2026 年现价以官方为准，询价前不要按旧数字做预算</strong>。</li>
+<li>选型含义：POC 必须跑&quot;计费影子测试&quot;（同样 workload 在 Cloud 跑一周看账单），不能只看性能；自托管 vs Cloud 的 TCO 要按 3 年算，含人力。</li>
+<li>来源：TechTarget 2024（历史价，数字已删）；第三方部署指南（待官方复核）</li>
+</ul>
+<p><strong>深水区八（存储/性能）：LSM + MVCC 的债——tombstone、GC 与 fan-out</strong></p>
+<ul>
+<li>机制：底层 Pebble（RocksDB 系 LSM），叠加 MVCC 多版本；Range 分裂/合并、rebalance 都是后台数据搬运。</li>
+<li>推到边缘：重 UPDATE/DELETE 产生 tombstone 与旧版本，GC/compaction 跟不上时读放大、磁盘水位上涨、p99 延迟毛刺；一次 SQL 扫大量 Range 触发 DistSQL fan-out，网络与内存放大；大删除后&quot;删完了但磁盘没降、查询变慢&quot;是社区反复出现的运维现场（2019 HN 讨论，历史观察）。长事务/长读会 pin 住 MVCC 版本，拖慢 GC——&quot;一个忘了关的事务拖垮整库 GC&quot;不是传说。</li>
+<li>选型含义：大批量删除/更新要有分批 + 观察 compaction/GC 水位的 SOP；慢查询排查先看&quot;扫了多少 Range&quot;。</li>
+<li>来源：社区运维总结；HN 历史讨论；官方设计文档</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<p><strong>Deep Water 1 (Storage Engine): Range splits save you from data volume, not from a single hot key</strong></p>
+<ul>
+<li>Mechanism: when a Range exceeds capacity/load thresholds, the leaseholder picks a split key and initiates the split via Raft; the merge queue periodically scans Ranges for which the local store holds the lease, composes a hypothetical merged Range with the right neighbor, and skips the merge if the split queue would immediately split it again (natural anti-flapping); small Ranges (default &lt;8MB threshold for exclusion from merge consideration, configurable per zone) merge.</li>
+<li>At the edge: sequential auto-increment primary keys → all new writes land on the rightmost Range → that Range&#x27;s leaseholder becomes a single-point write bottleneck; Range splitting does nothing for a &quot;single hot key&quot; (a hot key still belongs to exactly one Range); at this point cluster CPU is largely idle but write throughput is capped — only Hot Ranges / <code>SHOW RANGES</code> can pinpoint it. Mitigation relies on UUID primary keys or hash-sharded indexes, at the cost of turning range scans into scatter-gather.</li>
+<li>Selection implication: any MySQL/PG migration with a &quot;global auto-increment ID&quot; habit must change its primary-key strategy first; hotspot load tests must use the real key distribution, not just uniform benchmarks.</li>
+<li>Sources: official range-merges tech note, design.md; community ops summary (sanoy24); HN historical discussion (2019, historical community observation)</li>
+</ul>
+<p><strong>Deep Water 2 (Replication &amp; Consistency): The leaseholder is the baton of latency; follower reads are stale reads</strong></p>
+<ul>
+<li>Mechanism: strong reads go through the leaseholder (local reads, no Raft needed); writes are proposed by the leaseholder and confirmed by a Raft quorum; follower reads use the closed timestamp to let follower replicas serve bounded-staleness reads, avoiding WAN hops and leaseholder hotspots (but they don&#x27;t fix &quot;single hot write key&quot;).</li>
+<li>At the edge: in a cross-region deployment, if a Range&#x27;s leaseholder sits in a far region, every strong read/write pays one WAN RTT; <code>SURVIVE REGION FAILURE</code> requires cross-region consensus, so the write-latency floor = the round trip to the nearest required replica. When a node fails, lease re-election has a seconds-level window (third-party notes say ~4.5s heartbeat-timeout scale, pending official verification) during which writes to the affected Ranges are unavailable — that&#x27;s normal behavior for a CP system, not a bug.</li>
+<li>Selection implication: a multi-region design must answer &quot;where is the leaseholder&quot; and &quot;can reads tolerate staleness&quot;; latency SLAs must be signed against &quot;real-topology measurements,&quot; not &quot;single-region benchmarks.&quot;</li>
+<li>Sources: official follower reads RFC (2020), non-blocking txns proposal; Cockroach Labs official skills (multi-region); Medium third-party analysis (2026-08)</li>
+</ul>
+<p><strong>Deep Water 3 (Transactions &amp; Time): Parallel Commits compresses RTT count, not physics; HLC&#x27;s tax is clocks</strong></p>
+<ul>
+<li>Mechanism: cross-Range transactions use 2PC; Parallel Commits folds &quot;write intents (1 RTT) + commit transaction record (1 RTT)&quot; together, letting the transaction confirm the commit to the client after the first phase — critical path ~1 RTT; HLC = physical clock + logical counter, replacing TrueTime hardware with an uncertainty window.</li>
+<li>At the edge: ① In a single region, 2 RTTs → 1 RTT is a genuine latency halving; for cross-ocean transactions 1 RTT is still 100–300ms scale (third-party estimate — measure your own topology); Parallel Commits doesn&#x27;t eliminate geography. ② When clock skew exceeds max-offset (third parties say the default is 500ms, pending official verification), the node protects itself / refuses service — NTP is a production prerequisite, and VM clock drift is an invisible killer. ③ Under high contention, transactions get restarted inside the uncertainty window; the application sees <code>40001</code>; retries must be done by the application, and &quot;retrying external side effects&quot; (sending email, calling payment) is the application&#x27;s own pit — the database only guarantees that &quot;work inside the database is redoable.&quot;</li>
+<li>Selection implication: a transaction-model POC must include &quot;cross-region transaction latency distribution&quot; and &quot;hotspot-conflict retry rate&quot;; any code that does external calls before commit must be rewritten on migration.</li>
+<li>Sources: official design docs; third-party engineering handbook (max-offset); Medium 2026-08 analysis (PG vs CRDB regional failure)</li>
+</ul>
+<p><strong>Deep Water 4 (SQL Layer / Compatibility): pgwire is &quot;dialect compatibility&quot;; the gap list is the migration&#x27;s true workload</strong></p>
+<ul>
+<li>Mechanism: a self-built SQL layer implements PG wire protocol v3 + most PG syntax — not a PG kernel fork.</li>
+<li>At the edge (v26.3 official compatibility docs list explicit gaps): range types, events, drop primary key, XML functions, column-level privileges, XA, template databases, FDW, session-scoped advisory locks are unsupported. Also: <code>SERIAL</code> behavior differences, default INT8, automatic rowid primary keys, missing extension ecosystem (PostGIS, etc.), <code>pg_stat_statements</code> unavailable (monitoring-toolchain migration gap). Historical cases: Storj&#x27;s migration took ~1 person-month handling compatibility/migration scripts (v19.2 era, historical reference only); Authentik can&#x27;t run directly due to session advisory locks (upstream issue still open as of 2026-06).</li>
+<li>Selection implication: a PG migration must run the compatibility matrix item by item, especially triggers, stored procedures, advisory locks, FDW, extensions; &quot;Django/Rails runs&quot; does not mean &quot;your PG runs.&quot;</li>
+<li>Sources: official postgresql-compatibility (v26.3); community migration cases</li>
+</ul>
+<p><strong>Deep Water 5 (Operations / Upgrades): the release train is fast; finalize is a one-way street</strong></p>
+<ul>
+<li>Mechanism: rolling upgrades proceed node by node; after all nodes swap binaries, explicitly <code>SET CLUSTER SETTING version</code> to finalize; before finalize you can keep the rollback option via <code>cluster.preserve_downgrade_option</code>; after finalize there is no rollback.</li>
+<li>At the edge: multiple majors per year (v25.4 → v26.1 → v26.2 → v26.3) make upgrades &quot;routine operations,&quot; not &quot;annual projects&quot; — teams that can&#x27;t keep up get stuck on old majors for a long time; after finalize, problems can only be fixed forward, never rolled back — so upgrades need a full backup + (forward) rollback plan. Certificate management is a standing complaint (community ops handbooks have a dedicated &quot;expired certificates require full re-issuance + restart&quot; procedure).</li>
+<li>Selection implication: write &quot;upgrade drills&quot; into the SLA and certificate rotation into the on-call runbook; Cloud Basic auto-tracks new stable versions (third-party statement, pending official verification) — pinning a version depends on Standard/Advanced capability boundaries.</li>
+<li>Sources: community ops handbooks (rolling-upgrade practice); Rancher helm chart docs (preserve_downgrade_option)</li>
+</ul>
+<p><strong>Deep Water 6 (Cost / Licensing): the license changed three times in three years; 2026&#x27;s source-going-private is the watershed</strong></p>
+<ul>
+<li>Mechanism: Apache 2.0 (2017–2019) → BSL (2019–2024, restricted competitive DBaaS, old versions revert to Apache on expiry) → CockroachDB Software License (2024–present, free Enterprise under $10M revenue) → 2026: new versions developed in a private repo, public repo keeps only historical snapshots.</li>
+<li>At the edge: &quot;self-hostable&quot; ≠ &quot;self-controllable.&quot; In the BSL era you could at least read the source and it reverted to Apache on expiry; after 2026 there is no source to read for new versions and no community path to submit core PRs — when you hit a kernel-level bug in production, your only options are &quot;wait for the vendor to fix it / buy support,&quot; exactly like a closed-source commercial database. Revenue definitions (affiliated companies, the $10M line), usage restrictions, and audit clauses must be read word by word in the contract — don&#x27;t rely on blog headlines.</li>
+<li>Selection implication: treat CockroachDB as a &quot;commercial database&quot; for TCO and exit-planning; teams that need source-level self-remediation (regulatory/strong-compliance scenarios) hit a hard barrier here.</li>
+<li>Sources: official blog (licensing-update-2024, source-code-protection 2026); SDTimes, The Register coverage</li>
+</ul>
+<p><strong>Deep Water 7 (Cost / Billing): RU is abstract currency; cross-region replication is a hidden tax</strong></p>
+<ul>
+<li>Mechanism: Cloud bills by RU (Request Units) + storage; RU abstracts CPU/IO/network into a single currency.</li>
+<li>At the edge: RU abstraction makes budgets hard to predict — the same SQL costs more RU with a wrong index choice, cross-Range fan-out, or cross-region traffic; multi-region writes pay three times over in &quot;compute + network + storage&quot;; self-hosting dodges RU, but starts at 3 nodes + cross-AZ traffic + commercial license/ops headcount. Third-party 2024 prices are already historical; 2026 current prices follow official figures — don&#x27;t budget on old numbers before getting a quote.</li>
+<li>Selection implication: the POC must run a &quot;billing shadow test&quot; (run the same workload on Cloud for a week and look at the bill), not just performance; self-hosted vs Cloud TCO must be computed over 3 years, headcount included.</li>
+<li>Sources: TechTarget 2024 (historical pricing); 2026 third-party deployment guide (Basic $15 benefit/50M RU/10GiB, pending official verification)</li>
+</ul>
+<p><strong>Deep Water 8 (Storage / Performance): the debt of LSM + MVCC — tombstones, GC, and fan-out</strong></p>
+<ul>
+<li>Mechanism: Pebble (RocksDB-family LSM) underneath, with MVCC multi-versions on top; Range splits/merges and rebalances are all background data movement.</li>
+<li>At the edge: heavy UPDATE/DELETE produces tombstones and old versions; when GC/compaction can&#x27;t keep up, read amplification, rising disk watermarks, and p99 latency spikes follow; one SQL scanning many Ranges triggers DistSQL fan-out, amplifying network and memory; &quot;deleted everything but the disk didn&#x27;t shrink and queries got slower&quot; is a recurring community ops scene (2019 HN discussion, historical observation). Long transactions/long reads pin MVCC versions and slow GC — &quot;one forgotten-open transaction dragging down whole-cluster GC&quot; is no legend.</li>
+<li>Selection implication: bulk deletes/updates need batched execution + SOPs for watching compaction/GC watermarks; slow-query triage should first ask &quot;how many Ranges did it scan.&quot;</li>
+<li>Sources: community ops summaries; HN historical discussion; official design docs</li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="用户最买账的 5 点" data-en="What users love most">用户最买账的 5 点</span></h2>
+<div class="lang-block lang-zh">
+<ol>
+<li><strong>正确性口碑（Jepsen 背书 + 默认 Serializable）</strong> 为什么是真的：2021 年 Jepsen 测试通过 + 默认最高隔离级别，金融/账务类团队把&quot;不出错&quot;排第一时，这是架构级信任状。 边缘与限度：正确性的对价是延迟（Raft 共识）和重试（40001）；Jepsen 2021 距今已 5 年，版本差了十几代，口碑需要新版本的持续验证来续费。 来源：jepsen.io 报告（第三方，2021）；社区共识。观察版本：v21.x 时代报告，v26.3 现状待新证据</li>
+<li><strong>多地域/全球部署是真本事</strong> 为什么是真的：REGIONAL BY ROW + survival goals + follower reads 是一套完整的多活原语，不是&quot;主从+中间件&quot;的拼凑；<code>eu-west</code> 5ms / <code>ap-south</code> 7ms 提交（第三方 2026 实测口径）说明行级地域亲和确实能把延迟做进个位数毫秒。 边缘与限度：个位数毫秒只属于&quot;数据和人都对齐了地域&quot;的 workload；跨地域写同一行/同一事务照样付 WAN 税；GLOBAL 表写放大的账要单独算。 来源：Medium 第三方工程分析（2026-08）；官方 skills。观察版本：v26.x</li>
+<li><strong>弹性扩展：加节点就行，不用分库分表</strong> 为什么是真的：Range 自动分裂/搬迁，扩容是在线操作，应用无感知——这是&quot;分布式&quot;三个字最实在的落地。 边缘与限度：扩容期的数据搬迁吃 IO/网络，高峰扩容等于给飞行中的飞机换引擎；以及大多数业务 3 年都用不满 3 节点，为用不上的扩展性付运维税是常见误用。 来源：社区共识 + 官方文档。观察版本：全版本</li>
+<li><strong>PG 生态接入摩擦小</strong> 为什么是真的：wire 协议兼容让现有 PG 驱动/ORM/工具链（psycopg2、SQLAlchemy、Hibernate…）基本直连，团队学习曲线平缓。 边缘与限度：见深水区四——省的是连接层重写，不是零改造；<code>pg_stat_statements</code> 不可用意味着现有 PG 监控/慢查询工具链要换。 来源：官方兼容文档（v26.3）；Storj 历史迁移案例。观察版本：v26.3</li>
+<li><strong>原生 CDC（Changefeed）对数据工程友好</strong> 为什么是真的：<code>CREATE CHANGEFEED INTO &#x27;kafka://...&#x27;</code> 原生进 Kafka，无需 Debezium/JVM/复制槽；resolved timestamp 让下游（Iceberg/Delta/Snowflake）把 at-least-once 转成 exactly-once 摄入；Avro 模式下 schema 演进自动。 边缘与限度：企业级 CDC 多在付费墙内；at-least-once 语义要求下游必须做幂等/去重设计；大事务的 changefeed 延迟与开销要单独压测。 来源：Medium 第三方数据工程分析（2026-08）。观察版本：v26.x，tier 边界待官方复核</li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<ol>
+<li><strong>Correctness reputation (Jepsen endorsement + Serializable by default)</strong> Why it&#x27;s real: the 2021 Jepsen test pass + the strongest isolation level by default — for finance/ledger teams who rank &quot;don&#x27;t get it wrong&quot; first, this is an architecture-level trust credential. Edge and limits: correctness is paid for with latency (Raft consensus) and retries (40001); Jepsen 2021 was 5 years ago and more than a dozen major versions back — the reputation needs continuous validation from new versions to stay current. Sources: jepsen.io report (third-party, 2021); community consensus. Observed version: v21.x-era report; v26.3 status pending new evidence</li>
+<li><strong>Multi-region / global deployment is genuinely strong</strong> Why it&#x27;s real: REGIONAL BY ROW + survival goals + follower reads form a complete multi-active primitive set, not a &quot;primary-replica + middleware&quot; patchwork; third-party 2026 measured commits of <code>eu-west</code> 5ms / <code>ap-south</code> 7ms show row-level region affinity can genuinely get latency into single-digit milliseconds. Edge and limits: single-digit milliseconds belong only to workloads where &quot;data and people are aligned by region&quot;; cross-region writes to the same row/transaction still pay the WAN tax; GLOBAL table write amplification needs its own accounting. Sources: Medium third-party engineering analysis (2026-08); official skills. Observed version: v26.x</li>
+<li><strong>Elastic scaling: add nodes, never shard</strong> Why it&#x27;s real: Ranges split/move automatically; scaling out is an online operation invisible to the application — this is the most concrete payoff of the word &quot;distributed.&quot; Edge and limits: data movement during scale-out eats IO/network — scaling at peak is like changing engines mid-flight; and most workloads won&#x27;t fill 3 nodes in 3 years — paying the ops tax for scalability you&#x27;ll never use is a common misuse. Sources: community consensus + official docs. Observed version: all versions</li>
+<li><strong>Low friction into the PG ecosystem</strong> Why it&#x27;s real: wire-protocol compatibility lets existing PG drivers/ORMs/toolchains (psycopg2, SQLAlchemy, Hibernate…) connect directly; the team&#x27;s learning curve is gentle. Edge and limits: see Deep Water 4 — it saves the connection-layer rewrite, not zero migration; <code>pg_stat_statements</code> being unavailable means the existing PG monitoring/slow-query toolchain has to be replaced. Sources: official compatibility docs (v26.3); Storj historical migration case. Observed version: v26.3</li>
+<li><strong>Native CDC (Changefeed) is data-engineering friendly</strong> Why it&#x27;s real: <code>CREATE CHANGEFEED INTO &#x27;kafka://...&#x27;</code> goes natively into Kafka — no Debezium/JVM/replication slots; resolved timestamps let downstream (Iceberg/Delta/Snowflake) turn at-least-once into exactly-once ingestion; schema evolution is automatic under Avro mode. Edge and limits: enterprise-grade CDC is mostly behind the paywall; at-least-once semantics require downstream idempotency/dedup design; changefeed latency and overhead for large transactions need their own load testing. Sources: Medium third-party data-engineering analysis (2026-08). Observed version: v26.x, tier boundaries pending official verification</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="吐槽清单" data-en="Complaints">吐槽清单</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>分类</th><th>吐槽</th><th>影响版本</th><th>状态</th></tr></thead>
+<tbody>
+<tr><td>性能坑</td><td>跨地域/跨节点写延迟高：共识开销是架构税，单地域 commit 约为单机 PG 的 1.5–3×（第三方口径）</td><td>全版本</td><td>open</td></tr>
+<tr><td>性能坑</td><td>单 key/顺序键写热点无法靠 Range 分裂解决，多数节点空闲但吞吐封顶</td><td>全版本</td><td>open（设计约束，靠建模规避）</td></tr>
+<tr><td>性能坑</td><td>热点冲突下 <code>40001</code> / restart transaction 抛给应用，重试风暴放大尾延迟</td><td>全版本</td><td>open（v23.2+ 有 READ COMMITTED 可选，缓解非全治）</td></tr>
+<tr><td>性能坑</td><td>大删除/重更新后 tombstone + MVCC 旧版本导致读放大、磁盘水位涨，GC/compaction 跟不上就毛刺</td><td>全版本</td><td>open</td></tr>
+<tr><td>运维坑</td><td>证书管理繁琐：过期需全量重签 CA/节点/客户端证书并重启（社区原话&quot;horrible&quot;）</td><td>全版本</td><td>open</td></tr>
+<tr><td>运维坑</td><td>版本火车快（一年多代），finalize 后不可回退，升级=日常操作，跟不上就掉队</td><td>v23+</td><td>open</td></tr>
+<tr><td>运维坑</td><td>长事务 pin 住 MVCC 版本拖慢 GC，一个忘了关的事务能拖累全库</td><td>全版本</td><td>open（运维规范规避）</td></tr>
+<tr><td>兼容坑</td><td>session-scoped advisory locks 不支持（Authentik 跑不起来）；FDW、触发器、存储过程、LISTEN/NOTIFY、SEQUENCE 缺失</td><td>v26.3</td><td>open</td></tr>
+<tr><td>兼容坑</td><td><code>pg_stat_statements</code> 不可用，PG 监控工具链迁移有缺口</td><td>全版本</td><td>open</td></tr>
+<tr><td>授权坑</td><td>许可证三年三变（Apache→BSL→Software License），2026 年新版本源码转私有，&quot;开源&quot;叙事终结</td><td>2024+ / 2026</td><td>open</td></tr>
+<tr><td>成本坑</td><td>Cloud RU 计费抽象，真实 workload 下账单难预测；跨地域复制三处重复花钱</td><td>全版本</td><td>open</td></tr>
+<tr><td>生态坑</td><td>中文资料少，中文社区实践帖远少于国产分布式库</td><td>全版本</td><td>open</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Category</th><th>Complaint</th><th>Affected versions</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Performance pit</td><td>High cross-region/cross-node write latency: consensus overhead is an architecture tax; single-region commit is ~1.5–3× a standalone PG (third-party statement)</td><td>All versions</td><td>open</td></tr>
+<tr><td>Performance pit</td><td>Single-key/sequential-key write hotspots can&#x27;t be fixed by Range splitting — most nodes idle while throughput is capped</td><td>All versions</td><td>open (design constraint, mitigated via data modeling)</td></tr>
+<tr><td>Performance pit</td><td>Hot contention throws <code>40001</code> / restart-transaction to the application; retry storms amplify tail latency</td><td>All versions</td><td>open (v23.2+ offers optional READ COMMITTED — relief, not cure)</td></tr>
+<tr><td>Performance pit</td><td>After heavy deletes/updates, tombstones + old MVCC versions cause read amplification and rising disk watermarks; GC/compaction lag brings latency spikes</td><td>All versions</td><td>open</td></tr>
+<tr><td>Ops pit</td><td>Painful certificate management: expiry requires re-issuing the full CA/node/client certificate set and restarting (community&#x27;s word: &quot;horrible&quot;)</td><td>All versions</td><td>open</td></tr>
+<tr><td>Ops pit</td><td>Fast release train (multiple majors per year), no rollback after finalize — upgrades are routine operations; fall behind and you&#x27;re stranded</td><td>v23+</td><td>open</td></tr>
+<tr><td>Ops pit</td><td>Long transactions pin MVCC versions and slow GC — one forgotten-open transaction can drag down the whole cluster</td><td>All versions</td><td>open (mitigated by ops discipline)</td></tr>
+<tr><td>Compatibility pit</td><td>session-scoped advisory locks unsupported (Authentik won&#x27;t run); FDW, triggers, stored procedures, LISTEN/NOTIFY, SEQUENCE missing</td><td>v26.3</td><td>open</td></tr>
+<tr><td>Compatibility pit</td><td><code>pg_stat_statements</code> unavailable — gap when migrating the PG monitoring toolchain</td><td>All versions</td><td>open</td></tr>
+<tr><td>Licensing pit</td><td>License changed three times (Apache → BSL → Software License); 2026 new-version source going private ends the &quot;open source&quot; narrative</td><td>2024+ / 2026</td><td>open</td></tr>
+<tr><td>Cost pit</td><td>Cloud RU billing is abstract — bills are hard to predict under real workloads; cross-region replication costs you three times over</td><td>All versions</td><td>open</td></tr>
+<tr><td>Ecosystem pit</td><td>Few Chinese-language resources — Chinese community practice posts far fewer than domestic distributed databases</td><td>All versions</td><td>open</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="判决" data-en="Verdict">判决</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li><strong>一句话定位</strong>：为&quot;全球多活 + 强一致&quot;而生的分布式 SQL；单地域小库用它是大炮打蚊子，跨地域核心系统用它是同类里完成度最高的选择之一——前提是你接受它的许可证现实和延迟物理。</li>
+<li><strong>适合谁</strong>：<ul>
+<li>多地域/全球化业务的 OLTP 核心系统（用户和数据天然分区，如 SaaS、跨境、IoT 平台）</li>
+<li>金融/账务类对正确性零容忍、愿意为 Serializable 付延迟税的系统</li>
+<li>数据量持续增长、希望永远不做分库分表的团队</li>
+<li>需要原生 CDC 进湖仓（Kafka→Iceberg/Delta）的数据工程团队</li>
+<li>年收入 &lt;$10M、想白嫖 Enterprise 能力的中小团队（以合同口径为准）</li>
+</ul></li>
+<li><strong>不适合谁</strong>：<ul>
+<li>单机 PG/MySQL 就能扛住的业务（延迟、运维、授权三重税白付）</li>
+<li>重度依赖 PG 触发器/存储过程/advisory locks/FDW/扩展生态，且不愿做兼容 POC 的团队</li>
+<li>需要源码级自主可控（信创/强监管）或对&quot;闭源化&quot;趋势敏感的组织</li>
+<li>预算敏感且 workload RU 难预测、又不想做计费影子测试的团队</li>
+<li>团队无专职 DBA/运维，又想&quot;装完不管&quot;（证书、NTP、升级、GC 都是活）</li>
+</ul></li>
+<li><strong>迁移成本</strong>：<ul>
+<li>MySQL → 中高：无 MySQL 协议，走应用层改造；事务语义（Serializable vs REPEATABLE-READ）差异大；递增主键习惯必须改</li>
+<li>PostgreSQL → 低-中：协议/驱动层摩擦小；但触发器、存储过程、advisory locks、FDW、扩展、<code>pg_stat_statements</code> 等缺口需逐项 POC；默认隔离级别差异要全回归</li>
+<li>Oracle → 高：无 Oracle 兼容路线，不建议作为&quot;去 O&quot;目标</li>
+</ul></li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li><strong>One-line positioning</strong>: a distributed SQL built for &quot;global multi-active + strong consistency&quot;; using it for a small single-region database is overkill, and for cross-region core systems it&#x27;s among the most complete choices in its class — provided you accept its licensing reality and the physics of latency.</li>
+<li><strong>Who it&#x27;s for</strong>:<ul>
+<li>OLTP core systems for multi-region/global businesses (users and data naturally partitioned, e.g. SaaS, cross-border, IoT platforms)</li>
+<li>Finance/ledger systems with zero tolerance for incorrectness, willing to pay the Serializable latency tax</li>
+<li>Teams with continuously growing data that want to never shard</li>
+<li>Data-engineering teams needing native CDC into lakehouses (Kafka → Iceberg/Delta)</li>
+<li>Small/medium teams under $10M revenue wanting free Enterprise capabilities (subject to contract wording)</li>
+</ul></li>
+<li><strong>Who it&#x27;s not for</strong>:<ul>
+<li>Workloads a standalone PG/MySQL can handle (you&#x27;d pay the latency, ops, and licensing taxes for nothing)</li>
+<li>Teams heavily dependent on PG triggers/stored procedures/advisory locks/FDW/extension ecosystem that won&#x27;t run a compatibility POC</li>
+<li>Organizations needing source-level self-controllability (domestic substitution / strong regulation) or sensitive to the &quot;going closed-source&quot; trend</li>
+<li>Budget-sensitive teams whose workload RU is hard to predict and who won&#x27;t run a billing shadow test</li>
+<li>Teams without dedicated DBA/ops wanting &quot;install and forget&quot; (certificates, NTP, upgrades, GC are all ongoing work)</li>
+</ul></li>
+<li><strong>Migration cost</strong>:<ul>
+<li>MySQL → medium-high: no MySQL protocol — application-layer rework; transaction semantics differ greatly (Serializable vs REPEATABLE-READ); the auto-increment primary-key habit must change</li>
+<li>PostgreSQL → low-medium: low protocol/driver-layer friction; but triggers, stored procedures, advisory locks, FDW, extensions, <code>pg_stat_statements</code> gaps need item-by-item POCs; default isolation-level differences need full regression</li>
+<li>Oracle → high: no Oracle-compatibility path; not recommended as a &quot;de-Oracle&quot; target</li>
+</ul></li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="来源与待验证清单" data-en="Sources & to-be-verified">来源与待验证清单</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li>版本与发布：第三方 2026 报道（v26.3 GA 约 2026-08-19；v26.2.4 自托管 GA 2026-07-16）；官方兼容文档已覆盖 v26.3；官方新闻稿（v25.4 为维护版本 2026-02；Continuum 2026-01）</li>
+<li>许可证演变：官方博客（2024 licensing update；2026 source-code-protection）；SDTimes、The Register 2024 报道</li>
+<li>架构机制：官方 design.md、range-merges tech note、follower reads / non-blocking txns RFC、旧版存储加密 RFC；<code>cockroach start --enterprise-encryption</code> 文档（v24.2）</li>
+<li>多地域：cockroachlabs 官方 skills（survival goals / REGIONAL BY ROW）；第三方 2026 分析（延迟实测、PG 对比）</li>
+<li>兼容缺口：官方 postgresql-compatibility（v26.3）；Authentik 社区 spike（advisory locks）；Storj 历史迁移案例</li>
+<li>运维实操：社区 ops handbook（rolling upgrade、证书）；rancher helm chart（preserve_downgrade_option）；官方 university skill（全集群恢复需 enterprise license）；官方 skills CIS 审计样例（audit settings、OIDC、SCRAM）</li>
+<li>云与计费：官方 docs cloud releases（Basic/Standard/Advanced；Serverless→Basic 更名 2024-09-25）；TechTarget 2024（历史价）；2026 第三方部署指南（Basic benefit，待官方复核）</li>
+<li>吐槽采集：HN 历史讨论（2019，tombstone/延迟）；社区性能复盘</li>
+<li><strong>下次评审必查</strong>：官方 v26.3 release notes（确认补丁号与 GA 日期）；v26.3 加密/WAL覆盖边界；审计/SSO/备份的 tier 矩阵；Cloud 2026 现价；<code>cluster.preserve_downgrade_option</code> 与跳版本规则的官方口径；READ COMMITTED 在 v26.3 的默认与语义</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li>Versions and releases: third-party 2026 coverage (v26.3 GA ~2026-08-19; v26.2.4 self-hosted GA 2026-07-16); official compatibility docs already cover v26.3; official press releases (v25.4 as maintenance release 2026-02; Continuum 2026-01)</li>
+<li>License evolution: official blog (2024 licensing update; 2026 source-code-protection); SDTimes, The Register 2024 coverage</li>
+<li>Architecture: official design.md, range-merges tech note, follower reads / non-blocking txns RFCs, legacy storage-encryption RFC; <code>cockroach start --enterprise-encryption</code> docs (v24.2)</li>
+<li>Multi-region: Cockroach Labs official skills (survival goals / REGIONAL BY ROW); third-party 2026 analysis (latency measurements, PG comparison)</li>
+<li>Compatibility gaps: official postgresql-compatibility (v26.3); Authentik community spike (advisory locks); Storj historical migration case</li>
+<li>Operations: community ops handbook (rolling upgrade, certificates); Rancher helm chart (preserve_downgrade_option); official university skill (full-cluster restore requires enterprise license); official skills CIS audit sample (audit settings, OIDC, SCRAM)</li>
+<li>Cloud and billing: official docs cloud releases (Basic/Standard/Advanced; Serverless→Basic rename 2024-09-25); TechTarget 2024 (historical pricing); 2026 third-party deployment guide (Basic benefit, pending official verification)</li>
+<li>Complaint collection: HN historical discussion (2019, tombstone/latency); community performance retrospectives</li>
+<li><strong>Next review must check</strong>: official v26.3 release notes (confirm patch number and GA date); v26.3 encryption/WAL coverage boundaries; tier matrix for audit/SSO/backup; Cloud 2026 current pricing; official statement on <code>cluster.preserve_downgrade_option</code> and version-skipping rules; READ COMMITTED default and semantics in v26.3</li>
+</ul>
+</div>
+</section>
+</main>
+<footer class="footer">
+  <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
+</footer>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
