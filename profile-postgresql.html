@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PostgreSQL（社区版） - DB 选型参考</title>
+<link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">&#9672;</span> DB <span data-zh="选型参考" data-en="Compare">选型参考</span></a>
+    <nav class="mainnav">
+<a href="index.html" class="active" data-zh="首页" data-en="Home">首页</a>
+<a href="compare.html" class="" data-zh="维度对比" data-en="Compare">维度对比</a>
+<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
+<a href="advisor.html" class="" data-zh="AI选型" data-en="AI Selection">AI选型</a>
+    </nav>
+    <div class="cmp-tray">
+      <button id="cmp-tray-btn" type="button" class="tray-btn" aria-expanded="false" aria-haspopup="true"><span data-zh="对比" data-en="Compare">对比</span> <b class="tray-count"><i id="cmp-count">0</i>/4</b></button>
+      <div id="cmp-panel" class="tray-panel" hidden>
+        <div class="tray-sec"><span data-zh="已选" data-en="Selected">已选</span></div>
+        <div id="cmp-selected" class="tray-selected"></div>
+        <div class="tray-sec"><span data-zh="全部产品（最多选 4 款）" data-en="All products (up to 4)">全部产品（最多选 4 款）</span></div>
+        <div id="cmp-list" class="tray-list"></div>
+        <div class="tray-actions"><button id="cmp-clear" type="button" class="tray-clear"><span data-zh="清空选择" data-en="Clear selection">清空选择</span></button></div>
+      </div>
+    </div>
+    <button id="lang-toggle" class="lang-btn" type="button" aria-label="switch language">EN</button>
+  </div>
+</header>
+<main class="page">
+<div class="profile-hero">
+  <a class="back" href="index.html"><span data-zh="← 返回首页" data-en="← Back to home">← 返回首页</span></a>
+  <h1>PostgreSQL（社区版）</h1>
+  <div class="meta-row"><span class="cat cat-oltp" data-zh="关系型 OLTP" data-en="Relational OLTP">关系型 OLTP</span> <span class="tag">#开源</span> <span class="tag">#OLTP</span> <span class="tag">#MVCC</span> <span class="tag">#扩展生态</span> <span class="tag">#JSONB</span> <span class="tag">#PostGIS</span> <span class="tag">#pgvector</span> <span class="tag">#无厂商锁定</span></div>
+  <p class="oneliner"><div class="lang-block lang-zh">
+<p>开源关系型数据库的&quot;默认选项&quot;——通用 OLTP 的水桶机，扩展生态是最深的护城河；代价是把 PG 的机制税（VACUUM、连接模型、大版本升级）内化为团队的运维能力。</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<p>The &quot;default choice&quot; among open-source relational databases — a well-rounded machine for general OLTP, whose extension ecosystem is its deepest moat; the price is internalizing PG&#x27;s mechanism taxes (VACUUM, the connection model, major-version upgrades) as your team&#x27;s operational capability.</p>
+</div></p>
+  <div class="ai-dive-row" data-product="PostgreSQL（社区版）">
+    <span class="ai-dive-label" data-zh="用 AI 深挖这款：" data-en="Deep-dive with AI:">用 AI 深挖这款：</span>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('chatgpt', this)">ChatGPT <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('grok', this)">Grok <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('claude', this)">Claude <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn addcmp-btn" data-addcmp="postgresql"><span class="addcmp-label">＋ 对比</span></button>
+  </div>
+  <div class="legend"><span class="legend-label" data-zh="证据等级：" data-en="Evidence levels: ">证据等级：</span><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></div>
+</div>
+<section class="doc-section">
+<h2><span data-zh="基本信息" data-en="Basics">基本信息</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>项</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td>厂商</td><td>PostgreSQL Global Development Group（社区，无单一商业公司）</td></tr>
+<tr><td>国家</td><td>全球化开源社区（起源于加州大学伯克利分校 POSTGRES，1996 年改名 PostgreSQL）</td></tr>
+<tr><td>起源</td><td>待验证（此处未独立核实早期史；1996 年更名、2000 年代起成为开源 RDBMS 事实标准之一）</td></tr>
+<tr><td>许可证</td><td>PostgreSQL License（类 BSD 宽松许可，可商用、可闭源分发）</td></tr>
+<tr><td>托管服务</td><td>各云厂商自有托管版（RDS / Cloud SQL / Azure / Neon 等，行为与自建版有差异，见深水区）</td></tr>
+<tr><td>主类型</td><td>关系型（单机，OLTP 为主）</td></tr>
+<tr><td>存储引擎</td><td>堆表 + MVCC + WAL；索引类型：B-tree / Hash / GiST / SP-GiST / GIN / BRIN<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></td></tr>
+<tr><td>兼具类型</td><td>全文检索、GIS（PostGIS 扩展）、向量检索（pgvector 扩展）、时序（TimescaleDB 扩展）</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Item</th><th>Content</th></tr></thead>
+<tbody>
+<tr><td>Vendor</td><td>PostgreSQL Global Development Group (community, no single commercial company)</td></tr>
+<tr><td>Country</td><td>Globalized open-source community (originated from POSTGRES at UC Berkeley, renamed PostgreSQL in 1996)</td></tr>
+<tr><td>Origin</td><td>To-be-verified (early history not independently verified here; renamed in 1996, became one of the de facto standard open-source RDBMSs in the 2000s)</td></tr>
+<tr><td>License</td><td>PostgreSQL License (BSD-style permissive license, commercial use and closed-source distribution allowed)</td></tr>
+<tr><td>Managed services</td><td>Each cloud vendor&#x27;s own managed edition (RDS / Cloud SQL / Azure / Neon, etc. — behavior differs from self-hosted; see deep dives)</td></tr>
+<tr><td>Primary type</td><td>Relational (single-node, OLTP-oriented)</td></tr>
+<tr><td>Storage engine</td><td>Heap tables + MVCC + WAL; index types: B-tree / Hash / GiST / SP-GiST / GIN / BRIN <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></td></tr>
+<tr><td>Secondary types</td><td>Full-text search, GIS (PostGIS extension), vector search (pgvector extension), time series (TimescaleDB extension)</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section"><h2><span data-zh="硬维度（14 项）" data-en="Hard dimensions (14)">硬维度（14 项）</span></h2>
+<div class="lang-block lang-zh">
+<div class="dims-intro"><blockquote>
+<p>以下逐项对应固定题库（14 项），每项均有&quot;有 / 无 / 部分支持 / 未找到证据 / 查证为无&quot;结论与证据等级。</p>
+</blockquote></div>
+<div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-no">无（查证为无）</span></h3><div class="dim-body"><p><strong>无（查证为无）</strong>——社区版无原生透明数据加密，是 PG 最著名的长期缺口之一；静态加密靠文件系统/云盘加密或商业发行版实现。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（无此功能）+ 社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——TLS/SSL（<code>ssl=on</code> + 证书配置），支持证书认证。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> 审计 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——内置 <code>log_statement</code> / <code>log_min_duration_statement</code> 等日志审计；细粒度审计靠 pgaudit 扩展。证据：官方文档 + 社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> 认证与权限 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——SCRAM-SHA-256（默认）、LDAP / Kerberos / GSSAPI / SSPI / 证书认证；<strong>PG 18 新增 OAuth 2.0 认证</strong>；RBAC 角色模型。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（PG 18 release notes）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> 备份恢复 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——<code>pg_basebackup</code> + WAL 归档实现 PITR；<code>pg_restore</code> / <code>pg_dump</code> 逻辑备份；<strong>PG 17+ 支持增量备份</strong>（<code>pg_basebackup --incremental</code>）。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> 大版本升级 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——<code>pg_upgrade</code>（<code>--link</code> 硬链接，停机分钟级；PG 18 新增 <code>--swap</code>、并行检查 <code>--jobs</code>、统计信息跨版本继承）；逻辑复制滚动升级；dump/restore。<strong>无</strong>官方原地回退（查证为无）。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> 可观测性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——<code>pg_stat_*</code> 视图族、<code>pg_stat_statements</code>（contrib）、<code>auto_explain</code>、EXPLAIN (ANALYZE, BUFFERS)。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> 连接模型 <span class="verdict v-yes">有（进程模型）</span></h3><div class="dim-body"><p><strong>有（进程模型）</strong>——每连接一个后端 OS 进程；高并发必须配连接池（PgBouncer）。证据：官方文档 + 社区共识。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> 事务与隔离级别 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——单机强一致；MVCC；Read Committed（默认）、Repeatable Read、Serializable；<strong>DDL 具有事务性</strong>（可在事务块中回滚）；崩溃恢复可靠（WAL + checkpoint）。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> 复制与一致性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——流复制（异步/同步，支持级联）、逻辑复制（含 PG 16+ 双向逻辑复制）、内置逻辑解码。<strong>无</strong>原生自动故障切换（查证为无，靠 Patroni / Stolon / 云托管实现）。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> 扩展方式 <span class="verdict v-no">无</span></h3><div class="dim-body"><p>纵向扩展为主；读扩展靠流复制备库；写扩展靠分区表、应用层分片或 Citus 等扩展；<strong>无</strong>原生分布式。证据：<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> 兼容性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——PG 协议（libpq）为事实标准，驱动/ORM/工具生态最全；FDW 可连外部数据源。证据：<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> 许可证与商业模式 <span class="verdict v-no">无</span></h3><div class="dim-body"><p>PostgreSQL License（宽松）；<strong>无</strong>官方商业版；商业支持由第三方（EDB 等）或云厂商提供。证据：官方。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> 中文资料丰富度 <span class="verdict v-yes">有（丰富）</span></h3><div class="dim-body"><p><strong>有（丰富）</strong>——官方文档有中文版、中文社区（postgres.cn）活跃。证据：<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</p></div></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="dims-intro"><blockquote>
+<p>Each item maps to the fixed 14-item questionnaire, with a &quot;Supported / Not supported / Partially supported / no evidence found / confirmed absent&quot; verdict and evidence grade.</p>
+</blockquote></div>
+<div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-no">Not supported</span></h3><div class="dim-body"><p><strong>Not supported (confirmed absent)</strong> — the community edition has no native transparent data encryption, one of PG&#x27;s most famous long-standing gaps; encryption at rest relies on filesystem/cloud-disk encryption or commercial distributions. Evidence: official docs (feature absent) + community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / transport encryption <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — TLS/SSL (<code>ssl=on</code> + certificate configuration), certificate authentication supported. Evidence: official docs.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> Auditing <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — built-in log-based auditing such as <code>log_statement</code> / <code>log_min_duration_statement</code>; fine-grained auditing via the pgaudit extension. Evidence: official docs + community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> Authentication &amp; authorization <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — SCRAM-SHA-256 (default), LDAP / Kerberos / GSSAPI / SSPI / certificate authentication; <strong>PG 18 adds OAuth 2.0 authentication</strong>; RBAC role model. Evidence: official docs (PG 18 release notes).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> Backup &amp; recovery <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — <code>pg_basebackup</code> + WAL archiving for PITR; <code>pg_restore</code> / <code>pg_dump</code> for logical backups; <strong>PG 17+ supports incremental backup</strong> (<code>pg_basebackup --incremental</code>). Evidence: official docs.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> Major-version upgrades <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — <code>pg_upgrade</code> (<code>--link</code> hard links, minutes of downtime; PG 18 adds <code>--swap</code>, parallel checks <code>--jobs</code>, and cross-version statistics inheritance); rolling upgrades via logical replication; dump/restore. <strong>No</strong> official in-place rollback (confirmed absent). Evidence: official docs.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> Observability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — the <code>pg_stat_*</code> view family, <code>pg_stat_statements</code> (contrib), <code>auto_explain</code>, EXPLAIN (ANALYZE, BUFFERS). Evidence: official docs.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> Connection model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported (process model)</strong> — one backend OS process per connection; high concurrency requires a connection pooler (PgBouncer). Evidence: official docs + community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> Transactions &amp; isolation levels <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — strong consistency on a single node; MVCC; Read Committed (default), Repeatable Read, Serializable; <strong>DDL is transactional</strong> (can be rolled back inside a transaction block); reliable crash recovery (WAL + checkpoint). Evidence: official docs.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> Replication &amp; consistency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — streaming replication (async/sync, cascading supported), logical replication (including bidirectional logical replication since PG 16), built-in logical decoding. <strong>No</strong> native automatic failover (confirmed absent; rely on Patroni / Stolon / managed services). Evidence: official docs.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> Scaling <span class="verdict v-no">No ive distribution.</span></h3><div class="dim-body"><p>scale-up first; read scaling via streaming replicas; write scaling via partitioned tables, application-level sharding, or extensions such as Citus; <strong>no</strong> native distribution. Evidence: community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> Compatibility <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — the PG protocol (libpq) is the de facto standard with the most complete driver/ORM/tool ecosystem; FDW connects to external data sources. Evidence: community consensus.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> License &amp; business model <span class="verdict v-no">No icial commercial e</span></h3><div class="dim-body"><p>PostgreSQL License (permissive); <strong>no</strong> official commercial edition; commercial support from third parties (e.g., EDB) or cloud vendors. Evidence: official.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> Chinese-language resources <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported (rich)</strong> — official docs have a Chinese edition, and the Chinese community (postgres.cn) is active. Evidence: community consensus.</p></div></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="杀手特性" data-en="Killer features">杀手特性</span></h2>
+<div class="lang-block lang-zh">
+<blockquote>
+<p>每个特性 = 它是什么 + 为什么是真本事 + 推到边缘会发生什么。</p>
+</blockquote>
+<ol>
+<li><strong>扩展生态：最像操作系统的数据库</strong> 真本事：PostGIS（GIS 领域事实标准）、pgvector（向量检索）、全文检索（tsvector/GIN）、FDW（连外部数据源）、TimescaleDB（时序）、Citus（分布式）——一个内核靠扩展覆盖几十种 workload，这是 PG 相对 MySQL 最深的护城河。 边缘真相：扩展是 C 代码跑进数据库后端进程，质量参差不齐，出问题 crash 的是整个后端进程；大版本升级时每个扩展必须同步有新版本，否则整个升级被卡住；pgvector 跑大规模 ANN 时，运维成本（索引构建、vacuum 配合）不比专用向量库低。&quot;装上就用&quot;不等于&quot;生产就绪&quot;，每个扩展都要单独 vet。</li>
+<li><strong>事务性 DDL</strong> 真本事：CREATE / ALTER / DROP 等 DDL 可以放在事务块里，出错整体回滚——migration 工具链（Flyway/Liquibase/Alembic）的可靠性基石，MySQL 做不到。 边缘真相：DDL 拿的是 ACCESS EXCLUSIVE 锁，一个长事务没提交，DBA 的 <code>ALTER TABLE</code> 会排队等到天荒地老，反过来 DDL 也会阻塞业务；<code>CREATE INDEX CONCURRENTLY</code> 偏偏不能在事务块里跑——&quot;事务性 DDL&quot;和&quot;在线 DDL&quot;是两套规则，migration 脚本要为此做特殊处理。</li>
+<li><strong>MVCC 读不阻塞写 + 崩溃恢复的正确性口碑</strong> 真本事：读不阻塞写、写不阻塞读；WAL + checkpoint 的崩溃恢复久经考验，&quot;最不会丢数据的开源库&quot;口碑就来自这里。 边缘真相：正确性的代价就是膨胀（见深水区一）；口碑成立的前提是 <code>fsync=on</code> + 存储诚实地执行 fsync——云盘、虚拟化存储、某些 RAID 卡的 fsync 语义是另一笔账，PG 再可靠也救不了撒谎的存储。</li>
+<li><strong>类型系统与 SQL 表达力</strong> 真本事：JSONB、数组、范围类型、hstore、ltree、窗口函数、CTE（含递归）、EXCLUDE 约束——SQL 表达力在开源库里没有对手，复杂查询不用搬到应用层拼。 边缘真相：JSONB 更新是整行重写（大文档走 TOAST），高频局部更新场景写放大显著；GIN 索引维护成本高，写入密集型表上建 GIN 要先算账。表达力是开发效率的蜜糖，也是性能债的来源。</li>
+<li><strong>许可证与中立性：无厂商锁定</strong> 真本事：PostgreSQL License 宽松到可以拿去闭源商用；没有单一厂商能&quot;断供&quot;或改 license——对 CTO 这是十年期的架构保险。 边缘真相：中立 = 出问题没人&quot;必须&quot;负责。社区不签 SLA，生产支持靠自建团队或买第三方——&quot;免费的是软件，不是责任&quot;。以及：用了云托管版的那一刻，&quot;无锁定&quot;就只剩下一半了（参数白名单、扩展白名单、超管受限）。</li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<blockquote>
+<p>Each feature = what it is + why it&#x27;s genuinely good + what happens at the edge.</p>
+</blockquote>
+<ol>
+<li><strong>Extension ecosystem: the database that is most like an operating system</strong> Why it&#x27;s real: PostGIS (the de facto GIS standard), pgvector (vector search), full-text search (tsvector/GIN), FDW (connecting external data sources), TimescaleDB (time series), Citus (distributed) — one kernel covering dozens of workloads through extensions, PG&#x27;s deepest moat relative to MySQL. At the edge: extensions are C code running inside the database backend process; quality varies, and when one breaks it crashes the whole backend process; on a major-version upgrade every extension must have a new-version build or the entire upgrade stalls; running large-scale ANN on pgvector has operational costs (index builds, vacuum coordination) no lower than a dedicated vector database. &quot;Install and use&quot; is not &quot;production ready&quot; — every extension must be vetted separately.</li>
+<li><strong>Transactional DDL</strong> Why it&#x27;s real: CREATE / ALTER / DROP and other DDL can run inside a transaction block and roll back as a unit — the reliability cornerstone of migration toolchains (Flyway/Liquibase/Alembic), something MySQL can&#x27;t do. At the edge: DDL takes an ACCESS EXCLUSIVE lock; one uncommitted long transaction makes the DBA&#x27;s <code>ALTER TABLE</code> queue indefinitely, and conversely DDL blocks the application; <code>CREATE INDEX CONCURRENTLY</code> specifically cannot run inside a transaction block — &quot;transactional DDL&quot; and &quot;online DDL&quot; are two different rule sets, and migration scripts need special handling for that.</li>
+<li><strong>MVCC reads never block writes + crash-recovery correctness reputation</strong> Why it&#x27;s real: reads never block writes and writes never block reads; WAL + checkpoint crash recovery is battle-tested — the &quot;most data-loss-proof open-source database&quot; reputation comes from here. At the edge: the price of correctness is bloat (see deep dive 1); the reputation holds only if <code>fsync=on</code> and storage honestly honors fsync — cloud disks, virtualized storage, and some RAID cards have their own fsync semantics, and no matter how reliable PG is, it can&#x27;t save you from lying storage.</li>
+<li><strong>Type system and SQL expressiveness</strong> Why it&#x27;s real: JSONB, arrays, range types, hstore, ltree, window functions, CTEs (including recursive), EXCLUDE constraints — unmatched SQL expressiveness among open-source databases; complex queries don&#x27;t need to be moved into application code. At the edge: JSONB updates rewrite the whole row (large documents go through TOAST), with significant write amplification under frequent partial updates; GIN indexes are expensive to maintain — do the math before building a GIN index on a write-heavy table. Expressiveness is developer honey, and also the source of performance debt.</li>
+<li><strong>License and neutrality: no vendor lock-in</strong> Why it&#x27;s real: the PostgreSQL License is permissive enough for closed-source commercial use; no single vendor can &quot;cut off supply&quot; or change the license — for a CTO this is decade-scale architecture insurance. At the edge: neutrality = nobody is <em>obligated</em> to own your problem. The community doesn&#x27;t sign SLAs; production support comes from your own team or a purchased third party — &quot;the software is free, the responsibility is not.&quot; And: the moment you adopt a managed cloud edition, &quot;no lock-in&quot; is only half true (parameter whitelists, extension whitelists, restricted superuser).</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="深水区" data-en="Deep dives">深水区</span></h2>
+<div class="lang-block lang-zh">
+<blockquote>
+<p>每条 = 机制 + 推到边缘的行为 + 选型含义 + 来源。</p>
+</blockquote>
+<p><strong>深水区一（存储与事务）：VACUUM 与长事务——一个报表查询能冻结全库回收</strong></p>
+<ul>
+<li>机制：MVCC 下 UPDATE/DELETE 产生死元组，靠 VACUUM 回收；回收要求死元组对<strong>所有</strong>活跃快照不可见。任何持有老快照的事务——长查询、idle-in-transaction 连接、预备事务、逻辑复制槽的 catalog_xmin——都会抬高全库的 xmin horizon，让 autovacuum 对<strong>整个数据库</strong>的死元组束手无策。</li>
+<li>推到边缘：主库上一个 8 小时的报表事务，症状不是&quot;报表慢&quot;，而是全库表膨胀、索引膨胀、磁盘 steady 上涨，autovacuum 看似在跑却什么都回收不了。救火手段是 <code>idle_in_transaction_session_timeout</code> 熔断 + 查 <code>pg_stat_activity.backend_xmin</code> 找 offender，而不是加磁盘。</li>
+<li>选型含义：报表负载一律走备库；这是&quot;换商业发行版也躲不掉&quot;的机制税，选型时确认团队有这块运维基本功。</li>
+<li>来源：官方文档（routine vacuuming 章节）——官方口径；社区共识。</li>
+</ul>
+<p><strong>深水区二（性能/运维）：autovacuum 阈值公式——大表的&quot;永远轮不到&quot;</strong></p>
+<ul>
+<li>机制：触发阈值 = <code>autovacuum_vacuum_threshold</code>（默认 50）+ <code>autovacuum_vacuum_scale_factor</code>（默认 0.2）× 表行数；autovacuum launcher 每分钟（naptime）轮询一遍，每轮最多 <code>autovacuum_max_workers</code>（默认 3）个 worker 干活。</li>
+<li>推到边缘：1000 万行表要攒够 200 万+ 死元组才触发一次 vacuum；高写入大表上 vacuum 永远追不上更新，膨胀失控。社区 2026-09 实测案例：一张千万级报表表 <code>autovacuum_count</code> 恒为 0，攒了 24 万死元组&quot;永远不够格&quot;。标准解法是逐表调参（<code>ALTER TABLE ... SET (autovacuum_vacuum_scale_factor = 0.01)</code>）。另注意：VACUUM 只标记索引页可重用、<strong>不收缩索引</strong>，索引膨胀要靠 REINDEX（PG 14+ 支持 <code>REINDEX CONCURRENTLY</code> 在线做）。</li>
+<li>选型含义：大表逐表调参是上线 checklist 项；监控 <code>pg_stat_user_tables</code> 的 n_dead_tup / last_autovacuum；索引膨胀单独监控。</li>
+<li>来源：官方文档（autovacuum 参数章节）——官方口径；社区实测（dev.to 索引膨胀分析，2026-09）。</li>
+</ul>
+<p><strong>深水区三（复制与容灾）：复制槽——主库磁盘的&quot;无上限承诺&quot;</strong></p>
+<ul>
+<li>机制：物理/逻辑复制槽会阻止 WAL 回收；<code>max_slot_wal_keep_size</code> <strong>默认 -1 = 无限制</strong>（官方文档原话）。备库下线后槽没删，主库 pg_wal 无限堆积直到磁盘打满、主库拒绝写入。</li>
+<li>推到边缘：最经典的&quot;双杀&quot;：备库硬件故障 → 槽变闲置 → 无人告警 → 数天后主库磁盘满 → 主库停写。缓解手段是设 <code>max_slot_wal_keep_size</code>（如 10GB），代价是超限后槽变 invalidated、备库必须重建——用&quot;可重建的备库&quot;换&quot;不死的主库&quot;。逻辑复制槽还有叠加伤害：它的 catalog_xmin 同时冻结 VACUUM（深水区一），WAL 堆积 + 表膨胀双杀。</li>
+<li>选型含义：<code>pg_replication_slots</code> 的闲置与滞后监控是上线必备；凡用逻辑复制做 CDC/迁移，槽的生命周期必须有人负责。</li>
+<li>来源：官方文档（runtime-config-replication，max_slot_wal_keep_size 默认 -1）——官方口径；社区共识。</li>
+</ul>
+<p><strong>深水区四（连接与并发）：进程连接模型与连接风暴</strong></p>
+<ul>
+<li>机制：每个客户端连接对应一个后端 OS 进程（fork），有真实的内存与调度开销；<code>max_connections</code> 是硬上限，打满后新连接直接 <code>FATAL: too many connections</code>。<code>work_mem</code> 是 per-operation 的，真实内存公式是连接数 × work_mem × 并发操作数。</li>
+<li>推到边缘：微服务多实例 × 每实例连接池的乘法效应，或 serverless 突发，能在业务低峰的深夜把连接数打爆——故障现象是&quot;应用连不上库&quot;，库本身负载却不高。标准解法是 PgBouncer（transaction 模式）做池化，池大小按库的预算反推。</li>
+<li>选型含义：PG 官方<strong>不内置连接池</strong>（查证为无），&quot;高并发接入&quot;的 POC 必须把连接拓扑（直连 / PgBouncer / 应用池）列为必测项。</li>
+<li>来源：官方文档（连接与认证章节）——官方口径；社区共识。</li>
+</ul>
+<p><strong>深水区五（运维与升级）：大版本升级 pg_upgrade</strong></p>
+<ul>
+<li>机制：大版本间数据文件格式不兼容；<code>pg_upgrade --link</code> 用硬链接实现分钟级停机升级；<strong>PG 18 增强</strong>：<code>--swap</code> 减少文件操作、<code>--jobs</code> 并行检查、<strong>统计信息跨版本继承</strong>（升级后不再有全库 ANALYZE 风暴，性能更快回到稳态）。</li>
+<li>推到边缘：扩展是最大变量——每个扩展必须有对应新大版本，缺一个就卡住；<code>--link</code> 模式不可回退（除非保留旧数据目录双倍空间）；Docker 官方镜像在 PG 18 变更了 PGDATA 路径（<code>/var/lib/postgresql/18/docker</code>），直接换 tag 重启会启动失败（社区实测，2025-10）。零停机要走逻辑复制滚动升级，但那是另一套运维复杂度。</li>
+<li>选型含义：大版本升级演练写进年度计划；先出&quot;扩展兼容清单&quot;再定升级窗口；容器部署注意 PGDATA 路径变更。</li>
+<li>来源：官方文档（pg_upgrade）——官方口径；社区实测（Docker PG 18 路径变更，2025-10）。</li>
+</ul>
+<p><strong>深水区六（存储与性能）：WAL、checkpoint 与 full_page_writes 的写放大</strong></p>
+<ul>
+<li>机制：所有修改先写 WAL；<code>full_page_writes=on</code>（默认）时 checkpoint 后首次被修改的页面整页写入 WAL，防 torn page；checkpoint 本身是周期性 IO 毛刺源（<code>max_wal_size</code> / <code>checkpoint_timeout</code> 控制频率）。</li>
+<li>推到边缘：真实写放大 = WAL + 索引维护 + 整页写；大批量导入/ETL 前调大 <code>max_wal_size</code>、拉长 checkpoint 间隔是标准操作；云盘按 IOPS 计费的场景下，WAL 是账单里的隐形成本——&quot;写 1GB 业务数据，云盘账单按 3GB 算&quot;并不夸张。</li>
+<li>选型含义：写密集型业务要算 WAL 带宽账；<code>synchronous_commit</code> 的五档是&quot; durability 换延迟&quot;的显式旋钮，批量导入场景可阶段性调低。</li>
+<li>来源：官方文档（WAL 配置章节）——官方口径；社区共识。</li>
+</ul>
+<p><strong>深水区七（一致性/运维）：32 位事务 ID wraparound——拒绝写入的终极保护</strong></p>
+<ul>
+<li>机制：事务 ID 32 位循环；autovacuum 负责冻结（freeze）老元组、推进 <code>datfrozenxid</code>；若逼近 20 亿上限（<code>autovacuum_freeze_max_age</code>）仍未冻结，数据库进入保护模式<strong>拒绝写入</strong>——这是 PG 最古老也最坚硬的正确性护栏。</li>
+<li>推到边缘：症状是&quot;突然写不进去&quot;，根因却是几个月前就开始的冻结滞后；应急手段是全库 <code>vacuumdb --freeze</code>（大库极慢）；日常靠监控 <code>datfrozenxid</code> 年龄提前发现。</li>
+<li>选型含义：这是&quot;正确性优先于可用性&quot;的终极体现，选 PG 就是选了这套价值观；监控项必备，不接受&quot;以后再说&quot;。</li>
+<li>来源：官方文档（preventing transaction ID wraparound failures）——官方口径；社区共识。</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<blockquote>
+<p>Each = mechanism + behavior at the edge + selection implication + sources.</p>
+</blockquote>
+<p><strong>Deep dive 1 (storage &amp; transactions): VACUUM and long transactions — one reporting query can freeze reclamation across the whole database</strong></p>
+<ul>
+<li>Mechanism: under MVCC, UPDATE/DELETE produce dead tuples reclaimed by VACUUM; reclamation requires dead tuples to be invisible to <strong>all</strong> active snapshots. Any transaction holding an old snapshot — long queries, idle-in-transaction connections, prepared transactions, logical replication slots&#x27; catalog_xmin — raises the xmin horizon for the entire database, leaving autovacuum powerless against dead tuples <strong>database-wide</strong>.</li>
+<li>At the edge: an 8-hour reporting transaction on the primary doesn&#x27;t manifest as &quot;slow reports&quot; but as bloat across all tables and indexes and steadily rising disk usage, with autovacuum seemingly running yet reclaiming nothing. The firefighting response is to break the circuit with <code>idle_in_transaction_session_timeout</code> and hunt the offender via <code>pg_stat_activity.backend_xmin</code>, not to add disk.</li>
+<li>Selection implication: reporting workloads always go to replicas; this is a &quot;mechanism tax you can&#x27;t dodge even with a commercial distribution&quot; — confirm the team has this operational basic skill at selection time.</li>
+<li>Sources: official docs (routine vacuuming chapter) — official claim; community consensus.</li>
+</ul>
+<p><strong>Deep dive 2 (performance/operations): the autovacuum threshold formula — the big table that &quot;never gets its turn&quot;</strong></p>
+<ul>
+<li>Mechanism: trigger threshold = <code>autovacuum_vacuum_threshold</code> (default 50) + <code>autovacuum_vacuum_scale_factor</code> (default 0.2) × row count; the autovacuum launcher polls once per minute (naptime) with at most <code>autovacuum_max_workers</code> (default 3) workers per round.</li>
+<li>At the edge: a 10-million-row table needs 2M+ dead tuples to trigger one vacuum; on write-heavy big tables vacuum never catches up with updates and bloat runs out of control. A community-tested case from 2026-09: a ten-million-row reporting table with <code>autovacuum_count</code> stuck at 0, having accumulated 240k dead tuples that &quot;never qualified&quot;. The standard fix is per-table tuning (<code>ALTER TABLE ... SET (autovacuum_vacuum_scale_factor = 0.01)</code>). Also note: VACUUM only marks index pages reusable and <strong>does not shrink indexes</strong>; index bloat requires REINDEX (PG 14+ supports online <code>REINDEX CONCURRENTLY</code>).</li>
+<li>Selection implication: per-table tuning for big tables is a go-live checklist item; monitor <code>n_dead_tup</code> / <code>last_autovacuum</code> in <code>pg_stat_user_tables</code>; monitor index bloat separately.</li>
+<li>Sources: official docs (autovacuum parameters chapter) — official claim; community-tested (dev.to index-bloat analysis, 2026-09).</li>
+</ul>
+<p><strong>Deep dive 3 (replication &amp; DR): replication slots — the primary&#x27;s &quot;unlimited promise&quot; on disk</strong></p>
+<ul>
+<li>Mechanism: physical/logical replication slots prevent WAL recycling; <code>max_slot_wal_keep_size</code> <strong>defaults to -1 = unlimited</strong> (official docs&#x27; own words). If a replica goes offline and its slot isn&#x27;t dropped, pg_wal on the primary grows without bound until the disk fills and the primary refuses writes.</li>
+<li>At the edge: the classic &quot;double kill&quot;: replica hardware failure → slot goes idle → nobody alarms → days later the primary disk fills → the primary stops accepting writes. Mitigation is to set <code>max_slot_wal_keep_size</code> (e.g., 10GB), at the cost that an exceeded slot becomes invalidated and the replica must be rebuilt — trading &quot;a rebuildable replica&quot; for &quot;a primary that doesn&#x27;t die&quot;. Logical replication slots add insult to injury: their catalog_xmin simultaneously freezes VACUUM (deep dive 1), a double kill of WAL pile-up + table bloat.</li>
+<li>Selection implication: monitoring idle/lagging slots in <code>pg_replication_slots</code> is mandatory at go-live; whenever logical replication is used for CDC/migration, someone must own the slot lifecycle.</li>
+<li>Sources: official docs (runtime-config-replication, max_slot_wal_keep_size default -1) — official claim; community consensus.</li>
+</ul>
+<p><strong>Deep dive 4 (connections &amp; concurrency): the process connection model and connection storms</strong></p>
+<ul>
+<li>Mechanism: every client connection maps to a backend OS process (fork), with real memory and scheduling cost; <code>max_connections</code> is a hard limit, and new connections get <code>FATAL: too many connections</code> once it&#x27;s hit. <code>work_mem</code> is per-operation; the real memory formula is connections × work_mem × concurrent operations.</li>
+<li>At the edge: the multiplicative effect of many microservice instances × per-instance pools, or serverless bursts, can exhaust connections in the quiet of the night when business is at its lowest — the symptom is &quot;the app can&#x27;t reach the database&quot; while the database itself isn&#x27;t loaded. The standard fix is PgBouncer (transaction mode) for pooling, sizing the pool backward from the database&#x27;s budget.</li>
+<li>Selection implication: PG has <strong>no built-in connection pooler</strong> (verified absent); any high-concurrency-access POC must list the connection topology (direct / PgBouncer / app pools) as a mandatory test item.</li>
+<li>Sources: official docs (connections and authentication chapter) — official claim; community consensus.</li>
+</ul>
+<p><strong>Deep dive 5 (operations &amp; upgrades): major-version upgrades with pg_upgrade</strong></p>
+<ul>
+<li>Mechanism: data file formats are incompatible across major versions; <code>pg_upgrade --link</code> achieves minute-level-downtime upgrades via hard links; <strong>PG 18 enhancements</strong>: <code>--swap</code> reduces file operations, <code>--jobs</code> parallel checks, <strong>cross-version statistics inheritance</strong> (no more database-wide ANALYZE storm after upgrade; performance returns to steady state faster).</li>
+<li>At the edge: extensions are the biggest variable — every extension must have a build for the new major version, and one missing build stalls the whole upgrade; <code>--link</code> mode cannot be rolled back (unless you keep the old data directory at double the disk space); the official Docker image changed the PGDATA path in PG 18 (<code>/var/lib/postgresql/18/docker</code>) — swapping the tag and restarting fails to start (community-tested, 2025-10). Zero-downtime upgrades go through logical-replication rolling upgrades, but that&#x27;s a different operational complexity.</li>
+<li>Selection implication: major-version upgrade drills go into the annual plan; produce an &quot;extension compatibility list&quot; before fixing the upgrade window; container deployments must watch the PGDATA path change.</li>
+<li>Sources: official docs (pg_upgrade) — official claim; community-tested (official Docker image PG 18 PGDATA path change, 2025-10).</li>
+</ul>
+<p><strong>Deep dive 6 (storage &amp; performance): WAL, checkpoints, and full_page_writes write amplification</strong></p>
+<ul>
+<li>Mechanism: all modifications are written to WAL first; with <code>full_page_writes=on</code> (default), the first modification of a page after a checkpoint writes the full page to WAL, guarding against torn pages; checkpoints themselves are periodic IO spike sources (<code>max_wal_size</code> / <code>checkpoint_timeout</code> control frequency).</li>
+<li>At the edge: real write amplification = WAL + index maintenance + full-page writes; before bulk loads/ETL, raising <code>max_wal_size</code> and lengthening the checkpoint interval is standard practice; on cloud disks billed per IOPS, WAL is a hidden line item on the bill — &quot;writing 1GB of business data billed as 3GB on the cloud disk&quot; is no exaggeration.</li>
+<li>Selection implication: write-heavy workloads must budget WAL bandwidth; the five settings of <code>synchronous_commit</code> are an explicit &quot;durability for latency&quot; knob that can be temporarily lowered for bulk loads.</li>
+<li>Sources: official docs (WAL configuration chapter) — official claim; community consensus.</li>
+</ul>
+<p><strong>Deep dive 7 (consistency/operations): 32-bit transaction ID wraparound — the ultimate write-refusing protection</strong></p>
+<ul>
+<li>Mechanism: transaction IDs are 32-bit and wrap around; autovacuum freezes (freezes) old tuples and advances <code>datfrozenxid</code>; if the 2-billion limit (<code>autovacuum_freeze_max_age</code>) approaches without freezing, the database enters protective mode and <strong>refuses writes</strong> — PG&#x27;s oldest and hardest correctness guardrail.</li>
+<li>At the edge: the symptom is &quot;suddenly can&#x27;t write&quot;, but the root cause is freeze lag that began months ago; the emergency response is a database-wide <code>vacuumdb --freeze</code> (extremely slow on large databases); day-to-day, monitoring the age of <code>datfrozenxid</code> catches it early.</li>
+<li>Selection implication: this is the ultimate embodiment of &quot;correctness over availability&quot; — choosing PG means choosing this value set; the monitoring item is mandatory, &quot;later&quot; is not acceptable.</li>
+<li>Sources: official docs (preventing transaction ID wraparound failures) — official claim; community consensus.</li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="用户最买账的 5 点" data-en="What users love most">用户最买账的 5 点</span></h2>
+<div class="lang-block lang-zh">
+<blockquote>
+<p>好的也要有深度。每条 = 为什么是真的 + 边缘与限度。</p>
+</blockquote>
+<ol>
+<li><strong>免费、无商业锁定</strong><ul>
+<li>为什么是真的：PostgreSQL License 宽松，软件零成本，可商用可闭源分发；没有单一厂商能改 license 或断供。</li>
+<li>边缘与限度：免费的是软件，不是运维——TCO 里人力是大头，一个资深 PG DBA 的年薪远超任何商业 license；云托管版按量计费并不便宜，&quot;省 license 费&quot;和&quot;省总成本&quot;是两回事。</li>
+<li>来源：官方许可声明；社区共识。</li>
+</ul></li>
+<li><strong>生态与人才供给</strong><ul>
+<li>为什么是真的：驱动/ORM/工具链最全，DBA 好招，中文资料丰富，Stack Overflow 式问题基本都有答案。</li>
+<li>边缘与限度：好招的是&quot;会用 PG 的&quot;，懂深水区的不好招；云托管版有行为差异（参数白名单、扩展白名单、超管受限），&quot;在 RDS 上跑通&quot;不等于&quot;自建也一样&quot;。</li>
+<li>来源：社区共识。observed_version：全版本（2026-09）。</li>
+</ul></li>
+<li><strong>JSONB 一站式：关系 + 文档混合负载</strong><ul>
+<li>为什么是真的：JSONB + GIN 索引 + 丰富的操作符/函数，多数&quot;半结构化&quot;场景不用再搭 MongoDB，一套 SQL 搞定。</li>
+<li>边缘与限度：JSONB 更新是整行重写，大文档高频局部更新写放大显著；GIN 索引维护成本高；超高频文档更新场景，专用文档库仍有优势。&quot;一站式&quot;的边界是更新频率。</li>
+<li>来源：官方文档（JSON 类型章节）；社区共识。observed_version：全版本。</li>
+</ul></li>
+<li><strong>扩展即装即用</strong><ul>
+<li>为什么是真的：PostGIS、pgvector、全文检索 <code>CREATE EXTENSION</code> 一条命令，GIS/向量/搜索场景开箱即用。</li>
+<li>边缘与限度：见杀手特性 1——扩展质量参差、大版本升级绑定、生产 vet 成本。&quot;装上&quot;和&quot;生产就绪&quot;之间隔着一次版本升级。</li>
+<li>来源：社区共识。observed_version：PG 14–18（2026-09）。</li>
+</ul></li>
+<li><strong>稳定性口碑：&quot;最不会丢数据的开源库&quot;</strong><ul>
+<li>为什么是真的：WAL + 保守默认 + 正确性优先的工程文化，崩溃恢复久经考验；大版本支持 5 年，小版本按季度发。</li>
+<li>边缘与限度：口碑来自保守默认（<code>shared_buffers</code> 128MB、<code>max_connections</code> 100），生产不调参等于裸奔；稳定 ≠ 不用运维，深水区一到七一个都不会因为&quot;口碑好&quot;而消失。</li>
+<li>来源：社区共识；版本支持政策（官方：PG 18 支持至 2030-11，PG 14 于 2026-11-12 EOL）。</li>
+</ul></li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<blockquote>
+<p>The good stuff, also with depth. Each = why it&#x27;s real + edges and limits.</p>
+</blockquote>
+<ol>
+<li><strong>Free, no commercial lock-in</strong><ul>
+<li>Why it&#x27;s real: the PostgreSQL License is permissive — zero software cost, commercial use and closed-source distribution allowed; no single vendor can change the license or cut off supply.</li>
+<li>Edges and limits: the software is free, not the operations — headcount dominates TCO, and one senior PG DBA&#x27;s annual salary far exceeds any commercial license; managed cloud editions are billed by usage and aren&#x27;t cheap — &quot;saving on license fees&quot; and &quot;saving on total cost&quot; are two different things.</li>
+<li>Sources: official license statement; community consensus.</li>
+</ul></li>
+<li><strong>Ecosystem and talent supply</strong><ul>
+<li>Why it&#x27;s real: the most complete driver/ORM/toolchain, DBAs are easy to hire, abundant Chinese-language resources, and Stack Overflow-style questions almost always have answers.</li>
+<li>Edges and limits: what&#x27;s easy to hire is &quot;someone who can use PG&quot;; people who understand the deep waters are not; managed editions behave differently (parameter whitelists, extension whitelists, restricted superuser) — &quot;it works on RDS&quot; is not &quot;it&#x27;s the same self-hosted&quot;.</li>
+<li>Sources: community consensus. observed_version: all versions (2026-09).</li>
+</ul></li>
+<li><strong>JSONB one-stop shop: relational + document hybrid workloads</strong><ul>
+<li>Why it&#x27;s real: JSONB + GIN indexes + rich operators/functions — most &quot;semi-structured&quot; scenarios no longer need MongoDB; one SQL stack handles it.</li>
+<li>Edges and limits: JSONB updates rewrite the whole row; large documents with frequent partial updates suffer significant write amplification; GIN indexes are expensive to maintain; for ultra-high-frequency document updates, dedicated document stores still have the edge. The boundary of &quot;one-stop&quot; is update frequency.</li>
+<li>Sources: official docs (JSON types chapter); community consensus. observed_version: all versions.</li>
+</ul></li>
+<li><strong>Extensions that install and just work</strong><ul>
+<li>Why it&#x27;s real: PostGIS, pgvector, full-text search — one <code>CREATE EXTENSION</code> command, GIS/vector/search scenarios work out of the box.</li>
+<li>Edges and limits: see killer feature 1 — uneven extension quality, major-version upgrade coupling, production vetting cost. Between &quot;installed&quot; and &quot;production-ready&quot; lies one version upgrade.</li>
+<li>Sources: community consensus. observed_version: PG 14–18 (2026-09).</li>
+</ul></li>
+<li><strong>Stability reputation: &quot;the open-source database least likely to lose your data&quot;</strong><ul>
+<li>Why it&#x27;s real: WAL + conservative defaults + a correctness-first engineering culture; crash recovery battle-tested; 5 years of major-version support, quarterly minor releases.</li>
+<li>Edges and limits: the reputation comes from conservative defaults (<code>shared_buffers</code> 128MB, <code>max_connections</code> 100) — running production untuned is running naked; stable ≠ maintenance-free, and none of deep dives 1–7 disappear because &quot;the reputation is good&quot;.</li>
+<li>Sources: community consensus; version support policy (official: PG 18 supported until 2030-11, PG 14 EOL on 2026-11-12).</li>
+</ul></li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="吐槽清单" data-en="Complaints">吐槽清单</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>分类</th><th>吐槽</th><th>影响版本</th><th>状态</th><th>来源</th></tr></thead>
+<tbody>
+<tr><td>运维坑</td><td>autovacuum 默认阈值对大表不友好（0.2 × 行数），高写入大表 vacuum 追不上</td><td>全版本</td><td>open（机制性，逐表调参是标准解法）</td><td>官方文档；社区实测 2026-09</td></tr>
+<tr><td>运维坑</td><td>长事务/idle-in-transaction/逻辑槽冻结全库 vacuum，表膨胀失控</td><td>全版本</td><td>open（机制性）</td><td>官方文档；社区共识</td></tr>
+<tr><td>运维坑</td><td>复制槽闲置打满主库磁盘（max_slot_wal_keep_size 默认 -1 无限制）</td><td>PG 13+</td><td>partially-fixed（设上限可解，代价是槽失效备库重建）</td><td>官方文档；社区共识</td></tr>
+<tr><td>运维坑</td><td>大版本升级仍有停机/验证成本；扩展版本绑定可卡住升级；--link 不可回退</td><td>全版本</td><td>open（PG 18 统计信息继承与 --swap 有改善）</td><td>官方文档；社区实测</td></tr>
+<tr><td>运维坑</td><td>无原生 TDE，合规场景必须靠文件系统/云盘加密或商业发行版</td><td>全版本</td><td>open（查证为无；社区长期诉求）</td><td>官方文档（无此功能）；社区共识</td></tr>
+<tr><td>运维坑</td><td>官方不内置连接池、不内置自动故障切换（均查证为无），靠 Patroni/PgBouncer/云拼装</td><td>全版本</td><td>open（生态位，不算 bug）</td><td>官方文档；社区共识</td></tr>
+<tr><td>性能坑</td><td>进程连接模型：连接数上千后 fork/调度开销显著；work_mem 乘法易 OOM</td><td>全版本</td><td>open（架构固有）</td><td>官方文档；社区共识</td></tr>
+<tr><td>性能坑</td><td>VACUUM/REINDEX 与业务争 IO；checkpoint 周期性毛刺</td><td>全版本</td><td>open（PG 18 AIO 改善 vacuum/顺序扫读路径）</td><td>官方文档；社区共识</td></tr>
+<tr><td>性能坑</td><td>精确 count(*) 必须全表扫（无近似值直读），大表 count 是经典慢查询</td><td>全版本</td><td>open（可用 pg_class.reltuples 近似或物化视图绕行）</td><td>社区共识</td></tr>
+<tr><td>性能坑</td><td>写放大：WAL + full_page_writes + 索引维护；云盘 IOPS 账单隐形成本</td><td>全版本</td><td>open（机制性）</td><td>官方文档；社区共识</td></tr>
+<tr><td>兼容坑</td><td>逻辑复制不复制 DDL，表结构变更要靠外部工具同步</td><td>全版本</td><td>open</td><td>官方文档；社区共识</td></tr>
+<tr><td>兼容坑</td><td>序列有空洞（回滚/崩溃产生 gap），指望序列连续的业务会失望</td><td>全版本</td><td>open（by design）</td><td>官方文档；社区共识</td></tr>
+<tr><td>生态坑</td><td>托管版行为差异：参数/扩展白名单、超管受限，&quot;云上跑通≠自建一样&quot;</td><td>全版本</td><td>open</td><td>社区共识</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Category</th><th>Complaint</th><th>Affected versions</th><th>Status</th><th>Sources</th></tr></thead>
+<tbody>
+<tr><td>Operations pitfalls</td><td>autovacuum&#x27;s default threshold is unfriendly to big tables (0.2 × row count); vacuum can&#x27;t keep up on write-heavy big tables</td><td>All versions</td><td>open (by design; per-table tuning is the standard fix)</td><td>official docs; community-tested 2026-09</td></tr>
+<tr><td>Operations pitfalls</td><td>Long transactions / idle-in-transaction / logical slots freeze database-wide vacuum; bloat runs out of control</td><td>All versions</td><td>open (by design)</td><td>official docs; community consensus</td></tr>
+<tr><td>Operations pitfalls</td><td>Idle replication slots fill the primary&#x27;s disk (max_slot_wal_keep_size defaults to -1, unlimited)</td><td>PG 13+</td><td>partially-fixed (fixable by setting a cap, at the cost of slot invalidation and replica rebuild)</td><td>official docs; community consensus</td></tr>
+<tr><td>Operations pitfalls</td><td>Major-version upgrades still carry downtime/validation cost; extension version coupling can stall upgrades; --link cannot roll back</td><td>All versions</td><td>open (PG 18 statistics inheritance and --swap improve this)</td><td>official docs; community-tested</td></tr>
+<tr><td>Operations pitfalls</td><td>No native TDE; compliance scenarios must rely on filesystem/cloud-disk encryption or commercial distributions</td><td>All versions</td><td>open (verified absent; long-standing community request)</td><td>official docs (feature absent); community consensus</td></tr>
+<tr><td>Operations pitfalls</td><td>No built-in connection pooler or automatic failover (both verified absent); assembled from Patroni/PgBouncer/cloud</td><td>All versions</td><td>open (ecosystem niche, not a bug)</td><td>official docs; community consensus</td></tr>
+<tr><td>Performance pitfalls</td><td>Process connection model: significant fork/scheduling overhead past thousands of connections; work_mem multiplication can OOM</td><td>All versions</td><td>open (inherent to the architecture)</td><td>official docs; community consensus</td></tr>
+<tr><td>Performance pitfalls</td><td>VACUUM/REINDEX contend with the workload for IO; periodic checkpoint spikes</td><td>All versions</td><td>open (PG 18 AIO improves vacuum/sequential-scan paths)</td><td>official docs; community consensus</td></tr>
+<tr><td>Performance pitfalls</td><td>Exact count(*) requires a full table scan (no approximate value to read directly); count on big tables is a classic slow query</td><td>All versions</td><td>open (workarounds: pg_class.reltuples approximation or materialized views)</td><td>community consensus</td></tr>
+<tr><td>Performance pitfalls</td><td>Write amplification: WAL + full_page_writes + index maintenance; hidden IOPS cost on cloud disk bills</td><td>All versions</td><td>open (inherent to the architecture)</td><td>official docs; community consensus</td></tr>
+<tr><td>Compatibility pitfalls</td><td>Logical replication doesn&#x27;t replicate DDL; schema changes need external tooling to sync</td><td>All versions</td><td>open</td><td>official docs; community consensus</td></tr>
+<tr><td>Compatibility pitfalls</td><td>Sequences have gaps (rollback/crash produce gaps); applications expecting gapless sequences will be disappointed</td><td>All versions</td><td>open (by design)</td><td>official docs; community consensus</td></tr>
+<tr><td>Ecosystem pitfalls</td><td>Managed-edition behavior differences: parameter/extension whitelists, restricted superuser — &quot;works on cloud ≠ same self-hosted&quot;</td><td>All versions</td><td>open</td><td>community consensus</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="判决" data-en="Verdict">判决</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li><strong>一句话定位</strong>：开源关系型数据库的默认选项——通用 OLTP 的水桶机，扩展生态是最深的护城河；选 PG 就是选了一套价值观：正确性优先、中立无锁定，以及把 VACUUM、连接模型、升级这些机制税内化为团队能力。</li>
+<li><strong>适合谁</strong>：<ul>
+<li>通用 OLTP 首选，尤其新项目技术选型想&quot;先不犯错&quot;；</li>
+<li>GIS（PostGIS）、向量检索（pgvector）、全文检索等扩展场景；</li>
+<li>JSONB 混合负载，&quot;一套 SQL 搞定关系+半结构化&quot;；</li>
+<li>预算敏感但愿意投入 DBA 的团队；多云可移植要求高的团队。</li>
+</ul></li>
+<li><strong>不适合谁</strong>：<ul>
+<li>需要原生分布式写扩展（单机 PG 不是答案，看 Citus 或分布式库）；</li>
+<li>团队零 DBA 投入又想&quot;装完不管&quot;（要么买托管版，要么别选）；</li>
+<li>重度依赖 Oracle 方言且不想重写（无商业兼容层时迁移=重写）；</li>
+<li>serverless 高突发直连（不加 PgBouncer 就是给自己埋雷）。</li>
+</ul></li>
+<li><strong>迁移成本</strong>：<ul>
+<li><strong>from_mysql</strong>：中。引号/大小写/自增（SERIAL/IDENTITY 语义差异）/严格 GROUP BY/无 DUAL 等方言差异；工具链成熟（pgloader、ora2pg 亦支持 MySQL 源）。</li>
+<li><strong>from_oracle</strong>：中高。PL/SQL → plpgsql 重写；无商业兼容层时工作量大；分区/高级包逐项评估。</li>
+<li><strong>from_sqlserver</strong>：中高。T-SQL 方言、标识符、分页语法差异为主。</li>
+<li><strong>from_商业PG发行版</strong>：低。协议与生态一致；但用了商业专有增强（Oracle 兼容对象等）的部分要处理迁出成本。</li>
+</ul></li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li><strong>One-line positioning</strong>: The default choice among open-source relational databases — a well-rounded machine for general OLTP, whose extension ecosystem is its deepest moat; choosing PG means choosing a value set: correctness first, neutral and lock-in-free, and internalizing the mechanism taxes of VACUUM, the connection model, and upgrades as team capability.</li>
+<li><strong>Good for</strong>:<ul>
+<li>First choice for general OLTP, especially new projects that want to &quot;not make mistakes first&quot;;</li>
+<li>Extension scenarios: GIS (PostGIS), vector search (pgvector), full-text search;</li>
+<li>JSONB hybrid workloads — &quot;one SQL stack for relational + semi-structured&quot;;</li>
+<li>Budget-sensitive teams willing to invest in DBAs; teams with strong multi-cloud portability requirements.</li>
+</ul></li>
+<li><strong>Not for</strong>:<ul>
+<li>Native distributed write scaling (single-node PG is not the answer; look at Citus or distributed databases);</li>
+<li>Teams with zero DBA investment wanting &quot;install and forget&quot; (either buy a managed edition or don&#x27;t choose it);</li>
+<li>Heavy reliance on the Oracle dialect with no appetite for rewrites (migration = rewrite without a commercial compatibility layer);</li>
+<li>Serverless high-burst direct connections (skipping PgBouncer is burying your own landmine).</li>
+</ul></li>
+<li><strong>Migration cost</strong>:<ul>
+<li><strong>from_mysql</strong>: Medium. Dialect differences: quotes/case sensitivity/auto-increment (SERIAL/IDENTITY semantics differences)/strict GROUP BY/no DUAL; mature tooling (pgloader, ora2pg also supports MySQL sources).</li>
+<li><strong>from_oracle</strong>: Medium-high. PL/SQL → plpgsql rewrites; heavy work without a commercial compatibility layer; partitioned tables/advanced packages assessed item by item.</li>
+<li><strong>from_sqlserver</strong>: Medium-high. Mostly T-SQL dialect, identifier, and pagination-syntax differences.</li>
+<li><strong>from_commercial PG distributions</strong>: Low. Same protocol and ecosystem; but parts using commercial proprietary enhancements (Oracle-compatible objects, etc.) carry exit costs to handle.</li>
+</ul></li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="来源与待验证清单" data-en="Sources & to-be-verified">来源与待验证清单</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li>版本信息：PostgreSQL 18.6 / 17.11 / 16.15 / 15.19 / 14.24 于 2026-08-13 发布（社区公告）；PG 18 于 2025-09-25 GA，支持至 2030-11；PG 14 于 2026-11-12 EOL——https://www.postgresql.org/about/news/postgresql-186-1711-1615-1519-1424-and-19-beta-3-released-3365/（2026-09-29 查阅）；AWS RDS 发布日历、Neon 版本支持页交叉验证</li>
+<li>PG 18 关键特性：异步 I/O（io_uring/worker）、B-tree skip scan、虚拟生成列（默认）、uuidv7()、OAuth 2.0 认证、OLD/NEW in RETURNING、统计信息跨版本继承、并行 GIN 构建、pg_upgrade --swap/--jobs——社区 PG 18 发布解读多方交叉（2026-09-29 采集）</li>
+<li>复制与 WAL 参数：官方文档 runtime-config-replication（max_slot_wal_keep_size 默认 -1）、runtime-config-wal——https://www.postgresql.org/docs/current/runtime-config-replication.html（经第三方资料转引，2026-09-29）</li>
+<li>VACUUM/膨胀/冻结：官方文档 routine vacuuming 章节（机制）；社区实测（dev.to 索引膨胀分析，2026-09）</li>
+<li>升级与容器：官方 pg_upgrade 文档；社区实测（Docker 官方镜像 PG 18 PGDATA 路径变更，2025-10）</li>
+<li>MVCC/连接模型/事务隔离：官方文档——官方口径；社区共识</li>
+<li>下次评审建议：跟踪 PG 19 GA（2026-08 已发 beta 3，预计 2026-09 发布）的新特性与升级注意事项；复核社区原生 TDE 是否有进展（长期诉求，截至本稿仍查证为无）</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li>Version info: PostgreSQL 18.6 / 17.11 / 16.15 / 15.19 / 14.24 released 2026-08-13 (community announcement); PG 18 GA on 2025-09-25, supported until 2030-11; PG 14 EOL on 2026-11-12 — https://www.postgresql.org/about/news/postgresql-186-1711-1615-1519-1424-and-19-beta-3-released-3365/ (accessed 2026-09-29); cross-validated with AWS RDS release calendar and Neon&#x27;s version support page</li>
+<li>PG 18 key features: async I/O (io_uring/worker), B-tree skip scan, virtual generated columns (default), uuidv7(), OAuth 2.0 authentication, OLD/NEW in RETURNING, cross-version statistics inheritance, parallel GIN builds, pg_upgrade --swap/--jobs — cross-referenced from multiple community PG 18 release analyses (collected 2026-09-29)</li>
+<li>Replication and WAL parameters: official docs runtime-config-replication (max_slot_wal_keep_size default -1), runtime-config-wal — https://www.postgresql.org/docs/current/runtime-config-replication.html (cited via third-party sources, 2026-09-29)</li>
+<li>VACUUM/bloat/freezing: official docs routine vacuuming chapter (mechanism); community-tested (dev.to index-bloat analysis, 2026-09)</li>
+<li>Upgrades and containers: official pg_upgrade docs; community-tested (official Docker image PG 18 PGDATA path change, 2025-10)</li>
+<li>MVCC/connection model/transaction isolation: official docs — official claim; community consensus</li>
+<li>Suggested next review: track PG 19 GA (beta 3 released 2026-08, expected 2026-09) new features and upgrade notes; re-verify whether community native TDE has progressed (long-standing request; still verified absent as of this draft)</li>
+</ul>
+</div>
+</section>
+</main>
+<footer class="footer">
+  <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
+</footer>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
