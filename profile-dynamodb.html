@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Amazon DynamoDB - DB 选型参考</title>
+<link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">&#9672;</span> DB <span data-zh="选型参考" data-en="Compare">选型参考</span></a>
+    <nav class="mainnav">
+<a href="index.html" class="active" data-zh="首页" data-en="Home">首页</a>
+<a href="compare.html" class="" data-zh="维度对比" data-en="Compare">维度对比</a>
+<a href="methodology.html" class="" data-zh="方法论" data-en="Methodology">方法论</a>
+<a href="advisor.html" class="" data-zh="AI选型" data-en="AI Selection">AI选型</a>
+    </nav>
+    <div class="cmp-tray">
+      <button id="cmp-tray-btn" type="button" class="tray-btn" aria-expanded="false" aria-haspopup="true"><span data-zh="对比" data-en="Compare">对比</span> <b class="tray-count"><i id="cmp-count">0</i>/4</b></button>
+      <div id="cmp-panel" class="tray-panel" hidden>
+        <div class="tray-sec"><span data-zh="已选" data-en="Selected">已选</span></div>
+        <div id="cmp-selected" class="tray-selected"></div>
+        <div class="tray-sec"><span data-zh="全部产品（最多选 4 款）" data-en="All products (up to 4)">全部产品（最多选 4 款）</span></div>
+        <div id="cmp-list" class="tray-list"></div>
+        <div class="tray-actions"><button id="cmp-clear" type="button" class="tray-clear"><span data-zh="清空选择" data-en="Clear selection">清空选择</span></button></div>
+      </div>
+    </div>
+    <button id="lang-toggle" class="lang-btn" type="button" aria-label="switch language">EN</button>
+  </div>
+</header>
+<main class="page">
+<div class="profile-hero">
+  <a class="back" href="index.html"><span data-zh="← 返回首页" data-en="← Back to home">← 返回首页</span></a>
+  <h1>Amazon DynamoDB</h1>
+  <div class="meta-row"><span class="cat cat-kvdoc" data-zh="KV · 宽列 · 文档" data-en="KV · Wide-column · Document">KV · 宽列 · 文档</span> <span class="tag">#serverless</span> <span class="tag">#KV</span> <span class="tag">#NoSQL</span> <span class="tag">#单毫秒延迟</span> <span class="tag">#GlobalTables</span> <span class="tag">#按量计费</span> <span class="tag">#AWS锁定</span></div>
+  <p class="oneliner"><div class="lang-block lang-zh">
+<p>AWS 的 serverless KV/文档数据库：按分区键哈希分片、单毫秒延迟与表规模无关、多 Region 可多活——但&quot;无运维&quot;的代价是把 DBA 的工作换成了容量建模与账单工程，访问模式设计错了比选错数据库更贵。</p>
+</div>
+<div class="lang-block lang-en" hidden>
+<p>AWS&#x27;s serverless KV/document database: sharded by partition-key hash, single-digit-millisecond latency independent of table size, multi-active across regions — but &quot;no ops&quot; comes at the cost of turning the DBA&#x27;s job into capacity modeling and bill engineering, and designing your access patterns wrong costs more than picking the wrong database.</p>
+</div></p>
+  <div class="ai-dive-row" data-product="Amazon DynamoDB">
+    <span class="ai-dive-label" data-zh="用 AI 深挖这款：" data-en="Deep-dive with AI:">用 AI 深挖这款：</span>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('chatgpt', this)">ChatGPT <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('grok', this)">Grok <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn" onclick="aiDeepDive('claude', this)">Claude <span aria-hidden="true">↗</span></button>
+    <button type="button" class="ai-btn addcmp-btn" data-addcmp="dynamodb"><span class="addcmp-label">＋ 对比</span></button>
+  </div>
+  <div class="legend"><span class="legend-label" data-zh="证据等级：" data-en="Evidence levels: ">证据等级：</span><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></div>
+</div>
+<section class="doc-section">
+<h2><span data-zh="基本信息" data-en="Basics">基本信息</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>项</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td>厂商</td><td>Amazon Web Services（美国）</td></tr>
+<tr><td>起源</td><td>2007 年 Dynamo 论文 → 2012 年 1 月 GA；2026 年已运营 14 年</td></tr>
+<tr><td>许可证</td><td>闭源商业，无开源版本（DynamoDB Local 仅为本地开发用 Docker 镜像，非开源发行版）</td></tr>
+<tr><td>托管服务</td><td>仅 AWS（这是它唯一的存在形态，无自建版）</td></tr>
+<tr><td>主类型</td><td>KV / 文档（NoSQL）</td></tr>
+<tr><td>兼具类型</td><td>向量检索（2026-08 GA）、CDC（DynamoDB Streams）</td></tr>
+<tr><td>数据模型</td><td>分区键（必选）+ 排序键（可选）的无模式 item，单 item 上限 400KB</td></tr>
+<tr><td>一致性模型</td><td>表内最终一致（默认）/ 强一致（可选，2x RCU）；跨 Region 见 Global Tables</td></tr>
+<tr><td>复制协议</td><td>同 Region 内 3 AZ 同步复制<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>；跨 Region Global Tables 另见深水区六</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Item</th><th>Details</th></tr></thead>
+<tbody>
+<tr><td>Vendor</td><td>Amazon Web Services (United States)</td></tr>
+<tr><td>Origin</td><td>2007 Dynamo paper → GA January 2012; 14 years in production as of 2026</td></tr>
+<tr><td>License</td><td>Closed-source commercial, no open-source edition (DynamoDB Local is only a Docker image for local development, not an open-source distribution)</td></tr>
+<tr><td>Managed service</td><td>AWS only (its sole form of existence; no self-hosted edition)</td></tr>
+<tr><td>Primary type</td><td>KV / document (NoSQL)</td></tr>
+<tr><td>Also covers</td><td>Vector search (GA 2026-08), CDC (DynamoDB Streams)</td></tr>
+<tr><td>Data model</td><td>Schemaless items with a partition key (required) + sort key (optional); 400KB max per item</td></tr>
+<tr><td>Consistency model</td><td>Eventual consistency by default within a table / strong consistency optional (2x RCU); cross-region see Global Tables</td></tr>
+<tr><td>Replication protocol</td><td>Synchronous replication across 3 AZs within a region <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>; cross-region Global Tables see Deep-dive 6</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section"><h2><span data-zh="硬维度（14 项）" data-en="Hard dimensions (14)">硬维度（14 项）</span></h2>
+<div class="lang-block lang-zh">
+<div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。所有表默认 AES-256 落盘加密；三档：AWS owned key（默认）、AWS managed key（<code>aws/dynamodb</code>）、customer managed KMS key（自带轮换策略、CloudTrail 审计密钥使用）。注意：AWS owned key 无可见性，合规场景必须显式切 CMK。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。所有 API 走 HTTPS/TLS；SDK 默认；支持 VPC endpoint 私有访问不走公网。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> 审计 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。CloudTrail 记录<strong>管理面</strong> API（建表、改容量、改策略）；<strong>数据面</strong>（GetItem/PutItem/Query）默认无审计，靠 CloudTrail data events（需单独启用、按量收费）或应用层日志。没有 SQL 审计日志式的&quot;谁查了哪行&quot;开箱能力。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> 认证与权限 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。无用户名密码，IAM SigV4 签名；细粒度访问控制（<code>dynamodb:LeadingKeys</code> 行级、<code>dynamodb:Attributes</code> 列级），多租户隔离的标准做法。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> 备份恢复 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。PITR 连续备份（2025-01 起保留期 1–35 天可配）+ 秒级时间点恢复；on-demand 全量备份（可永久保留）；AWS Backup 集成。关键限制：<strong>恢复只能生成新表，不支持原地覆盖/回滚</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>，&quot;回滚到 10 分钟前&quot;意味着切流量到新表。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> 大版本升级 <span class="verdict v-neutral">不适用</span></h3><div class="dim-body"><p><strong>不适用</strong>（编辑判断）。纯 serverless，无引擎版本、无升级窗口、无停机升级概念；新能力（如向量检索 GA 2026-08）直接可用。代价是行为变更不由你控制发布时间。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> 可观测性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。CloudWatch 指标（ConsumedRCU/WCU、ThrottledRequests、ReplicationLatency、SystemErrors 等）；Contributor Insights 定位热 key/热分区；CloudTrail；DAX 有独立指标。慢查询概念不存在——只有&quot;被节流的请求&quot;。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> 连接模型 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。HTTPS API，无连接、无连接池——连接风暴问题天然不存在；但&quot;连接&quot;换成了&quot;吞吐配额&quot;，突发超 2 倍历史峰值 30 分钟内仍可能被节流（社区技能文档口径）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> 事务与隔离级别 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。<code>TransactWriteItems</code>（最多 100 项/4MB，<strong>2x WCU</strong>）、<code>TransactGetItems</code>（最多 100 项/4MB）；<code>ClientRequestToken</code> 幂等；单 Region 内 ACID。限制：事务仅单 Region（MRSC Global Tables 不支持事务）；默认读最终一致，<code>ConsistentRead=True</code> 得强一致（2x RCU）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> 复制与一致性 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。表内 3 AZ 同步复制；读默认最终一致（通常 &lt;1 秒收敛，厂商口径）；跨 Region Global Tables：MREC（异步，last-writer-wins）或 MRSC（同步 quorum，需 3 Region 固定拓扑）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> 扩展方式 <span class="verdict v-yes">有，在线</span></h3><div class="dim-body"><p><strong>有，在线</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。存储驱动自动分区（无感）；吞吐按 on-demand 自动或 provisioned/auto-scaling 调整；无纵向扩展概念。分区是&quot;只增&quot;逻辑，热 key 无法靠加分区解决（见深水区一）。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> 兼容性 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。专有 NoSQL API（GetItem/PutItem/UpdateItem/DeleteItem/Query/Scan/Batch/Transact）+ PartiQL（SQL 方言子集，功能弱于真 SQL）；AWS SDK 全语言；DynamoDB Local 供本地开发。<strong>无</strong> MySQL/PG/Oracle 协议，无开源发行版，迁出=重写数据访问层。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> 许可证与商业模式 <span class="verdict v-neutral">闭源商业<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></span></h3><div class="dim-body"><p>闭源商业<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。按量付费：on-demand 按读写请求单元、provisioned 按 RCU/WCU-小时、存储 GB-月、PITR、备份存储、Global Tables 复制写（rWCU）、Streams 读取、DAX 另计；Standard-IA 表类降存储费。<strong>AWS 锁定是最大商业现实</strong>：无他云、无自建。</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> 中文资料丰富度 <span class="verdict v-yes">有中文版但部分页面翻译滞后</span></h3><div class="dim-body"><p><strong>中等</strong><span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。官方文档有中文版但部分页面翻译滞后；中文社区实践帖（CSDN/掘金/知乎）不少，但深度建模（单表设计、GSI 成本）内容多为英文。</p></div></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="dim-item"><h3><span class="dim-num">1</span> Data-at-rest encryption / TDE <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. All tables encrypted on disk with AES-256 by default; three tiers: AWS owned key (default), AWS managed key (<code>aws/dynamodb</code>), customer managed KMS key (bring your own rotation policy; key usage audited via CloudTrail). Note: AWS owned keys offer no visibility — compliance scenarios must explicitly switch to a CMK.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">2</span> TLS / transport encryption <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. All API calls go over HTTPS/TLS; SDK default; VPC endpoints supported for private access without going over the public internet.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">3</span> Auditing <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. CloudTrail records <strong>management-plane</strong> API calls (table creation, capacity changes, policy changes); the <strong>data plane</strong> (GetItem/PutItem/Query) has no auditing by default — rely on CloudTrail data events (must be enabled separately, metered billing) or application-layer logging. There is no out-of-the-box &quot;who read which row&quot; SQL-audit-log-style capability.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">4</span> Authentication &amp; authorization <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. No username/password; IAM SigV4 signatures; fine-grained access control (row-level via <code>dynamodb:LeadingKeys</code>, column-level via <code>dynamodb:Attributes</code>) — the standard practice for multi-tenant isolation.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">5</span> Backup &amp; recovery <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. PITR continuous backups (retention configurable 1–35 days since 2025-01) + second-level point-in-time restore; on-demand full backups (retained indefinitely); AWS Backup integration. Key limitation: <strong>recovery only creates a new table — no in-place overwrite/rollback</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. &quot;Roll back to 10 minutes ago&quot; means cutting traffic to a new table.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">6</span> Major-version upgrades <span class="verdict v-neutral">Not applicable</span></h3><div class="dim-body"><p><strong>Not applicable</strong> (editorial judgment). Pure serverless: no engine versions, no upgrade windows, no downtime-upgrade concept; new capabilities (e.g., vector search GA 2026-08) are simply available. The cost: you don&#x27;t control when behavior changes ship.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">7</span> Observability <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. CloudWatch metrics (ConsumedRCU/WCU, ThrottledRequests, ReplicationLatency, SystemErrors, etc.); Contributor Insights to locate hot keys/hot partitions; CloudTrail; DAX has its own metrics. The concept of &quot;slow queries&quot; doesn&#x27;t exist — only &quot;throttled requests.&quot;</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">8</span> Connection model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. HTTPS API, no connections, no connection pools — connection storms are a non-issue by construction. But &quot;connections&quot; are replaced by &quot;throughput quotas&quot;: bursts exceeding 2x the historical peak can still be throttled within 30 minutes (community skill docs wording).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">9</span> Transactions &amp; isolation levels <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. <code>TransactWriteItems</code> (max 100 items / 4MB, <strong>2x WCU</strong>), <code>TransactGetItems</code> (max 100 items / 4MB); <code>ClientRequestToken</code> for idempotency; ACID within a single region. Limitations: transactions are single-region only (MRSC Global Tables don&#x27;t support transactions); reads are eventually consistent by default — <code>ConsistentRead=True</code> gets strong consistency (2x RCU).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> Replication &amp; consistency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. 3-AZ synchronous replication within a table; reads default to eventual consistency (usually converging in &lt;1 second — vendor claim); cross-region Global Tables: MREC (async, last-writer-wins) or MRSC (synchronous quorum, requires a fixed 3-region topology).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">11</span> Scaling <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported, online</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. Storage-driven automatic partitioning (invisible to you); throughput adjusts via on-demand auto or provisioned/auto-scaling; no vertical-scaling concept. Partitions only ever grow — hot keys can&#x27;t be solved by adding partitions (see Deep-dive 1).</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">12</span> Compatibility <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. Proprietary NoSQL API (GetItem/PutItem/UpdateItem/DeleteItem/Query/Scan/Batch/Transact) + PartiQL (a SQL-dialect subset, weaker than real SQL); AWS SDKs in all languages; DynamoDB Local for local development. <strong>No</strong> MySQL/PG/Oracle protocol (confirmed absent), no open-source distribution (confirmed absent) — migrating away = rewriting the data-access layer.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">13</span> License &amp; business model <span class="verdict v-neutral">Closed-source comm</span></h3><div class="dim-body"><p>Closed-source commercial <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. Pay-as-you-go: on-demand billed per read/write request unit, provisioned billed per RCU/WCU-hour, storage GB-month, PITR, backup storage, Global Tables replicated writes (rWCU), Streams reads, DAX billed separately; Standard-IA table class lowers storage fees. <strong>AWS lock-in is the biggest commercial reality</strong>: no other cloud, no self-hosting.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">14</span> Chinese-language resources <span class="verdict v-neutral">Medium</span></h3><div class="dim-body"><p><strong>Medium</strong> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>. Official docs have a Chinese edition but some pages lag in translation; there are plenty of Chinese community practice posts (CSDN/Juejin/Zhihu), but deep modeling content (single-table design, GSI cost) is mostly in English.</p></div></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="杀手特性" data-en="Killer features">杀手特性</span></h2>
+<div class="lang-block lang-zh">
+<ol>
+<li><strong>Serverless 零运维：无实例、无补丁、无版本升级</strong> 真本事：没有&quot;主从&quot;&quot;分片运维&quot;&quot;版本升级&quot;这些概念，吞吐与存储自动扩展；这是它相对一切自建/半托管库最硬的差异。 边缘真相：运维工作没有消失，只是换了形态——DBA 变成了&quot;容量建模师 + FinOps&quot;：on-demand 还是 provisioned、GSI 投影、item 大小取整，每一项都直接连着账单。团队里没人懂 RCU/WCU 账，&quot;零运维&quot;会变成&quot;零预警的账单惊魂&quot;。</li>
+<li><strong>规模无关的单毫秒延迟</strong> 真本事：分区哈希架构，GetItem/Query 延迟与表是 1GB 还是 100TB 无关（官方口径个位数毫秒）；这是关系型库&quot;数据量涨→索引深→变慢&quot;曲线不存在的地方。 边缘真相：只对&quot;按键访问&quot;成立。Scan 全表、跨分区聚合、GSI 回表是线性成本；强一致读 2x RCU；DAX 能把读压到微秒但只缓存最终一致读，<code>ConsistentRead=True</code> 直接绕过 DAX（配了 DAX 又全走强一致 = 白花钱）。</li>
+<li><strong>Global Tables：真正的多 Region 多写</strong> 真本事：每个 Region 可读可写，本地延迟写全球；Region 级 DR 与全球化读写的天然方案。 边缘真相：见深水区六——MREC 的 last-writer-wins 会静默丢更新；MRSC 要 3 Region 固定拓扑、无事务、无 TTL，写延迟付跨 Region quorum 税。多活的是&quot;接入&quot;，不是&quot;一致性免费&quot;。</li>
+<li><strong>Streams + TTL + PITR 开箱即用</strong> 真本事：CDC（Streams→Lambda）、自动过期（TTL 零存储成本）、35 天秒级 PITR 全是第一方开关，不用攒 Debezium/备份脚本。 边缘真相：Streams 只保留 24 小时、每 shard 最多 2 个消费者，高吞吐 CDC 要换 Kinesis Data Streams for DynamoDB；TTL 删除是&quot;48 小时内尽力&quot;，不是准时过期（到期必须不可见的场景应用层还要再过滤）；PITR 恢复只能建新表。</li>
+<li><strong>向量检索（2026-08 GA）：KV 库里的 ANN</strong> 真本事：每表最多 5 个向量索引、4096 维、TopK 100，RAG 场景&quot;元数据过滤 + 向量召回&quot;一库搞定。 边缘真相：base 表超 600GB 需 allowlist（待验证细节）；别把它当专用向量库——大规模 ANN 性能与生态（LangChain 集成深度）待实测验证。这是&quot;顺手做向量&quot;，不是&quot;向量数据库&quot;。</li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<ol>
+<li><strong>Serverless zero-ops: no instances, no patches, no version upgrades</strong> Why it&#x27;s real: there are no concepts of &quot;primary/replica,&quot; &quot;shard ops,&quot; or &quot;version upgrades&quot; — throughput and storage scale automatically; this is its hardest differentiator against every self-hosted/semi-managed database. Edge truth: the ops work didn&#x27;t disappear, it changed shape — the DBA became a &quot;capacity modeler + FinOps engineer&quot;: on-demand vs. provisioned, GSI projections, item-size rounding — every choice connects directly to the bill. If nobody on the team understands RCU/WCU billing, &quot;zero ops&quot; becomes &quot;bill shock with no early warning.&quot;</li>
+<li><strong>Single-digit-millisecond latency independent of scale</strong> Why it&#x27;s real: partitioned-hash architecture — GetItem/Query latency doesn&#x27;t care whether the table is 1GB or 100TB (official docs wording: single-digit milliseconds); this is where the relational-database curve of &quot;more data → deeper indexes → slower&quot; simply doesn&#x27;t exist. Edge truth: only holds for key-based access. Full-table Scans, cross-partition aggregations, and GSI backfills are linear-cost operations; strong reads cost 2x RCU; DAX can push reads to microseconds but only caches eventually consistent reads — <code>ConsistentRead=True</code> bypasses DAX entirely (configuring DAX then running everything strongly consistent = money down the drain).</li>
+<li><strong>Global Tables: genuinely multi-region, multi-write</strong> Why it&#x27;s real: every region is readable and writable with local-latency writes worldwide; the natural solution for region-level DR and global read/write. Edge truth: see Deep-dive 6 — MREC&#x27;s last-writer-wins silently drops updates; MRSC requires a fixed 3-region topology, no transactions, no TTL, and pays a cross-region quorum tax on write latency. What&#x27;s multi-active is &quot;access,&quot; not &quot;consistency for free.&quot;</li>
+<li><strong>Streams + TTL + PITR, all out of the box</strong> Why it&#x27;s real: CDC (Streams→Lambda), auto-expiry (TTL at zero storage cost), and 35-day second-level PITR are all first-party toggles — no need to assemble Debezium/backup scripts yourself. Edge truth: Streams retain only 24 hours with at most 2 consumers per shard — high-throughput CDC needs Kinesis Data Streams for DynamoDB instead; TTL deletion is &quot;best effort within 48 hours,&quot; not punctual expiry (if expired items must be invisible on time, the application layer still has to filter); PITR restore only creates a new table.</li>
+<li><strong>Vector search (GA 2026-08): ANN inside a KV store</strong> Why it&#x27;s real: up to 5 vector indexes per table, 4096 dimensions, TopK 100 — &quot;metadata filtering + vector recall&quot; in one database for RAG scenarios. Edge truth: base tables over 600GB require an allowlist (details to-be-verified); don&#x27;t treat it as a dedicated vector database — large-scale ANN performance and ecosystem depth (LangChain integration) await production validation. This is &quot;vector search as a convenience,&quot; not &quot;a vector database.&quot;</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="深水区" data-en="Deep dives">深水区</span></h2>
+<div class="lang-block lang-zh">
+<p><strong>深水区一（存储/性能）：分区是物理上限，热 key 是设计税</strong>（domain：存储引擎）</p>
+<ul>
+<li>机制：按分区键哈希分布到内部分区；<strong>每分区硬上限 3,000 RCU / 1,000 WCU</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>，provisioned 和 on-demand 都一样；burst capacity 借 300 秒未用额度扛短峰，adaptive capacity 把闲置额度挪给热分区（甚至把热 key 隔离到独立分区）。</li>
+<li>推到边缘：adaptive 再能借也借不过分区天花板——单 key 的写入超过 1,000 WCU/s 就是死刑，<strong>分区自动分裂只看吞吐不看 key 基数，一个 key 永远分不到两个分区</strong>。表级 CloudWatch 显示&quot;只用了 43% 容量&quot;但请求被 <code>ProvisionedThroughputExceededException</code> 打回，是 DynamoDB 最经典的故障现场。唯一解是写分片（<code>user#0…#N</code> 后缀打散），代价是读变 scatter-gather、应用层合并排序。</li>
+<li>选型含义：key 设计是 DynamoDB 的第一生产力；POC 必须按真实 key 分布压测，均匀压测是自欺欺人；上线 Contributor Insights，把&quot;热 key 定位&quot;写进 on-call 手册。</li>
+<li>来源：官方文档（burst/adaptive capacity）；dev.to 社区解析（2026-08）；社区技能文档（2026-09）</li>
+</ul>
+<p><strong>深水区二（成本）：RCU/WCU 的取整税与&quot;方便税&quot;</strong>（domain：成本）</p>
+<ul>
+<li>机制：写按 1KB 向上取整计 WCU，读按 4KB 向上取整计 RCU；强一致读 2x；事务写 2x；<strong>条件表达式失败的写照样收费</strong>；on-demand 单价约为满利用 provisioned 的数倍（社区口径 5–7x）。</li>
+<li>推到边缘：1.1KB 的 item 按 2KB 收费——JSON 嵌套、时间戳、元数据让&quot;刚好超一点&quot;成为常态，高频写入下隐形附加成本显著（第三方博客测算口径）；&quot;先 on-demand 上线，以后再切 provisioned&quot;的团队，流量起来后账单翻数倍才想起切（第三方博客案例，厂商无关）；Scan 做 admin 看板：大表全表扫一次费用可观（第三方口径），每刷一次看板烧一次。</li>
+<li>选型含义：item 设计时把&quot;每 KB 都是钱&quot;刻进 schema 评审；条件写失败率要监控（失败=烧钱无产出）；on-demand 只给&quot;不可预测&quot;负载，流量可预测且有稳定基线就该切 provisioned+auto-scaling（社区经验）；Scan 永远走 S3 导出 + Athena。</li>
+<li>来源：hackernoon 第三方成本分析；awslabs startup-advisor 技能文档（2026-09）；社区共识</li>
+</ul>
+<p><strong>深水区三（成本/一致性）：GSI 是&quot;第二张账单&quot;，且只给最终一致</strong>（domain：索引）</p>
+<ul>
+<li>机制：每个 GSI 独立计费——写入含 GSI key 属性的 item，base 表和 GSI <strong>各收一次</strong> WCU（投影 ALL ≈ 写成本翻倍）；GSI 有独立吞吐配额、独立节流；GSI 读永远最终一致；LSI 只能建表时建、共享表吞吐、单分区键值 10GB 上限。</li>
+<li>推到边缘：更新 GSI 的 key 属性 = 删旧索引项 + 写新索引项，<strong>一次更新收两次 GSI 写</strong>；&quot;随手加个索引查 email&quot;的 PR 让月账单显著上升、写延迟 +40%（Medium 社区案例 2025-10）；5 个全投影 GSI = 写账单 ×6；GSI 背压还会拖慢 base 表写入（写入要等索引写）。</li>
+<li>选型含义：GSI 是 schema 设计的一部分，不是运维期的&quot;加索引&quot;按钮；投影能少则少（KEYS_ONLY/INCLUDE），稀疏索引（只给部分 item 建 GSI key）是省钱的标准动作；要强一致的第二访问模式只能用 LSI——但 LSI 必须在建表时想好。</li>
+<li>来源：官方文档；Medium 社区案例（2025-10）；社区技能文档（2026-09）</li>
+</ul>
+<p><strong>深水区四（复制/CDC）：Streams 的 24 小时与 2 消费者天花板</strong>（domain：复制与 CDC）</p>
+<ul>
+<li>机制：DynamoDB Streams 按 shard 有序推送变更，保留 24 小时；每 shard 最多 2 个消费者；通常接 Lambda。</li>
+<li>推到边缘：消费者挂了超过 24 小时没追上——数据<strong>永久丢失</strong>，没有&quot;从头再消费&quot;的后悔药；第 3 个消费者（审计+缓存失效+搜素同步各要一个）直接被拒，只能换 Kinesis Data Streams for DynamoDB（保留期可达 1 年、5+ 消费者）；每秒 1 万次写入 = 每秒 1 万次 Lambda 调用，Lambda 并发配额和调用费一起爆炸；单个坏 record 会卡住整个 shard 的重试。</li>
+<li>选型含义：Streams 是&quot;触发器&quot;，不是&quot;消息队列&quot;；超过 2 个下游或需要回放，先上 Kinesis；Lambda 消费端必须做幂等 + 死信队列，坏 record 不能卡 shard。</li>
+<li>来源：官方文档；awslabs startup-advisor（2026-09）；社区技能文档（2026-09）</li>
+</ul>
+<p><strong>深水区五（建模）：单表设计——把 join 从数据库赶到人脑</strong>（domain：建模/迁移）</p>
+<ul>
+<li>机制：DynamoDB 没有 join，&quot;访问模式先行&quot;：所有查询预先设计为分区键+排序键（+GSI），多实体塞一张表、用 key 前缀区分（<code>USER#</code>/<code>ORDER#</code>），一次 Query 取回聚合。</li>
+<li>推到边缘：这是 DynamoDB 学习曲线最陡的一段——关系型里&quot;加个 join 就能查&quot;的需求，在这里=加 GSI（加钱）或重做 key 设计（停机迁移）；item 拆分也有讲究：高频变的小属性和静态大属性放同一 item，每次更新按整个 item 大小收 WCU，拆成两个 item 能把计数器更新从 2 WCU 降到 1 WCU；新增访问模式 = 新 GSI = 新账单，老表的&quot;查询灵活性&quot;是事先买好的，不是免费的。</li>
+<li>选型含义：团队里必须有人能画出&quot;访问模式→key 设计&quot;矩阵，否则三个月后就是&quot;加表还是加 GSI&quot;的泥潭；创业公司建议&quot;先用 PG 跑通业务，热路径稳定后再迁 DynamoDB&quot;（awslabs 官方 startup 建议），别在需求天天变的阶段玩单表设计。</li>
+<li>来源：社区技能文档（2026-09）；awslabs startup-advisor（2026-09）；社区共识</li>
+</ul>
+<p><strong>深水区六（复制与一致性）：Global Tables——LWW 静默丢 vs MRSC 的三 Region 笼子</strong>（domain：复制与容灾）</p>
+<ul>
+<li>机制：MREC（默认）：异步复制（通常 1–2 秒，官方口径），并发写同一 item 用 <strong>last-writer-wins</strong> 收敛；MRSC（新）：同步 quorum 写，冲突写直接抛 <code>ReplicatedWriteConflictException</code> 让应用重试。</li>
+<li>推到边缘：MREC 下两个 Region 同时扣库存，LWW 静默丢掉一笔——没有冲突告警，没有版本向量，&quot;最终一致&quot;一致的是&quot;丢了哪一笔不告诉你&quot;；MRSC 把笼子建得很死：<strong>固定 3 Region（含 1 个 witness）拓扑、Region 集合不能跨大区组、事务/TTL 不支持</strong>，写延迟 = 跨 Region quorum RTT，账单 = 每 Region 一份 rWCU 写费。以及&quot;多活接入&quot;不等于&quot;用户路由&quot;——DynamoDB 不帮你做流量调度，Route 53/应用层自己来。</li>
+<li>选型含义：库存/余额/计数器三类数据，MREC 下必须&quot;写分区 pin Region&quot;或条件写，天然多写 LWW 就是丢数据；MRSC 只给&quot;丢不起但写得少&quot;的核心数据，且先算好延迟和账单；DR 演练要测&quot;Region 挂了流量怎么切&quot;，而不是&quot;数据有没有过去&quot;。</li>
+<li>来源：官方文档（Global Tables 原理页）；aws.amazon.com Global Tables FAQ；社区技能文档（2026-09）</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<p><strong>Deep-dive 1 (Storage/Performance): Partitions are the physical ceiling; hot keys are a design tax</strong> (domain: storage engine)</p>
+<ul>
+<li>Mechanism: items are distributed to internal partitions by partition-key hash; <strong>each partition has a hard cap of 3,000 RCU / 1,000 WCU</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>, identical for provisioned and on-demand; burst capacity borrows 300 seconds of unused allowance to absorb short spikes, adaptive capacity moves idle allowance to hot partitions (even isolating hot keys onto dedicated partitions).</li>
+<li>At the edge: no matter how much adaptive capacity can borrow, it can&#x27;t borrow past the partition ceiling — a single key written at over 1,000 WCU/s is a death sentence, <strong>because automatic partition splitting looks at throughput, not key cardinality: one key can never span two partitions</strong>. Table-level CloudWatch shows &quot;only 43% of capacity used&quot; while requests get bounced with <code>ProvisionedThroughputExceededException</code> — DynamoDB&#x27;s most classic incident scene. The only fix is write sharding (<code>user#0…#N</code> suffix scattering), at the cost of scatter-gather reads and application-layer merge sorting.</li>
+<li>What it means for selection: key design is DynamoDB&#x27;s #1 productivity lever; the POC must be load-tested with real key distributions — uniform load tests are self-deception; turn on Contributor Insights and put &quot;hot-key location&quot; in the on-call runbook.</li>
+<li>Sources: official docs (burst/adaptive capacity); dev.to community analysis (2026-08); community skill docs (2026-09)</li>
+</ul>
+<p><strong>Deep-dive 2 (Cost): The RCU/WCU rounding tax and the &quot;convenience tax&quot;</strong> (domain: cost)</p>
+<ul>
+<li>Mechanism: writes are billed per 1KB rounded up to WCU, reads per 4KB rounded up to RCU; strong reads cost 2x; transactional writes cost 2x; <strong>writes that fail conditional expressions are still billed</strong>; on-demand unit price is several times that of fully-utilized provisioned (community wording: 5–7x).</li>
+<li>At the edge: a 1.1KB item is billed as 2KB — nested JSON, timestamps, and metadata make &quot;just barely over&quot; the norm, which a third-party blog calculated as a 67% hidden surcharge at 100 million writes/day; teams that &quot;go live on on-demand and switch to provisioned later&quot; only remembered to switch after the bill jumped from $11K to $39K/month (third-party blog case, vendor-neutral); a Scan for an admin dashboard: scanning 100 million items costs about $125 per full scan (third-party source) — every dashboard refresh burns cash.</li>
+<li>What it means for selection: bake &quot;every KB is money&quot; into schema reviews at item-design time; monitor conditional-write failure rates (failed writes = burning money for nothing); on-demand is only for &quot;unpredictable&quot; loads — if the monthly bill exceeds $100 and traffic is predictable, switch to provisioned + auto-scaling (community rule of thumb); never Scan for analytics — export to S3 and query with Athena.</li>
+<li>Sources: hackernoon third-party cost analysis; awslabs startup-advisor skill docs (2026-09); community consensus</li>
+</ul>
+<p><strong>Deep-dive 3 (Cost/Consistency): The GSI is a &quot;second bill,&quot; and it only gives eventual consistency</strong> (domain: indexing)</p>
+<ul>
+<li>Mechanism: each GSI is billed independently — writing an item containing a GSI key attribute charges WCU <strong>once on the base table and once per GSI</strong> (ALL projection ≈ doubling write cost); GSIs have independent throughput quotas and independent throttling; GSI reads are always eventually consistent; LSIs can only be created at table-creation time, share the table&#x27;s throughput, and cap at 10GB per partition-key value.</li>
+<li>At the edge: updating a GSI key attribute = deleting the old index entry + writing a new one, <strong>one update billed twice for GSI writes</strong>; a &quot;just add an index to look up email&quot; PR raised the monthly bill by $800 and write latency by 40% (Medium community case, 2025-10); 5 fully-projected GSIs = the write bill ×6; GSI backpressure can also slow base-table writes (writes must wait for index writes).</li>
+<li>What it means for selection: the GSI is part of schema design, not an &quot;add an index&quot; button at ops time; keep projections minimal (KEYS_ONLY/INCLUDE); sparse indexes (only giving some items a GSI key) are the standard cost-saving move; a second access pattern that needs strong consistency can only use an LSI — but the LSI must be planned at table-creation time.</li>
+<li>Sources: official docs; Medium community case (2025-10); community skill docs (2026-09)</li>
+</ul>
+<p><strong>Deep-dive 4 (Replication/CDC): Streams&#x27; 24-hour retention and 2-consumer ceiling</strong> (domain: replication &amp; CDC)</p>
+<ul>
+<li>Mechanism: DynamoDB Streams push changes in shard order, retained for 24 hours; at most 2 consumers per shard; typically consumed via Lambda.</li>
+<li>At the edge: if a consumer falls behind for more than 24 hours, the data is <strong>permanently lost</strong> — there&#x27;s no &quot;replay from the beginning&quot; second chance; a third consumer (audit + cache invalidation + search sync each wanting one) gets rejected outright, forcing a move to Kinesis Data Streams for DynamoDB (up to 1 year retention, 5+ consumers); 10,000 writes/second = 10,000 Lambda invocations/second, exploding both the Lambda concurrency quota and the invocation bill; a single poison record blocks retries for the entire shard.</li>
+<li>What it means for selection: Streams are a &quot;trigger,&quot; not a &quot;message queue&quot;; with more than 2 downstream consumers or any replay need, go Kinesis first; Lambda consumers must be idempotent with a dead-letter queue — poison records must not block the shard.</li>
+<li>Sources: official docs; awslabs startup-advisor (2026-09); community skill docs (2026-09)</li>
+</ul>
+<p><strong>Deep-dive 5 (Modeling): Single-table design — moving joins out of the database and into your head</strong> (domain: modeling/migration)</p>
+<ul>
+<li>Mechanism: DynamoDB has no joins — &quot;access patterns first&quot;: every query is pre-designed as partition key + sort key (+ GSI), multiple entities stuffed into one table distinguished by key prefixes (<code>USER#</code>/<code>ORDER#</code>), aggregates fetched in a single Query.</li>
+<li>At the edge: this is the steepest part of DynamoDB&#x27;s learning curve — a need that in a relational database is &quot;just add a join&quot; becomes here = adding a GSI (more money) or redoing the key design (downtime migration); item splitting also matters: putting a frequently-changing small attribute and a static large attribute in the same item bills every update at the whole item&#x27;s size — splitting into two items can cut a counter update from 2 WCU to 1 WCU; each new access pattern = a new GSI = a new bill — an old table&#x27;s &quot;query flexibility&quot; was prepaid, not free.</li>
+<li>What it means for selection: someone on the team must be able to draw the &quot;access pattern → key design&quot; matrix, otherwise in three months you&#x27;ll be stuck in the &quot;add a table or add a GSI&quot; swamp; startups are advised to &quot;get the business working on PG first, then migrate stable hot paths to DynamoDB&quot; (awslabs&#x27; official startup guidance) — don&#x27;t play single-table design while requirements change daily.</li>
+<li>Sources: community skill docs (2026-09); awslabs startup-advisor (2026-09); community consensus</li>
+</ul>
+<p><strong>Deep-dive 6 (Replication &amp; Consistency): Global Tables — LWW&#x27;s silent drops vs. MRSC&#x27;s three-region cage</strong> (domain: replication &amp; disaster recovery)</p>
+<ul>
+<li>Mechanism: MREC (default): async replication (usually 1–2 seconds — official docs wording), concurrent writes to the same item converge via <strong>last-writer-wins</strong>; MRSC (new): synchronous quorum writes, conflicting writes throw <code>ReplicatedWriteConflictException</code> directly and let the application retry.</li>
+<li>At the edge: under MREC, two regions deducting inventory simultaneously means LWW silently drops one transaction — no conflict alert, no version vector; &quot;eventually consistent&quot; is consistent about &quot;which write got dropped, without telling you&quot;; MRSC builds a tight cage: <strong>fixed 3-region topology (including 1 witness), the region set can&#x27;t span region groups, transactions/TTL unsupported</strong>, write latency = cross-region quorum RTT, and the bill = one rWCU write charge per region. And &quot;multi-active access&quot; is not &quot;user routing&quot; — DynamoDB doesn&#x27;t do traffic steering for you; Route 53/application layer handles it.</li>
+<li>What it means for selection: for inventory/balance/counter data — where one lost write is an incident — under MREC you must pin writes to a region or use conditional writes; multi-writing natively under LWW is data loss by design; MRSC is only for &quot;can&#x27;t afford to lose but writes little&quot; core data — and only after costing out latency and the bill; DR drills should test &quot;how traffic cuts over when a region dies,&quot; not &quot;whether the data arrived.&quot;</li>
+<li>Sources: official docs (Global Tables concepts page); aws.amazon.com Global Tables FAQ; community skill docs (2026-09)</li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="用户最买账的 5 点" data-en="What users love most">用户最买账的 5 点</span></h2>
+<div class="lang-block lang-zh">
+<ol>
+<li><strong>真·零运维 serverless</strong> 为什么是真的：无实例、无补丁、无版本升级、无&quot;半夜扩容&quot;，14 年生产验证；这是&quot;不想养 DBA 团队&quot;的团队最实在的解脱。 边缘与限度：运维复杂度转移到了容量建模和 FinOps；行为变更（如新功能默认行为）不由你控制发布时间；救火手段比自建少（没有&quot;连上去改参数&quot;那一招）。 来源：官方文档；社区共识。观察版本：serverless 持续演进</li>
+<li><strong>规模无关的个位数毫秒延迟</strong> 为什么是真的：分区哈希架构，GetItem/Query 延迟不随表大小增长；读多、key 明确的场景（session、购物车、设备影子）这是降维打击。 边缘与限度：只对按键访问成立；Scan/聚合是线性成本；强一致 2x RCU；DAX 只加速最终一致读。 来源：官方文档（厂商口径延迟）；社区实测。观察版本：全版本</li>
+<li><strong>on-demand 按量付费，冷启动零成本</strong> 为什么是真的：没流量不花钱（存储除外），新业务/潮汐负载/开发环境开箱即用；不用做容量规划就能上线。 边缘与限度：稳态负载下是 provisioned 的数倍（社区口径 5–7x）；&quot;先 on-demand 以后再说&quot;的团队是账单惊魂的重灾区；流量可预测且有稳定基线就该切 provisioned（社区经验）。 来源：社区技能文档（2026-09）；第三方成本分析。观察版本：全版本</li>
+<li><strong>Global Tables 全球多活</strong> 为什么是真的：多 Region 同时写、本地延迟，全球化业务（游戏、SaaS）不用自己搭跨国复制；99.999% SLA<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。 边缘与限度：见深水区六——LWW 静默丢、MRSC 笼子、复制写按 Region 收费；流量路由自己做。 来源：官方文档；社区共识。观察版本：MREC/MRSC 双模式现行</li>
+<li><strong>AWS 生态集成密度</strong> 为什么是真的：Streams→Lambda 事件驱动、TTL 自动过期、PITR、zero-ETL 到 S3/Redshift、IAM 细粒度权限，一套控制台配齐；serverless 架构里它是默认的&quot;状态层&quot;。 边缘与限度：每个集成都有天花板（Streams 24h/2 消费者、TTL 非准时、恢复只能新表）；生态集成的另一面是 AWS 锁定——迁出=重写数据访问层。 来源：官方文档；社区共识。观察版本：全版本</li>
+</ol>
+</div>
+<div class="lang-block lang-en" hidden>
+<ol>
+<li><strong>Genuine zero-ops serverless</strong> Why it&#x27;s real: no instances, no patches, no version upgrades, no &quot;midnight scaling&quot; — 14 years of production validation; the most tangible relief for teams that &quot;don&#x27;t want to hire a DBA team.&quot; Edge &amp; limits: ops complexity moved to capacity modeling and FinOps; behavior changes (e.g., new-feature defaults) ship on a schedule you don&#x27;t control; fewer firefighting tools than self-hosted (there&#x27;s no &quot;just connect and flip the parameter&quot; move). Sources: official docs; community consensus. Observed version: serverless, continuously evolving</li>
+<li><strong>Single-digit-millisecond latency independent of scale</strong> Why it&#x27;s real: partitioned-hash architecture — GetItem/Query latency doesn&#x27;t grow with table size; for read-heavy, key-explicit workloads (sessions, carts, device shadows) this is an overwhelming advantage. Edge &amp; limits: only holds for key-based access; Scan/aggregation is linear-cost; strong reads cost 2x RCU; DAX only accelerates eventually consistent reads. Sources: official docs (latency — vendor claim); community-tested. Observed version: all versions</li>
+<li><strong>On-demand pay-as-you-go, zero cost at cold start</strong> Why it&#x27;s real: no traffic, no spend (except storage) — new businesses, tidal loads, and dev environments work out of the box; go live without capacity planning. Edge &amp; limits: 5–7x the cost of provisioned under steady load (community wording); teams that &quot;start on on-demand and figure it out later&quot; are the worst bill-shock offenders; with a monthly bill &gt;$100 and predictable traffic, switch to provisioned (community rule of thumb). Sources: community skill docs (2026-09); third-party cost analysis. Observed version: all versions</li>
+<li><strong>Global Tables multi-active worldwide</strong> Why it&#x27;s real: multi-region simultaneous writes with local latency — global businesses (gaming, SaaS) don&#x27;t have to build cross-border replication themselves; 99.999% SLA <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>. Edge &amp; limits: see Deep-dive 6 — LWW silent drops, the MRSC cage, replicated writes billed per region; traffic routing is your own job. Sources: official docs; community consensus. Observed version: MREC/MRSC dual mode, current</li>
+<li><strong>Dense AWS ecosystem integration</strong> Why it&#x27;s real: Streams→Lambda event-driven, TTL auto-expiry, PITR, zero-ETL to S3/Redshift, IAM fine-grained permissions — all configured from one console; it&#x27;s the default &quot;state layer&quot; in serverless architectures. Edge &amp; limits: every integration has a ceiling (Streams 24h/2 consumers, non-punctual TTL, restore-only-to-new-table); the flip side of ecosystem integration is AWS lock-in — migrating away = rewriting the data-access layer. Sources: official docs; community consensus. Observed version: all versions</li>
+</ol>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="吐槽清单" data-en="Complaints">吐槽清单</span></h2>
+<div class="lang-block lang-zh">
+<div class="table-wrap"><table>
+<thead><tr><th>分类</th><th>吐槽</th><th>影响版本</th><th>状态</th></tr></thead>
+<tbody>
+<tr><td>性能坑</td><td>热分区：单 key 超 1,000 WCU/s / 3,000 RCU 即节流，表级容量再富余也没用；adaptive capacity 借不过物理上限</td><td>全版本</td><td>open（by design，靠 key 设计规避）</td></tr>
+<tr><td>性能坑</td><td>分区自动分裂不看 key 基数，单 key 永远分不到两个分区；CloudWatch 表级聚合藏住热分区</td><td>全版本</td><td>open（Contributor Insights 定位）</td></tr>
+<tr><td>成本坑</td><td>on-demand 稳态溢价 5–7x（社区口径），&quot;先上车后补票&quot;团队账单惊魂</td><td>全版本</td><td>open（切 provisioned 规避）</td></tr>
+<tr><td>成本坑</td><td>WCU/RCU 向上取整税：1.1KB 按 2KB 收费；条件写失败照样收费；事务写 2x</td><td>全版本</td><td>open（by design）</td></tr>
+<tr><td>成本坑</td><td>GSI 写放大：每个 GSI 独立收 WCU，投影 ALL ≈ 写成本翻倍；5 个 GSI = 写账单 ×6</td><td>全版本</td><td>open（稀疏索引/小投影规避）</td></tr>
+<tr><td>成本坑</td><td>Scan 做看板/分析：大表全表扫一次费用可观（第三方口径），生产表 Scan 是烧钱</td><td>全版本</td><td>open（走 S3 导出 + Athena）</td></tr>
+<tr><td>运维坑</td><td>Streams 只保留 24h、每 shard 最多 2 消费者；消费者挂超 24h 数据永久丢失</td><td>全版本</td><td>open（大吞吐换 Kinesis Data Streams）</td></tr>
+<tr><td>运维坑</td><td>TTL 删除是 48 小时内尽力而为，不是准时过期；到期必须不可见要应用层再过滤</td><td>全版本</td><td>open（by design）</td></tr>
+<tr><td>运维坑</td><td>PITR/备份恢复只能生成新表，不支持原地回滚；&quot;回滚&quot; = 切流量到新表</td><td>全版本</td><td>open（by design）</td></tr>
+<tr><td>一致性坑</td><td>Global Tables MREC 的 last-writer-wins 静默丢并发更新，无告警无版本向量</td><td>全版本</td><td>open（by design；MRSC 可解但代价高）</td></tr>
+<tr><td>一致性坑</td><td>MRSC：固定 3 Region 拓扑、不支持事务/TTL、写付跨 Region quorum 延迟税</td><td>现行</td><td>open（by design）</td></tr>
+<tr><td>兼容坑</td><td>无 join、无 ad-hoc 查询；新增访问模式 = 加 GSI（加钱）或重做 key（迁移）</td><td>全版本</td><td>open（by design）</td></tr>
+<tr><td>兼容坑</td><td>PartiQL 是 SQL 方言子集，复杂查询/分析指望不上</td><td>全版本</td><td>open</td></tr>
+<tr><td>兼容坑</td><td>单 item 400KB 上限；大对象要拆 item 或放 S3</td><td>全版本</td><td>open</td></tr>
+<tr><td>生态坑</td><td>闭源、无自建发行版，AWS 锁定；DynamoDB Local 与生产行为有差异<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>，本地测完上生产仍可能踩坑</td><td>全版本</td><td>open</td></tr>
+<tr><td>生态坑</td><td>DAX 只缓存最终一致读，全走强一致 = 白花钱；DAX 集群本身另计费</td><td>全版本</td><td>open</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="lang-block lang-en" hidden>
+<div class="table-wrap"><table>
+<thead><tr><th>Category</th><th>Complaint</th><th>Affected versions</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Performance pitfall</td><td>Hot partitions: a single key over 1,000 WCU/s / 3,000 RCU gets throttled, no matter how much spare capacity the table has; adaptive capacity can&#x27;t borrow past the physical ceiling</td><td>All versions</td><td>open (by design; mitigate via key design)</td></tr>
+<tr><td>Performance pitfall</td><td>Automatic partition splitting ignores key cardinality — one key can never span two partitions; table-level CloudWatch aggregation hides hot partitions</td><td>All versions</td><td>open (locate via Contributor Insights)</td></tr>
+<tr><td>Cost pitfall</td><td>On-demand steady-state premium of 5–7x (community wording); &quot;get on board first, fix the bill later&quot; teams get bill shock</td><td>All versions</td><td>open (mitigate by switching to provisioned)</td></tr>
+<tr><td>Cost pitfall</td><td>WCU/RCU rounding tax: 1.1KB billed as 2KB; failed conditional writes still billed; transactional writes 2x</td><td>All versions</td><td>open (by design)</td></tr>
+<tr><td>Cost pitfall</td><td>GSI write amplification: each GSI bills WCU independently, ALL projection ≈ doubling write cost; 5 GSIs = write bill ×6</td><td>All versions</td><td>open (mitigate with sparse indexes / small projections)</td></tr>
+<tr><td>Cost pitfall</td><td>Scans for dashboards/analytics: ~$125 per full scan of 100M items (third-party source); Scanning production tables burns money</td><td>All versions</td><td>open (export to S3 + Athena instead)</td></tr>
+<tr><td>Ops pitfall</td><td>Streams retain only 24h, max 2 consumers per shard; consumers down for &gt;24h lose data permanently</td><td>All versions</td><td>open (switch to Kinesis Data Streams for high throughput)</td></tr>
+<tr><td>Ops pitfall</td><td>TTL deletion is best-effort within 48 hours, not punctual expiry; use application-layer filtering where expired items must be invisible on time</td><td>All versions</td><td>open (by design)</td></tr>
+<tr><td>Ops pitfall</td><td>PITR/backup recovery only creates new tables — no in-place rollback; &quot;rollback&quot; = cutting traffic to a new table</td><td>All versions</td><td>open (by design)</td></tr>
+<tr><td>Consistency pitfall</td><td>Global Tables MREC&#x27;s last-writer-wins silently drops concurrent updates — no alerts, no version vectors</td><td>All versions</td><td>open (by design; MRSC solves it at high cost)</td></tr>
+<tr><td>Consistency pitfall</td><td>MRSC: fixed 3-region topology, no transactions/TTL, writes pay the cross-region quorum latency tax</td><td>Current</td><td>open (by design)</td></tr>
+<tr><td>Compatibility pitfall</td><td>No joins, no ad-hoc queries; each new access pattern = add a GSI (more money) or redo key design (migration)</td><td>All versions</td><td>open (by design)</td></tr>
+<tr><td>Compatibility pitfall</td><td>PartiQL is a SQL-dialect subset — don&#x27;t count on it for complex queries/analytics</td><td>All versions</td><td>open</td></tr>
+<tr><td>Compatibility pitfall</td><td>400KB single-item limit; large objects must be split into items or stored in S3</td><td>All versions</td><td>open</td></tr>
+<tr><td>Ecosystem pitfall</td><td>Closed-source, no self-hosted distribution — AWS lock-in; DynamoDB Local behaves differently from production <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>, so testing locally doesn&#x27;t guarantee smooth production</td><td>All versions</td><td>open</td></tr>
+<tr><td>Ecosystem pitfall</td><td>DAX only caches eventually consistent reads — running everything strongly consistent = money down the drain; the DAX cluster itself is billed separately</td><td>All versions</td><td>open</td></tr>
+</tbody>
+</table></div>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="判决" data-en="Verdict">判决</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li><strong>一句话定位</strong>：AWS 上&quot;按键访问、读多、规模不确定&quot;的 serverless 状态层最优解；但它是为&quot;访问模式&quot;设计的，不是为&quot;数据模型&quot;设计的——建模错了，账单和重构会教你做人。</li>
+<li><strong>适合谁</strong>：<ul>
+<li>AWS 上的 serverless/事件驱动架构，需要单毫秒 KV/文档存储（session、购物车、用户画像、设备影子、订单头）</li>
+<li>访问模式清晰且稳定、读多写少、key 分布均匀的高并发 OLTP</li>
+<li>全球化业务需要多 Region 低延迟读写（MREC + 写分区 pin Region）</li>
+<li>流量不可预测的新业务、潮汐负载、开发测试环境（on-demand）</li>
+<li>需要开箱 CDC（Streams→Lambda）做事件驱动的团队</li>
+</ul></li>
+<li><strong>不适合谁</strong>：<ul>
+<li>查询模式多变、需要 ad-hoc 查询/聚合/报表（这是 OLAP 或搜索引擎的活）</li>
+<li>跨多 item 的复杂事务是常态（100 项/4MB 上限 + 2x 成本是紧箍咒）</li>
+<li>库存/余额/计数器类&quot;丢一笔就是事故&quot;的数据，又想多 Region 同时写（LWW 静默丢）</li>
+<li>重度关系建模、join 是刚需的业务</li>
+<li>多云/信创/要求开源自主可控的组织；预算敏感且不愿做 FinOps 的小团队</li>
+</ul></li>
+<li><strong>迁移成本</strong>：<ul>
+<li>MySQL → 高：关系建模→访问模式建模重写，join 拆应用层或 GSI，事务语义重做</li>
+<li>PostgreSQL → 高：同上；JSONB 用户注意 DynamoDB 文档模型更弱（无 GIN 这类索引）</li>
+<li>Oracle → 高：无 Oracle 兼容路线，不建议作为&quot;去 O&quot;目标</li>
+<li>Redis/Cassandra → 中低：KV 心智接近，注意 DynamoDB 无 Lua 脚本/复杂数据结构，Cassandra 宽行要重做 key 设计</li>
+</ul></li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li><strong>One-line positioning</strong>: On AWS, the best serverless state layer for &quot;key-based access, read-heavy, uncertain scale.&quot; But it&#x27;s designed for &quot;access patterns,&quot; not for &quot;data models&quot; — get the modeling wrong, and the bill and the rewrite will teach you a lesson.</li>
+<li><strong>Best for</strong>:<ul>
+<li>Serverless/event-driven architectures on AWS needing single-digit-millisecond KV/document storage (sessions, carts, user profiles, device shadows, order headers)</li>
+<li>High-concurrency OLTP with clear, stable access patterns, read-heavy, uniformly distributed keys</li>
+<li>Global businesses needing multi-region low-latency reads/writes (MREC + region-pinned writes)</li>
+<li>Unpredictable traffic: new businesses, tidal loads, dev/test environments (on-demand)</li>
+<li>Teams needing out-of-the-box CDC (Streams→Lambda) for event-driven designs</li>
+</ul></li>
+<li><strong>Not for</strong>:<ul>
+<li>Shifting query patterns, ad-hoc queries/aggregations/reporting (that&#x27;s OLAP or search-engine work)</li>
+<li>Multi-item complex transactions as the norm (the 100-item/4MB cap + 2x cost is a tight constraint)</li>
+<li>Inventory/balance/counter data where &quot;one lost write is an incident,&quot; yet multi-region simultaneous writes are desired (LWW silently drops)</li>
+<li>Heavily relational modeling where joins are a hard requirement</li>
+<li>Multi-cloud / xìnchuàng (IT localization) / open-source-self-hosting organizations; budget-sensitive small teams unwilling to do FinOps</li>
+</ul></li>
+<li><strong>Migration cost</strong>:<ul>
+<li>MySQL → High: relational modeling rewritten as access-pattern modeling, joins pushed to the application layer or GSIs, transaction semantics redone</li>
+<li>PostgreSQL → High: same as above; JSONB users note DynamoDB&#x27;s document model is weaker (no GIN-style indexes)</li>
+<li>Oracle → High: no Oracle compatibility path — not recommended as a &quot;de-Oracle&quot; target</li>
+<li>Redis/Cassandra → Medium-low: KV thinking is close, but note DynamoDB has no Lua scripting/complex data structures, and Cassandra wide rows need key redesign</li>
+</ul></li>
+</ul>
+</div>
+</section>
+<section class="doc-section">
+<h2><span data-zh="来源与待验证清单" data-en="Sources & to-be-verified">来源与待验证清单</span></h2>
+<div class="lang-block lang-zh">
+<ul>
+<li>架构与机制：AWS 官方文档（Global Tables 原理、burst/adaptive capacity、Streams、PITR、加密）；aws.amazon.com Global Tables FAQ（MREC/MRSC 口径）</li>
+<li>计费模型：on-demand 按读写请求单元计费，provisioned 按预置容量单位/小时计费，存储按 GB-月、PITR/备份/Global Tables 复制写/Streams 读取/DAX 另计（AWS 定价页口径，2026-08 核验；具体金额以 AWS 账单为准，此处不引用绝对标价）</li>
+<li>深水区与吐槽：dev.to adaptive capacity 解析（2026-08）；hackernoon 成本分析；Medium Rob Abbott GSI 案例（2025-10）；awslabs startup-advisor 技能文档（2026-09）；GitHub 社区技能文档多份（2026-09）</li>
+<li>待验证项：向量检索 600GB allowlist 细节；DynamoDB Local 与生产行为差异的系统清单；中国区（宁夏/北京）Global Tables MRSC 可用状态</li>
+<li>下次评审：跟踪向量检索 GA 后的生产案例与性能口径；跟踪 MRSC 的 Region 集合扩展与功能限制松绑；跟踪 on-demand 定价调整</li>
+</ul>
+</div>
+<div class="lang-block lang-en" hidden>
+<ul>
+<li>Architecture &amp; mechanisms: AWS official docs (Global Tables concepts, burst/adaptive capacity, Streams, PITR, encryption); aws.amazon.com Global Tables FAQ (MREC/MRSC wording)</li>
+<li>Billing model: AWS pricing pages cross-checked against third-party sources (on-demand $0.625/million writes, $0.125/million reads; provisioned $0.00065/WCU-hour, $0.00013/RCU-hour, verified 2026-08); absolute amounts are model references only — your AWS bill is authoritative</li>
+<li>Deep-dives &amp; complaints: dev.to adaptive capacity analysis (2026-08); hackernoon cost analysis; Medium Rob Abbott GSI case (2025-10); awslabs startup-advisor skill docs (2026-09); multiple GitHub community skill docs (2026-09)</li>
+<li>To-be-verified: vector search 600GB allowlist details; a systematic list of DynamoDB Local vs. production behavior differences; Global Tables MRSC availability in China regions (Ningxia/Beijing)</li>
+<li>Next review: track production cases and performance wording after vector search GA; track MRSC region-set expansion and feature-limitation loosening; track on-demand pricing changes</li>
+</ul>
+<p><strong>Mechanical gap audit</strong>: all 14 fixed battery items answered with Supported/Unsupported/Partially supported/Not applicable + evidence level; &quot;confirmed absent&quot; (MySQL/PG/Oracle protocol compatibility, open-source distribution, in-place restore) distinguished from &quot;no evidence found&quot; (some China-region details); deep-dives cover 6 domains (storage engine / cost / indexing / replication &amp; CDC / modeling / replication &amp; consistency).</p>
+</div>
+</section>
+</main>
+<footer class="footer">
+  <p><span data-zh="信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。" data-en="Information current as of 2026-09-29. This is a fully static site for database evaluation reference only, not procurement advice. No aggregate scores, no rankings.">信息截至 2026-09-29。本站为纯静态页面，仅供数据库选型参考，不构成采购建议；不做综合评分、不做排名。</span></p>
+</footer>
+<script>window.DB_CATALOG=[{"slug": "mysql", "name": "MySQL", "domain": "oltp"}, {"slug": "postgresql", "name": "PostgreSQL（社区版）", "domain": "oltp"}, {"slug": "oracle", "name": "Oracle Database（甲骨文）", "domain": "oltp"}, {"slug": "sqlserver", "name": "档案：Microsoft SQL Server", "domain": "oltp"}, {"slug": "mariadb", "name": "MariaDB", "domain": "oltp"}, {"slug": "oceanbase", "name": "OceanBase", "domain": "oltp"}, {"slug": "tidb", "name": "TiDB", "domain": "oltp"}, {"slug": "edb", "name": "EDB Postgres / EDB Postgres Advanced Server（EPAS）", "domain": "oltp"}, {"slug": "cockroachdb", "name": "CockroachDB", "domain": "oltp"}, {"slug": "yugabytedb", "name": "YugabyteDB", "domain": "oltp"}, {"slug": "aurora", "name": "档案：Amazon Aurora", "domain": "oltp"}, {"slug": "alloydb", "name": "Google AlloyDB（AlloyDB for PostgreSQL）", "domain": "oltp"}, {"slug": "polardb", "name": "PolarDB", "domain": "oltp"}, {"slug": "tdsql", "name": "档案：腾讯云 TDSQL", "domain": "oltp"}, {"slug": "spanner", "name": "Google Spanner", "domain": "oltp"}, {"slug": "redis-valkey", "name": "Redis / Valkey", "domain": "kvdoc"}, {"slug": "etcd", "name": "etcd", "domain": "kvdoc"}, {"slug": "dynamodb", "name": "Amazon DynamoDB", "domain": "kvdoc"}, {"slug": "cassandra-scylladb", "name": "Apache Cassandra / ScyllaDB", "domain": "kvdoc"}, {"slug": "mongodb", "name": "MongoDB", "domain": "kvdoc"}, {"slug": "clickhouse", "name": "ClickHouse", "domain": "olap"}, {"slug": "doris", "name": "Apache Doris", "domain": "olap"}, {"slug": "starrocks", "name": "StarRocks", "domain": "olap"}, {"slug": "duckdb", "name": "DuckDB", "domain": "olap"}, {"slug": "milvus", "name": "Milvus", "domain": "aidb"}, {"slug": "weaviate", "name": "Weaviate", "domain": "aidb"}, {"slug": "qdrant", "name": "Qdrant", "domain": "aidb"}];window.DB_DOMAINS={"oltp": {"zh": "关系型 OLTP", "en": "Relational OLTP"}, "kvdoc": {"zh": "KV · 宽列 · 文档", "en": "KV · Wide-column · Document"}, "olap": {"zh": "OLAP", "en": "OLAP"}, "aidb": {"zh": "AI 数据库", "en": "AI databases"}};</script>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
