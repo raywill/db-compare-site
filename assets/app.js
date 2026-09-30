@@ -310,7 +310,8 @@ fbtns[i].classList.remove('disabled');
 fbtns[i].removeAttribute('disabled');
 }
 for (r = 0; r < rows.length; r++) {
-rows[r].style.display = (cmpDomain === 'all' || rows[r].getAttribute('data-domain') === cmpDomain)? '': 'none';
+var _dd = (rows[r].getAttribute('data-domains') || '').split(' ');
+rows[r].style.display = (cmpDomain === 'all' || _dd.indexOf(cmpDomain) >= 0)? '': 'none';
 }
 if (notice) notice.hidden = true;
 }
