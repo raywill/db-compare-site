@@ -215,7 +215,8 @@ var dk = order[d];
 var dn = domains[dk]? (lang === 'zh'? domains[dk].zh: domains[dk].en): dk;
 var items = '';
 for (k = 0; k < c.length; k++) {
-if (c[k].domain!== dk) continue;
+var _dm = c[k].domains || [c[k].domain];
+if (_dm.indexOf(dk) < 0) continue;
 var on = sel.indexOf(c[k].slug) >= 0;
 var dis = (!on && sel.length >= MAX_SEL)? ' disabled': '';
 items += '<button type="button" class="tray-item' + (on? ' on': '') +
