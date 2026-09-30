@@ -233,6 +233,8 @@ if (coBar) {
 coBar.hidden = sel.length === 0;
 var coLab = document.getElementById('cmp-checkout-label');
 if (coLab) coLab.textContent = (lang === 'zh'? '去对比（' + sel.length + ' 款）→': 'Compare (' + sel.length + ') →');
+var coLink = document.getElementById('cmp-checkout');
+if (coLink) coLink.href = 'compare.html?sel=' + sel.join(',');
 }
 }
 
