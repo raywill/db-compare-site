@@ -286,8 +286,35 @@ setTimeout(function () { b.classList.remove('tray-pop');}, 500);
 /* 对比页：有选择时只显示已选产品行，并禁用领域筛选 */
 var cmpDomain = 'all';
 /* 对比页：表格上方工具条的可见数量提示（复制范围 = 当前可见行 × 维度） */
+/* URL 分享：?sel=slug1,slug2 —— 打开时校验后覆盖本地选择（?sel= 空值=清空） */
+function applySelFromUrl() {
+var m = /[?&]sel=([^&#]*)/.exec(window.location.search || '');
+if (!m) return;
+var valid = {}, c = catalog(), i;
+for (i = 0; i < c.length; i++) valid[c[i].slug] = 1;
+var raw = m[1];
+try { raw = decodeURIComponent(raw.replace(/\+/g, ' ')); } catch (e) {}
+var out = [], seen = {}, s, parts = raw.split(',');
+for (i = 0; i < parts.length && out.length < MAX_SEL; i++) {
+s = parts[i].trim().toLowerCase();
+if (s && valid[s] && !seen[s]) { seen[s] = 1; out.push(s); }
+}
+try { localStorage.setItem(SEL_KEY, JSON.stringify(out)); } catch (e2) {}
+}
+function buildShareUrl() {
+var base = (window.location.href || '').split('#')[0].split('?')[0];
+return base + '?sel=' + getSelection().join(',');
+}
+function shareSelection(btn) {
+var lang = getLang(), sel = getSelection();
+if (!sel.length) {
+flashCopy(btn, lang === 'zh'? '先选几款数据库': 'Select databases first');
+return;
+}
+copyPromptText(buildShareUrl(), btn);
+}
 function updateCmpCount() {
-var el = document.getElementById('cmp-count');
+var el = document.getElementById('cmp-visible-count');
 if (!el) return;
 var rows = document.querySelectorAll('.cmp-table > tbody > tr'), n = 0, i;
 for (i = 0; i < rows.length; i++) if (rows[i].style.display !== 'none') n++;
@@ -528,6 +555,8 @@ if (tg) { if (!tg.disabled) toggleSelect(tg.getAttribute('data-sel-toggle')); re
 if (t.closest('#cmp-clear') || t.closest('#cmp-sel-clear')) { clearSelection(); return;}
 var cpc = t.closest('#cmp-copy');
 if (cpc) { copyPromptText(buildCompareMarkdown(), cpc); return;}
+var shl = t.closest('#cmp-share, #cmp-share-tray');
+if (shl) { shareSelection(shl); return;}
 var panel = document.getElementById('cmp-panel');
 var trayBtn = t.closest('#cmp-tray-btn');
 if (trayBtn && panel) {
@@ -580,6 +609,7 @@ var act = b.getAttribute('data-pkact');
 if (act === 'copy') copyPromptText(tpl, b);
 else aiOpenService(act, tpl);
 });
+applySelFromUrl();
 applySelection();
 });
 
