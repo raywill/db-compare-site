@@ -85,7 +85,7 @@
 </table></div>
 </div>
 </section>
-<section class="doc-section"><h2><span data-zh="硬维度（46 项）" data-en="Hard dimensions (46)">硬维度（46 项）</span></h2>
+<section class="doc-section"><h2><span data-zh="硬维度（47 项）" data-en="Hard dimensions (47)">硬维度（47 项）</span></h2>
 <div class="lang-block lang-zh">
 <div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-no">查证为无</span></h3><div class="dim-body"><p><strong>查证为无</strong>——官方安全文档的安全能力清单为 TLS、API key、JWT RBAC、审计日志，未提供落盘文件/快照的透明加密配置；开源内核无 TDE 证据，静态数据保护依赖操作系统或云盘卷级加密。Qdrant Cloud 官方文档称其集群使用加密存储磁盘（托管基础设施层能力，不等于数据库内核 TDE）。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（查证为无）+ 官方口径（Cloud）。</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——v1.2.0 起支持；REST 与 gRPC 共用 <code>service.enable_tls</code> 开关，集群内部 P2P 另有 <code>cluster.p2p.enable_tls</code> 可独立开启；默认连接不加密，生产必须显式开启。REST 证书支持运行时定期刷新（gRPC 是否同样支持以官方文档原文为准，本轮未核实）。证据：官方安全文档。</p></div></div>
@@ -265,6 +265,15 @@
 <ul>
 <li>开源版任意云可部署 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>Qdrant Cloud 支持多云 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> 热点数据更新能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（幂等 upsert 按分片串行，持续小批量拖垮优化器）。</p>
+<ul>
+<li>更新原语是按 point ID 的幂等 upsert（删+插，v1.17 起支持 insert-only/update-only 模式）；写先入分片 WAL 保证崩溃可恢复与幂等重放，每个分片有独立更新 worker 做串行化 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>除整行删插外，还提供 update_vectors（按 point 只更新部分向量）与 update payload（只改标量载荷、不触及向量索引）等局部更新接口；纯载荷的热点更新可借此避开向量重建开销 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</li>
+<li>同 point 并发 upsert 按分片 WAL 顺序串行执行，后写覆盖，无冲突报错、无内核重试；跨分片/副本的顺序一致性需应用自行保证 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>衰减形态是段优化器抖动：持续的单点小批量 upsert 让后台索引构建循环永不收敛，CPU 被优化器打满；批量 upsert（500–2000 点一批）是社区公认解法 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>无专属热点机制；optimizers_config 可调（indexing_threshold_kb 默认 20MB、default_segment_number 等）但属于常规调参，非热点开关 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>推荐模式：批量 upsert、分片拆分（3–12 分片，各分片独立更新 worker）分散写入压力；代价是批量窗口的延迟、调参复杂度，以及分片过多带来的查询扇出成本 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
@@ -446,6 +455,15 @@
 <ul>
 <li>Open source deploys on any cloud <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Qdrant Cloud supports multiple clouds <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> Hotspot update handling <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (idempotent upserts serialize per shard; sustained tiny batches thrash the optimizer).</p>
+<ul>
+<li>The update primitive is idempotent upsert by point ID (delete-plus-insert; update modes for insert-only or update-only since v1.17); writes go through the shard WAL first for crash recovery and idempotent replay, and each shard has an independent update worker that serializes them <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>Beyond full delete-plus-insert, partial-update interfaces exist: update_vectors (updates only selected vectors of a point) and update payload (changes only scalar payload, leaving the vector index untouched); payload-only hotspot updates can thereby avoid vector-index rebuild costs (to be verified).</li>
+<li>Concurrent upserts on the same point execute serially in shard WAL order with last-write-wins — no conflict errors, no kernel retry; ordering consistency across shards/replicas must be ensured by the application <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>The decay pattern is segment-optimizer thrashing: sustained small single-point upserts keep the background index-build loop perpetually active and pin CPU at 100%; batched upserts (500–2,000 points per batch) are the community-accepted fix <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>There is no dedicated hotspot mechanism; <code>optimizers_config</code> is tunable (<code>indexing_threshold_kb</code> default 20MB, <code>default_segment_number</code>, etc.) but that is routine tuning, not a hotspot switch <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>Recommended patterns: batched upserts and sharding (3–12 shards, each with an independent update worker) to spread write pressure; the cost is batch-window latency, tuning complexity, and query fan-out cost from too many shards <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
 </div>
 </section>

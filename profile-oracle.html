@@ -81,7 +81,7 @@
 </table></div>
 </div>
 </section>
-<section class="doc-section"><h2><span data-zh="硬维度（46 项）" data-en="Hard dimensions (46)">硬维度（46 项）</span></h2>
+<section class="doc-section"><h2><span data-zh="硬维度（47 项）" data-en="Hard dimensions (47)">硬维度（47 项）</span></h2>
 <div class="lang-block lang-zh">
 <div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-yes">有（但单独收费）</span></h3><div class="dim-body"><p><strong>有（但单独收费）</strong>。TDE 属 Advanced Security Option（ASO）选件，需 EE + 单独授权；SE2 查证为无。双层密钥体系（主密钥在 wallet/HSM，表/表空间密钥存数据字典）。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> + AWS 官方博客（官方口径）。</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。Native Network Encryption 属 ASO；TLS/SSL 支持。证据：官方口径。</p></div></div>
@@ -284,6 +284,14 @@
 <li>Oracle Database@Azure / @AWS / @Google Cloud 把 OCI 数据库放到对方云机房 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>本质仍是 OCI 技术栈，不是真正多云原生 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 <li>授权跨云复杂，谈判桌见 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> 热点数据更新能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（行级 TX 锁排队，无专用热点机制）。</p>
+<ul>
+<li>并发原语为行级 TX 锁（锁信息记在数据块内的 ITL 槽位）：后来者按 enqueue 机制 FIFO 排队等待，等待事件为 enq: TX - row lock contention；死锁由内核自动检测并报 ORA-00060 回滚其中一方，重试由应用负责 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>衰减与 ITL 瓶颈：并发度上升时等待者线性排队，吞吐趋平、延迟上升；若块的 ITL 槽位（由 INITRANS/MAXTRANS 决定）被占满，新事务连行锁都拿不到，出现&quot;等待分配 ITL 条目&quot;，整块退化为串行 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>未找到 Oracle 针对同行高频更新的专用自动打散或排队化机制的证据；官方提供的是诊断面（ASH/AWR 定位热点块与等待链），缓解靠应用层 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</li>
+<li>相关内置能力边界：反向键索引、序列 CACHE、分区只能缓解&quot;右增长索引/序列&quot;类插入热点，对&quot;同一行反复更新&quot;无效，这是常见误用点 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>应用层模式与代价：官方与社区推荐短事务、SELECT FOR UPDATE NOWAIT / SKIP LOCKED 做队列式消费、计数器分片表、PL/SQL 批量合并；代价是应用逻辑复杂度与短暂不一致窗口 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
@@ -491,6 +499,14 @@
 <li>Oracle Database@Azure / @AWS / @Google Cloud place OCI databases in partner datacenters <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Still fundamentally the OCI stack, not truly multi-cloud native <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 <li>Cross-cloud licensing is complex; negotiated case by case <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> Hotspot update handling <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong>(row-level TX lock queuing, no dedicated hotspot mechanism).</p>
+<ul>
+<li>Concurrency primitive is row-level TX locks (lock info recorded in ITL slots inside the data block): later writers queue FIFO on the enqueue, seen as the enq: TX - row lock contention wait event; deadlocks are auto-detected by the engine (ORA-00060 rolls back one side) and retry is the application&#x27;s job <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Decay and ITL bottleneck: waiters queue linearly as concurrency rises, so throughput flattens and latency grows; when a block&#x27;s ITL slots (governed by INITRANS/MAXTRANS) are exhausted, new transactions cannot even take a row lock and wait on &quot;allocate ITL entry&quot;, degrading the whole block to serial <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>No dedicated mechanism for automatic scattering or queueing of same-row high-frequency updates was found in official sources; Oracle provides the diagnostic surface (ASH/AWR to locate hot blocks and wait chains), while mitigation is left to the application layer (to be verified).</li>
+<li>Related built-in limits: reverse-key indexes, cached sequences, and partitioning only relieve insert hotspots on right-growing indexes or sequences; they do nothing for repeated updates of the same row — a common misuse <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Application patterns and cost: short transactions, SELECT FOR UPDATE NOWAIT / SKIP LOCKED for queue-style consumption, counter sharding tables, and batched merges in PL/SQL; costs are application logic complexity and brief inconsistency windows <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
 </div>
 </section>

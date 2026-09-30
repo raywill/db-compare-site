@@ -85,7 +85,7 @@
 </table></div>
 </div>
 </section>
-<section class="doc-section"><h2><span data-zh="硬维度（46 项）" data-en="Hard dimensions (46)">硬维度（46 项）</span></h2>
+<section class="doc-section"><h2><span data-zh="硬维度（47 项）" data-en="Hard dimensions (47)">硬维度（47 项）</span></h2>
 <div class="lang-block lang-zh">
 <div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>——10.1 起实例级静态加密：InnoDB 表空间（<code>innodb_encrypt_tables</code>）、redo log（<code>innodb_encrypt_log</code>）、临时文件、binlog（<code>encrypt_binlog</code>，10.5+）；插件式密钥管理：file_key_management（社区版自带，密钥存本地文件，合规性弱）/ AWS KMS 插件（企业版限定，GPL 与 AWS SDK 许可证冲突故社区二进制不分发）。<strong>备份文件本身的加密未找到证据</strong>，视为需外部手段解决。</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>——社区版原生 TLS，可按用户 <code>REQUIRE SSL/X509</code> 强制或全局 <code>require_secure_transport=ON</code>。</p></div></div>
@@ -278,6 +278,13 @@
 <ul>
 <li>开源版任意云可部署 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>SkySQL 支持多云 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> 热点数据更新能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（InnoDB 行锁串行，无专用热点优化）。</p>
+<ul>
+<li>并发原语：InnoDB 行级记录锁（锁实际落在索引记录上），后来者排队等待，等待时长受 innodb_lock_wait_timeout（默认 50 秒）限制；死锁由内核检测并回滚代价较小的一方（报 1213），重试由应用负责；热点行即串行单点 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>衰减：高并发热点下锁等待队列线性增长，吞吐趋平、p99 延迟上升；若热点更新的 WHERE 没有可用索引，锁范围会放大到所有被扫描行，进一步加剧竞争 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>未找到 MariaDB 官方提供专用热点行优化机制（如自动打散/排队化）的证据，缓解靠应用层；Galera 多主模式下热点行还会触发认证冲突回滚，情况更差 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</li>
+<li>应用层模式与代价：社区推荐计数器分桶（写时随机 32 桶、读时 SUM）、异步聚合、短事务、用 READ COMMITTED 减少间隙锁；代价是读聚合复杂度与短暂不一致 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
@@ -472,6 +479,13 @@
 <ul>
 <li>Open source deploys on any cloud <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>SkySQL supports multiple clouds <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> Hotspot update handling <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (InnoDB row-lock serialization, no dedicated hotspot optimization).</p>
+<ul>
+<li>Concurrency primitive: InnoDB row-level record locks (locks sit on index records), later writers queue, bounded by innodb_lock_wait_timeout (default 50s); deadlocks are detected by the engine, which rolls back the cheaper side (1213), and retry is the application&#x27;s job; a hot row is a serialization point <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Decay: the lock-wait queue grows linearly under high-concurrency hotspots, throughput flattens and p99 latency rises; if the hot update&#x27;s WHERE has no usable index, the lock footprint widens to every scanned row and contention gets worse <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>No dedicated hot-row optimization (automatic scattering or queueing) from MariaDB was found in official sources — mitigation is left to the application layer; in Galera multi-primary mode a hot row can additionally trigger certification-conflict rollbacks, which is worse (to be verified).</li>
+<li>Application patterns and cost: community-recommended counter bucketing (random 32 buckets on write, SUM on read), async aggregation, short transactions, and READ COMMITTED to cut gap locks; costs are read aggregation complexity and brief inconsistency <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
 </div>
 </section>

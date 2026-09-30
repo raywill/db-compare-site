@@ -83,7 +83,7 @@
 </table></div>
 </div>
 </section>
-<section class="doc-section"><h2><span data-zh="硬维度（46 项）" data-en="Hard dimensions (46)">硬维度（46 项）</span></h2>
+<section class="doc-section"><h2><span data-zh="硬维度（47 项）" data-en="Hard dimensions (47)">硬维度（47 项）</span></h2>
 <div class="lang-block lang-zh">
 <div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。TDE 加密数据文件与事务日志文件；实例上任一库开启 TDE 则 tempdb 自动被加密；TDE 库的备份天然带加密。密钥管理：master 库证书/非对称密钥 → DMK → SMK 层级，可用 EKM 提供程序或 Azure Key Vault（BYOK）。另有 Always Encrypted（客户端列级加密，DBA 也看不到明文；secure enclave 支持密文上有限计算）、备份加密、动态数据掩码。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></p></div></div>
 <div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。支持 TLS 1.2/1.3，可强制加密连接（ForceEncryption）；2025 起默认 <code>Encrypt=True</code>、TDS 8.0 走 TLS 1.3（第三方资料，细节待验证）。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>为主</p></div></div>
@@ -285,6 +285,14 @@
 <li>自建 SQL Server 任意云/本地可部署 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>Azure SQL Database/Managed Instance 绑定 Azure <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>授权跨云（License Mobility）规则复杂 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> 热点数据更新能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（内存优化表乐观冲突，失败靠应用重试）。</p>
+<ul>
+<li>磁盘表并发原语：行/键/页级锁，后来者阻塞等待；单条语句持锁数超阈值（默认 5000）触发锁升级为表锁，热点表可能整体串行化；死锁由内核检测并选择牺牲者回滚，重试由应用负责 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>优化锁（SQL Server 2022+）：写操作持有短周期的 TID 锁而非持有到事务结束，减少锁内存占用与阻塞；但高冲突下同行并发更新仍可能形成 TID 锁死锁，需应用重试并保持一致的更新顺序 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>内存优化表：乐观并发、无锁无闩锁，读写互不阻塞；两个事务并发更新同一行时一个成功、另一个直接失败报错，重试必须由应用显式实现；官方明确指出写冲突频繁的负载不适合内存优化表 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>衰减形态：磁盘表热点行即阻塞点，升级为表锁后拖累整表；内存优化表把&quot;等待&quot;变成&quot;失败重试&quot;，冲突率过高时重试风暴反而拖垮吞吐 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>应用层模式与代价：短事务、RCSI 减少读写阻塞、队列削峰、计数器分片；内存优化表要求全量改写重试逻辑并重建表（如 SCHEMA_ONLY 等选项），迁移代价高 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
@@ -488,6 +496,14 @@
 <li>Self-hosted SQL Server deploys on any cloud/on-prem <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Azure SQL Database / Managed Instance bind to Azure <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Cross-cloud licensing (License Mobility) rules are complex <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> Hotspot update handling <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (optimistic conflicts on memory-optimized tables, application-owned retry on failure).</p>
+<ul>
+<li>Disk-based table concurrency primitive: row/key/page locks, later writers block and wait; lock counts past the threshold (default 5,000) escalate to a table lock, so a hot table can serialize entirely; deadlocks are detected by the engine with a victim rolled back, and retry is the application&#x27;s job <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Optimized locking (SQL Server 2022+): writers hold short-lived TID locks instead of holding locks to end of transaction, cutting lock memory and blocking; high-conflict concurrent updates on the same rows can still form TID-lock deadlocks, requiring application retry and consistent update ordering <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Memory-optimized tables: optimistic concurrency with no locks or latches, so reads never block writes; when two transactions update the same row concurrently, one succeeds and the other fails outright — retry must be implemented explicitly by the application; Microsoft states workloads with frequent write conflicts are unsuitable for memory-optimized tables <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Decay: on disk-based tables a hot row is a blocking point, and escalation to a table lock punishes the whole table; on memory-optimized tables &quot;waiting&quot; becomes &quot;failing and retrying&quot;, and retry storms can collapse throughput when the conflict rate is too high <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Application patterns and cost: short transactions, RCSI to cut read/write blocking, queue-based peak shaving, counter sharding; memory-optimized tables demand a full retry-logic rewrite and table rebuild (options like SCHEMA_ONLY), so migration cost is high <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
 </div>
 </section>

@@ -87,7 +87,7 @@
 </table></div>
 </div>
 </section>
-<section class="doc-section"><h2><span data-zh="硬维度（46 项）" data-en="Hard dimensions (46)">硬维度（46 项）</span></h2>
+<section class="doc-section"><h2><span data-zh="硬维度（47 项）" data-en="Hard dimensions (47)">硬维度（47 项）</span></h2>
 <div class="lang-block lang-zh">
 <div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。MySQL 版：实例级 TDE（控制台/API <code>UpdateDBInstanceTDE</code> 开启），8.0 引擎自 8.0.1.1.15 起支持&quot;新建表自动加密&quot;；一表空间级透明加密，密钥由阿里云 KMS 产生和管理，应用无感，开启后数据文件落盘加密、读入内存解密，不改变数据文件大小。PG/Oracle 版：仅支持<strong>创建集群时</strong>开启，开通后无法关闭；对数据文件执行实时 I/O 加密；KMS 密钥管理，<strong>支持阿里云自动生成密钥，也支持 BYOK（自带密钥材料再授权 PolarDB 使用）</strong>。限制：源 RDS 若开启 TDE/SSL 则无法使用&quot;一键升级至 PolarDB&quot;（官方文档前提条件）。<span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>：MySQL 版 BYOK 支持情况（未找到证据）；WAL/redo、临时文件、备份文件的加密范围（未找到官方证据）；PG 版 I/O 密集场景性能影响（官方注意事项有提及，量化待验证）。</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p>MySQL <strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>——2020-02-11 起主地址支持 SSL 加密传输，可按需开启；开启会增加网络连接响应时间（官方说明）；API <code>UpdateDBInstanceSSL</code>。PG <strong>有</strong>（官方 API 文档）——<code>ModifyDBClusterSSL</code> 支持设置集群 SSL 的开通/关闭/更新 CA 证书。Oracle 版：<strong>未找到证据</strong>——没查到 PolarDB-O 的 SSL 设置文档，待验证。</p></div></div>
@@ -280,6 +280,14 @@
 <ul>
 <li>仅阿里云提供 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>迁出靠逻辑迁移，无跨云复制 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> 热点数据更新能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（hotspot 参数与 Statement Queue 机制）。</p>
+<ul>
+<li>MySQL 线并发原语：InnoDB 行级记录锁，后来者排队等待（受 innodb_lock_wait_timeout 限制）；死锁由内核检测并回滚一方（报 1213），重试由应用负责；热点行即串行单点，吞吐随并发度趋平 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>内置缓解一：hotspot 参数（默认 OFF，控制台为 loose_hotspot）开启热行优化，需配合 Hint 使用——COMMIT_ON_SUCCESS（成功自动提交，必填）、ROLLBACK_ON_FAIL、TARGET_AFFECT_ROW(1)，以缩短单行更新的持锁时间 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>内置缓解二：Statement Queue 把冲突的 DML 按哈希路由进共享桶排队，语句在队列中等待而非反复加锁/释放；官方测试 128 并发单行 UPDATE 约为标准 MySQL 的 4 倍；与 hotspot 二选一（hotspot 开启时自动旁路），要求 8.0.1.1.10+ / 5.7.1.0.6+ / 5.6 20200601+ 版本 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>衰减与边界：两种机制都只缓解锁管理开销，不消除热点行的串行本质；Statement Queue 对无冲突负载无效；极端热点下仍是单行串行，吞吐上限由单行更新速度决定 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>应用层模式与代价：计数器分片、合并写、队列削峰；PolarDB 官方还推荐基于 SQL 的 CCL 并发控制规则做限流；代价是读聚合复杂度与限流带来的排队延迟 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
@@ -474,6 +482,14 @@
 <ul>
 <li>Alibaba Cloud only <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Moving out via logical migration; no cross-cloud replication <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> Hotspot update handling <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (hotspot parameter plus Statement Queue, two mechanisms).</p>
+<ul>
+<li>MySQL line concurrency primitive: InnoDB row-level record locks, later writers queue (bounded by innodb_lock_wait_timeout); deadlocks are detected by the engine with one side rolled back (1213) and the application retries; a hot row is a serialization point where throughput flattens with concurrency <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Built-in mitigation one: the hotspot parameter (default OFF, loose_hotspot in the console) enables hot-row optimization and must be combined with hints — COMMIT_ON_SUCCESS (auto-commit on success, required), ROLLBACK_ON_FAIL, TARGET_AFFECT_ROW(1) — to shorten lock hold time for single-row updates <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Built-in mitigation two: Statement Queue routes conflicting DML into shared hash buckets so statements wait in a queue instead of repeatedly acquiring and releasing locks; official tests show about 4x the throughput of standard MySQL at 128 concurrent single-row UPDATEs; it is mutually exclusive with hotspot (bypassed when hotspot is ON) and requires 8.0.1.1.10+ / 5.7.1.0.6+ / 5.6 20200601+ <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>Decay and limits: both mechanisms only reduce lock-management overhead and do not remove the serial nature of a hot row; Statement Queue does nothing for non-conflicting workloads; under extreme hotspots the row stays serial and throughput is capped by single-row update speed <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Application patterns and cost: counter sharding, write merging, queue-based peak shaving, plus PolarDB&#x27;s SQL-based CCL concurrency-control rules for throttling; costs are read aggregation complexity and queueing delay from throttling <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
 </div>
 </section>

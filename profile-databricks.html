@@ -83,7 +83,7 @@
 </table></div>
 </div>
 </section>
-<section class="doc-section"><h2><span data-zh="硬维度（46 项）" data-en="Hard dimensions (46)">硬维度（46 项）</span></h2>
+<section class="doc-section"><h2><span data-zh="硬维度（47 项）" data-en="Hard dimensions (47)">硬维度（47 项）</span></h2>
 <div class="lang-block lang-zh">
 <div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
 <li>数据实际落在客户自己的云存储（S3/ADLS/GCS），默认走云厂商服务端加密（SSE）；控制面元数据由 Databricks 加密 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
@@ -308,6 +308,13 @@
 <li>同一平台横跨 AWS/Azure/GCP，是其核心卖点 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>Delta Sharing 可跨云共享数据 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>跨云有数据传输费，大表要算账 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> 热点数据更新能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>并发原语为 Delta Lake 乐观并发：写者各自基于快照准备变更，通过对 <code>_delta_log</code> 中编号 JSON 日志文件的原子 PUT 提交，粒度是文件/分区而非行 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>提交时若与已提交版本存在重叠数据（同行/同分区并发 MERGE），后来者提交失败并抛 ConcurrentAppendException 等冲突异常；内核不自动重试，重试+退避必须由应用或编排器实现 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>热点打到同一分区即串行瓶颈：除胜者外所有提交全部失败重试，吞吐随冲突率线性衰减；事务日志的单点提交是全局串行化点 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>未找到官方命名或文档化的热点行机制的证据；DBR 11.x 起并发写不同分区的表不再冲突，这是通过分区设计规避冲突，而非内核打散热点 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</li>
+<li>推荐模式有三类：按高基数字段分区让并发作业写入不相交分区（代价是分区倾斜与 ZORDER 维护成本）、真正冲突的写用队列串行化（代价是吞吐封顶）、应用层退避重试（代价是延迟抖动）；Delta Live Tables 只是声明式微批管线，底层仍是同一套 OCC 语义，不改变点更新结论 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
@@ -580,6 +587,14 @@
 <li>One platform spanning AWS/Azure/GCP — a core selling point <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Delta Sharing shares data across clouds <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Cross-cloud transfer fees apply; do the math on huge tables <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> Hotspot update handling <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (optimistic concurrency fails the losing commit; the app must retry).</p>
+<ul>
+<li>The concurrency primitive is Delta Lake optimistic concurrency: writers prepare changes against their own snapshot and commit via an atomic PUT of the numbered JSON log file into <code>_delta_log</code>; granularity is file/partition, not row <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>At commit time, if the change overlaps an already-committed version (e.g., concurrent MERGEs on the same rows/partitions), the loser&#x27;s commit fails with conflict exceptions such as ConcurrentAppendException; the kernel does not auto-retry — retry with backoff must be implemented by the application or orchestrator <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>A hotspot on one partition is a serialization bottleneck: every commit except the winner fails and retries, so throughput degrades linearly with the conflict rate; the transaction log&#x27;s single commit point is the global serialization point <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>There is no officially named or documented hotspot-row mechanism found; since DBR 11.x, concurrent writes to different partitions of a table no longer conflict — this avoids conflicts through partition design rather than kernel-level hotspot spreading (to be verified).</li>
+<li>Three recommended patterns: partition by a high-cardinality key so concurrent jobs write disjoint partitions (cost: partition skew and ZORDER maintenance), serialize genuinely conflicting writes through a queue (cost: capped throughput), and application-level backoff retry (cost: latency jitter); Delta Live Tables are declarative micro-batch pipelines on the same OCC semantics and do not change the point-update story <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
 </div>
 </section>

@@ -83,7 +83,7 @@
 </table></div>
 </div>
 </section>
-<section class="doc-section"><h2><span data-zh="硬维度（46 项）" data-en="Hard dimensions (46)">硬维度（46 项）</span></h2>
+<section class="doc-section"><h2><span data-zh="硬维度（47 项）" data-en="Hard dimensions (47)">硬维度（47 项）</span></h2>
 <div class="lang-block lang-zh">
 <div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。托管版数据默认由 Google 管理的密钥加密落盘；支持 CMEK——密钥存于 Cloud KMS（软件密钥或 Cloud HSM 硬件密钥），另支持 Cloud EKM 外部密钥管理与 KMS Autokey；加密覆盖数据库与备份。Omni 侧：Kubernetes operator 1.8.0（2026-07-15）TDE GA，加密数据文件、备份与缓存溢出到磁盘的数据；容器版 18.1.0 TDE 为 Preview。注意托管版官方口径不称&quot;TDE&quot;，但落盘加密+CMEK 的实质等价。</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。AlloyDB Auth Proxy 可把非 TLS 连接透明升级为 TLS 1.3；语言连接器（Language Connectors）使用 mTLS；支持 VPC 私有连接。</p></div></div>
@@ -279,6 +279,14 @@
 <ul>
 <li>仅 GCP 提供，无 AWS/Azure 版本 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>迁出需逻辑迁移（pg_dump），无跨云复制 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> 热点数据更新能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（PG 行锁串行化，单主写瓶颈）。</p>
+<ul>
+<li>并发原语为 PG 语义的行级元组锁：后来者排队等待行锁，等待时长受 lock_timeout 限制；形成环路时常开的死锁检测回滚其中一方并报 40P01，重试完全由应用负责；热点行即串行单点，吞吐随并发度先升后平、延迟线性增长 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>MVCC 写放大显著：每次更新产生新行版本，只有索引列未变且同页有空位时 HOT 才能免写索引，否则索引维护成本随索引数量线性增加；高频更新下死元组堆积依赖 autovacuum 回收，回收跟不上则表膨胀、扫描变慢 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>单点瓶颈：单主承担全部写，读可横向扩展到读池，写只能纵向扩展主节点；热点行更新的吞吐上限最终受主节点 CPU/内存限制，加读节点不缓解写热点 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>未找到 AlloyDB 官方提供专用热点行识别、自动打散或排队化机制的证据，缓解靠应用层 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</li>
+<li>应用层模式与代价：短事务、调低 fillfactor 为 HOT 预留空间、计数器分片表（写 N 行、读时 SUM）、队列削峰；代价是读路径聚合复杂度、短暂最终一致性窗口与额外运维面 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
@@ -476,6 +484,14 @@
 <ul>
 <li>GCP-only; no AWS/Azure offering <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Moving out needs logical migration (pg_dump); no cross-cloud replication <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> Hotspot update handling <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (PG row-lock serialization, single-writer write bottleneck).</p>
+<ul>
+<li>Concurrency primitive is PG-semantics row-level tuple locks: later writers queue for the row lock, bounded by lock_timeout; on a cycle the always-on deadlock detector aborts one side with 40P01 and retry is entirely the application&#x27;s job; a hot row is a serialization point — throughput flattens as concurrency rises while latency grows linearly <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>MVCC write amplification is significant: every UPDATE creates a new row version, and HOT skips index writes only when indexed columns are unchanged and the page has free space, otherwise index maintenance cost grows linearly with the number of indexes; heavy updates rely on autovacuum to reclaim dead tuples, and when reclamation falls behind the table bloats and scans slow down <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Single-point bottleneck: the primary handles all writes while reads scale out to read pools, so writes can only scale up the primary; hot-row update throughput is ultimately capped by the primary&#x27;s CPU/memory, and adding read nodes does not relieve a write hotspot <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>No dedicated hot-row detection, automatic scattering, or queueing mechanism from AlloyDB was found in official sources; mitigation is left to the application layer (to be verified).</li>
+<li>Application patterns and cost: short transactions, lowering fillfactor to leave room for HOT, counter sharding tables (write N rows, SUM on read), and queue-based peak shaving; costs are read-path aggregation complexity, brief eventual-consistency windows, and extra operational surface <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
 </div>
 </section>

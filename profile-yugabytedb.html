@@ -87,7 +87,7 @@
 </table></div>
 </div>
 </section>
-<section class="doc-section"><h2><span data-zh="硬维度（46 项）" data-en="Hard dimensions (46)">硬维度（46 项）</span></h2>
+<section class="doc-section"><h2><span data-zh="硬维度（47 项）" data-en="Hard dimensions (47)">硬维度（47 项）</span></h2>
 <div class="lang-block lang-zh">
 <div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。信封加密——每文件唯一 DEK 加密数据，universe key 加密 DEK；OSS 自建版用 <code>openssl rand</code> 生成密钥经 <code>yb-admin</code> 启用，密钥只驻内存不落盘，新 flush/compaction 生效、老数据后台逐步重写加密；Anywhere 增加主密钥层（CMK），支持 AWS KMS / GCP KMS / Azure Key Vault / HashiCorp Vault，支持密钥轮换。YSQL 与 YCQL 无差异（加密在 DocDB 存储层）。<strong>WAL 是否独立加密官方文档未明确——待验证</strong>。</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。分 Node-to-Node TLS 与 Client-to-Node TLS（YSQL/YCQL）；<strong>默认关闭</strong>，开启/关闭需全节点重启（有短暂停机）；Anywhere 支持自签 CA / 上传 CA / Vault PKI / K8s cert-manager，到期前 30 天告警、可轮换。</p></div></div>
@@ -278,6 +278,14 @@
 <ul>
 <li>开源版任意云可部署 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>YugabyteDB Managed 支持 AWS/GCP/Azure <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> 热点数据更新能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（等待或失败两种策略，热点靠重试扛）。</p>
+<ul>
+<li>冲突策略：Wait-on-Conflict（tserver 参数 enable_wait_queues，需滚动重启开启）提供类 PostgreSQL 的等待语义；默认 Fail-on-Conflict 按优先级直接让冲突方失败并返回 kConflict 错误 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>重试责任：Read Committed 下每条语句前有隐式 savepoint，竞态冲突可语句级透明重启；Serializable 或显式事务的冲突必须由应用层重试 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>衰减形态：热点行在 tablet leader 处串行；Fail-on-Conflict 下高并发热点意味着高冲突率与高重试率，社区 pgbench 热点测试中重试曾占事务的数十个百分点 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
+<li>内置缓解：未找到官方命名或文档化的热点行机制的证据；缓解主要靠 schema 设计（如 hash sharding）把写入分散到不同 tablet <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</li>
+<li>应用层模式：SELECT FOR UPDATE 等待、NOWAIT 或 SKIP LOCKED 快速失败或跳过、更新只写变更列以缩小锁冲突面；代价是应用必须显式处理冲突与重试逻辑 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 </ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
@@ -470,6 +478,14 @@
 <ul>
 <li>Open source deploys on any cloud <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>YugabyteDB Managed supports AWS/GCP/Azure <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> Hotspot update handling <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (Wait-or-fail conflict policies; hotspots survive on retries).</p>
+<ul>
+<li>Conflict policy: Wait-on-Conflict (tserver flag <code>enable_wait_queues</code>, requires a rolling restart) gives PostgreSQL-like waiting semantics; the default Fail-on-Conflict fails the lower-priority side outright with a <code>kConflict</code> error <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Retry responsibility: in Read Committed an implicit savepoint precedes each statement, so race conflicts can restart transparently at statement level; conflicts in Serializable or explicit transactions must be retried by the application <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Degradation: a hot row serializes at the tablet leader; under Fail-on-Conflict a heavy hotspot means high conflict and retry rates — community pgbench hotspot tests showed retries reaching tens of percent of transactions (community tested).</li>
+<li>Built-in mitigation: no evidence of an officially named or documented hot-row mechanism; relief comes from schema design (e.g. hash sharding) spreading writes across tablets (to be verified).</li>
+<li>Application patterns: SELECT FOR UPDATE to wait, NOWAIT/SKIP LOCKED to fail fast or skip, updating only changed columns to shrink the lock-conflict surface; the cost is that applications must explicitly handle conflict and retry logic <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 </ul></div></div>
 </div>
 </section>

@@ -81,7 +81,7 @@
 </table></div>
 </div>
 </section>
-<section class="doc-section"><h2><span data-zh="硬维度（46 项）" data-en="Hard dimensions (46)">硬维度（46 项）</span></h2>
+<section class="doc-section"><h2><span data-zh="硬维度（47 项）" data-en="Hard dimensions (47)">硬维度（47 项）</span></h2>
 <div class="lang-block lang-zh">
 <div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——云数据库 OceanBase（托管服务）2021 年起支持 TDE 透明加密（阿里云官方产品动态）；内核有加密基础设施（备份加密 AES-256、密钥存储支持本地文件 / HSM / 云 KMS、微块支持用户指定加解密算法）。<strong>自建社区版的完整落盘加密能力边界未找到可靠证据</strong>，选型前需对照版本说明书。证据：阿里云官方动态<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>+ 社区共识。</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>——云服务支持 SSL 链路加密；<strong>自建版 TLS 配置与默认行为未找到可靠证据</strong>。证据：厂商口径 + 待验证。</p></div></div>
@@ -280,6 +280,15 @@
 <li>软件形态，阿里云/腾讯云/华为云/自建均可部署 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>OceanBase Cloud 覆盖多区 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>跨云多活理论可行，延迟门槛高 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> 热点数据更新能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（ELR 提前释锁，厂商口径 9000 TPS）。</p>
+<ul>
+<li>并发控制原语：行锁加 MVCC；UPDATE 默认对行加隐式互斥锁，事务结束前并发更新同一行的后来者被阻塞，锁等待行为与普通行锁一致 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>ELR 机制：redo log 写入 log buffer 后即释放行锁，不等日志落盘；后续事务可提前拿到同一行的锁，正确性由提交协议保证。参数 enable_early_lock_release，租户级；V2.2.50+ 引入（旧参数 ob_early_lock_release 自 V2.2.30 起废弃），V4.0 起默认 True，ALTER SYSTEM SET 立即生效 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>性能数字<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>：v3.1.2 release notes 称热点行并发更新从 3000 提升到 9000 TPS；官方文章称支付宝场景 5–6 倍提升；官方教程称 50 线程单行更新约 8223/s，约为默认关闭时的 4.5 倍——以上均为厂商自测口径，未见独立第三方复现 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>衰减形态：ELR 只是提前释放行锁，热点行的流量仍集中在分区 leader 单点，天花板为单分区的串行更新能力；并发继续加压时延迟随排队增长，吞吐不再随并发度提升 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>内置缓解：官方性能调优指南明确建议热点行场景开启 ELR，将其列为热点行调优手段 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>缺口与应用层：ELR 与分布式事务 2PC 的交互限制、ELR 专属监控指标、社区正反两面的实测评价，均未找到公开资料；官方也未给出 ELR 之外的热点行应用层模式指导 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</li>
 </ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
@@ -480,6 +489,15 @@
 <li>Software form; deploys on Alibaba/Tencent/Huawei clouds and self-hosted <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>OceanBase Cloud covers multiple zones <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Cross-cloud active-active theoretically possible; latency bar is high <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> Hotspot update handling <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>(ELR releases locks early; vendor claims 9,000 TPS).</p>
+<ul>
+<li>Locking primitive: row locks plus MVCC; UPDATE takes an implicit exclusive lock on the row by default, and later transactions updating the same row block until the holder&#x27;s transaction ends, with the same lock-wait behavior as ordinary row locks <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>ELR mechanism: the row lock is released once the redo log is written to the log buffer, without waiting for the log to be persisted; later transactions can acquire the lock on the same row earlier, with correctness guaranteed by the commit protocol. Parameter <code>enable_early_lock_release</code>, tenant-level; introduced in V2.2.50+ (the old <code>ob_early_lock_release</code> parameter deprecated since V2.2.30), default True since V4.0, and <code>ALTER SYSTEM SET</code> takes effect immediately <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Performance figures <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>: the v3.1.2 release notes say hot-row concurrent updates rose from 3,000 to 9,000 TPS; an official post claims a 5–6x gain in the Alipay scenario; an official tutorial reports ~8,223/s with 50 threads updating a single row, about 4.5x the default-off setting — all vendor-measured figures with no independent third-party reproduction found <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>Degradation: ELR only releases the row lock earlier; hotspot traffic still concentrates on the single partition leader, so the ceiling is one partition&#x27;s serial update throughput — under further concurrency pressure latency grows with queueing while throughput stops scaling <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Built-in mitigation: the official performance tuning guide explicitly recommends enabling ELR for hot-row scenarios and lists it as the hot-row tuning lever <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Gaps and application patterns: ELR&#x27;s interaction constraints with distributed 2PC, ELR-specific monitoring metrics, and measured community evaluations from both sides have no public sources; the official docs also provide no hot-row application-layer guidance beyond ELR (to be verified).</li>
 </ul></div></div>
 </div>
 </section>

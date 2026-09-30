@@ -81,7 +81,7 @@
 </table></div>
 </div>
 </section>
-<section class="doc-section"><h2><span data-zh="硬维度（46 项）" data-en="Hard dimensions (46)">硬维度（46 项）</span></h2>
+<section class="doc-section"><h2><span data-zh="硬维度（47 项）" data-en="Hard dimensions (47)">硬维度（47 项）</span></h2>
 <div class="lang-block lang-zh">
 <div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>。WiredTiger 引擎级静态加密（AES-256-GCM）为 <strong>Enterprise 版专属</strong>，社区版<strong>查证为无</strong>（不带 <code>--enableEncryption</code> 相关能力）；密钥管理支持 KMIP（企业版）与本地 keyfile；Atlas 托管默认落盘加密。客户端字段级加密 Queryable Encryption（7.0 起）是客户端侧能力，不分社区/企业（需 crypt_shared 库）。来源等级：官方文档</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。TLS/SSL 全链路支持（客户端↔mongos/mongod、副本集内部、备份传输）；自 3.6 起默认仅绑定 localhost，暴露公网需显式配置。来源等级：官方文档</p></div></div>
@@ -282,6 +282,13 @@
 <li>Atlas 横跨 AWS/GCP/Azure，可跨云部署集群 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>开源/企业版任意云自建 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>跨云分片集群延迟与费用都要评估 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> 热点数据更新能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（文档级乐观并发，服务端自动重试串行化）。</p>
+<ul>
+<li>并发控制原语是 WiredTiger 文档级 MVCC + 乐观并发：并发改同一文档时后来者快照过期，存储引擎返回 WT_ROLLBACK，mongod 服务端在 writeConflictRetry 循环里按有界指数退避自动重试直到成功——重试归属是内核/服务端，应用无感知，这是热点文档的原生串行化机制。边界：6.0 起极端缓存压力下冲突升级为 TemporarilyUnavailable，服务端只重试 <code>temporarilyUnavailableMaxRetries</code> 次后把错误抛给客户端（应用必须处理）；多文档事务冲突直接返回 WriteConflict（112），由驱动 <code>withTransaction</code> 重试整个事务（驱动层），代价是丢弃部分工作重来<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>衰减形态：N 个线程同时改同一文档约产生 N²/2 的无效重试工作量<span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>，吞吐不随核数增长、CPU 被重试烧掉，加机器不救单文档热点。分片集群下热片键固定在一个 chunk，balancer 无法拆分（jumbo chunk），单分片成硬瓶颈<span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
+<li>内置缓解：未找到官方命名或文档化的热点自动打散、排队化或专用参数机制的证据（不是查证为无）；串行化靠“冲突即重试”硬扛，靠应用层建模。<code>transactionLifetimeLimitSeconds=60</code> 秒是事务超时兜底，不是热点开关。可观测性侧 <code>db.serverStatus().transactions</code> 的 totalAborted/totalStarted 暴露冲突率——检测手段。<span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</li>
+<li>应用层模式与代价：热计数器拆文档/分片计数（代价：读时聚合）；&quot;每事件一文档&quot;的追加模型替代&quot;单文档反复 <code>$inc</code>&quot;（代价：读时聚合、存储膨胀）；分片键用哈希避免热片（代价：范围查询变散）；文档保持 KB 级——WiredTiger 每次更新重写整个文档，大文档热点等于缓存与 IO 双重放大（代价：建模约束）<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
@@ -484,6 +491,13 @@
 <li>Atlas spans AWS/GCP/Azure with cross-cloud cluster deployment <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Open-source/enterprise self-hosted on any cloud <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Evaluate latency and cost for cross-cloud sharded clusters <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> Hotspot update handling <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>(Document-level optimistic concurrency with server-side automatic retry).</p>
+<ul>
+<li>The concurrency primitive is WiredTiger document-level MVCC plus optimistic concurrency: when concurrent writers hit one document, the loser&#x27;s snapshot goes stale, the storage engine returns WT_ROLLBACK, and the mongod server automatically retries in a writeConflictRetry loop with bounded exponential backoff until success — retry ownership sits with the core/server, invisible to the application. This is the native serialization mechanism for hot documents. Boundaries: since 6.0, conflicts under extreme cache pressure escalate to TemporarilyUnavailable, which the server retries only <code>temporarilyUnavailableMaxRetries</code> times before surfacing the error to the client (the application must handle it); multi-document transaction conflicts return WriteConflict (112) directly, retried as a whole transaction by the driver&#x27;s <code>withTransaction</code> (driver layer), at the cost of discarding partial work and restarting <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Decay shape: N threads updating one document generate roughly N²/2 wasted retry work — throughput does not scale with core count and CPUs burn on retries; adding machines does not rescue a single-document hotspot. In a sharded cluster a hot shard key pins to one chunk that the balancer cannot split (jumbo chunk), making one shard a hard bottleneck (community tested).</li>
+<li>Built-in mitigation: no evidence found for an officially named or documented automatic hotspot spreading, queueing, or dedicated parameter mechanism (not verified absent); serialization is brute-forced via &quot;conflict means retry&quot;, and modeling is the application&#x27;s job. <code>transactionLifetimeLimitSeconds=60</code> is a transaction timeout backstop, not a hotspot switch. Observability exposes conflict rates via <code>totalAborted</code>/<code>totalStarted</code> in <code>db.serverStatus().transactions</code> — detection, not mitigation (to be verified).</li>
+<li>Application patterns and costs: split hot counters across documents/sharded counters (cost: read-time aggregation); replace &quot;repeated <code>$inc</code> on one document&quot; with a one-document-per-event append model (cost: read-time aggregation, storage bloat); hashed shard keys to avoid hot shards (cost: scattered range queries); keep documents at KB scale — WiredTiger rewrites the entire document on every update, so a hot large document amplifies both cache and IO (cost: modeling discipline) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
 </div>
 </section>

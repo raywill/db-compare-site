@@ -85,7 +85,7 @@
 </table></div>
 </div>
 </section>
-<section class="doc-section"><h2><span data-zh="硬维度（46 项）" data-en="Hard dimensions (46)">硬维度（46 项）</span></h2>
+<section class="doc-section"><h2><span data-zh="硬维度（47 项）" data-en="Hard dimensions (47)">硬维度（47 项）</span></h2>
 <div class="lang-block lang-zh">
 <div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。所有表默认 AES-256 落盘加密；三档：AWS owned key（默认）、AWS managed key（<code>aws/dynamodb</code>）、customer managed KMS key（自带轮换策略、CloudTrail 审计密钥使用）。注意：AWS owned key 无可见性，合规场景必须显式切 CMK。</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。所有 API 走 HTTPS/TLS；SDK 默认；支持 VPC endpoint 私有访问不走公网。</p></div></div>
@@ -282,6 +282,13 @@
 <ul>
 <li>仅 AWS，无其他云版本 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>迁出靠导出到 S3 + 导入目标库，无跨云复制 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> 热点数据更新能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（自适应容量自动吸热点，分区硬上限兜不住）。</p>
+<ul>
+<li>并发控制原语是无锁单 item 原子写：同一 item 并发写后写覆盖（LWW），无锁等待、无写冲突 abort；条件写（ConditionExpression）失败返回 ConditionalCheckFailedException，由应用决定是否重试，内核不重试；事务写 TransactWriteItems 遇冲突或条件失败整体取消，同样应用层重试。重试归属要分两层：节流抛出的 ProvisionedThroughputExceededException 由 AWS SDK 按指数退避自动重试（驱动层），业务语义冲突由应用层处理。衰减不来自锁，来自限流<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>衰减形态：流量按分区键哈希落分区，单分区硬上限 3000 RCU / 1000 WCU（物理节点能力），超限即节流——表总容量再富余也救不了单个热分区；热点 key 的延迟从个位数毫秒突变为节流重试风暴。单点瓶颈：单个分区键值 = 单个分区，有 LSI 的表还会限制分区拆分<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>内置缓解：自适应容量（adaptive capacity，2018 年引入）默认开启、免费——自动把冷分区的闲置吞吐调给热分区，并把持续高频访问的 item 隔离到独立分区（单 item 可吃满 3000 RCU / 1000 WCU）；突发容量（burst capacity，保留最多 300 秒未用容量）吸收短时峰值。边界：自适应不能突破单分区硬上限，也救不了单调递增排序键造成的不可拆分热点——这是物理上限，不是配额；自适应容量对持续热 item 的隔离重平衡生效有滞后（社区口径：约 5–30 分钟才逐步生效），突发热点在生效前仍先被节流，burst capacity 只能吸收 300 秒以内的短时峰值<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>应用层模式与代价：写分片——热逻辑 key 加随机后缀拆成 N 个物理分区键（如 <code>EVENT#123#00</code>…<code>#15</code>），读时聚合（代价：读放大、聚合逻辑进应用层）；读热点前置 DAX 或应用缓存（代价：DAX 另计费、限 VPC、写穿复杂度）；不可预测峰值用 on-demand 模式（代价：单价高于预置容量）。建模铁律：分区键选高基数、忌时间戳/状态等低基数键，这是官方分区键设计指南的首要规则——热点首先是建模问题<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 </ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
@@ -480,6 +487,13 @@
 <ul>
 <li>AWS-only; no other-cloud offering <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Moving out via S3 export + import; no cross-cloud replication <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> Hotspot update handling <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (Adaptive capacity absorbs hot partitions, but a hard per-partition cap remains).</p>
+<ul>
+<li>The concurrency primitive is lock-free, per-item atomic writes: concurrent writes to one item resolve last-writer-wins, with no lock waiting and no write-conflict abort. A failed conditional write (ConditionExpression) returns ConditionalCheckFailedException for the application to decide on retry — the core does not retry. A TransactWriteItems call cancels entirely on conflict or condition failure, again retried application-side. Retry ownership splits two ways: throttling (ProvisionedThroughputExceededException) is retried automatically by the AWS SDK with exponential backoff (driver layer), while business-semantic conflicts are the application&#x27;s. Decay comes from throttling, not locks <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Decay shape: traffic lands on partitions by partition-key hash, and each partition has a hard ceiling of 3,000 RCU / 1,000 WCU (physical node capacity). Exceeding it throttles — no amount of spare table-level capacity rescues a single hot partition — and a hot key&#x27;s latency jumps from single-digit milliseconds to a throttling retry storm. Single-point bottleneck: one partition-key value equals one partition, and tables with an LSI further constrain partition splitting <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Built-in mitigation: adaptive capacity (introduced 2018) is on by default at no cost — it automatically lends idle throughput from cold partitions to hot ones and isolates persistently hot items onto dedicated partitions (a single item can consume the full 3,000 RCU / 1,000 WCU); burst capacity (up to 300 seconds of banked unused capacity) absorbs short spikes. Boundary: adaptive capacity cannot breach the per-partition hard ceiling, nor rescue unsplittable hotspots caused by monotonically increasing sort keys — this is a physical limit, not a quota; the isolation rebalance for persistently hot items lags (community account: roughly 5–30 minutes before fully taking effect), so bursty hotspots are throttled first in the meantime, and burst capacity only absorbs spikes under 300 seconds <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Application patterns and costs: write sharding — append a random suffix to split a hot logical key into N physical partition keys (e.g. <code>EVENT#123#00</code>…<code>#15</code>) and aggregate on read (cost: read amplification, aggregation logic moves into the application); DAX or an application cache in front of read hotspots (cost: DAX billed separately, VPC-bound, write-through complexity); on-demand mode for unpredictable spikes (cost: higher unit price than provisioned capacity). The modeling rule: choose high-cardinality partition keys and avoid low-cardinality ones like timestamps or statuses — the first rule of the official partition-key design guide. Hotspots are first a modeling problem <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 </ul></div></div>
 </div>
 </section>

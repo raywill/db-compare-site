@@ -79,7 +79,7 @@
 </table></div>
 </div>
 </section>
-<section class="doc-section"><h2><span data-zh="硬维度（46 项）" data-en="Hard dimensions (46)">硬维度（46 项）</span></h2>
+<section class="doc-section"><h2><span data-zh="硬维度（47 项）" data-en="Hard dimensions (47)">硬维度（47 项）</span></h2>
 <div class="lang-block lang-zh">
 <div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。支持表空间透明加密与字段级加密；密钥默认对接腾讯云 KMS（密钥不落库），无 KMS 场景可用内置密钥环；支持国密 SM2/SM3/SM4（厂商口径：国密为增值组件，默认未配置）。版本限定：官方白皮书口径为&quot;专有云及 MySQL 5.7 或更高版本内核&quot;。</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。控制台支持 HTTPS；数据库连接支持 SSL 加密（默认 TLS 1.2 以上）；组件间内部通讯同样基于 SSL 加密。</p></div></div>
@@ -267,6 +267,14 @@
 <ul>
 <li>主力是腾讯云 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>有私有化/本地部署版本，可出云但非多云原生 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> 热点数据更新能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（组锁机制 GA 可用性未证实，热点靠应用层打散）。</p>
+<ul>
+<li>默认语境为分布式 TDSQL for MySQL：存储层行锁（InnoDB/TXSQL 内核），后来者排队等待；死锁由内核检测并回滚一方，重试由应用负责；热点行在单分片内串行，热点键若集中落在同一分片，该分片主节点即成为单点 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>内置缓解：腾讯在 TXSQL 内核研发&quot;热点感知&quot;锁管理机制，被 SIGMOD 2025 收录；系统动态识别被高频争抢的热点后，把冲突事务导入高效的&quot;组锁模式&quot;协作执行，大幅减少传统&quot;锁-等待&quot;开销；官方称极端热点场景最高 6.5–22 倍提升，微信支付日常交易性能提升 30%、大促热点 TPS 近 10 倍、延迟抖动降低 80% <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>边界：该机制的具体 GA 版本与参数开关未找到公开证据，现有材料多为论文与媒体报道的厂商口径，所用版本是否可用需向官方确认 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</li>
+<li>衰减形态：组锁模式缓解的是锁管理开销，不改变单行串行的本质；分布式布局下热点键落在同一分片时，单分片主节点仍是瓶颈 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>应用层模式与代价：计算节点历史上用哈希表预判更新数据分布来做限流与分发；社区通用模式为计数器分片、队列削峰、Redis 前置扣减后异步落库；代价是最终一致性窗口与对账复杂度 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
@@ -456,6 +464,14 @@
 <ul>
 <li>Primarily Tencent Cloud <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>An on-prem edition exists — can leave the cloud but not multi-cloud native <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> Hotspot update handling <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (group-lock mechanism&#x27;s GA availability unverified; hotspots scattered at the application layer).</p>
+<ul>
+<li>Default context is distributed TDSQL for MySQL: row locks in the storage engine (InnoDB/TXSQL kernel), later writers queue; the engine detects deadlocks and rolls back one side, retry is the application&#x27;s job; a hot row serializes within its shard, and a hot key landing on one shard makes that shard&#x27;s primary the single point <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Built-in mitigation: Tencent built a &quot;hotspot-aware&quot; lock manager in the TXSQL kernel, accepted at SIGMOD 2025; it dynamically identifies hotspots under heavy contention and steers conflicting transactions into a cooperative &quot;group lock mode&quot; that sharply cuts traditional lock-and-wait overhead; official claims reach 6.5–22x under extreme contention, 30% daily TPS gain in WeChat Pay, ~10x hotspot TPS during Double-11, and 80% less latency jitter <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>Boundary: no public evidence was found for the exact GA version or parameter switch of this mechanism; available material is the paper plus media coverage of vendor claims, so availability in the version in use must be confirmed with the vendor (to be verified).</li>
+<li>Decay: group lock mode reduces lock-management overhead but does not change the serial nature of a single row; in a distributed layout a hot key on one shard still bottlenecks on that shard&#x27;s primary <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Application patterns and cost: compute nodes historically pre-judged update distribution with a hash table for throttling and dispatch; common community patterns are counter sharding, queue-based peak shaving, and Redis pre-deduction with async write-behind to the DB; costs are eventual-consistency windows and reconciliation complexity <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
 </div>
 </section>

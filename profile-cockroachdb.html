@@ -83,7 +83,7 @@
 </table></div>
 </div>
 </section>
-<section class="doc-section"><h2><span data-zh="硬维度（46 项）" data-en="Hard dimensions (46)">硬维度（46 项）</span></h2>
+<section class="doc-section"><h2><span data-zh="硬维度（47 项）" data-en="Hard dimensions (47)">硬维度（47 项）</span></h2>
 <div class="lang-block lang-zh">
 <div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>。数据文件落盘加密有引擎内机制（<code>--enterprise-encryption</code> 启动参数，多 store 需逐个配置；存储层 RFC 显示文件状态记录在 <code>COCKROACHDB_REGISTRY</code>）；备份可用 passphrase / KMS 加密。但 WAL / 临时文件的覆盖边界、密钥轮换与 KMS 矩阵需对照 v26.3 文档复核。来源等级：官方文档（旧版本）+ 待验证</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>。TLS 双向认证（节点证书 + 客户端证书），<code>--insecure</code> 仅限开发测试。来源等级：官方文档</p></div></div>
@@ -282,6 +282,14 @@
 <li>开源/企业自建版任意云可部署 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>CockroachDB Cloud 支持 AWS/GCP <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>跨云多活理论可行，延迟与成本是现实门槛 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> 热点数据更新能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（冲突转 40001 重试，单行热点靠应用）。</p>
+<ul>
+<li>并发控制原语：默认 SERIALIZABLE 乐观执行；作用于同一索引键或列族的事务被严格串行化，冲突时一方被打上 40001（restart transaction）重试错误，这是争用下的正常操作而非故障 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>重试责任：隐式单语句事务由内核静默自动重试；显式多语句事务必须由应用层（或 ORM 的 CockroachDB 重试适配器）实现重试循环，否则 40001 直接暴露为用户可见错误 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>衰减形态：热点行在 range leaseholder 处串行；高并发热点下重试风暴推高延迟，重试次数随冲突率放大；同 key 热点是 leaseholder 单点串行，加节点无法分担 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>内置缓解：range 按负载自动分裂可缓解热点 range，但单行热点无法通过分裂打散；leaseholder 协调读写，热点 leaseholder 本身是单点 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>应用层模式：官方建议用 SELECT FOR UPDATE 强制串行化临界区、UPSERT 合并写、按访问模式分离列族以缩小锁冲突面；顺序键改用 gen_random_uuid 或 hash-sharded 索引打散（主要针对顺序写入热点）；代价是 schema 改造成本与重试逻辑侵入业务 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 </ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
@@ -482,6 +490,14 @@
 <li>Open-source/enterprise self-hosted deploys on any cloud <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>CockroachDB Cloud supports AWS/GCP <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Cross-cloud active-active is theoretically possible; latency and cost are the real gates <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> Hotspot update handling <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong>(Conflicts become 40001 retries; single-row hotspots are the application&#x27;s problem).</p>
+<ul>
+<li>Locking primitive: optimistic execution at SERIALIZABLE by default; transactions touching the same index key or column family are strictly serialized, and one side of a conflict gets a 40001 (<code>restart transaction</code>) retry error — normal operation under contention, not a failure <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Retry responsibility: implicit single-statement transactions are retried silently by the kernel; explicit multi-statement transactions must be wrapped in a retry loop by the application (or a CockroachDB-aware ORM adapter), otherwise 40001 surfaces as a user-visible error <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Degradation: a hot row serializes at the range leaseholder; under heavy hotspot contention retry storms inflate latency, with retry counts scaling alongside conflict rates; a same-key hotspot is leaseholder serialization, which adding nodes cannot relieve <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Built-in mitigation: load-based range splitting relieves hot ranges but cannot disperse a single-row hotspot; the leaseholder coordinates reads and writes and is itself a single point <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Application patterns: the official guidance recommends SELECT FOR UPDATE to force serialized critical sections, UPSERT to merge writes, and splitting column families by access pattern to shrink the lock-conflict surface; sequential keys should use <code>gen_random_uuid()</code> or hash-sharded indexes (mainly for sequential-write hotspots); the cost is schema-remodeling effort and retry logic leaking into business code <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 </ul></div></div>
 </div>
 </section>

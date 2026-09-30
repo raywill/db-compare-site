@@ -81,7 +81,7 @@
 </table></div>
 </div>
 </section>
-<section class="doc-section"><h2><span data-zh="硬维度（46 项）" data-en="Hard dimensions (46)">硬维度（46 项）</span></h2>
+<section class="doc-section"><h2><span data-zh="硬维度（47 项）" data-en="Hard dimensions (47)">硬维度（47 项）</span></h2>
 <div class="lang-block lang-zh">
 <div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——EPAS/PGE 15+ 内核级 TDE（数据文件 + WAL + 查询临时文件，对应用透明；密钥可经 PGDATAKEYWRAPCMD/UNWRAPCMD 对接外部 KMS）；initdb 时决定，事后难改。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（2026-09-28 查阅）。</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——TLS/SSL（继承 PG 机制，<code>ssl=on</code> + 证书配置）。证据：<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>（PG 机制沿用），官方文档待逐项复核。</p></div></div>
@@ -276,6 +276,13 @@
 <ul>
 <li>软件形态，AWS/Azure/GCP/自建均可部署 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>无云厂商绑定，迁移自由度高于云原生绑定产品 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> 热点数据更新能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（PG 内核行锁，热点靠应用层打散）。</p>
+<ul>
+<li>EPAS 内核即 PostgreSQL：并发原语为行级元组锁，后来者排队等待；死锁检测常开，环路一方被回滚并报 40P01，重试由应用负责；热点行即串行单点，吞吐随并发度趋平 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>高频更新走 MVCC 新版本 + HOT：只有索引列未变且页内有空位时才能免写索引，调低 fillfactor 可预留空间；死元组依赖 autovacuum 回收，回收跟不上则表膨胀、扫描与更新双双变慢 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>未找到 EPAS 官方提供专用热点行机制的证据，缓解靠应用层；其 Oracle 兼容层（如 DBMS_LOCK）只提供显式锁原语，不会自动打散热点 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</li>
+<li>应用层模式与代价：短事务、计数器分片、队列削峰、用 advisory lock 串行化关键区；代价是聚合读复杂度、锁粒度设计成本与短暂不一致窗口 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
@@ -472,6 +479,13 @@
 <ul>
 <li>Software form; deploys on AWS/Azure/GCP/self-hosted <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>No cloud-vendor binding; freer to move than cloud-tied products <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> Hotspot update handling <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong>(PG-kernel row locks, hotspots scattered at the application layer).</p>
+<ul>
+<li>EPAS runs the PostgreSQL kernel: the concurrency primitive is row-level tuple locks, later writers queue; the always-on deadlock detector aborts one side of a cycle with 40P01 and retry is the application&#x27;s job; a hot row is a serialization point where throughput flattens with concurrency <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>High-frequency updates go through MVCC new versions plus HOT: index writes are skipped only when indexed columns are unchanged and the page has free space, so lowering fillfactor reserves room; dead tuples depend on autovacuum, and the table bloats — slowing both scans and updates — when reclamation falls behind <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>No dedicated hot-row mechanism from EDB was found in official sources; mitigation is left to the application layer; its Oracle-compatibility layer (e.g., DBMS_LOCK) only provides explicit lock primitives and does not scatter hotspots automatically (to be verified).</li>
+<li>Application patterns and cost: short transactions, counter sharding, queue-based peak shaving, and advisory locks to serialize critical sections; costs are aggregation complexity on reads, lock-granularity design cost, and brief inconsistency windows <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
 </div>
 </section>

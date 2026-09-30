@@ -93,7 +93,7 @@
 <hr/>
 </div>
 </section>
-<section class="doc-section"><h2><span data-zh="硬维度（46 项）" data-en="Hard dimensions (46)">硬维度（46 项）</span></h2>
+<section class="doc-section"><h2><span data-zh="硬维度（47 项）" data-en="Hard dimensions (47)">硬维度（47 项）</span></h2>
 <div class="lang-block lang-zh">
 <div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
 <li>有：InnoDB 表空间静态加密，两级密钥结构（tablespace key 存于表空间头部，由 master key 加密；支持主密钥轮换）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。覆盖范围：表空间、doublewrite、系统表空间、redo、undo；binlog/relay log、审计日志加密需分别配置 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
@@ -328,6 +328,13 @@
 <div class="dim-item"><h3><span class="dim-num">46</span> 支持跨云 <span class="verdict v-yes">有（开源任意云，无绑定）</span></h3><div class="dim-body"><ul>
 <li>开源版任意云/自建可部署，无厂商绑定 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>各云 RDS 大同小异，迁云主要是逻辑迁移 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> 热点数据更新能力 <span class="verdict v-partial">部分支持（行锁排队串行，无专用热点缓解机制）</span></h3><div class="dim-body"><ul>
+<li>并发控制原语：InnoDB 行级锁（record/gap/next-key），同一行的 UPDATE 后来者排队等待持锁者提交；锁等待由 innodb_lock_wait_timeout（默认 50s）兜底，超时报 1205 错误且仅回滚当前语句，重试由应用层负责 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>冲突行为：innodb_deadlock_detect 默认开启，检测到锁等待成环即回滚较小的事务（报 1213 错误，应用层重试）；热点高并发下检测本身开销陡增，常见做法是关闭检测只靠超时兜底，代价是真死锁要等到超时才释放 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>衰减形态：热点行是天然单点串行瓶颈，同一时刻只有一个事务能持有行锁，吞吐上限约等于锁持有时间的倒数；并发加压只会拉长排队延迟、推高死锁与超时概率 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>内置缓解：未找到官方命名或文档化的热点行机制的证据，无开箱即用的热点开关；调优仅限缩短事务、调低隔离级别等通用手段 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</li>
+<li>应用层模式：短事务加重试、计数器拆成 N 行求和、insert-only 建模、队列削峰；代价是业务逻辑复杂化（汇总查询、幂等补偿），且重试本身放大写压力 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
@@ -564,6 +571,13 @@
 <div class="dim-item"><h3><span class="dim-num">46</span> Multi-cloud support <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><ul>
 <li>Open source deploys on any cloud/self-hosted; no vendor binding <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Cloud RDS offerings are similar; moving clouds is mostly logical migration <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> Hotspot update handling <span class="verdict v-neutral">Partially supporte</span></h3><div class="dim-body"><ul>
+<li>Locking primitive: InnoDB row-level locks (record/gap/next-key); later UPDATEs on the same row queue behind the lock holder. The wait is bounded by <code>innodb_lock_wait_timeout</code> (default 50s); a timeout (error 1205) rolls back only the current statement, and retrying is the application&#x27;s job <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Conflict behavior: <code>innodb_deadlock_detect</code> is on by default and rolls back the smaller transaction when a lock-wait cycle is detected (error 1213, retried by the application); under hot-row pressure detection itself gets expensive, so it is commonly disabled with timeouts as the only backstop — at the cost of real deadlocks lingering until timeout <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Degradation: a hot row is an inherent single-threaded serial bottleneck — only one transaction holds the row lock at a time, so throughput caps at roughly the inverse of lock-hold time. More concurrency only lengthens queue latency and raises deadlock/timeout rates <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Built-in mitigation: no evidence of an officially named or documented hot-row mechanism, and no out-of-the-box hotspot switch; tuning is limited to generic levers such as shorter transactions or lower isolation levels (to be verified).</li>
+<li>Application patterns: short transactions with retry, sharded counters summed across N rows, insert-only modeling, queue-based smoothing; the cost is more complex business logic (aggregation reads, idempotent compensation) and retries that themselves amplify write pressure <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
 </div>
 </section>

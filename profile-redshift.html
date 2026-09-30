@@ -83,7 +83,7 @@
 </table></div>
 </div>
 </section>
-<section class="doc-section"><h2><span data-zh="硬维度（46 项）" data-en="Hard dimensions (46)">硬维度（46 项）</span></h2>
+<section class="doc-section"><h2><span data-zh="硬维度（47 项）" data-en="Hard dimensions (47)">硬维度（47 项）</span></h2>
 <div class="lang-block lang-zh">
 <div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
 <li>默认 AES-256 加密全部数据；可用 AWS KMS 的客户管理密钥（CMK），也可接 CloudHSM 自管密钥 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
@@ -308,6 +308,13 @@
 <div class="dim-item"><h3><span class="dim-num">46</span> 支持跨云 <span class="verdict v-no">无（AWS 绑定，无跨云）</span></h3><div class="dim-body"><ul>
 <li>仅 AWS，无其他云版本 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>迁出靠 unload 到 S3 + 重建，无跨云复制 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> 热点数据更新能力 <span class="verdict v-partial">部分支持（表级写锁排队，热点写入串行执行）</span></h3><div class="dim-body"><ul>
+<li>并发原语是表级写锁叠加隔离级别：新集群默认快照隔离（2024-05-22 起），老集群多为可串行化；无行锁 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>同表并发写时后来者等待前者释放写锁后继续（排队而非 abort）；可串行化模式下无法映射为串行顺序的事务会被回滚并报 1023 错误，重试由应用负责 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>表锁即热点瓶颈：同一行的高频 UPDATE 全部串行排队；INSERT/COPY 的共享锁与 UPDATE 所需的排他锁混用还会导致死锁，官方文档要求应用加重试逻辑 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>未找到官方命名或文档化的热点行机制的证据，热点应对靠应用层 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</li>
+<li>推荐模式：按表串行化写入作业、事务内按固定顺序 LOCK 表、微批 COPY 替代逐行更新；代价是并发度归零、串行化窗口拉长，以及 UPDATE 实为删+插导致的块膨胀与 VACUUM 成本 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
@@ -580,6 +587,14 @@
 <ul>
 <li>AWS-only; no other-cloud offering <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Moving out via UNLOAD to S3 + rebuild; no cross-cloud replication <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> Hotspot update handling <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (table-level write locks queue hotspot writes into serial execution).</p>
+<ul>
+<li>The concurrency primitive is table-level write locks combined with the isolation level: new clusters default to snapshot isolation (since 2024-05-22), older ones mostly serializable; there are no row locks <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Concurrent writers on the same table wait for the earlier one to release the write lock, then proceed (queueing, not abort); under serializable mode, a transaction that cannot map to a serial order is rolled back with error 1023, and retrying is the application&#x27;s job <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>The table lock is the hotspot bottleneck: high-frequency UPDATEs on the same row all queue serially; mixing the shared locks of INSERT/COPY with the exclusive lock an UPDATE needs can also deadlock, and the official docs require applications to add retry logic <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>There is no officially named or documented hotspot-row mechanism found — hotspot handling is left to the application layer (to be verified).</li>
+<li>Recommended patterns: serialize write jobs per table, LOCK tables in a fixed order inside transactions, and micro-batch COPY instead of row-by-row updates; the cost is concurrency dropping to zero, longer serialization windows, and block bloat from UPDATE being delete-plus-insert plus the resulting VACUUM cost <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
 </div>
 </section>

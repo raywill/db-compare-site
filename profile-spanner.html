@@ -81,7 +81,7 @@
 </table></div>
 </div>
 </section>
-<section class="doc-section"><h2><span data-zh="硬维度（46 项）" data-en="Hard dimensions (46)">硬维度（46 项）</span></h2>
+<section class="doc-section"><h2><span data-zh="硬维度（47 项）" data-en="Hard dimensions (47)">硬维度（47 项）</span></h2>
 <div class="lang-block lang-zh">
 <div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-yes">有全量落盘数据默认由 Google</span></h3><div class="dim-body"><p>有 全量落盘数据默认由 Google 管理的密钥加密（Google default encryption），无需用户配置；可选用 <strong>CMEK</strong>（Cloud KMS 客户管理密钥，支持手动创建与 Autokey、外部密钥管理 EKM），备份同样加密。启用 CMEK 对性能与 SLA&quot;无影响&quot;（官方口径）。密钥可轮换、禁用、销毁；KMS API 操作可进审计日志。</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有GCP 服务间默认 TLS</span></h3><div class="dim-body"><p>有 GCP 服务间默认 TLS；客户端库走 gRPC + TLS；PGAdapter 支持 SSL 连接。查证为&quot;默认启用&quot;，无&quot;明文模式&quot;可配项。</p></div></div>
@@ -273,6 +273,14 @@
 <ul>
 <li>仅 GCP，无其他云版本 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>迁出需导出重建，无跨云复制 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> 热点数据更新能力 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（冲突 abort 重试，单行热点官方确认拆不动）。</p>
+<ul>
+<li>并发控制原语：默认 Serializable，写操作加悲观锁（读共享锁与排他锁带优先级）；热点 key 的并发更新会导致等待或被 abort <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>冲突行为：高争用返回 ABORTED 错误；单条 DML 或单行写经内部临时事务执行时由客户端库静默自动重试，显式事务必须由应用层重试整个事务 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>内置缓解：负载驱动的自动分裂可拆分热点 split，但官方明确记载单行热点（UNSPLITTABLE_REASONS=HOT_ROW）不可拆，行内无法加分裂点 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>衰减形态：单 key 高写入率下 abort 率随并发上升，重试放大延迟；热点 split 的瓶颈在其 leader 单点上 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>应用层模式：官方建议分片计数器（多行分摊、读时汇总）、重设计 schema 分散负载、降低热点 split 的 QPS；单调递增主键是官方点名的反模式，改用 UUID 或哈希键打散；代价是读侧聚合复杂度与建模成本 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 </ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
@@ -466,6 +474,14 @@
 <ul>
 <li>GCP-only; no other-cloud offering <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Moving out needs export-and-rebuild; no cross-cloud replication <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> Hotspot update handling <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong>(Conflicts abort and retry; single-row hotspots officially unsplittable).</p>
+<ul>
+<li>Locking primitive: Serializable by default with pessimistic locking on writes (priority-based shared/exclusive locks); concurrent updates to a hot key cause waiting or aborts <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Conflict behavior: high contention returns ABORTED errors; single DML statements or single-row writes running in internal ephemeral transactions are retried silently by the client library, while explicit transactions must be retried in full by the application <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Built-in mitigation: load-based automatic splitting can divide hot splits, but the official docs state single-row hotspots (<code>UNSPLITTABLE_REASONS=HOT_ROW</code>) cannot be split — no split point can be added inside a row <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Degradation: abort rates rise with concurrency under high single-key write rates, and retries amplify latency; a hot split&#x27;s bottleneck is its single leader <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Application patterns: the official guidance recommends sharded counters (spread across rows, aggregated on read), schema redesign to disperse load, and lowering QPS to hot splits; monotonically increasing primary keys are a documented anti-pattern — use UUID or hashed keys to disperse; the cost is read-side aggregation complexity and modeling effort <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 </ul></div></div>
 </div>
 </section>

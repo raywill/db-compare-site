@@ -85,7 +85,7 @@
 </table></div>
 </div>
 </section>
-<section class="doc-section"><h2><span data-zh="硬维度（46 项）" data-en="Hard dimensions (46)">硬维度（46 项）</span></h2>
+<section class="doc-section"><h2><span data-zh="硬维度（47 项）" data-en="Hard dimensions (47)">硬维度（47 项）</span></h2>
 <div class="lang-block lang-zh">
 <div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
 <li>Cassandra：<strong>部分支持</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。commitlog 可加密（<code>transparent_data_encryption_options</code>）；<strong>SSTable 落盘加密在开源版查证为无</strong>（该能力历史上保留给 DataStax Enterprise）；备份（nodetool snapshot）无内置加密，依赖对象存储服务端加密<span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。<ul>
@@ -307,6 +307,13 @@
 <li>开源版任意云/自建可部署，无厂商绑定 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>ScyllaDB Cloud 支持 AWS/GCP，跨云靠自建集群 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>跨云延迟进 gossip/复制路径，网络质量关键 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> 热点数据更新能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（无锁 LWW 写永不冲突，热点分区靠建模扛）。</p>
+<ul>
+<li>并发控制原语是无锁追加写 + LWW：同一行并发写直接落 commitlog/memtable，以客户端时间戳定胜负，不存在锁等待、死锁、写冲突 abort，内核无需重试；写超时（coordinator 超时）由驱动按重试策略重发（驱动层），幂等写可安全重放。需要线性 CAS 时用 LWT（Paxos compare-and-set，Cassandra 4.1+ 可切 Paxos v2 降延迟），代价是多轮往返——热点 key 下 Paxos 串行化成瓶颈，热计数器禁用 LWT<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>衰减形态：热点打到同一分区键，该分区的副本集（RF=3 即三个节点）CPU/IO/压缩压力陡增；超大分区（官方口径 &gt;100MB 或 10 万 cell）还会引发 GC 停顿与读延迟毛刺；coordinator 对跨分区 batch/查询做汇聚，多分区 batch 反而加重协调者压力（官方：batch 为原子性而非性能，反模式）。读热点可被副本分摊，写热点不行——写必须走负责该 token 范围的副本集。ScyllaDB 2025.1+ 默认 tablets 按负载自动均衡 token 范围，但单个热分区键仍固定在一个 tablet/分片，加节点不分摊单 key 热度<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>内置缓解：未找到官方命名或文档化的热点行打散/自动迁移机制的证据（不是查证为无，靠应用层/建模）；可观测性侧有 <code>nodetool tablehistograms</code> 与表级指标定位热分区——检测手段，不是缓解。版本边界：ScyllaDB tablets（2025.1 默认）改善的是范围级负载均衡，不是 key 级打散<span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</li>
+<li>应用层模式与代价：分区键加桶（如 (user_id, bucket)，Discord 按 10 天窗口分桶）把热分区拆成多个物理分区（代价：读需扇出 N 个分区合并，应用逻辑变复杂）；热计数器用分片计数器（N 行累加，代价：读时求和、短暂不一致）；读热点前置缓存（代价：只解决读，写热点无效，另有失效复杂度）；网关层对热 key 限流（代价：牺牲部分可用性）<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
@@ -530,6 +537,13 @@
 <li>Open source deploys on any cloud/self-hosted; no vendor lock <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>ScyllaDB Cloud covers AWS/GCP; cross-cloud via self-hosted clusters <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Cross-cloud latency hits gossip/replication; network quality is key <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> Hotspot update handling <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>(Lock-free LWW writes never conflict; hot partitions are a modeling problem).</p>
+<ul>
+<li>The concurrency primitive is lock-free append writes plus last-write-wins: concurrent writes to one row land directly in the commitlog/memtable and resolve by client timestamp — no lock waiting, no deadlocks, no write-conflict aborts, no core-level retry. Write timeouts (coordinator timeouts) are resent per driver retry policy (driver layer); idempotent writes replay safely. Linearizable CAS uses LWT (Paxos compare-and-set; Cassandra 4.1+ can switch to Paxos v2 for lower latency), at the cost of multiple round trips — Paxos serializes into a bottleneck under a hot key, so hot counters must not use LWT <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Decay shape: a hotspot on one partition key steeply raises CPU/IO/compaction pressure on that partition&#x27;s replica set (three nodes at RF=3); oversized partitions (official guidance: &gt;100MB or 100K cells) additionally trigger GC pauses and read-latency spikes; the coordinator fans multi-partition batches/queries out and merges them back, so cross-partition batches worsen coordinator pressure (officially: batches exist for atomicity, not performance — an anti-pattern). Read hotspots spread across replicas; write hotspots do not — writes must go to the replica set owning that token range. ScyllaDB tablets (default since 2025.1) rebalance token ranges by load, but a single hot partition key still pins to one tablet/shard — adding nodes does not dilute single-key heat <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Built-in mitigation: no evidence found for an officially named or documented hot-row spreading or automatic-migration mechanism (not verified absent; it is an application/modeling concern). Observability offers <code>nodetool tablehistograms</code> and per-table metrics to locate hot partitions — detection, not mitigation. Version boundary: ScyllaDB tablets (default since 2025.1) improve range-level load balancing, not key-level spreading (to be verified).</li>
+<li>Application patterns and costs: bucket the partition key (e.g. (user_id, bucket); Discord buckets by 10-day windows) to split a hot partition into several physical ones (cost: reads fan out across N partitions and merge, complicating application logic); sharded counters for hot counters (N rows summed, cost: read-time summation, brief inconsistency); a cache in front of read hotspots (cost: useless against write hotspots, plus invalidation complexity); gateway-level rate limiting on hot keys (cost: sacrificed availability) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
 </div>
 </section>

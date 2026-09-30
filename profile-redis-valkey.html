@@ -81,7 +81,7 @@
 </table></div>
 </div>
 </section>
-<section class="doc-section"><h2><span data-zh="硬维度（46 项）" data-en="Hard dimensions (46)">硬维度（46 项）</span></h2>
+<section class="doc-section"><h2><span data-zh="硬维度（47 项）" data-en="Hard dimensions (47)">硬维度（47 项）</span></h2>
 <div class="lang-block lang-zh">
 <div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-no">查证为无</span></h3><div class="dim-body"><p><strong>查证为无</strong><span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。无内置 TDE；云托管由云厂商提供盘级加密<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。TLS 支持；Valkey 8.1 宣称 I/O 线程卸载后 TLS 建连接速率提升约 300%（Linux 基金会新闻稿口径，厂商口径）。</p></div></div>
@@ -275,6 +275,13 @@
 <ul>
 <li>开源版任意云可部署 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>Redis Enterprise Cloud 支持多云，但那是商业版 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> 热点数据更新能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（单线程串行化天然无冲突，热点即单分片瓶颈）。</p>
+<ul>
+<li>并发控制原语是单线程事件循环串行执行命令：单命令天然原子，<code>INCR</code>/<code>HINCRBY</code> 等计数器无需锁，并发更新同一 key 按到达顺序执行，不存在写冲突概念；多步读-改-写用 Lua 脚本（服务端原子执行）或 <code>WATCH</code>+<code>MULTI</code>/<code>EXEC</code> 乐观锁——<code>WATCH</code> 下 <code>EXEC</code> 冲突返回空由应用层重试，内核与驱动均不自动重试。衰减形态是串行化把单 key 吞吐上限锁死在单核命令执行能力。冲突层面无内置缓解（不需要）；应用层模式是计数器类直接用原子命令，复杂逻辑走 Lua，代价是 Lua 执行期间阻塞其他命令，必须保持微秒级<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>同一 key 在 Cluster 中永远落在同一 slot、同一分片：热点 key 的流量打满单个分片的 CPU/网卡，加分片无法分摊（官方明确：热 key 问题不能靠加分片解决）；无冲突、无排队，超限的表现就是该分片延迟整体抬高。内置缓解只有检测手段：<code>redis-cli --hotkeys</code>（Redis 8+，需 LFU 的 maxmemory-policy）识别热 key，Valkey 8.1 的 <code>CLUSTER SLOT-STATS</code> 按 slot 统计定位热分片——检测不等于打散，无自动迁移开关。应用层模式：计数器拆成 N 个子 key 随机写、读时求和（代价：读放大 N 倍、短暂不一致）；读多写少场景在应用进程内做短 TTL 本地缓存或 RESP3 客户端缓存（代价：失效复杂度、短暂过期数据）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li><code>{hash tag}</code> 把多 key 强制收敛到同一 slot：原语上保证了多 key 原子操作不报 CROSSSLOT，但也把本可分散的流量人为收敛成热点——这是&quot;无内置自动打散&quot;的直接后果，分片策略完全由 key 命名决定。冲突与重试归属不变（仍是串行化+应用重试）。应用层模式：只在真正需要同 slot 原子性的 key 上用 hash tag，代价是设计时必须评估该 tag 的流量集中度，误用即亲手制造热点<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>边界条件：热 key 叠加大 value 或慢命令（<code>KEYS</code>、大集合 <code>SORT</code>/<code>SUNIONSTORE</code>）会阻塞单线程，所有客户端延迟一起涨，热点从&quot;吞吐瓶颈&quot;升级为&quot;延迟事故&quot;；AOF/RDB fork 与复制进一步放大尾延迟。客户端超时仍由应用层重试，内核无熔断排队。应用层模式：热路径禁用 O(N) 命令改用 <code>SCAN</code>、大 key 拆分、<code>UNLINK</code> 替代 <code>DEL</code>（代价：持续的代码治理与改造投入）<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
@@ -470,6 +477,13 @@
 <ul>
 <li>Open source deploys on any cloud <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Redis Enterprise Cloud is multi-cloud, but that&#x27;s the commercial edition <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> Hotspot update handling <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>(Single-threaded serialization avoids conflicts; a hot key caps at one shard).</p>
+<ul>
+<li>The concurrency primitive is a single-threaded event loop executing commands serially: each command is atomic, counters like <code>INCR</code>/<code>HINCRBY</code> need no locks, and concurrent updates to the same key execute in arrival order — there is no write-conflict concept. Multi-step read-modify-write uses Lua scripts (atomic server-side execution) or <code>WATCH</code>+<code>MULTI</code>/<code>EXEC</code> optimistic locking; a conflicted <code>EXEC</code> under <code>WATCH</code> returns empty and the application retries — neither the core nor the driver retries automatically. Decay shape: serialization pins single-key throughput to one core&#x27;s command-execution capacity. No built-in mitigation is needed at the conflict layer. The application pattern is atomic commands for counters and Lua for complex logic, at the cost that Lua blocks all other commands while running and must stay microsecond-scale <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>One key always hashes to one slot and one shard in Cluster mode: a hot key saturates that shard&#x27;s CPU/network, and adding shards does not help (officially documented: hot keys cannot be fixed by adding shards). Nothing queues or conflicts; the symptom is rising latency on that shard. Built-in mitigation is detection only: <code>redis-cli --hotkeys</code> (Redis 8+, requires an LFU maxmemory-policy) identifies hot keys, and Valkey 8.1&#x27;s <code>CLUSTER SLOT-STATS</code> locates hot shards per slot — detection without automatic rebalancing. Application patterns: split a counter into N sub-keys written at random and summed on read (cost: N× read amplification, brief inconsistency); for read-heavy keys, short-TTL in-process local caches or RESP3 client-side caching (cost: invalidation complexity, briefly stale data) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li><code>{hash tags}</code> force multiple keys onto one slot: the primitive guarantees multi-key atomic operations without CROSSSLOT errors, but it also concentrates otherwise spreadable traffic into a hotspot — a direct consequence of having no built-in automatic spreading, since sharding is entirely determined by key naming. Conflict and retry ownership are unchanged (serialization plus application retry). The application pattern: use hash tags only where same-slot atomicity is genuinely required, at the cost of assessing that tag&#x27;s traffic concentration at design time — misuse manufactures the hotspot by hand <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Boundary conditions: a hot key combined with a big value or a slow command (<code>KEYS</code>, large-set <code>SORT</code>/<code>SUNIONSTORE</code>) blocks the single thread and raises latency for every client, escalating the hotspot from a throughput ceiling to a latency incident; AOF/RDB forks and replication further inflate tail latency. Client timeouts are still retried by the application; the core has no circuit breaker or queueing. Application patterns: ban O(N) commands on hot paths in favor of <code>SCAN</code>, split big keys, use <code>UNLINK</code> instead of <code>DEL</code> (cost: ongoing code governance and refactoring effort) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
 </div>
 </section>

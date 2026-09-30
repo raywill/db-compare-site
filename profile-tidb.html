@@ -83,7 +83,7 @@
 </table></div>
 </div>
 </section>
-<section class="doc-section"><h2><span data-zh="硬维度（46 项）" data-en="Hard dimensions (46)">硬维度（46 项）</span></h2>
+<section class="doc-section"><h2><span data-zh="硬维度（47 项）" data-en="Hard dimensions (47)">硬维度（47 项）</span></h2>
 <div class="lang-block lang-zh">
 <div class="dim-item"><h3><span class="dim-num">1</span> 静态加密 / TDE <span class="verdict v-yes">有（需逐组件开启）</span></h3><div class="dim-body"><p><strong>有（需逐组件开启）</strong>——TiKV 静态加密（v4.0+，AES-CTR 加密数据文件，主密钥经 AWS KMS 或本地文件提供，数据密钥自动轮换）；TiFlash / PD / BR 各有加密支持，&quot;全覆盖&quot;需逐组件配置。证据：官方 encryption-at-rest 文档（v7.5）。</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">2</span> TLS / 传输加密 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——TLS。证据：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</p></div></div>
@@ -284,6 +284,15 @@
 <li>开源版任意云/自建可部署 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>TiDB Cloud 支持 AWS/GCP <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>跨云部署延迟门槛同多活维度 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> 热点数据更新能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（悲观锁内核重试加公平锁，同行串行）。</p>
+<ul>
+<li>并发控制原语：TiKV 层 latch 本地串行加分布式行锁；悲观事务模式（官方推荐的高冲突场景选择）下写冲突直接在内核加悲观锁串行，冲突语句由 TiDB 按最新数据内部重试（pessimistic-txn.max-retry-count 限次），应用只在超限时才看到错误 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>公平锁：tidb_pessimistic_txn_fair_locking（v7.0 引入，新集群默认开启）解决同一行高并发下后到事务被持续饿死的问题，代价是冲突事务的平均延迟上升 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>内存悲观锁（v6.0 引入）：悲观锁只存 Region leader 内存、不经 Raft 复制落盘，大幅降低加锁开销、提升悲观事务吞吐 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>乐观模式：写冲突在 prewrite 阶段才发现，由 TiDB 内核按 tidb_retry_limit 自动重试整个事务，重试责任在内核而非驱动或应用 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>内置热点缓解：PD 的 hot Region 调度可把热点 Region 的 leader 与副本在节点间打散；但单行热点仍卡在单个 Region leader 的 latch 串行上，Region 级打散解决不了单 key 瓶颈 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>应用层模式：官方语境中的&quot;热点&quot;主要指 Region 写入热点，官方解法是在建表时用 SHARD_ROW_ID_BITS 预打散行 ID、把写入分散到多个 Region，配合 PD 的 hot Region 调度再平衡；严重冲突时还需缩小事务范围或拆分热点 key；代价是建模改造成本 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 </ul></div></div>
 </div>
 <div class="lang-block lang-en" hidden>
@@ -486,6 +495,15 @@
 <li>Open source deploys on any cloud/self-hosted <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>TiDB Cloud supports AWS/GCP <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Cross-cloud latency bar same as the active-active dimension <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></div></div>
+<div class="dim-item"><h3><span class="dim-num">47</span> Hotspot update handling <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong>(Kernel-level retry of pessimistic locks plus fair locking; same-row serialization).</p>
+<ul>
+<li>Locking primitive: local serialization via TiKV latches plus distributed row locks; in pessimistic transaction mode (the official choice for high-conflict workloads) write conflicts take pessimistic locks and serialize inside the kernel, and conflicting statements are retried internally by TiDB against the latest data (capped by <code>pessimistic-txn.max-retry-count</code>) — the application only sees an error past that limit <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Fair locking: <code>tidb_pessimistic_txn_fair_locking</code> (introduced in v7.0, on by default in new clusters) fixes starvation of later transactions under same-row concurrency, at the cost of higher average latency for conflicting transactions <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>In-memory pessimistic locks (introduced in v6.0): pessimistic locks live only in the Region leader&#x27;s memory, never persisted via Raft, greatly lowering lock-acquisition overhead and raising pessimistic-transaction throughput <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Optimistic mode: write conflicts surface only at prewrite and are retried as whole transactions by the TiDB kernel per <code>tidb_retry_limit</code> — retry responsibility sits with the kernel, not the driver or the application <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Built-in hotspot mitigation: PD&#x27;s hot-Region scheduler disperses hot Regions&#x27; leaders and replicas across nodes; but a single-row hotspot still stalls on latch serialization at one Region leader — Region-level dispersal cannot fix a single-key bottleneck <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Application patterns: in the official docs &quot;hotspot&quot; mainly means Region write hotspots, and the official remedy is <code>SHARD_ROW_ID_BITS</code> to pre-shard row IDs at table creation, spreading writes across Regions, complemented by PD&#x27;s hot-Region rescheduling; severe conflicts still call for shrinking transaction scope or splitting hot keys; the cost is remodeling effort <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 </ul></div></div>
 </div>
 </section>
