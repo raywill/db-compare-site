@@ -183,6 +183,8 @@ return 'ok';
 }
 function clearSelection() {
 try { localStorage.removeItem(SEL_KEY);} catch (e) {}
+var _nb = document.getElementById('cmp-sel-names');
+if (_nb) _nb.textContent = '';
 applySelection();
 }
 
