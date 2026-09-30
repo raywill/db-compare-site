@@ -47,7 +47,6 @@
   <button type="button" class="cmp-filter-btn" data-filter="olap"><span data-zh="OLAP" data-en="OLAP">OLAP</span></button>
   <button type="button" class="cmp-filter-btn" data-filter="aidb"><span data-zh="AI 数据库" data-en="AI databases">AI 数据库</span></button>
 </div>
-<button id="cmp-copy" type="button" class="copy-btn"><span data-zh="⧉ 复制对比结果" data-en="⧉ Copy comparison">⧉ 复制对比结果</span></button>
 </div>
   <div id="cmp-sel-notice" class="sel-notice" hidden>
     <span data-zh="当前仅显示已选产品：" data-en="Showing selected products only: ">当前仅显示已选产品：</span><b id="cmp-sel-names"></b>
@@ -60,6 +59,10 @@
     <span class="verdict v-neutral" data-zh="视情况" data-en="Depends">视情况</span>
     <span class="verdict v-tbd" data-zh="待验证" data-en="To verify">待验证</span>
   </div>
+</div>
+<div class="cmp-result-bar">
+  <span id="cmp-count" class="cmp-count"></span>
+  <button id="cmp-copy" type="button" class="copy-btn"><span data-zh="⧉ 复制对比结果" data-en="⧉ Copy comparison">⧉ 复制对比结果</span></button>
 </div>
 <div class="table-wrap cmp-wrap">
 <table class="cmp-table">

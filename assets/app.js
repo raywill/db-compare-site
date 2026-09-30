@@ -285,6 +285,18 @@ setTimeout(function () { b.classList.remove('tray-pop');}, 500);
 
 /* 对比页：有选择时只显示已选产品行，并禁用领域筛选 */
 var cmpDomain = 'all';
+/* 对比页：表格上方工具条的可见数量提示（复制范围 = 当前可见行 × 维度） */
+function updateCmpCount() {
+var el = document.getElementById('cmp-count');
+if (!el) return;
+var rows = document.querySelectorAll('.cmp-table > tbody > tr'), n = 0, i;
+for (i = 0; i < rows.length; i++) if (rows[i].style.display !== 'none') n++;
+var ths = document.querySelectorAll('.cmp-table > thead th');
+var dims = ths.length > 0 ? ths.length - 1 : 0;
+el.textContent = getLang() === 'zh'
+? '当前可见：' + n + ' 款 × ' + dims + ' 维'
+: 'Showing: ' + n + ' products × ' + dims + ' dimensions';
+}
 function applyCompareFilter() {
 var rows = document.querySelectorAll('.cmp-table > tbody > tr');
 if (!rows.length) return;
@@ -315,6 +327,7 @@ rows[r].style.display = (cmpDomain === 'all' || _dd.indexOf(cmpDomain) >= 0)? ''
 }
 if (notice) notice.hidden = true;
 }
+updateCmpCount();
 }
 
 /* PK 下拉框：中英文各一对，按当前语言取可见的那对 */
@@ -379,6 +392,7 @@ renderTray();
 paintAddCmpButtons();
 paintPkNote();
 specializePrompts();
+updateCmpCount();
 }
 function applySelection() {
 renderTray();
