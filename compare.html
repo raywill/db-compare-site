@@ -39,12 +39,15 @@
     <span data-zh="各维度独立并列，选型权重由你自己定（见方法论）。点击单元格可展开查看该维度的完整段落原文。" data-en="Dimensions are shown side by side independently; you set your own weights (see Methodology). Click a cell to expand the full original paragraph.">各维度独立并列，选型权重由你自己定（见方法论）。点击单元格可展开查看该维度的完整段落原文。</span>
   </div>
   <div class="legend"><span class="legend-label" data-zh="证据等级：" data-en="Evidence levels: ">证据等级：</span><span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span></div>
-  <div class="cmp-filter-bar" role="group" aria-label="domain filter">
+  <div class="cmp-toolbar">
+<div class="cmp-filter-bar" role="group" aria-label="domain filter">
   <button type="button" class="cmp-filter-btn active" data-filter="all"><span data-zh="全部产品" data-en="All products">全部产品</span></button>
   <button type="button" class="cmp-filter-btn" data-filter="oltp"><span data-zh="关系型 OLTP" data-en="Relational OLTP">关系型 OLTP</span></button>
   <button type="button" class="cmp-filter-btn" data-filter="kvdoc"><span data-zh="KV · 宽列 · 文档" data-en="KV · Wide-column · Document">KV · 宽列 · 文档</span></button>
   <button type="button" class="cmp-filter-btn" data-filter="olap"><span data-zh="OLAP" data-en="OLAP">OLAP</span></button>
   <button type="button" class="cmp-filter-btn" data-filter="aidb"><span data-zh="AI 数据库" data-en="AI databases">AI 数据库</span></button>
+</div>
+<button id="cmp-copy" type="button" class="copy-btn"><span data-zh="⧉ 复制对比结果" data-en="⧉ Copy comparison">⧉ 复制对比结果</span></button>
 </div>
   <div id="cmp-sel-notice" class="sel-notice" hidden>
     <span data-zh="当前仅显示已选产品：" data-en="Showing selected products only: ">当前仅显示已选产品：</span><b id="cmp-sel-names"></b>
@@ -133,8 +136,6 @@
 <script src="assets/cmp-29.js"></script>
 <script src="assets/cmp-30.js"></script>
 <script src="assets/cmp-31.js"></script>
-<script src="assets/cmp-32.js"></script>
-<script src="assets/cmp-33.js"></script>
 <script>(function(){var D=window.__CMPDATA__||{},t=document.querySelectorAll('td.cmp-cell[data-cell]');for(var i=0;i<t.length;i++){var k=t[i].getAttribute('data-cell');if(D[k])t[i].innerHTML=D[k];}})();</script>
 <script src="assets/app.js"></script>
 </body>

@@ -63,7 +63,10 @@ hr{border:none;border-top:1px solid var(--line);margin:1.6em 0}
 .domain-h{font-size:21px;margin:28px 0 14px;display:flex;align-items:center;gap:10px}
 .domain-sec:first-of-type .domain-h{margin-top:6px}
 .domain-n{font-size:13px;color:var(--muted);font-weight:600}
-.cmp-filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 4px}
+.cmp-toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:14px 0 4px}
+.cmp-filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin:0}
+.copy-btn{flex:none;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 16px;font-size:13.5px;cursor:pointer;color:var(--ink);white-space:nowrap}
+.copy-btn:hover{border-color:var(--accent);color:var(--accent)}
 .cmp-filter-btn{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 16px;font-size:14px;cursor:pointer;color:var(--ink)}
 .cmp-filter-btn.active{background:var(--ink);color:#fff;border-color:var(--ink)}
 

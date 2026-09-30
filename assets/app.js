@@ -65,6 +65,77 @@ catch (e) { done(false);}
 document.body.removeChild(ta);
 }
 }
+/* 对比页：一键复制当前可见对比结果为 Markdown（尊重领域/已选筛选与当前语言） */
+function htmlToPlain(root) {
+var out = [];
+function walk(n) {
+if (n.nodeType === 3) { out.push(n.nodeValue); return;}
+if (n.nodeType !== 1) return;
+var tag = n.tagName.toLowerCase(), i;
+if (tag === 'br') { out.push('\n'); return;}
+if (tag === 'li') out.push('- ');
+for (i = 0; i < n.childNodes.length; i++) walk(n.childNodes[i]);
+if (tag === 'p' || tag === 'div' || tag === 'li' ||
+tag === 'h1' || tag === 'h2' || tag === 'h3' || tag === 'h4' || tag === 'tr') out.push('\n');
+}
+walk(root);
+return out.join('').replace(/[ 	 　]+/g, ' ').replace(/ *\n */g, '\n').replace(/\n{3,}/g, '\n\n');
+}
+function cmpCellText(cell, lang) {
+var blk = cell.querySelector('.lang-block.lang-' + lang);
+if (!blk) return {verdict: '', body: ''};
+var v = blk.querySelector('.verdict');
+var verdict = v? v.textContent.trim(): '';
+var full = blk.querySelector('.full'), src;
+if (full && full.innerHTML.trim()) {
+src = full.cloneNode(true);
+} else {
+src = document.createElement('div');
+var sn = blk.querySelector('.snippet');
+if (sn) src.appendChild(sn.cloneNode(true));
+}
+var chips = src.querySelectorAll('.verdict'), i;
+for (i = 0; i < chips.length; i++) chips[i].parentNode.removeChild(chips[i]);
+return {verdict: verdict, body: htmlToPlain(src).trim()};
+}
+function buildCompareMarkdown() {
+var lang = getLang(), zh = lang === 'zh', i, r;
+var rows = [], all = document.querySelectorAll('.cmp-table > tbody > tr');
+for (i = 0; i < all.length; i++) if (all[i].style.display !== 'none') rows.push(all[i]);
+var ths = document.querySelectorAll('.cmp-table > thead th'), dims = [];
+for (i = 1; i < ths.length; i++) {
+var ds = ths[i].querySelector(zh? '.dim-h-zh': '.dim-h-en');
+dims.push(ds? ds.textContent.trim(): ths[i].textContent.trim());
+}
+var names = rows.map(function (row) {
+var s = row.querySelector('.row-head [data-zh]');
+return s? (zh? s.getAttribute('data-zh'): s.getAttribute('data-en')): '';
+});
+var dt = new Date();
+var dstr = dt.getFullYear() + '-' + ('0' + (dt.getMonth() + 1)).slice(-2) + '-' + ('0' + dt.getDate()).slice(-2);
+var L = [];
+L.push(zh? '# 数据库维度对比': '# Database Comparison');
+L.push('> ' + (zh? '产品': 'Products') + '：' + names.join(zh? '、': ', ') +
+'（' + rows.length + (zh? ' 款': ' products') + '）｜' +
+(zh? '维度': 'Dimensions') + '：' + dims.length + '｜' +
+(zh? '导出': 'Exported') + '：' + dstr);
+L.push('> ' + (zh? '来源 db-compare-site；本对比不做综合总分、不做排名。'
+: 'Source: db-compare-site; no aggregate scores, no rankings.'));
+L.push('');
+for (i = 0; i < dims.length; i++) {
+L.push('## ' + (i + 1) + '. ' + dims[i]);
+L.push('');
+for (r = 0; r < rows.length; r++) {
+var cells = rows[r].querySelectorAll('td.cmp-cell');
+if (i >= cells.length) continue;
+var cm = cmpCellText(cells[i], lang);
+L.push('**' + names[r] + '**' + (cm.verdict? ' —— ' + cm.verdict: ''));
+if (cm.body) L.push(cm.body);
+L.push('');
+}
+}
+return L.join('\n').replace(/\n{3,}/g, '\n\n').trim() + '\n';
+}
 function cardPromptText(card) {
 var pre = card.querySelector('.prompt-text.lang-' + getLang());
 if (!pre) pre = card.querySelector('.prompt-text');
@@ -440,6 +511,8 @@ if (un) { toggleSelect(un.getAttribute('data-unsel')); return;}
 var tg = t.closest('[data-sel-toggle]');
 if (tg) { if (!tg.disabled) toggleSelect(tg.getAttribute('data-sel-toggle')); return;}
 if (t.closest('#cmp-clear') || t.closest('#cmp-sel-clear')) { clearSelection(); return;}
+var cpc = t.closest('#cmp-copy');
+if (cpc) { copyPromptText(buildCompareMarkdown(), cpc); return;}
 var panel = document.getElementById('cmp-panel');
 var trayBtn = t.closest('#cmp-tray-btn');
 if (trayBtn && panel) {
