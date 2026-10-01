@@ -43,6 +43,50 @@ hr{border:none;border-top:1px solid var(--line);margin:1.6em 0}
 .hero-note{font-size:14px;color:var(--muted);max-width:760px;margin:0 auto}
 .disclaimer{background:#fffbeb;border:1px solid #fde68a;border-radius:var(--radius);padding:14px 18px;margin:18px auto;max-width:900px;font-size:15px;text-align:left}
 
+/* 场景案例库入口 */
+.cases-cta{max-width:900px;margin:22px auto 0;text-align:center}
+.cases-cta a{display:inline-block;border:1px solid #bfdbfe;background:#eff6ff;border-radius:999px;padding:10px 26px;font-size:15px;color:#1d4ed8;text-decoration:none}
+.cases-cta a:hover{background:#dbeafe}
+
+/* 客户最爱卡片 */
+.fav-list{display:grid;gap:18px}
+.fav-card{border:1px solid var(--line);border-radius:var(--radius);background:var(--card);padding:18px 20px}
+.fav-card h3{margin:0 0 12px;font-size:18px}
+.fav-tag{display:inline-block;font-size:12px;font-weight:700;border-radius:999px;padding:2px 10px;margin-right:8px;vertical-align:2px}
+.fav-tag-kernel .fav-tag{background:#dbeafe;color:#1d4ed8}
+.fav-tag-eco .fav-tag{background:#dcfce7;color:#15803d}
+.fav-tag-policy .fav-tag{background:#e0e7ff;color:#4338ca}
+.fav-tag-pitfall .fav-tag{background:#ffedd5;color:#c2410c}
+.fav-tag-pitfall{border-color:#fdba74}
+.fav-fields{margin:0;display:grid;gap:10px}
+.fav-field{display:grid;grid-template-columns:110px 1fr;gap:12px}
+.fav-field dt{font-weight:700;font-size:14px;color:var(--muted)}
+.fav-field dd{margin:0;font-size:15px;line-height:1.65}
+.disclaimer-bar{background:#fffbeb;border:1px solid #fde68a;border-radius:var(--radius);padding:12px 16px;font-size:14px;margin-bottom:4px}
+
+/* 场景案例库 */
+.case-intro{max-width:900px;margin:6px auto 0;color:var(--muted);font-size:15px}
+.case-filters{max-width:1000px;margin:18px auto}
+.case-filter-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}
+.chip{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 16px;font-size:14px;cursor:pointer;color:var(--ink)}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.case-count{text-align:center;color:var(--muted);font-size:14px}
+.case-list{display:grid;gap:20px;max-width:1000px;margin:0 auto}
+.case-card{border:1px solid var(--line);border-radius:var(--radius);background:var(--card);padding:20px 22px}
+.case-card h3{margin:0 0 10px;font-size:19px}
+.case-type{display:inline-block;font-size:12px;font-weight:700;border-radius:999px;padding:2px 10px;margin-left:8px;vertical-align:2px}
+.case-anti .case-type{background:#fee2e2;color:#b91c1c}
+.case-pro .case-type{background:#dcfce7;color:#15803d}
+.case-tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.case-tag{font-size:12px;background:#f1f5f9;color:#475569;border-radius:999px;padding:2px 10px}
+.case-fields{margin:0;display:grid;gap:10px}
+.case-field{display:grid;grid-template-columns:96px 1fr;gap:12px}
+.case-field dt{font-weight:700;font-size:14px;color:var(--muted)}
+.case-field dd{margin:0;font-size:15px;line-height:1.65}
+.case-meta{font-size:14px;color:var(--muted);margin:14px 0 0}
+.case-meta a{color:#1d4ed8}
+.case-verify{margin-left:12px;font-size:13px}
+
 /* 筛选与卡片 */
 .filter-bar{display:flex;gap:10px;justify-content:center;margin:26px 0;flex-wrap:wrap}
 .filter-btn{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 20px;font-size:15px;cursor:pointer;color:var(--ink)}
