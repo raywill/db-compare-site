@@ -563,7 +563,7 @@ if (tg) { if (!tg.disabled) toggleSelect(tg.getAttribute('data-sel-toggle')); re
 if (t.closest('#cmp-clear') || t.closest('#cmp-sel-clear')) { clearSelection(); return;}
 var cpc = t.closest('#cmp-copy');
 if (cpc) { copyPromptText(buildCompareMarkdown(), cpc); return;}
-var shl = t.closest('#cmp-share, #cmp-share-tray');
+var shl = t.closest('#cmp-share');
 if (shl) { shareSelection(shl); return;}
 var panel = document.getElementById('cmp-panel');
 var trayBtn = t.closest('#cmp-tray-btn');
