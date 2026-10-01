@@ -1359,10 +1359,7 @@ def cases_page_html(cases, prod_by_slug, fav_index, fav_titles):
         '提醒：高频最优解是“不换库”——很多案例的教训不是换一款数据库，而是把当前架构用对。先看案例，再看产品档案里的“客户经验”。</span></p>'
         '<div class="case-filters">'
         '<div class="cf-row"><span class="cf-label"><span data-zh="类型" data-en="Type">类型</span></span>'
-        '<div class="cf-chips">%s</div>'
-        '<div class="cf-hint"><span data-zh="成功经验：这个决策做对了，值得学；失败教训：当初选错、踩过坑，别重蹈覆辙。不选=全部。"'
-        ' data-en="Success stories: decisions that worked, worth emulating; Failure lessons: mistakes already made, so you don\'t repeat them. Nothing selected = all.">'
-        '成功经验：这个决策做对了，值得学；失败教训：当初选错、踩过坑，别重蹈覆辙。不选=全部。</span></div></div>'
+        '<div class="cf-chips">%s</div></div>'
         '<div class="cf-row"><span class="cf-label"><span data-zh="数据库" data-en="Database">数据库</span></span>'
         '<div class="cf-chips-col"><div class="cf-chips">%s</div></div></div>'
         '<div class="cf-row"><span class="cf-label"><span data-zh="场景" data-en="Scenario">场景</span></span>'
@@ -2710,8 +2707,7 @@ hr{border:none;border-top:1px solid var(--line);margin:1.6em 0}
 .cf-label{flex:0 0 56px;font-size:14px;font-weight:700;color:var(--muted);padding-top:7px;text-align:right}
 .cf-chips{display:flex;gap:8px;flex-wrap:wrap;flex:1}
 .cf-chips-col{flex:1;display:flex;flex-direction:column;gap:8px}
-.cf-hint{flex:0 0 100%;font-size:12px;color:var(--muted);margin:-4px 0 0 66px;line-height:1.6}
-.cf-dbgroup{display:flex;gap:10px;align-items:flex-start}
+.cf-dbgroup{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap}
 .cf-dbgroup-label{flex:0 0 auto;font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:3px 10px;margin-top:4px;white-space:nowrap}
 .cf-dbgroup .cf-chips{flex:1}
 .cf-n{font-style:normal;font-size:11px;background:#e2e8f0;color:#475569;border-radius:999px;padding:0 7px;margin-left:6px;line-height:18px}
@@ -2733,7 +2729,7 @@ hr{border:none;border-top:1px solid var(--line);margin:1.6em 0}
 .chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
 .case-count{text-align:center;color:var(--muted);font-size:14px}
 .case-list{display:grid;gap:20px;max-width:1000px;margin:0 auto}
-.case-card{border:1px solid var(--line);border-radius:var(--radius);background:var(--card);padding:20px 22px}
+.case-card{border:1px solid var(--line);border-radius:var(--radius);background:var(--card);padding:20px 22px;overflow-wrap:anywhere}
 .case-card h3{margin:0 0 10px;font-size:19px}
 .case-type{display:inline-block;font-size:12px;font-weight:700;border-radius:999px;padding:2px 10px;margin-left:8px;vertical-align:2px}
 .case-anti .case-type{background:#fee2e2;color:#b91c1c}
@@ -2741,7 +2737,7 @@ hr{border:none;border-top:1px solid var(--line);margin:1.6em 0}
 .case-tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
 .case-tag{font-size:12px;background:#f1f5f9;color:#475569;border-radius:999px;padding:2px 10px}
 .case-fields{margin:0;display:grid;gap:10px}
-.case-field{display:grid;grid-template-columns:96px 1fr;gap:12px}
+.case-field{display:grid;grid-template-columns:96px minmax(0,1fr);gap:12px}
 .case-field dt{font-weight:700;font-size:14px;color:var(--muted)}
 .case-field dd{margin:0;font-size:15px;line-height:1.65}
 .case-meta{font-size:14px;color:var(--muted);margin:14px 0 0}
