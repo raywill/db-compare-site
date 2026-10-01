@@ -739,32 +739,32 @@
 <div class="lang-block lang-zh">
 <h3>1. 生态与人才：出问题时最容易找到答案和人</h3>
 <ul>
-<li><strong>why_true</strong>：MySQL 协议是事实标准，驱动/ORM/监控/中间件覆盖最全；StackOverflow、Percona 博客、中文社区沉淀了二十年踩坑记录；会调 MySQL 的 DBA/开发最好招。</li>
-<li><strong>edge_and_limits</strong>：生态红利在云原生/Serverless 场景被稀释（连接模型不友好）；MariaDB/Aurora 的&quot;兼容&quot;不等于行为一致，照搬调优经验会翻车。</li>
+<li><strong>为什么成立</strong>：MySQL 协议是事实标准，驱动/ORM/监控/中间件覆盖最全；StackOverflow、Percona 博客、中文社区沉淀了二十年踩坑记录；会调 MySQL 的 DBA/开发最好招。</li>
+<li><strong>边界与局限</strong>：生态红利在云原生/Serverless 场景被稀释（连接模型不友好）；MariaDB/Aurora 的&quot;兼容&quot;不等于行为一致，照搬调优经验会翻车。</li>
 <li>来源：<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>；观察版本：8.x。</li>
 </ul>
 <h3>2. 单机 OLTP 低延迟：常规互联网业务的&quot;够用且好用&quot;</h3>
 <ul>
-<li><strong>why_true</strong>：InnoDB 聚簇索引 + MVCC + 自适应哈希，打了二十年的单机事务引擎；点查点写延迟稳定，QPS 上限靠大内存/大 NVMe 纵向扩展。</li>
-<li><strong>edge_and_limits</strong>：单机有写天花板；redo 默认 100MB 对生产写负载普遍太小（<code>innodb_redo_log_capacity</code> 需按峰值调到 GB 级，否则 checkpoint 压力导致写抖动）；大到单机装不下就必须分片，见深水区 5。</li>
+<li><strong>为什么成立</strong>：InnoDB 聚簇索引 + MVCC + 自适应哈希，打了二十年的单机事务引擎；点查点写延迟稳定，QPS 上限靠大内存/大 NVMe 纵向扩展。</li>
+<li><strong>边界与局限</strong>：单机有写天花板；redo 默认 100MB 对生产写负载普遍太小（<code>innodb_redo_log_capacity</code> 需按峰值调到 GB 级，否则 checkpoint 压力导致写抖动）；大到单机装不下就必须分片，见深水区 5。</li>
 <li>来源：<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> + netdata/oneuptime redo sizing 指南 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>；观察版本：8.0.30+（redo 在线 resize）。</li>
 </ul>
 <h3>3. 复制 HA 梯度完整：从主从到官方集群都有现成答案</h3>
 <ul>
-<li><strong>why_true</strong>：异步复制 + GTID + 半同步 + Group Replication + InnoDB Cluster + MySQL Router，官方内置一条龙；<code>util.checkForServerUpgrade</code>、AdminAPI 等 Shell 工具链成熟。</li>
-<li><strong>edge_and_limits</strong>：默认异步 RPO&gt;0；Group Replication 只适合 LAN、有主键/事务大小等硬约束；切主前的 GTID 比对、延迟监控都要自己搭。</li>
+<li><strong>为什么成立</strong>：异步复制 + GTID + 半同步 + Group Replication + InnoDB Cluster + MySQL Router，官方内置一条龙；<code>util.checkForServerUpgrade</code>、AdminAPI 等 Shell 工具链成熟。</li>
+<li><strong>边界与局限</strong>：默认异步 RPO&gt;0；Group Replication 只适合 LAN、有主键/事务大小等硬约束；切主前的 GTID 比对、延迟监控都要自己搭。</li>
 <li>来源：<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> + <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>；观察版本：8.4。</li>
 </ul>
 <h3>4. DDL 在线化做得早：大表变更有成熟套路</h3>
 <ul>
-<li><strong>why_true</strong>：<code>INSTANT</code>/<code>INPLACE</code> 分级 + <code>ALGORITHM</code>/<code>LOCK</code> 显式控制 + gh-ost/pt-osc 生态，大表加列/加索引不停机是标准操作。</li>
-<li><strong>edge_and_limits</strong>：MDL 队头阻塞是头号 DDL 事故形态；改列类型/字符集常被迫 COPY；gh-ost 吃 binlog、pt-osc 用触发器，都有额外成本；复制环境 COPY DDL 会放大从库延迟。</li>
+<li><strong>为什么成立</strong>：<code>INSTANT</code>/<code>INPLACE</code> 分级 + <code>ALGORITHM</code>/<code>LOCK</code> 显式控制 + gh-ost/pt-osc 生态，大表加列/加索引不停机是标准操作。</li>
+<li><strong>边界与局限</strong>：MDL 队头阻塞是头号 DDL 事故形态；改列类型/字符集常被迫 COPY；gh-ost 吃 binlog、pt-osc 用触发器，都有额外成本；复制环境 COPY DDL 会放大从库延迟。</li>
 <li>来源：<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>；观察版本：8.0/8.4。</li>
 </ul>
 <h3>5. 可观测性内建：不用外挂就能定位大多数问题</h3>
 <ul>
-<li><strong>why_true</strong>：<code>performance_schema</code> + <code>sys</code> schema + 慢日志 + <code>SHOW ENGINE INNODB STATUS</code>，锁、等待、IO、复制状态一应俱全；MySQL Shell 还有升级检查等管理功能。</li>
-<li><strong>edge_and_limits</strong>：全开 instrument 有可测开销（旧实测特定场景 ~15%，不可推广）；慢日志阈值、长事务监控、复制延迟 heartbeat 都要主动配置——默认不包办。</li>
+<li><strong>为什么成立</strong>：<code>performance_schema</code> + <code>sys</code> schema + 慢日志 + <code>SHOW ENGINE INNODB STATUS</code>，锁、等待、IO、复制状态一应俱全；MySQL Shell 还有升级检查等管理功能。</li>
+<li><strong>边界与局限</strong>：全开 instrument 有可测开销（旧实测特定场景 ~15%，不可推广）；慢日志阈值、长事务监控、复制延迟 heartbeat 都要主动配置——默认不包办。</li>
 <li>来源：<span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>（LINE）+ <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>；观察版本：8.x。</li>
 </ul>
 <hr/>
@@ -772,32 +772,32 @@
 <div class="lang-block lang-en" hidden>
 <h3>1. Ecosystem &amp; talent: the easiest place to find answers and people when things break</h3>
 <ul>
-<li><strong>why_true</strong>: The MySQL protocol is the de facto standard with the most complete driver/ORM/monitoring/middleware coverage; StackOverflow, the Percona blog, and Chinese-language communities hold twenty years of accumulated war stories; MySQL DBAs and developers are the easiest to hire.</li>
-<li><strong>edge_and_limits</strong>: The ecosystem dividend is diluted in cloud-native/serverless scenarios (the connection model is unfriendly there); MariaDB/Aurora &quot;compatibility&quot; does not mean behavioral equivalence — blindly copying tuning experience will backfire.</li>
+<li><strong>Why it holds</strong>: The MySQL protocol is the de facto standard with the most complete driver/ORM/monitoring/middleware coverage; StackOverflow, the Percona blog, and Chinese-language communities hold twenty years of accumulated war stories; MySQL DBAs and developers are the easiest to hire.</li>
+<li><strong>Limits</strong>: The ecosystem dividend is diluted in cloud-native/serverless scenarios (the connection model is unfriendly there); MariaDB/Aurora &quot;compatibility&quot; does not mean behavioral equivalence — blindly copying tuning experience will backfire.</li>
 <li>Sources: <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>; observed versions: 8.x.</li>
 </ul>
 <h3>2. Single-node OLTP latency: &quot;good enough and pleasant&quot; for conventional internet workloads</h3>
 <ul>
-<li><strong>why_true</strong>: InnoDB&#x27;s clustered indexes + MVCC + adaptive hash — a single-node transactional engine honed over twenty years; stable point-query/point-write latency, with QPS ceiling raised by vertical scaling on big memory/big NVMe.</li>
-<li><strong>edge_and_limits</strong>: Single nodes have a write ceiling; the default 100MB redo is generally too small for production write loads (<code>innodb_redo_log_capacity</code> needs to be sized to GB levels against peak throughput, otherwise checkpoint pressure causes write jitter); once data outgrows a single node, sharding is mandatory — see Deep Dive 5.</li>
+<li><strong>Why it holds</strong>: InnoDB&#x27;s clustered indexes + MVCC + adaptive hash — a single-node transactional engine honed over twenty years; stable point-query/point-write latency, with QPS ceiling raised by vertical scaling on big memory/big NVMe.</li>
+<li><strong>Limits</strong>: Single nodes have a write ceiling; the default 100MB redo is generally too small for production write loads (<code>innodb_redo_log_capacity</code> needs to be sized to GB levels against peak throughput, otherwise checkpoint pressure causes write jitter); once data outgrows a single node, sharding is mandatory — see Deep Dive 5.</li>
 <li>Sources: <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> + netdata/oneuptime redo sizing guides <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>; observed versions: 8.0.30+ (online redo resize).</li>
 </ul>
 <h3>3. Complete replication HA gradient: ready-made answers from primary-replica to official clustering</h3>
 <ul>
-<li><strong>why_true</strong>: Async replication + GTID + semi-sync + Group Replication + InnoDB Cluster + MySQL Router — a complete official stack; Shell tooling such as <code>util.checkForServerUpgrade</code> and AdminAPI is mature.</li>
-<li><strong>edge_and_limits</strong>: Default async means RPO&gt;0; Group Replication is LAN-only with hard constraints (primary keys, transaction size limits); GTID comparison before failover and lag monitoring are all on you to build.</li>
+<li><strong>Why it holds</strong>: Async replication + GTID + semi-sync + Group Replication + InnoDB Cluster + MySQL Router — a complete official stack; Shell tooling such as <code>util.checkForServerUpgrade</code> and AdminAPI is mature.</li>
+<li><strong>Limits</strong>: Default async means RPO&gt;0; Group Replication is LAN-only with hard constraints (primary keys, transaction size limits); GTID comparison before failover and lag monitoring are all on you to build.</li>
 <li>Sources: <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> + <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>; observed versions: 8.4.</li>
 </ul>
 <h3>4. Early online DDL: mature playbooks for large-table changes</h3>
 <ul>
-<li><strong>why_true</strong>: Tiered <code>INSTANT</code> / <code>INPLACE</code> + explicit <code>ALGORITHM</code> / <code>LOCK</code> control + the gh-ost/pt-osc ecosystem — adding columns/indexes to large tables without downtime is standard practice.</li>
-<li><strong>edge_and_limits</strong>: MDL head-of-line blocking is the #1 DDL incident shape; changing column types/character sets is often forced into COPY; gh-ost consumes binlog, pt-osc uses triggers — both have extra costs; COPY DDL in replication setups amplifies replica lag.</li>
+<li><strong>Why it holds</strong>: Tiered <code>INSTANT</code> / <code>INPLACE</code> + explicit <code>ALGORITHM</code> / <code>LOCK</code> control + the gh-ost/pt-osc ecosystem — adding columns/indexes to large tables without downtime is standard practice.</li>
+<li><strong>Limits</strong>: MDL head-of-line blocking is the #1 DDL incident shape; changing column types/character sets is often forced into COPY; gh-ost consumes binlog, pt-osc uses triggers — both have extra costs; COPY DDL in replication setups amplifies replica lag.</li>
 <li>Sources: <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>; observed versions: 8.0/8.4.</li>
 </ul>
 <h3>5. Built-in observability: most problems locatable without add-ons</h3>
 <ul>
-<li><strong>why_true</strong>: <code>performance_schema</code> + <code>sys</code> schema + slow log + <code>SHOW ENGINE INNODB STATUS</code> cover locks, waits, IO, and replication status; MySQL Shell adds management functions like the upgrade checker.</li>
-<li><strong>edge_and_limits</strong>: Fully enabling instruments has measurable overhead (old benchmark ~15% in a specific scenario — not generalizable); slow-log thresholds, long-transaction monitoring, and replication-lag heartbeats all need active configuration — the defaults don&#x27;t cover everything.</li>
+<li><strong>Why it holds</strong>: <code>performance_schema</code> + <code>sys</code> schema + slow log + <code>SHOW ENGINE INNODB STATUS</code> cover locks, waits, IO, and replication status; MySQL Shell adds management functions like the upgrade checker.</li>
+<li><strong>Limits</strong>: Fully enabling instruments has measurable overhead (old benchmark ~15% in a specific scenario — not generalizable); slow-log thresholds, long-transaction monitoring, and replication-lag heartbeats all need active configuration — the defaults don&#x27;t cover everything.</li>
 <li>Sources: <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span> (LINE) + <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>; observed versions: 8.x.</li>
 </ul>
 <hr/>
