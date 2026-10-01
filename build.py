@@ -2984,8 +2984,11 @@ if (nsel) nsel.addEventListener('change', function () { if (nsel.value) location
 /* ---------------- 语言 ---------------- */
 var KEY = 'dbcompare-lang';
 function getLang() {
-try { return localStorage.getItem(KEY) || 'zh';}
-catch (e) { return 'zh';}
+var nav = '';
+try { nav = (navigator.language || '').toLowerCase(); } catch (e) {}
+var dflt = nav.indexOf('zh') === 0 ? 'zh' : 'en';
+try { return localStorage.getItem(KEY) || dflt;}
+catch (e) { return dflt;}
 }
 function escHtml(s) {
 return String(s).replace(/[&<>"']/g, function (c) {
