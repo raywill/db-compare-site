@@ -751,6 +751,15 @@ def page_shell(title_zh, title_en, body_html, active="index", tail_scripts=""):
         % (href, "active" if href.startswith(active) else "", zh, en, zh)
         for href, zh, en in nav
     )
+    # 移动端下拉导航（对比托盘按钮除外，保持原样）
+    nav_options = "\n".join(
+        '<option value="%s"%s data-zh="%s" data-en="%s">%s</option>'
+        % (href, " selected" if href.startswith(active) else "", zh, en, zh)
+        for href, zh, en in nav
+    )
+    nav_select_html = (
+        '<select class="nav-select" id="nav-select" aria-label="导航">\n%s\n</select>'
+        % nav_options)
     # 全局对比托盘：跨页持久（localStorage），最多选 4 款；未选时各页保持通用显示
     tray_html = """<div class="cmp-tray">
       <button id="cmp-tray-btn" type="button" class="tray-btn" aria-expanded="false" aria-haspopup="true"><span data-zh="对比" data-en="Compare">对比</span> <b class="tray-count"><i id="cmp-count">0</i>/4</b></button>
@@ -779,6 +788,7 @@ def page_shell(title_zh, title_en, body_html, active="index", tail_scripts=""):
 %s
     </nav>
     %s
+    %s
     <button id="lang-toggle" class="lang-btn" type="button" aria-label="switch language">EN</button>
   </div>
 </header>
@@ -793,7 +803,7 @@ def page_shell(title_zh, title_en, body_html, active="index", tail_scripts=""):
 <script src="assets/app.js"></script>
 </body>
 </html>
-""" % (html.escape(title_zh), html.escape(title_en), html.escape(title_zh), nav_html, tray_html, body_html, _CATALOG_SCRIPT, tail_scripts)
+""" % (html.escape(title_zh), html.escape(title_en), html.escape(title_zh), nav_html, nav_select_html, tray_html, body_html, _CATALOG_SCRIPT, tail_scripts)
 
 
 def lang_block(zh_html, en_html):
@@ -2656,6 +2666,7 @@ hr{border:none;border-top:1px solid var(--line);margin:1.6em 0}
 .mainnav a{color:var(--muted);padding:8px 14px;border-radius:8px;font-size:15px}
 .mainnav a:hover{background:var(--accent-soft);color:var(--accent);text-decoration:none}
 .mainnav a.active{color:var(--accent);font-weight:700;background:var(--accent-soft)}
+.nav-select{display:none}
 .lang-btn{margin-left:auto;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:7px 18px;font-size:14px;cursor:pointer;color:var(--ink)}
 .lang-btn:hover{border-color:var(--accent);color:var(--accent)}
 .page{max-width:var(--max);margin:0 auto;padding:28px 20px 60px}
@@ -2837,7 +2848,8 @@ html[lang="en"] .dim-h-en{font-size:13.5px;font-weight:600;color:inherit}
 
 @media (max-width:720px){
   .topbar-inner{gap:12px;padding:0 12px}
-  .mainnav a{padding:8px 8px;font-size:14px}
+  .mainnav{display:none}
+  .nav-select{display:block;flex:1;min-width:0;max-width:200px;padding:8px 10px;font-size:14px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--text)}
   .page{padding:18px 12px 48px}
   .doc-section,.profile-hero{padding:18px}
   .hero h1{font-size:26px}
@@ -2942,14 +2954,17 @@ _DIVE_EN_JS = _js_sq(_DEEPDIVE_TPL["prompt_en"].replace("{{CANDIDATES}}", "{name
 JS = """(function () {
 'use strict';
 
-/* 导航顺序归一化：首页、维度对比、AI选型、方法论。同步执行（nav 已解析），老页面无需重推即可收敛，无闪烁 */
+/* 导航顺序归一化：首页、维度对比、AI选型、场景案例、方法论。同步执行（nav 已解析），老页面无需重推即可收敛，无闪烁 */
 (function () {
 var nav = document.querySelector('nav.mainnav');
 if (!nav) return;
-var order = ['index.html', 'compare.html', 'advisor.html', 'methodology.html'];
+var order = ['index.html', 'compare.html', 'advisor.html', 'cases.html', 'methodology.html'];
 var links = nav.querySelectorAll('a'), byHref = {}, i;
 for (i = 0; i < links.length; i++) byHref[links[i].getAttribute('href')] = links[i];
 for (i = 0; i < order.length; i++) { if (byHref[order[i]]) nav.appendChild(byHref[order[i]]); }
+/* 移动端下拉导航：跳转 */
+var nsel = document.getElementById('nav-select');
+if (nsel) nsel.addEventListener('change', function () { if (nsel.value) location.href = nsel.value; });
 })();
 
 /* ---------------- 语言 ---------------- */

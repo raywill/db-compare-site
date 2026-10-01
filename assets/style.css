@@ -30,6 +30,7 @@ hr{border:none;border-top:1px solid var(--line);margin:1.6em 0}
 .mainnav a{color:var(--muted);padding:8px 14px;border-radius:8px;font-size:15px}
 .mainnav a:hover{background:var(--accent-soft);color:var(--accent);text-decoration:none}
 .mainnav a.active{color:var(--accent);font-weight:700;background:var(--accent-soft)}
+.nav-select{display:none}
 .lang-btn{margin-left:auto;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:7px 18px;font-size:14px;cursor:pointer;color:var(--ink)}
 .lang-btn:hover{border-color:var(--accent);color:var(--accent)}
 .page{max-width:var(--max);margin:0 auto;padding:28px 20px 60px}
@@ -211,7 +212,8 @@ html[lang="en"] .dim-h-en{font-size:13.5px;font-weight:600;color:inherit}
 
 @media (max-width:720px){
   .topbar-inner{gap:12px;padding:0 12px}
-  .mainnav a{padding:8px 8px;font-size:14px}
+  .mainnav{display:none}
+  .nav-select{display:block;flex:1;min-width:0;max-width:200px;padding:8px 10px;font-size:14px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--text)}
   .page{padding:18px 12px 48px}
   .doc-section,.profile-hero{padding:18px}
   .hero h1{font-size:26px}
