@@ -434,7 +434,7 @@ def classify_section(title):
 
 def clean_name(title_line):
     t = re.sub(r"^#\s*", "", title_line).strip()
-    t = re.sub(r"^(数据库档案|示例档案|研究档案|Sample Profile|Database Profile|Profile)\s*[:：]?\s*", "", t)
+    t = re.sub(r"^(数据库档案|示例档案|研究档案|档案|Sample Profile|Database Profile|Profile)\s*[:：]?\s*", "", t)
     t = re.sub(r"\s*[（(]\s*(中文|英文|English)\s*[)）]\s*$", "", t)
     t = re.sub(r"\s*(数据库档案|研究档案|Database Profile|Research Profile|档案|Profile)\s*$", "", t)
     return t.strip()
@@ -1030,22 +1030,29 @@ CASE_TYPE_CLASS = {"反例": "anti", "正例": "pro"}
 # （去空格小写后匹配）。一个案例可归属多个家族。
 SCENARIO_FAMILIES = [
     ("migrate", "迁移上云", "Migration",
-     ["去o", "迁移", "上云", "商业数据库", "分库分表替代", "平滑迁移"]),
+     ["去o", "迁移", "上云", "商业数据库", "分库分表替代", "平滑迁移",
+      "替代", "替换", "去ioe", "国产化", "本地迁云"]),
     ("scale", "扩展分片", "Scaling & Sharding",
      ["分片", "扩展", "热点", "id设计", "分片键", "分区", "分库分表",
-      "超大规模", "多集群"]),
+      "超大规模", "多集群", "pb级", "数据倾斜", "全球部署", "全球复制"]),
     ("cost", "成本优化", "Cost Optimization",
-     ["成本", "降本", "压缩", "整合", "布隆"]),
+     ["成本", "降本", "压缩", "整合", "布隆", "账单", "收敛"]),
     ("ha", "高可用容灾", "HA & Disaster Recovery",
-     ["高可用", "多地域", "全球化", "零停机", "容灾", "故障隔离", "在线扩容"]),
+     ["高可用", "多地域", "全球化", "零停机", "容灾", "故障隔离", "在线扩容",
+      "两地三中心", "跨云", "生产事故", "凭证"]),
     ("perf", "性能调优", "Performance Tuning",
      ["延迟", "p99", "吞吐", "写入放大", "内存墙", "gc", "查询", "缓存",
-      "并发", "摄入", "长尾", "连接", "物化", "写密集"]),
+      "并发", "摄入", "长尾", "连接", "物化", "写密集", "实时", "加速",
+      "性能天花板"]),
     ("ops", "运维工程", "Operations",
-     ["运维", "工具链", "生态", "变更", "模式", "索引", "自研存储"]),
+     ["运维", "工具链", "生态", "变更", "模式", "索引", "自研存储",
+      "开源许可", "sspl", "bsl", "许可证", "社区分叉", "供应商锁定",
+      "选型", "故障注入", "零代码", "厂商"]),
     ("arch", "架构选型", "Architecture Choice",
      ["自研", "构建", "模型", "htap", "一致", "事务", "审计", "租户",
-      "云原生", "存算", "olap", "实时分析", "时序", "cdc", "去中心化"]),
+      "云原生", "存算", "olap", "实时分析", "时序", "cdc", "去中心化",
+      "检索", "rag", "向量", "多模态", "湖仓", "微服务", "知识库",
+      "遥测", "数据栈", "共享"]),
 ]
 
 
@@ -1112,6 +1119,13 @@ def _split_list(s):
     return [x.strip() for x in re.split(r"[,，]", s or "") if x.strip()]
 
 
+def _split_caps(s):
+    """切分"相关能力"：条目形如 slug:卡片标题，标题内可能含逗号；
+    只在逗号/分号后紧跟 slug+冒号时才切分。"""
+    parts = re.split(r"[,，;；]\s*(?=[a-z][a-z0-9\-]*\s*[:：])", s or "")
+    return [x.strip() for x in parts if x.strip()]
+
+
 def case_card_html(case, prod_by_slug, fav_index, fav_titles):
     slug = case["slug"]
     zh, en = case["zh"], case["en"]
@@ -1152,7 +1166,7 @@ def case_card_html(case, prod_by_slug, fav_index, fav_titles):
         p_links.append('<a href="profile-%s.html"><span data-zh="%s" data-en="%s">%s</span></a>'
                        % (ps, html.escape(nm_zh, quote=True), html.escape(nm_en, quote=True),
                           html.escape(nm_zh)))
-    rel_cs = _split_list(zf.get("相关能力", ""))
+    rel_cs = _split_caps(zf.get("相关能力", ""))
     c_links = []
     for rc in rel_cs:
         if rc == "无":
@@ -1163,8 +1177,12 @@ def case_card_html(case, prod_by_slug, fav_index, fav_titles):
         else:
             ps, nm = "", rc.strip()
         num = fav_lookup(fav_index, ps, nm)
-        href = "profile-%s.html#fav-%s-%d" % (ps, ps, num) if (ps and num) else \
-            ("profile-%s.html" % ps if ps else "#")
+        if not ps or ps not in prod_by_slug:
+            # 引用无法解析：降级为纯文本，不渲染死链
+            c_links.append(html.escape(nm))
+            continue
+        href = "profile-%s.html#fav-%s-%d" % (ps, ps, num) if num else \
+            "profile-%s.html" % ps
         if ps and num and (ps, num) in fav_titles:
             tzh, ten = fav_titles[(ps, num)]
             c_links.append('<a href="%s"><span data-zh="%s" data-en="%s">%s</span></a>'
