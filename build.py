@@ -2684,7 +2684,7 @@ hr{border:none;border-top:1px solid var(--line);margin:1.6em 0}
 
 /* 客户经验卡片 */
 .fav-list{display:grid;gap:18px}
-.fav-card{border:1px solid var(--line);border-radius:var(--radius);background:var(--card);padding:18px 20px}
+.fav-card{border:1px solid var(--line);border-radius:var(--radius);background:var(--card);padding:18px 20px;overflow-wrap:anywhere}
 .fav-card h3{margin:0 0 12px;font-size:18px}
 .fav-tag{display:inline-block;font-size:12px;font-weight:700;border-radius:999px;padding:2px 10px;margin-right:8px;vertical-align:2px}
 .fav-tag-kernel .fav-tag{background:#dbeafe;color:#1d4ed8}
@@ -2777,7 +2777,7 @@ hr{border:none;border-top:1px solid var(--line);margin:1.6em 0}
 .tag{display:inline-block;font-size:12px;color:var(--muted);background:var(--slate-bg);border-radius:6px;padding:2px 8px;margin:0 6px 6px 0}
 
 /* 文档节 */
-.doc-section{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:26px 30px;margin:22px 0}
+.doc-section{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:26px 30px;margin:22px 0;overflow-wrap:anywhere}
 .doc-section h2{font-size:22px;margin:0 0 14px;padding-bottom:10px;border-bottom:2px solid var(--accent-soft)}
 .doc-section h3{font-size:18px;margin:1.4em 0 .6em}
 .doc-section h4{font-size:16px;margin:1.2em 0 .5em}
