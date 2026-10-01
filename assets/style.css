@@ -48,7 +48,7 @@ hr{border:none;border-top:1px solid var(--line);margin:1.6em 0}
 .cases-cta a{display:inline-block;border:1px solid #bfdbfe;background:#eff6ff;border-radius:999px;padding:10px 26px;font-size:15px;color:#1d4ed8;text-decoration:none}
 .cases-cta a:hover{background:#dbeafe}
 
-/* 客户最爱卡片 */
+/* 客户经验卡片 */
 .fav-list{display:grid;gap:18px}
 .fav-card{border:1px solid var(--line);border-radius:var(--radius);background:var(--card);padding:18px 20px}
 .fav-card h3{margin:0 0 12px;font-size:18px}
@@ -68,6 +68,29 @@ hr{border:none;border-top:1px solid var(--line);margin:1.6em 0}
 .case-intro{max-width:900px;margin:6px auto 0;color:var(--muted);font-size:15px}
 .case-filters{max-width:1000px;margin:18px auto}
 .case-filter-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}
+/* 多维筛选（电影网站式） */
+.cf-row{display:flex;gap:10px;margin:10px 0;align-items:flex-start}
+.cf-label{flex:0 0 56px;font-size:14px;font-weight:700;color:var(--muted);padding-top:7px;text-align:right}
+.cf-chips{display:flex;gap:8px;flex-wrap:wrap;flex:1}
+.cf-chips-col{flex:1;display:flex;flex-direction:column;gap:8px}
+.cf-dbgroup{display:flex;gap:10px;align-items:flex-start}
+.cf-dbgroup-label{flex:0 0 auto;font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:3px 10px;margin-top:4px;white-space:nowrap}
+.cf-dbgroup .cf-chips{flex:1}
+.cf-n{font-style:normal;font-size:11px;background:#e2e8f0;color:#475569;border-radius:999px;padding:0 7px;margin-left:6px;line-height:18px}
+.chip.on .cf-n{background:rgba(255,255,255,.25);color:#fff}
+.cf-search{flex:1;max-width:420px;border:1px solid var(--line);border-radius:999px;padding:7px 16px;font-size:14px;background:var(--card);color:var(--ink)}
+.cf-active{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:12px 0;padding:10px 14px;background:#f8fafc;border:1px dashed var(--line);border-radius:var(--radius);font-size:13px}
+.cf-active-label{color:var(--muted);font-weight:700}
+.cf-pill{border:1px solid var(--line);background:#fff;border-radius:999px;padding:3px 8px 3px 12px;font-size:13px;cursor:pointer;color:var(--ink)}
+.cf-pill b{margin-left:6px;color:#94a3b8;font-weight:400}
+.cf-pill:hover b{color:#dc2626}
+.cf-clear{border:none;background:none;color:#2563eb;font-size:13px;cursor:pointer;padding:3px 8px}
+.case-empty{max-width:1000px;margin:24px auto;text-align:center;color:var(--muted);font-size:15px;padding:32px 0}
+/* 案例来源引用列表 */
+.case-refs{margin-top:14px;border-top:1px solid var(--line);padding-top:10px}
+.case-refs-title{font-size:13px;font-weight:700;color:var(--muted);margin-bottom:6px}
+.case-refs ol{margin:0;padding-left:22px;font-size:13px;color:var(--muted);display:grid;gap:4px}
+.case-refs a{color:#2563eb;word-break:break-all}
 .chip{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 16px;font-size:14px;cursor:pointer;color:var(--ink)}
 .chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
 .case-count{text-align:center;color:var(--muted);font-size:14px}
