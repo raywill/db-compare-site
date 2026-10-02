@@ -1210,10 +1210,12 @@ def case_card_html(case, prod_by_slug, fav_index, fav_titles):
     # 多维筛选数据属性：相关产品 slug、搜索文本
     data_dbs = [ps for ps in rel_ps if ps != "无" and ps in prod_by_slug]
     data_fams = case_families(case)
+    phase_zh = zf.get("阶段", "生产实践")
+    phase_id = {"选型评估": "eval", "迁移实录": "migration"}.get(phase_zh, "production")
     verify_zh = zf.get("最后核验", "")
     verify_en = ef.get("Last verified", verify_zh)
     return (
-        '<article class="case-card" id="case-%s" data-ctype="%s" data-fam="%s" data-dbs="%s">\n'
+        '<article class="case-card" id="case-%s" data-ctype="%s" data-phase="%s" data-fam="%s" data-dbs="%s">\n'
         '<h3><span data-zh="%s" data-en="%s">%s</span> '
         '<span class="case-type case-%s"><span data-zh="%s" data-en="%s">%s</span></span></h3>\n'
         '<div class="case-tags">%s</div>\n'
@@ -1223,7 +1225,7 @@ def case_card_html(case, prod_by_slug, fav_index, fav_titles):
         ' <span data-zh="相关能力：" data-en="Related capabilities: ">相关能力：</span>%s'
         ' <span class="case-verify" data-zh="最后核验：%s" data-en="Last verified: %s">最后核验：%s</span></p>\n'
         '</article>'
-        % (slug, ctype_cls, html.escape(" ".join(data_fams), quote=True),
+        % (slug, ctype_cls, phase_id, html.escape(" ".join(data_fams), quote=True),
            html.escape(" ".join(data_dbs), quote=True),
            html.escape(zh["title"], quote=True), html.escape(title_en, quote=True),
            html.escape(zh["title"]), ctype_cls, ctype_zh, ctype_en, ctype_zh,
@@ -1235,7 +1237,7 @@ def case_card_html(case, prod_by_slug, fav_index, fav_titles):
 
 CASE_FILTER_JS = """
 function caseFilterInit(){
-  var fType='',fDb='',fFam='';
+  var fPhase='',fDb='',fFam='';
   function $(s){return document.querySelector(s);}
   function $all(s){return Array.prototype.slice.call(document.querySelectorAll(s));}
   function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
@@ -1248,12 +1250,12 @@ function caseFilterInit(){
   function apply(){
     var n=0;
     $all('.case-card').forEach(function(card){
-      var okT=(!fType)||(card.getAttribute('data-ctype')===fType);
+      var okP=(!fPhase)||(card.getAttribute('data-phase')===fPhase);
       var dbs=(card.getAttribute('data-dbs')||'').split(' ').filter(Boolean);
       var okD=(!fDb)||(dbs.indexOf(fDb)>=0);
       var fams=(card.getAttribute('data-fam')||'').split(' ').filter(Boolean);
       var okF=(!fFam)||(fams.indexOf(fFam)>=0);
-      var show=okT&&okD&&okF;
+      var show=okP&&okD&&okF;
       card.hidden=!show; if(show){n++;}
     });
     var cc=$('#case-count'); if(cc){cc.textContent=n;}
@@ -1263,7 +1265,7 @@ function caseFilterInit(){
   function renderActive(){
     var box=$('#case-active'); if(!box){return;}
     var pills=[];
-    if(fType){pills.push({k:'type',label:chipLabel(document.querySelector('[data-ctype-btn="'+fType+'"]'))});}
+    if(fPhase){pills.push({k:'phase',label:chipLabel(document.querySelector('[data-cphase-btn="'+fPhase+'"]'))});}
     if(fDb){pills.push({k:'db',label:chipLabel(document.querySelector('[data-cdb-btn="'+fDb+'"]'))});}
     if(fFam){pills.push({k:'fam',label:chipLabel(document.querySelector('[data-cfam-btn="'+fFam+'"]'))});}
     if(!pills.length){box.hidden=true;box.innerHTML='';return;}
@@ -1279,14 +1281,14 @@ function caseFilterInit(){
     if(cb){cb.addEventListener('click',clearAll);}
   }
   function clearOne(k){
-    if(k==='type'){fType='';syncChips('[data-ctype-btn]','');}
+    if(k==='phase'){fPhase='';syncChips('[data-cphase-btn]','');}
     if(k==='db'){fDb='';syncChips('[data-cdb-btn]','');}
     if(k==='fam'){fFam='';syncChips('[data-cfam-btn]','');}
     apply();
   }
   function clearAll(){
-    fType='';fDb='';fFam='';
-    syncChips('[data-ctype-btn]','');syncChips('[data-cdb-btn]','');syncChips('[data-cfam-btn]','');
+    fPhase='';fDb='';fFam='';
+    syncChips('[data-cphase-btn]','');syncChips('[data-cdb-btn]','');syncChips('[data-cfam-btn]','');
     apply();
   }
   function syncChips(sel,val){
@@ -1306,7 +1308,7 @@ function caseFilterInit(){
       });
     });
   }
-  bindDim('[data-ctype-btn]',function(){return fType;},function(v){fType=v;});
+  bindDim('[data-cphase-btn]',function(){return fPhase;},function(v){fPhase=v;});
   bindDim('[data-cdb-btn]',function(){return fDb;},function(v){fDb=v;});
   bindDim('[data-cfam-btn]',function(){return fFam;},function(v){fFam=v;});
   apply();
@@ -1340,11 +1342,20 @@ def cases_page_html(cases, prod_by_slug, fav_index, fav_titles):
         slugs.sort(key=lambda s: (-db_counts[s], s))
         if slugs:
             db_groups.append((d_zh, d_en, slugs))
-    type_btns = (
-        '<button type="button" class="chip" data-ctype-btn="pro">'
-        '<span data-zh="成功经验" data-en="Success stories">成功经验</span></button>'
-        '<button type="button" class="chip" data-ctype-btn="anti">'
-        '<span data-zh="失败教训" data-en="Failure lessons">失败教训</span></button>')
+    # 决策阶段计数
+    phase_counts = {"eval": 0, "migration": 0, "production": 0}
+    for c in cases:
+        pz = c["zh"]["fields"].get("阶段", "生产实践")
+        pid = {"选型评估": "eval", "迁移实录": "migration"}.get(pz, "production")
+        phase_counts[pid] += 1
+    phase_btns = "".join(
+        '<button type="button" class="chip" data-cphase-btn="%s">'
+        '<span data-zh="%s" data-en="%s">%s</span><i class="cf-n">%d</i></button>'
+        % (pid, html.escape(pzh, quote=True), html.escape(pen, quote=True),
+           html.escape(pzh), phase_counts[pid])
+        for pid, pzh, pen in [("eval", "选型评估", "Evaluation"),
+                              ("migration", "迁移实录", "Migration"),
+                              ("production", "生产实践", "Production")])
     db_groups_html = "".join(
         '<div class="cf-dbgroup"><span class="cf-dbgroup-label">'
         '<span data-zh="%s" data-en="%s">%s</span></span>'
@@ -1376,7 +1387,7 @@ def cases_page_html(cases, prod_by_slug, fav_index, fav_titles):
         ' data-en="Reminder: the most frequent optimal answer is “do not migrate” — many cases teach using your current stack correctly, not switching databases. Read the cases first, then the “Customer experiences” section in each profile.">'
         '提醒：高频最优解是“不换库”——很多案例的教训不是换一款数据库，而是把当前架构用对。先看案例，再看产品档案里的“客户经验”。</span></p>'
         '<div class="case-filters">'
-        '<div class="cf-row"><span class="cf-label"><span data-zh="类型" data-en="Type">类型</span></span>'
+        '<div class="cf-row"><span class="cf-label"><span data-zh="决策阶段" data-en="Phase">决策阶段</span></span>'
         '<div class="cf-chips">%s</div></div>'
         '<div class="cf-row"><span class="cf-label"><span data-zh="数据库" data-en="Database">数据库</span></span>'
         '<div class="cf-chips-col"><div class="cf-chips">%s</div></div></div>'
@@ -1387,7 +1398,7 @@ def cases_page_html(cases, prod_by_slug, fav_index, fav_titles):
         '<b id="case-count">%d</b><span data-zh=" 个案例" data-en=" cases"> 个案例</span></p></div>'
         '<div class="case-empty" id="case-empty" hidden><span data-zh="没有匹配的案例，换个条件试试。"\n'
         ' data-en="No matching cases — try different filters.">没有匹配的案例，换个条件试试。</span></div>'
-        '<div class="case-list">\n%s\n</div>' % (type_btns, db_groups_html, fam_btns, len(cases), cards))
+        '<div class="case-list">\n%s\n</div>' % (phase_btns, db_groups_html, fam_btns, len(cases), cards))
     return page_shell("DB 选型参考 - 场景案例库", "DB Compare - Case Library", body,
                       active="cases", tail_scripts="<script>%s</script>" % CASE_FILTER_JS)
 
