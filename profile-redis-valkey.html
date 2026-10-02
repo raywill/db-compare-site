@@ -115,6 +115,7 @@
 <li>单 key 操作亚毫秒 P99；Redis 单线程命令执行（7.0+ IO 多线程），Valkey 持续多线程化 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 <li>Cluster 分片扩展吞吐；大 key（慢操作阻塞）、热 key（单分片）是瓶颈 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 <li>持久化（AOF/RDB）与复制对尾延迟有影响，fork 时的延迟毛刺是经典问题 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>第三方 ZSET 写入基准（Momento，2026-09）：同机 r8g.4xlarge 上 5000 万成员 sorted set、pipelined ZADD NX 写入，Valkey 9.1.2 中位插入 647k/s（十轮 643–652k/s）、内存 3.34 GB（~67 字节/member）；Redis 8.10.2 为 632k/s（十轮 628–639k/s）、3.73 GB（~75 字节/member）。Valkey 内存少约 10%，吞吐小幅领先（两版本十轮区间无重叠，但差距仅约 2.4%）。注意：Momento 是 Valkey 生态厂商（托管 Valkey 服务），基准有立场；方法局限：单 ZSET 负载、短成员、整数分数、单 pipelined 客户端，结论不代表通用混合负载 <code>第三方口径</code>。</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">15</span> 合规与认证 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（开源无官方认证；Redis 企业版有）。</p>
 <ul>
@@ -210,6 +211,7 @@
 <li>Redis/Valkey 为内存数据库，压缩主要靠对象编码优化：listpack、intset、ziplist 等紧凑结构。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
 <li>无通用数据压缩算法，大 value 场景内存占用高，需应用层自行压缩。<span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span></li>
 <li>RDB/AOF 持久化文件可配置压缩，但属备份范畴不计入本维度。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>ZSET 内存演进（Momento 2026-09 第三方基准交叉印证）：Valkey PR #1427（2025-01 合并、8.1 发布）重构 sorted set 哈希表使其直指 skiplist 节点，PR #2508（2025-11 合并、9.1 发布）将成员字符串嵌入 skiplist 节点；Redis PR #14701 于一年零十天后（2026-01 合并、8.6 发布）移植了 #1427（PR 说明明确标注来源），但保留自家 dict 而未采用 Valkey 新哈希表。实测：Redis 8.6 的 3.73 GB 与 Valkey 8.1 的 3.77 GB 基本持平，同代插入吞吐 Redis 8.6.7（613k/s）实际高于 Valkey 8.1.10（590k/s）；Valkey 9.1.2 的 3.34 GB（~67 字节/member）为当前最小，Redis 8.10.2 为 3.73 GB（~75 字节/member）。基准方为 Valkey 生态厂商，有立场；负载为单一 ZSET 写入场景 <code>第三方口径</code>。</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">32</span> 开源协议与厂商锁定风险 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（Redis 转授权；Valkey fork 承接）。</p>
 <ul>
@@ -317,6 +319,7 @@
 <li>Sub-millisecond P99 on single-key ops; Redis single-threaded command execution (7.0+ multi-threaded I/O), Valkey pushing multi-threading further <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 <li>Cluster sharding scales throughput; big keys (blocking slow ops) and hot keys (single shard) are the bottlenecks <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 <li>Persistence (AOF/RDB) and replication affect tail latency; fork-time latency spikes are the classic issue <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Third-party sorted-set write benchmark (Momento, 2026-09): 50M-member ZSET via pipelined ZADD NX on an r8g.4xlarge — Valkey 9.1.2 median inserts 647k/s (643–652k/s across ten runs), memory 3.34 GB (~67 bytes/member); Redis 8.10.2 median 632k/s (628–639k/s), 3.73 GB (~75 bytes/member). Valkey uses ~10% less memory with a small throughput edge (no overlap across ten runs, but the gap is only ~2.4%). Note: Momento is a Valkey-ecosystem vendor (managed Valkey services), so the benchmark carries a position; method limits: single ZSET workload, short members, integer scores, one pipelined client — not a general mixed-workload result <code>(third-party statement)</code>.</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">15</span> Compliance &amp; certifications <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (no official certs for open source; Redis Enterprise certified).</p>
 <ul>
@@ -412,6 +415,7 @@
 <li>Redis/Valkey are in-memory databases; compression comes mainly from object-encoding optimizations: listpack, intset, ziplist and other compact structures. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
 <li>No general-purpose data compression; large-value workloads use significant RAM and need application-layer compression. <code>(community tested)</code></li>
 <li>RDB/AOF persistence files support compression, but that is backup-scope and excluded from this dimension. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
+<li>ZSET memory evolution (cross-verified by Momento&#x27;s 2026-09 third-party benchmark): Valkey PR #1427 (merged 2025-01, shipped in 8.1) restructured the sorted-set hash table to point directly at skiplist nodes; PR #2508 (merged 2025-11, shipped in 9.1) embedded member strings inside skiplist nodes. Redis PR #14701 ported #1427 a year and ten days later (merged 2026-01, shipped in 8.6, with the PR description crediting the source), but kept Redis&#x27;s own dict instead of adopting Valkey&#x27;s new hashtable. Measured: Redis 8.6&#x27;s 3.73 GB is essentially on par with Valkey 8.1&#x27;s 3.77 GB, and in the same generation Redis 8.6.7&#x27;s insert throughput (613k/s) is actually higher than Valkey 8.1.10&#x27;s (590k/s); Valkey 9.1.2&#x27;s 3.34 GB (~67 bytes/member) is the smallest measured, vs Redis 8.10.2&#x27;s 3.73 GB (~75 bytes/member). The benchmark author is a Valkey-ecosystem vendor with a position; the workload is a single-ZSET write scenario <code>(third-party statement)</code>.</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">32</span> OSS license &amp; lock-in risk <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Redis moved to RSAL in 2024; Valkey fork carries on).</p>
 <ul>
@@ -551,10 +555,10 @@
 </ul>
 <p><strong>深水区四（成本）：内存是按 GB 付费的——&quot;用钱换延迟&quot;的账本</strong></p>
 <ul>
-<li>机制：全内存存储 + 每个 key 的元数据开销（SDS、dictEntry 等）；Valkey 8.1 重写哈希表（Swiss Table 思路）宣称省约 20 字节/key、整体内存 -20%（Linux 基金会新闻稿，官方口径）；Redis 侧内存开销为基线。</li>
+<li>机制：全内存存储 + 每个 key 的元数据开销（SDS、dictEntry 等）；Valkey 8.1 重写哈希表（Swiss Table 思路）宣称省约 20 字节/key、整体内存 -20%（Linux 基金会新闻稿，官方口径）；Redis 侧内存开销为基线。Momento 2026-09 第三方基准在 ZSET 场景交叉印证了演进路线：Redis 8.6 移植 Valkey PR #1427（一年零十天后）后 ZSET 内存追至 Valkey 8.1 水平（3.73 vs 3.77 GB），但 Valkey 9.1.2（PR #2508 嵌入成员字符串）以 3.34 GB 保持最小；基准方为 Valkey 生态厂商，有立场。</li>
 <li>推到边缘：TB 级数据全放内存，硬件/云账单线性上涨；<code>maxmemory</code> + 逐出策略（<code>allkeys-lru</code> 等）配错会导致&quot;热数据被逐出、缓存命中率雪崩&quot;；pub/sub 的慢消费者会撑爆 client output buffer 导致 OOM——&quot;内存满了&quot;的原因有一半不在数据本身。碎片率（<code>mem_fragmentation_ratio</code>）持续 &gt;1.5 要警惕。</li>
 <li>选型含义：Redis 的甜蜜点是&quot;热数据 + 可重建&quot;；冷数据、大 value、TB 级归档需求，内存成本会逼你重新选型（SSD 方案或分级存储）。成本模型按&quot;每 GB 每月多少钱&quot;算，不要按&quot;实例多少钱&quot;算。</li>
-<li>来源：官方文档（内存管理）；Valkey 8.1 发布新闻稿（内存数据为官方口径）；社区共识（逐出/慢消费者事故）。</li>
+<li>来源：官方文档（内存管理）；Valkey 8.1 发布新闻稿（内存数据为官方口径）；社区共识（逐出/慢消费者事故）；Momento 2026-09 基准（ZSET 内存/吞吐，第三方口径，厂商有立场）。</li>
 </ul>
 <p><strong>深水区五（可用性）：异步复制——&quot;切主成功，数据丢了&quot;</strong></p>
 <ul>
@@ -603,10 +607,10 @@
 </ul>
 <p><strong>Deep dive #4 (Cost): Memory is billed per GB — the ledger of &quot;buying latency with money&quot;</strong></p>
 <ul>
-<li>Mechanism: All-in-memory storage + per-key metadata overhead (SDS, dictEntry, etc.); Valkey 8.1&#x27;s hash-table rewrite (Swiss Table approach) claims ~20 bytes/key saved and -20% overall memory (Linux Foundation press release, official statement); the Redis side&#x27;s memory overhead is the baseline.</li>
+<li>Mechanism: All-in-memory storage + per-key metadata overhead (SDS, dictEntry, etc.); Valkey 8.1&#x27;s hash-table rewrite (Swiss Table approach) claims ~20 bytes/key saved and -20% overall memory (Linux Foundation press release, official statement); the Redis side&#x27;s memory overhead is the baseline. Momento&#x27;s 2026-09 third-party benchmark corroborates the memory trajectory for ZSETs: Redis 8.6 ported Valkey PR #1427 (a year and ten days later) and reached Valkey 8.1-level memory (3.73 vs 3.77 GB), while Valkey 9.1.2 (PR #2508 embedding member strings) stayed smallest at 3.34 GB; the benchmark author is a Valkey-ecosystem vendor with a position.</li>
 <li>At the edge: TB-scale data fully in memory makes hardware/cloud bills rise linearly; misconfigured <code>maxmemory</code> + eviction policy (<code>allkeys-lru</code>, etc.) causes &quot;hot data evicted, cache hit-rate avalanche&quot;; slow consumers of pub/sub can blow up client output buffers and cause OOM — half the reasons &quot;memory is full&quot; aren&#x27;t the data itself. A fragmentation ratio (<code>mem_fragmentation_ratio</code>) persistently &gt; 1.5 deserves attention.</li>
 <li>Selection implication: Redis&#x27;s sweet spot is &quot;hot data + rebuildable&quot;; cold data, large values, and TB-scale archival needs will have memory costs forcing a re-selection (SSD-based options or tiered storage). Model cost as &quot;dollars per GB per month,&quot; not &quot;dollars per instance.&quot;</li>
-<li>Source: Official docs (memory management); Valkey 8.1 release press release (memory figures as official statement); community consensus (eviction / slow-consumer incidents).</li>
+<li>Source: Official docs (memory management); Valkey 8.1 release press release (memory figures as official statement); community consensus (eviction / slow-consumer incidents); Momento 2026-09 benchmark (ZSET memory/throughput, third-party statement, vendor has a position).</li>
 </ul>
 <p><strong>Deep dive #5 (Availability): Async replication — &quot;failover succeeded, data lost&quot;</strong></p>
 <ul>
@@ -845,6 +849,7 @@
 <li>许可证时间线：Redis 官方公告（2024-03-20 RSALv2/SSPLv1；2025-05-01 AGPLv3 三许可）；Linux 基金会 Valkey 公告（2024-03-28，fork 自 7.2.4，BSD-3）；endoflife.date redis 产品页版本-许可对照表（2026-09 查阅）</li>
 <li>Redis 8 特性：Redis 官方发布博客（Vector Sets beta、Stack 进内核、HGETDEL/HGETEX/HSETEX、30+ 性能优化、I/O 线程数据为厂商口径）；CSDN 8.0 综述（2025-05，社区转述）</li>
 <li>Valkey 版本与特性：Linux 基金会 Valkey 8.1 GA 新闻稿（2025-04-02，哈希表 -20% 内存、TLS 卸载、COMMANDLOG，官方口径）；ODBMS 对 Madelyn Olson 访谈（2025-06，8.0/8.1、LDAP、valkey-search）；社区迁移项目 README（HFE、per-slot stats、RIOT 归档、RDB v12，社区口径）</li>
+<li>Momento 第三方基准：Momento 官方博客《50 Million Sorted Sets, Round Three》（2026-09-27，sorted set 写入场景：Valkey 9.1.2 vs Redis 8.10.2 的内存/吞吐数据；Redis PR #14701 移植 Valkey PR #1427、相隔一年零十天），第三方口径。Momento 是 Valkey 生态厂商（托管 Valkey 服务），基准有立场；方法局限为单一 ZSET 写入负载、短成员、整数分数、单 pipelined 客户端</li>
 <li>云采用：Upstash 2026-06 定价对比博客（ElastiCache Valkey 约便宜 20%，第三方口径）；byteiota（AWS/Google/Oracle/Heroku 采用时间线，第三方口径）；Percona 调研&quot;75%&quot;为第三方转述，待验证</li>
 <li>机制类（单线程/fork/COW/Cluster slots/复制）：Redis 官方文档；社区多年生产事故总结<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
 <li>下次评审：跟踪 Valkey 9.x 状态与 Redis 8.2+ 新特性；复核 RDB v12 互操作性的官方口径；复核云厂商托管产品线的最新分化</li>
@@ -855,6 +860,7 @@
 <li>License timeline: Redis official announcements (2024-03-20 RSALv2/SSPLv1; 2025-05-01 AGPLv3 triple license); Linux Foundation Valkey announcement (2024-03-28, forked from 7.2.4, BSD-3); endoflife.date redis product page version-to-license mapping (consulted 2026-09)</li>
 <li>Redis 8 features: Redis official release blog (Vector Sets beta, Stack merged into core, HGETDEL/HGETEX/HSETEX, 30+ performance optimizations, I/O thread figures as official statement); CSDN 8.0 roundup (2025-05, community retelling)</li>
 <li>Valkey versions &amp; features: Linux Foundation Valkey 8.1 GA press release (2025-04-02, hash table -20% memory, TLS offload, COMMANDLOG, official statement); ODBMS interview with Madelyn Olson (2025-06, 8.0/8.1, LDAP, valkey-search); community migration project READMEs (HFE, per-slot stats, RIOT archival, RDB v12, community sources)</li>
+<li>Momento third-party benchmark: Momento official blog &quot;50 Million Sorted Sets, Round Three&quot; (2026-09-27; sorted-set write workload: Valkey 9.1.2 vs Redis 8.10.2 memory/throughput figures; Redis PR #14701 ported Valkey PR #1427 a year and ten days later), third-party statement. Momento is a Valkey-ecosystem vendor (managed Valkey services), so the benchmark carries a position; method limits: single-ZSET write workload, short members, integer scores, one pipelined client</li>
 <li>Cloud adoption: Upstash 2026-06 pricing comparison blog (ElastiCache Valkey ~20% cheaper, third-party statement); byteiota (AWS/Google/Oracle/Heroku adoption timeline, third-party statement); Percona survey &quot;75%&quot; is third-party hearsay, to-be-verified</li>
 <li>Mechanics (single thread / fork / COW / Cluster slots / replication): Redis official docs; years of production-incident summaries from the community <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
 <li>Next review: track Valkey 9.x status and Redis 8.2+ new features; re-verify the official statement on RDB v12 interoperability; re-verify the latest divergence of cloud vendors&#x27; managed product lines</li>

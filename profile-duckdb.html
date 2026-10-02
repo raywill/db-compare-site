@@ -109,6 +109,7 @@
 <li>进程内列存向量化执行，笔记本上 TB 级以下分析查询秒级<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span><span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 <li>无分布式，并行上限为单机核数；超大内存需求靠溢出到磁盘 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>读 Parquet/CSV 极快，是“单机数仓”的事实标准 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>第三方印证：2026-10-01 AWS 官方博客宣布在 Aurora PostgreSQL 内嵌入 DuckDB（<code>aurora_analytics</code> 扩展）做 Iceberg/Parquet 分析扫描——&quot;嵌入式分析引擎能被装进其他系统&quot;论点的厂商级背书。但内嵌的 DuckDB 版本与功能裁剪情况未公开，尚无独立第三方性能对比：背书的是架构选择，不是性能数字 <code>AWS 官方博客</code>。</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">15</span> 合规与认证 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（嵌入式无；MotherDuck 云服务有 SOC2）。</p>
 <ul>
@@ -309,6 +310,7 @@
 <li>In-process columnar vectorized execution: sub-TB analytical queries in seconds on a laptop <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 <li>No distribution; parallelism capped by single-machine cores; spills to disk when memory is exceeded <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Extremely fast Parquet/CSV reads — the de-facto “single-machine warehouse” <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Third-party endorsement: on 2026-10-01 AWS announced DuckDB embedded inside Aurora PostgreSQL (the <code>aurora_analytics</code> extension) for Iceberg/Parquet analytical scans — a vendor-grade endorsement of the &quot;embeddable analytics engine&quot; thesis. Caveats: the embedded DuckDB version and any feature trimming are undisclosed, and no independent third-party performance comparison exists — the endorsement covers the architecture choice, not performance numbers <code>(AWS official blog)</code>.</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">15</span> Compliance &amp; certifications <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (embedded has none; MotherDuck cloud has SOC2).</p>
 <ul>

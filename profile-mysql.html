@@ -72,9 +72,10 @@
 <tr><td>协议</td><td>MySQL 协议（wire protocol），事实上的生态标准</td></tr>
 </tbody>
 </table></div>
-<p><strong>版本线索（截至 2026-09-29 查阅）：</strong></p>
+<p><strong>版本线索（截至 2026-10-02 查阅）：</strong></p>
 <ul>
 <li>8.0 → 8.4 → 9.7 为 LTS 升级路径；8.0 据社区资料于 <strong>2026-04-30</strong> 结束常规支持（EOL），进入 Sustaining Support <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>（正式措辞待官方页复核）。</li>
+<li>托管侧注意：DigitalOcean 官方宣布托管 MySQL 8.0 将于 <strong>2026-10-30</strong> 结束支持，自该日起现存托管 8.0 集群将在各自维护窗口<strong>强制升级到 8.4</strong>（官方称无停机，但维护窗口内可能有短暂延迟；建议升级前确认/调整维护窗口）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（DigitalOcean 发布页原文）。注意这是 DigitalOcean 托管侧的 EOL 时间点，与 Oracle 官方 8.0 常规支持结束（2026-04-30）是两个口径。</li>
 <li>有第三方资料称 9.7 之后 Oracle 改用日历版本号（如 26.7 Innovation），但本档案评审 8.x/9.x，统一以 <strong>9.7 LTS</strong> 为评审版本；日历版本变化标 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>，不写死。</li>
 <li>8.4 中 <code>mysqlpump</code> 二进制不再发布、<code>SHOW SLAVE STATUS</code>/<code>CHANGE MASTER TO</code> 被移除（统一为 <code>REPLICA</code>/<code>SOURCE</code> 术语）、<code>expire_logs_days</code> 被移除（改用 <code>binlog_expire_logs_seconds</code>）、<code>binlog_format</code> 仅支持 ROW、TLS 1.0/1.1 被移除 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>（多份升级检查清单一致指向）。</li>
 </ul>
@@ -92,9 +93,10 @@
 <tr><td>Protocol</td><td>MySQL protocol (wire protocol), the de facto ecosystem standard</td></tr>
 </tbody>
 </table></div>
-<p><strong>Version notes (as checked on 2026-09-29):</strong></p>
+<p><strong>Version notes (as checked on 2026-10-02):</strong></p>
 <ul>
 <li>8.0 → 8.4 → 9.7 is the LTS upgrade path; 8.0 reached end of regular support (EOL) on <strong>2026-04-30</strong> per community sources and entered Sustaining Support <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> (official wording pending verification against the official page).</li>
+<li>Managed-side note: DigitalOcean&#x27;s official docs state managed MySQL 8.0 reaches end of life on <strong>30 October 2026</strong>; starting that date, all existing managed 8.0 clusters are scheduled for forced upgrades to MySQL 8.4 during each cluster&#x27;s maintenance window (no downtime claimed, though brief latency is possible; review or adjust the maintenance window before the date) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> (DigitalOcean release-notes page, verbatim). Note this is DigitalOcean&#x27;s managed-side EOL date, a different thing from Oracle&#x27;s official 8.0 end of regular support (2026-04-30).</li>
 <li>Some third-party sources say Oracle switched to calendar versioning after 9.7 (e.g., 26.7 Innovation), but this profile reviews the 8.x/9.x lines and treats <strong>9.7 LTS</strong> as the reviewed version; the calendar-versioning change is marked <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span> and not stated as fact.</li>
 <li>In 8.4, the <code>mysqlpump</code> binary is no longer shipped, <code>SHOW SLAVE STATUS</code> / <code>CHANGE MASTER TO</code> were removed (unified under the <code>REPLICA</code>/<code>SOURCE</code> terminology), <code>expire_logs_days</code> was removed (replaced by <code>binlog_expire_logs_seconds</code>), <code>binlog_format</code> supports only ROW, and TLS 1.0/1.1 were removed <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> (multiple upgrade checklists agree on this).</li>
 </ul>
@@ -213,6 +215,8 @@
 <li>各云厂商 RDS（阿里/腾讯/AWS/华为）全覆盖 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 <li>Oracle MySQL HeatWave（云原生+分析加速）<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
 <li>Serverless：PlanetScale（基于 Vitess 的 Serverless MySQL）<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>DigitalOcean 计划变更（分阶段生效，注意日期）：<strong>2026-10-15</strong> 起从未创建过 PG/MySQL 集群的账号、<strong>2026-11-30</strong> 起全部账号，Standard Edition 新集群不可选 &gt;4 GiB 内存规格且不支持备节点/只读节点；更大规格、高可用或只读扩展只能用 Advanced Edition（2026-10-15 起 Advanced Edition 新增 8–64 GiB Basic 共享 CPU 规格）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>（DigitalOcean 发布页原文）。限制生效前已创建的集群不受影响（仍可扩容、fork、加备节点/只读节点）——既有用户有一段缓冲，但新账号/新项目实际失去了 Standard Edition 的低成本高可用路径；用 API、Terraform 或 doctl 建集群的用户需在限制生效前更新代码 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>DigitalOcean 托管 MySQL 8.0 将于 <strong>2026-10-30</strong> 结束支持，当天起现存 8.0 集群在各自维护窗口被强制升级到 8.4（官方称无停机，但维护窗口内可能有短暂延迟）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">20</span> 数据接入与摄入 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
 <li>LOAD DATA INFILE、mysqlimport 是最快单机导入通道 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
@@ -456,6 +460,8 @@
 <li>RDS on every cloud vendor (Alibaba/Tencent/AWS/Huawei) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 <li>Oracle MySQL HeatWave (cloud-native + analytics acceleration) <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
 <li>Serverless: PlanetScale (serverless MySQL on Vitess) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>DigitalOcean plan changes (phased rollout, watch the dates): from <strong>15 October 2026</strong> for accounts that have never created a PostgreSQL/MySQL cluster, and from <strong>30 November 2026</strong> for all accounts, new Standard Edition clusters cannot use plans with more than 4 GiB of RAM or add standby/read-only nodes; larger plans, high availability, or read-only nodes require Advanced Edition (which gains 8–64 GiB Basic shared-CPU plans from 15 October 2026) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> (DigitalOcean release-notes page, verbatim). Clusters created before the restrictions reach an account are unaffected (still resizable, forkable, and eligible for standby/read-only nodes) — existing users get a buffer, but new accounts/projects effectively lose the low-cost HA path on Standard Edition; API, Terraform, and doctl users must update their code before the restrictions take effect <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>DigitalOcean ends support for managed MySQL 8.0 on <strong>30 October 2026</strong>; all existing 8.0 clusters are scheduled for forced upgrades to 8.4 during their maintenance windows starting that date (no downtime claimed, brief latency possible) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">20</span> Data ingestion <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><ul>
 <li>LOAD DATA INFILE and mysqlimport are the fastest single-node load paths <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>

@@ -260,20 +260,22 @@
 <li>无原生血缘，靠 Atlan/Manta 等第三方 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 <li>Atlas Data Federation 元数据可被采集 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">41</span> 存算分离 vs 存算一体 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（默认存算一体；Atlas 有分离选项）。</p>
+<div class="dim-item"><h3><span class="dim-num">41</span> 存算分离 vs 存算一体 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（默认存算一体；Atlas Infinite（Public Preview）提供分离选项）。</p>
 <ul>
 <li>副本集/分片本地盘，经典存算一体 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
-<li>Atlas 部分层级提供存算分离选项 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</li>
+<li>Atlas Infinite（2026-09-29 随 MongoDB 9.0 发布，Public Preview）：计算与存储分离、各自独立扩展；现有 Atlas 更名为 Atlas Core；采用无需改应用代码；现阶段仅 AWS <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。仍为预览版、尚未 GA，生产采用受限 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">42</span> 多模能力 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（文档+向量+全文+时序）。</p>
 <ul>
 <li>文档原生，Atlas Vector Search、Atlas Search（全文）、时序集合 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>无原生图引擎 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>Atlas Agent Engine（2026-09-29 随 9.0 发布，Public Preview）：AI agent 应用层编排——agent 执行、跨会话记忆（Voyage AI embedding + 原生检索）、统一治理控制面；模型中立（MCP/A2A，自带模型），<strong>不是数据库内核内 AI</strong>。平衡项：9.0 无内置模型微调（Omdia 分析师 Stephen Catanzano 指证）、无原生模型托管（McKnight Consulting 分析师 William McKnight 指证），均经 TechTarget 2026-09-29 报道 <code>第三方分析</code>。</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">43</span> FinOps 成本可观测性 <span class="verdict v-neutral">不适用</span></h3><div class="dim-body"><p><strong>不适用</strong>（自建无计费，成本=硬件+人力自理）。</p>
 <ul>
 <li>开源自建无内置计费概念，成本是节点硬件、存储与运维人力。<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
 <li>Atlas 托管版按量计费，支持标签归因与预算告警。<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+<li>Atlas Infinite（Public Preview）引入新计费模型：按实际计算+存储消耗计费，而非按峰值预配付费；官方称内部测试中其每美元吞吐为 Atlas Core 的 189%——<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>，无独立第三方复现 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">44</span> 驱动与多语言生态 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（官方驱动最全；BI Connector 给 JDBC）。</p>
 <ul>
@@ -469,20 +471,22 @@
 <li>No native lineage; third parties like Atlan/Manta <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 <li>Atlas Data Federation metadata can be harvested <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">41</span> Storage-compute architecture <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Coupled by default; Atlas has separation options).</p>
+<div class="dim-item"><h3><span class="dim-num">41</span> Storage-compute architecture <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Coupled by default; Atlas Infinite (public preview) separates).</p>
 <ul>
 <li>Replica sets/sharded clusters on local disks; classically coupled <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
-<li>Some Atlas tiers offer disaggregated options <code>(to be verified)</code>.</li>
+<li>Atlas Infinite (launched 2026-09-29 alongside MongoDB 9.0, public preview): compute and storage scale independently; existing Atlas renamed Atlas Core; no application code changes to adopt; currently AWS only <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. Still in preview, not GA — limited for production adoption <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">42</span> Multi-model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Document + vector + full-text + time-series).</p>
 <ul>
 <li>Native documents, Atlas Vector Search, Atlas Search (full-text), time-series collections <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>No native graph engine <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Atlas Agent Engine (launched 2026-09-29 with 9.0, public preview): application-layer AI agent orchestration — agent execution, cross-session memory (Voyage AI embeddings + native retrieval), unified governance control plane; model-neutral (MCP/A2A, bring your own model), <strong>not in-database AI</strong>. Balancing items: no built-in model fine-tuning (flagged as missing by Omdia analyst Stephen Catanzano) and no native model hosting (flagged by McKnight Consulting analyst William McKnight), both reported by TechTarget on 2026-09-29 <code>(third-party analysis)</code>.</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">43</span> FinOps &amp; cost observability <span class="verdict v-neutral">N/A</span></h3><div class="dim-body"><p><strong>N/A</strong> (No metering; hardware plus labor).</p>
 <ul>
 <li>Self-hosted open source has no built-in metering; costs are node hardware, storage, and operations labor. <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span></li>
 <li>Atlas managed edition meters usage with tag attribution and budget alerts. <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+<li>Atlas Infinite (public preview) introduces consumption-based pricing: billed on actual compute + storage consumption rather than peak-provisioned capacity; MongoDB claims internal tests show 189% more throughput per dollar than Atlas Core — <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>, no independent third-party reproduction <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">44</span> Drivers &amp; clients <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Most complete official drivers; BI Connector for JDBC).</p>
 <ul>
@@ -852,8 +856,9 @@
 <li>安全：官方文档（Security Checklist、Authentication、Auditing、企业版功能矩阵）；2017 年勒索事件公开报道（历史）</li>
 <li>兼容与分叉：FerretDB 官方博客（v2.0 GA 2025-03）；第三方分析（dockit 兼容性分析、brightcoding 2025-09）；社区迁移 epic（Falcone→FerretDB v2+DocumentDB，2026）；微软 DocumentDB 扩展（MIT，Linux 基金会治理口径，第三方报道）</li>
 <li>Atlas 与计费：官方 Atlas 文档（M0/Flex/M10+ 三档；Flex 2025-02 GA 取代 Serverless/M2/M5）；社区 tier 选择总结（2026）</li>
+<li>9.0 发布内容：官方新闻稿（2026-09-29，PR Newswire；MongoDB 9.0 GA，Atlas Infinite 存算分离+按量计费模型，Infinite 与 Agent Engine 均为 Public Preview）；MongoDB 官方博客（MongoDB.local NYC 2026 汇总）；Omdia 分析师评论（TechTarget 报道）</li>
 <li>吐槽采集：社区 skill（red flags / limits 章节，多源 2026）；本轮 LLM 采集，待流水线规模化验证</li>
-<li><strong>下次评审必查</strong>：9.0 Community/Enterprise GA 状态与 release notes；Queryable Encryption 在 9.0 的完整查询类型矩阵；Atlas 2026 现价与 Flex 限额；企业版/社区版功能矩阵在 8.x/9.0 的变化；SSPL 政策有无变动（以官方仓库 LICENSE 为准）</li>
+<li><strong>下次评审必查</strong>（上轮已闭环：9.0 GA 与 release notes 公告级事实，2026-10-02）：Atlas Infinite GA 时间、生产可用性与正式定价细则；Atlas Agent Engine GA 状态与治理能力实测；Queryable Encryption 在 9.0 的完整查询类型矩阵；Atlas 2026 现价与 Flex 限额；企业版/社区版功能矩阵在 9.0 的变化；SSPL 政策有无变动（以官方仓库 LICENSE 为准）</li>
 </ul>
 </div>
 <div class="lang-block lang-en" hidden>
@@ -865,8 +870,9 @@
 <li>Security: official docs (Security Checklist, Authentication, Auditing, Enterprise feature matrix); public reporting on the 2017 ransomware incident (historical)</li>
 <li>Compatibility and forks: FerretDB official blog (v2.0 GA 2025-03); third-party analyses (dockit compatibility analysis, brightcoding 2025-09); community migration epic (Falcone→FerretDB v2+DocumentDB, 2026); Microsoft DocumentDB extension (MIT, Linux Foundation governance position, third-party reporting)</li>
 <li>Atlas and billing: official Atlas docs (M0/Flex/M10+ tiers; Flex GA in 2025-02 replacing Serverless/M2/M5); community tier-selection summaries (2026)</li>
+<li>9.0 launch materials: official press release (2026-09-29, PR Newswire; MongoDB 9.0 GA; Atlas Infinite compute-storage separation + consumption pricing; Infinite and Agent Engine both public preview); official MongoDB blog (MongoDB.local NYC 2026 roundup); Omdia analyst commentary (reported by TechTarget)</li>
 <li>Complaint collection: community skills (red flags / limits chapters, multi-source 2026); this round of LLM collection, <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span> by scaled pipeline</li>
-<li><strong>Must-check next review</strong>: 9.0 Community/Enterprise GA status and release notes; the complete Queryable Encryption query-type matrix in 9.0; Atlas 2026 current pricing and Flex limits; Enterprise/Community feature-matrix changes in 8.x/9.0; any SSPL policy changes (official repo LICENSE as authority)</li>
+<li><strong>Must-check next review</strong> (closed last round: 9.0 GA and announcement-level release facts, 2026-10-02): Atlas Infinite GA timing, production readiness, and final pricing details; Atlas Agent Engine GA status and hands-on governance verification; the complete Queryable Encryption query-type matrix in 9.0; Atlas 2026 current pricing and Flex limits; Enterprise/Community feature-matrix changes in 9.0; any SSPL policy changes (official repo LICENSE as authority)</li>
 </ul>
 </div>
 </section>

@@ -108,7 +108,7 @@
 <div class="dim-item"><h3><span class="dim-num">13</span> 中文资料丰富度 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>——官方文档有中文版（clickhouse.com/docs/zh）、中文社区（clickhouse.cn）、CSDN/博客园/腾讯云开发者社区及《ClickHouse 实战》等书籍、美团/字节等大厂实践分享，入门到运维资料丰富。但最新版本特性与深水区内容英文更新更快，部分中文博客参数已过期，查参数以英文官方文档为准。证据：<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">14</span> 性能与延迟特征 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（OLAP 扫描性能标杆；点查弱）。</p>
 <ul>
-<li>单机列存扫描 GB/s 量级（视硬件与压缩率，社区实测）；分布式表线性扩展 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
+<li>单机列存扫描 GB/s 量级（视硬件与压缩率，社区实测）；分布式表吞吐随节点数提升（社区实测，未验证严格线性） <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
 <li>点查/高频小写入弱；MergeTree 后台合并是主要调优点 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 <li>排序键/分区键设计决定查询性能，建表即定生死 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
@@ -148,11 +148,13 @@
 <li>流式：Kafka 表引擎直连消费；S3/s3Cluster 表函数直接读对象存储 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>大批量写入注意 parts 合并压力，分批与异步插入调优是常规操作 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">21</span> 外部数据访问 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（S3/URL/MySQL/PG 表引擎；JDBC/ODBC 桥）。</p>
+<div class="dim-item"><h3><span class="dim-num">21</span> 外部数据访问 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（S3/URL/MySQL/PG 表引擎；JDBC/ODBC 桥；DataLakeCatalog 可直写 OneLake Iceberg）。</p>
 <ul>
 <li>S3、URL、File 表函数可直接查询外部数据不落地 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>MySQL/PostgreSQL 表引擎可联邦查询外部库表 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>jdbcBridge/odbcBridge 扩展到任意 JDBC/ODBC 源 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>DataLakeCatalog（catalog_type=&#x27;onelake&#x27;）支持 INSERT INTO 把查询结果直写为 OneLake 的托管 Iceberg 表，写后自动被 OneLake 目录注册并继承其安全与治理模型 <code>官方博客</code>。</li>
+<li>同步的限制：OneLake 是首个支持 ClickHouse 写入的 catalog 类型，官方博客称其他 catalog 写入&quot;未来数月逐步支持&quot;，当前状态为查证为无 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>；写入走 ADLS Gen2 DFS 端点（onelake.dfs.fabric.microsoft.com），读取走 Blob 端点（onelake.blob.fabric.microsoft.com），remote_url_allow_hosts 只放行 .blob 会导致 INSERT 被拒，两端需同时放行 <code>官方 GitHub PR 说明</code>；连接依赖 Entra ID 服务主体（client_id/client_secret）并需 SET allow_database_iceberg=1 <code>官方博客</code>。</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">22</span> CDC 与下游同步 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（无原生 CDC 输出；靠物化视图+Kafka 引擎外发）。</p>
 <ul>
@@ -319,7 +321,7 @@
 <div class="dim-item"><h3><span class="dim-num">13</span> Chinese-language resources <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — official docs have a Chinese edition (clickhouse.com/docs/zh), a Chinese community (clickhouse.cn), abundant CSDN/cnblogs/Tencent Cloud developer-community posts, books like 《ClickHouse 实战》, and production write-ups from Meituan/ByteDance — rich from入门 to operations. But English updates faster for the newest versions and deep-dive topics, and some Chinese blog posts carry stale parameters — verify parameters against the English official docs. Evidence: community consensus.</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">14</span> Performance &amp; latency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (the OLAP scan benchmark; weak point lookups).</p>
 <ul>
-<li>Single-node columnar scans at GB/s scale (hardware/compression dependent, community-tested); distributed tables scale linearly <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>.</li>
+<li>Single-node columnar scans at GB/s scale (hardware/compression dependent, community-tested); distributed-table throughput grows with node count (community-tested, strict linearity not verified) <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>.</li>
 <li>Weak point lookups and high-frequency small writes; MergeTree background merges are the main tuning knob <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 <li>Sort-key/partition-key design determines query performance — the table definition decides everything <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
@@ -359,11 +361,13 @@
 <li>Streaming: Kafka table engine consumes directly; S3/s3Cluster table functions read object storage <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Heavy writes stress part merges — batching and async-insert tuning are routine <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">21</span> External data access <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (S3/URL/MySQL/PG table engines; JDBC/ODBC bridge).</p>
+<div class="dim-item"><h3><span class="dim-num">21</span> External data access <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (S3/URL/MySQL/PG table engines; JDBC/ODBC bridge; DataLakeCatalog writes Iceberg to OneLake).</p>
 <ul>
 <li>S3, URL and File table functions query external data without staging <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>MySQL/PostgreSQL table engines federate queries into external tables <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>jdbcBridge/odbcBridge extend to any JDBC/ODBC source <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>DataLakeCatalog (catalog_type=&#x27;onelake&#x27;) supports INSERT INTO to write query results directly as managed Iceberg tables in OneLake; written tables are registered in the OneLake catalog and inherit its security and governance model <code>(official blog)</code>.</li>
+<li>Paired limits: OneLake is the first catalog type with ClickHouse write support — the official blog says other catalogs will follow &quot;over the coming months&quot;, so writes to other catalog types are verified absent <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>; writes use the ADLS Gen2 DFS endpoint (onelake.dfs.fabric.microsoft.com) while reads use the Blob endpoint (onelake.blob.fabric.microsoft.com), so allowlisting only .blob in remote_url_allow_hosts causes INSERT to be rejected — both hosts must be allowlisted <code>(official GitHub PR note)</code>; the connection requires an Entra ID service principal (client_id/client_secret) and SET allow_database_iceberg=1 <code>(official blog)</code>.</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">22</span> CDC &amp; downstream <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (No native CDC output; materialized views + Kafka engine).</p>
 <ul>

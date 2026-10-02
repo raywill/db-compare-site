@@ -144,11 +144,12 @@
 <li>DMS 支持同构/异构迁移与持续复制 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>跨区/跨账号 S3 导入注意 IAM 权限与网络 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">21</span> 外部数据访问 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（PG 版有 postgres_fdw/aws_s3；无湖仓外部表）。</p>
+<div class="dim-item"><h3><span class="dim-num">21</span> 外部数据访问 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（PG 版经 aurora_analytics 直查湖仓；MySQL 版无外部表语义）。</p>
 <ul>
 <li>Aurora PG：postgres_fdw、dblink 可用；aws_s3 可读写 S3 对象 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>Aurora PG 17.11+/18.6+ 新增 <code>aurora_analytics</code> 扩展：DuckDB 内嵌于 Aurora 内部，可直接建外表查询 Glue Data Catalog 中的 Iceberg 表及 S3/S3 Tables 上的 Parquet/Iceberg 数据，免 ETL；一条 SQL 可联合实时数据（含未提交写入）与湖仓历史数据。谓词下推、列裁剪与实例级缓存均为厂商口径，2026-10-01 由 AWS 官方博客宣布 <code>AWS 官方博客</code>。</li>
+<li>限制与对等风险：仅 PG 版支持，Aurora MySQL 无对应能力；需 IAM role（AuroraAnalytics）+ Glue Catalog 配置；单毫秒级延迟场景仍需 CTAS 物化到原生表（写入走主实例）；尚无独立第三方性能对比，查询加速效果为厂商口径 <code>AWS 官方博客</code>。</li>
 <li>Aurora MySQL：无外部表语义 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
-<li>湖仓格式（Iceberg/Delta）直查不支持 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">22</span> CDC 与下游同步 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（binlog/逻辑复制；DMS、Debezium）。</p>
 <ul>
@@ -353,11 +354,12 @@
 <li>DMS supports homogeneous/heterogeneous migration and ongoing replication <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Cross-region/cross-account S3 loads need IAM and network care <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">21</span> External data access <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (PG edition has postgres_fdw/aws_s3; no lakehouse tables).</p>
+<div class="dim-item"><h3><span class="dim-num">21</span> External data access <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (PG edition queries the lakehouse directly via aurora_analytics; MySQL edition has no external-table semantics).</p>
 <ul>
 <li>Aurora PG: postgres_fdw and dblink available; aws_s3 reads/writes S3 objects <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>New on Aurora PostgreSQL 17.11+/18.6+: the <code>aurora_analytics</code> extension embeds DuckDB inside Aurora to query Iceberg tables in the Glue Data Catalog and Parquet/Iceberg data in S3/S3 Tables as foreign tables — no ETL; a single SQL statement can join live data (including uncommitted writes) with lakehouse history. Predicate pushdown, column pruning, and instance-level caching are vendor claims; announced on the AWS official blog 2026-10-01 <code>(AWS official blog)</code>.</li>
+<li>Limits and matching risks: PostgreSQL edition only — no equivalent on Aurora MySQL; requires an IAM role (AuroraAnalytics) plus Glue Catalog setup; single-digit-ms latency still needs CTAS materialization into native tables (writes go to the writer instance); no independent third-party performance comparison found, so query-acceleration claims remain vendor-stated <code>(AWS official blog)</code>.</li>
 <li>Aurora MySQL: no external-table semantics <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
-<li>Direct queries over lakehouse formats (Iceberg/Delta) not supported <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>.</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">22</span> CDC &amp; downstream <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (binlog/logical replication; DMS, Debezium).</p>
 <ul>

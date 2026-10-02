@@ -165,14 +165,13 @@
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">23</span> TTL 与数据生命周期管理 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（声明式分区+pg_cron；无原生行级 TTL）。</p>
 <ul>
-<li>声明式分区 + pg_partman/pg_cron 滚动删分区是标准答案 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>声明式分区 + pg_partman/pg_cron 滚动删分区是社区最常用的组合 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 <li>无原生行级 TTL；pg_cron 需装扩展，托管版一般自带 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（原生在线 DDL，加列/并发建索引）。</p>
 <ul>
 <li>加 nullable 列是元数据操作（PG11+ 带默认值也快），CREATE INDEX CONCURRENTLY 不阻塞写 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>改列类型需 ACCESS EXCLUSIVE 锁重写，大表是经典痛点 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
-<li>pg_repack 等工具可做在线重组 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（无原生资源组，靠外部手段）。</p>
 <ul>
@@ -273,6 +272,7 @@
 <ul>
 <li>jsonb(GIN)、全文检索、PostGIS、pgvector，扩展生态最强 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>多模能力是 PG 护城河 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>图查询（SQL/PGQ）：PG 19 Beta 曾计划的 property graph 查询支持在 Beta 4 被官方回退，理由是可靠性与排期优先、留待后续大版本 <code>官方公告</code>；图场景仍需专用图库或扩展实现 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">43</span> FinOps 成本可观测性 <span class="verdict v-neutral">不适用</span></h3><div class="dim-body"><p><strong>不适用</strong>（自建无计费，成本=硬件+调优人力自理）。</p>
 <ul>
@@ -376,14 +376,13 @@
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">23</span> TTL &amp; data lifecycle <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Declarative partitioning + pg_cron; no native row-level TTL).</p>
 <ul>
-<li>Declarative partitioning with pg_partman/pg_cron for rolling drops is the standard answer <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Declarative partitioning with pg_partman/pg_cron for rolling drops is the most common community setup <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 <li>No native row-level TTL; pg_cron needs the extension (usually bundled in managed offerings) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Native online DDL; add-column / concurrent index builds).</p>
 <ul>
 <li>Adding a nullable column is a metadata op (fast even with defaults since PG11); CREATE INDEX CONCURRENTLY doesn&#x27;t block writes <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Type changes take ACCESS EXCLUSIVE and rewrite — the classic huge-table pain <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
-<li>Tools like pg_repack do online reorganization <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> Multi-tenancy &amp; resource isolation <span class="verdict v-no">No native</span></h3><div class="dim-body"><p><strong>Partial</strong> (No native resource groups; external measures only).</p>
 <ul>
@@ -484,6 +483,7 @@
 <ul>
 <li>jsonb (GIN), full-text, PostGIS, pgvector; strongest extension ecosystem <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Multi-model breadth is PG&#x27;s moat <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Graph queries (SQL/PGQ): the planned property-graph query support in PG 19 Beta was officially reverted in Beta 4, with reliability and release-schedule priority cited and the feature deferred to a later major release <code>(official announcement)</code>; graph workloads still need dedicated graph databases or extensions <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">43</span> FinOps &amp; cost observability <span class="verdict v-neutral">N/A</span></h3><div class="dim-body"><p><strong>N/A</strong> (No metering; hardware plus labor).</p>
 <ul>
@@ -886,7 +886,8 @@
 <li>VACUUM/膨胀/冻结：官方文档 routine vacuuming 章节（机制）；社区实测（dev.to 索引膨胀分析，2026-09）</li>
 <li>升级与容器：官方 pg_upgrade 文档；社区实测（Docker 官方镜像 PG 18 PGDATA 路径变更，2025-10）</li>
 <li>MVCC/连接模型/事务隔离：官方文档——官方口径；社区共识</li>
-<li>下次评审建议：跟踪 PG 19 GA（2026-08 已发 beta 3，预计 2026-09 发布）的新特性与升级注意事项；复核社区原生 TDE 是否有进展（长期诉求，截至本稿仍查证为无）</li>
+<li>PG 19 Beta 4（2026-09-24 发布）：官方公告明确回退 SQL/PGQ 图查询、在线 checksum 开关、<code>ALTER TABLE ... MERGE PARTITIONS</code> / <code>SPLIT PARTITIONS</code> 等；新 <code>REPACK</code> 命令保留，Beta 4 为其修了若干 crash 与误行为——https://www.postgresql.org/about/news/postgresql-19-beta-4-released-3386/（2026-10-02 查阅）</li>
+<li>下次评审建议：跟踪 PG 19 GA（Beta 4 于 2026-09-24 发布，RC 预计 10 月上旬，GA 也可能在 10 月）的新特性与升级注意事项；复核社区原生 TDE 是否有进展（长期诉求，截至本稿仍查证为无）</li>
 </ul>
 </div>
 <div class="lang-block lang-en" hidden>
@@ -897,7 +898,8 @@
 <li>VACUUM/bloat/freezing: official docs routine vacuuming chapter (mechanism); community-tested (dev.to index-bloat analysis, 2026-09)</li>
 <li>Upgrades and containers: official pg_upgrade docs; community-tested (official Docker image PG 18 PGDATA path change, 2025-10)</li>
 <li>MVCC/connection model/transaction isolation: official docs — official claim; community consensus</li>
-<li>Suggested next review: track PG 19 GA (beta 3 released 2026-08, expected 2026-09) new features and upgrade notes; re-verify whether community native TDE has progressed (long-standing request; still verified absent as of this draft)</li>
+<li>PostgreSQL 19 Beta 4 (released 2026-09-24): the official announcement lists reverts of SQL/PGQ graph queries, online checksum toggling, and <code>ALTER TABLE ... MERGE PARTITIONS</code> / <code>SPLIT PARTITIONS</code>; the new <code>REPACK</code> command is retained and received crash/behavior fixes in Beta 4 — https://www.postgresql.org/about/news/postgresql-19-beta-4-released-3386/ (accessed 2026-10-02)</li>
+<li>Suggested next review: track PG 19 GA (Beta 4 released 2026-09-24, RC expected early October, GA possibly also in October) new features and upgrade notes; re-verify whether community native TDE has progressed (long-standing request; still verified absent as of this draft)</li>
 </ul>
 </div>
 </section>
