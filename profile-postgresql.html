@@ -166,12 +166,18 @@
 <div class="dim-item"><h3><span class="dim-num">23</span> TTL 与数据生命周期管理 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（声明式分区+pg_cron；无原生行级 TTL）。</p>
 <ul>
 <li>声明式分区 + pg_partman/pg_cron 滚动删分区是社区最常用的组合 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
-<li>无原生行级 TTL；pg_cron 需装扩展，托管版一般自带 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>无原生行级 TTL；pg_cron 需装扩展，托管版一般自带 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。<ul>
+<li><strong>Beta 4 回退</strong>：PG 19 Beta 曾计划的 <code>ALTER TABLE ... MERGE PARTITIONS</code> / <code>SPLIT PARTITIONS</code>（原生分区合并/拆分）在 Beta 4 被官方回退，留待后续大版本 <code>官方公告</code>；截至本稿，分区合并/拆分仍需用 DETACH/ATTACH 组合或重建表绕行 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+</ul></li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（原生在线 DDL，加列/并发建索引）。</p>
+<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（类1全在线/类2部分/类3需重建/类4支持两阶段；依据 PG 16/17 官方文档与 PG 19 Beta 4 公告）。</p>
 <ul>
-<li>加 nullable 列是元数据操作（PG11+ 带默认值也快），CREATE INDEX CONCURRENTLY 不阻塞写 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
-<li>改列类型需 ACCESS EXCLUSIVE 锁重写，大表是经典痛点 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>一、只改定义，不碰数据：加可空列、加带非 volatile 默认值的列（PG 11+ 只把默认值存进系统表元数据）、重命名、删列（打删除标记而非物理删除）、加 NOT VALID 约束、COMMENT，代价 O(1) 与表大小无关 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>二、重写数据，但数据住哪不变：改列类型、加带 volatile 默认值的列需全表+索引重写（binary coercible 等少数例外可免重写，但仍可能重建索引）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>；VACUUM FULL/CLUSTER 全程拿 ACCESS EXCLUSIVE 锁，大表只能排窗口或走 pg_repack 等外部工具 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>；在线建索引靠 CREATE INDEX CONCURRENTLY（后台两遍扫描+增量追踪+原子切换；PG 12+ 还有 REINDEX CONCURRENTLY）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>；PG 19 原生 <code>REPACK</code> 融合 VACUUM FULL + CLUSTER 语义，<code>REPACK CONCURRENTLY</code> 补上&quot;在线重整&quot;一环，但仍是 <strong>Beta 4</strong>——官方同期在修它的 crash 与无效索引/物化视图上的误行为，且它非 MVCC 安全（旧快照可能读到空表），GA 前必须用自己的 workload 实测 <code>官方公告</code>/<code>第三方测试</code>。</li>
+<li>三、搬数据：PG 是单机引擎，没有分布键；改分区键/分区策略、分区合并/拆分（PG 19 Beta 4 官方回退，仍需 DETACH/ATTACH 组合或重建绕行）、CLUSTER 按索引物理重排，都必须搬数据、不在线；例外是 DETACH PARTITION CONCURRENTLY（PG 14+，拿较轻的锁）<code>官方公告</code>/<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>四、验证约束：ADD CONSTRAINT ... NOT VALID 只加元数据不扫描，再 VALIDATE CONSTRAINT 两阶段验证；直接加 CHECK/NOT NULL/UNIQUE/FK 则全表扫描验证 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>规模：第二、四类代价 O(n)，官方文档明示大表重建&quot;耗时显著、临时需双倍磁盘&quot;——小表大表两个世界，&quot;测试环境在线、生产锁死&quot;的根源 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>语义：PG 的 DDL 大多是事务性的，失败可回滚 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>；但 CREATE INDEX CONCURRENTLY 是例外——不能在事务块里跑（分多事务执行、不可回滚的阶段）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>；ALTER TABLE 拿 ACCESS EXCLUSIVE（最重的锁），长事务会卡住 DDL 拿锁、DDL 一旦排队又堵住后面所有访问 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（无原生资源组，靠外部手段）。</p>
 <ul>
@@ -234,7 +240,9 @@
 <ul>
 <li>data checksums 只能在 initdb --data-checksums 时开启，运行中无法追加；默认关闭是最大陷阱。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
 <li>开启后读页即校验，损坏只报错不自愈，修复靠备份或逻辑复制重建。<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
-<li>云托管版（RDS/Aurora/AlloyDB）底层由云厂商校验，用户无开关可见。<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+<li>云托管版（RDS/Aurora/AlloyDB）底层由云厂商校验，用户无开关可见。<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span><ul>
+<li><strong>Beta 4 回退</strong>：PG 19 Beta 曾计划支持运行中在线启用/禁用 data checksums（无需 initdb 重建），但在 Beta 4 被官方回退；截至本稿&quot;运行中无法追加&quot;仍成立，默认关闭仍是最大陷阱 <code>官方公告</code>。</li>
+</ul></li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">36</span> 存储过程/触发器/过程语言 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（plpgsql 成熟，多过程语言）。</p>
 <ul>
@@ -377,12 +385,18 @@
 <div class="dim-item"><h3><span class="dim-num">23</span> TTL &amp; data lifecycle <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Declarative partitioning + pg_cron; no native row-level TTL).</p>
 <ul>
 <li>Declarative partitioning with pg_partman/pg_cron for rolling drops is the most common community setup <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
-<li>No native row-level TTL; pg_cron needs the extension (usually bundled in managed offerings) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>No native row-level TTL; pg_cron needs the extension (usually bundled in managed offerings) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.<ul>
+<li><strong>Reverted in Beta 4</strong>: the planned <code>ALTER TABLE ... MERGE PARTITIONS</code> / <code>SPLIT PARTITIONS</code> (native partition merge/split) was officially reverted in Beta 4 and deferred to a later major release <code>(official announcement)</code>; as of this writing, partition merge/split still requires DETACH/ATTACH combinations or table rebuilds <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+</ul></li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Native online DDL; add-column / concurrent index builds).</p>
+<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (Category 1 fully online / 2 partial / 3 requires rebuild / 4 two-phase; based on PG 16/17 official docs and the PG 19 Beta 4 announcement).</p>
 <ul>
-<li>Adding a nullable column is a metadata op (fast even with defaults since PG11); CREATE INDEX CONCURRENTLY doesn&#x27;t block writes <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
-<li>Type changes take ACCESS EXCLUSIVE and rewrite — the classic huge-table pain <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>1. Definition-only changes (metadata, O(1)): adding nullable columns or columns with non-volatile defaults (since PG 11 the default is only stored in system-catalog metadata), renames, DROP COLUMN (tombstone mark, not physical removal), NOT VALID constraints, COMMENT — cost independent of table size <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>2. Data rewrite, location unchanged: changing column types or adding columns with volatile defaults rewrites the whole table and its indexes (a few binary-coercible exceptions skip the rewrite but may still rebuild indexes) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>; VACUUM FULL / CLUSTER hold ACCESS EXCLUSIVE for the entire run — on huge tables that means a maintenance window or external tools like pg_repack <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>; online index builds use CREATE INDEX CONCURRENTLY (background double scan + incremental tracking + atomic swap; REINDEX CONCURRENTLY since PG 12) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>; PG 19&#x27;s native <code>REPACK</code> merges VACUUM FULL + CLUSTER semantics and <code>REPACK CONCURRENTLY</code> closes the &quot;online rebuild&quot; gap, but it is still <strong>Beta 4</strong> — upstream is still fixing its crashes and invalid-index/materialized-view misbehavior, and it is not MVCC-safe (an old snapshot can see an empty table); test against your own workload before GA <code>(official announcement)</code> / <code>(third-party test)</code>.</li>
+<li>3. Data relocation: PG is a single-node engine with no distribution key; changing partition keys/strategy, partition merge/split (reverted in PG 19 Beta 4 — still needs DETACH/ATTACH combinations or rebuilds), and CLUSTER physical reordering all move data and are not online; the exception is DETACH PARTITION CONCURRENTLY (PG 14+, lighter lock) <code>(official announcement)</code> / <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>4. Constraint validation: ADD CONSTRAINT ... NOT VALID only touches metadata, then VALIDATE CONSTRAINT verifies in a second phase; adding CHECK / NOT NULL / UNIQUE / FK directly triggers a full-table validation scan <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Scale: categories 2 and 4 cost O(n); the docs warn that large-table rebuilds &quot;take a significant amount of time&quot; and &quot;temporarily require as much as double the disk space&quot; — small and huge tables are two different worlds, the root cause of &quot;online in staging, locked in production&quot; <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Semantics: most PG DDL is transactional and rolls back on failure <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>; CREATE INDEX CONCURRENTLY is the exception — it cannot run inside a transaction block (multi-transaction, non-rollbackable phases) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>; ALTER TABLE takes ACCESS EXCLUSIVE (the heaviest lock) — a long transaction stalls DDL lock acquisition, and once DDL queues it blocks everything behind it <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> Multi-tenancy &amp; resource isolation <span class="verdict v-no">No native</span></h3><div class="dim-body"><p><strong>Partial</strong> (No native resource groups; external measures only).</p>
 <ul>
@@ -445,7 +459,9 @@
 <ul>
 <li>Data checksums can only be enabled with initdb --data-checksums and are off by default: the biggest gotcha. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
 <li>Once enabled, pages are verified on read; corruption raises errors without self-healing, and recovery needs backups or logical rebuild. <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span></li>
-<li>Managed cloud editions (RDS, Aurora, AlloyDB) add provider-level checks invisible to users. <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span></li>
+<li>Managed cloud editions (RDS, Aurora, AlloyDB) add provider-level checks invisible to users. <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span><ul>
+<li><strong>Reverted in Beta 4</strong>: PG 19 Beta had planned online enabling/disabling of data checksums (at runtime, no initdb rebuild), but the feature was officially reverted in Beta 4; as of this writing, &quot;cannot be added while the server runs&quot; still holds and off-by-default remains the biggest gotcha <code>(official announcement)</code>.</li>
+</ul></li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">36</span> Stored procedures &amp; triggers <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Mature plpgsql, many languages).</p>
 <ul>

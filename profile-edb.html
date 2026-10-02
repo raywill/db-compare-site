@@ -163,10 +163,16 @@
 <li>继承 PG 生态：分区表 + pg_partman/pg_cron 做滚动过期 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>无原生行级 TTL，大表逐行删同样面临膨胀问题 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（PG 原生在线 DDL）。</p>
+<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（同 PG 四类行为：类1在线/类2部分/类3需重建/类4两阶段）。</p>
 <ul>
-<li>同 PG：加列元数据操作，并发建索引不阻塞 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>一、只改定义，不碰数据：同 PG，加可空列/非 volatile 默认列/重命名/删列标记/NOT VALID 约束/COMMENT 均为 O(1) 元数据操作 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>二、重写数据，但数据住哪不变：同 PG，改列类型/volatile 默认列需全表+索引重写；CREATE INDEX CONCURRENTLY 在线建索引；VACUUM FULL/CLUSTER 锁表，大表排窗口或走 pg_repack 等工具 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>三、搬数据：同 PG，改分区键/分区策略、分区合并拆分、CLUSTER 重排需重建，不在线 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>四、验证约束：NOT VALID + VALIDATE CONSTRAINT 两阶段同 PG <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>EDB 工具链（Migration Portal）辅助 Oracle 迁移时的 DDL 改写 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>差异核验：未找到 EDB 单节点官方文档与社区 PG 的 DDL 行为差异声明 <code>未找到证据</code>。</li>
+<li>规模：第二、四类代价 O(n)，小表大表两个世界 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>语义：DDL 大多事务性（CREATE INDEX CONCURRENTLY 例外，不能在事务块里跑）；ALTER TABLE 拿 ACCESS EXCLUSIVE，长事务卡 DDL <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>/<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（PG 生态资源组能力有限）。</p>
 <ul>
@@ -366,10 +372,16 @@
 <li>Inherits the PG ecosystem: partitioned tables with pg_partman/pg_cron for rolling expiry <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>No native row-level TTL; row-by-row deletes on huge tables bloat the same way <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Native PG online DDL).</p>
+<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (same four categories as PG: 1 online / 2 partial / 3 requires rebuild / 4 two-phase).</p>
 <ul>
-<li>Same as PG: metadata-only add-column; concurrent index builds don&#x27;t block <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>1. Definition-only changes (metadata, O(1)): same as PG — add-column / non-volatile-default columns / renames / DROP COLUMN tombstones / NOT VALID constraints / COMMENT are all O(1) metadata ops <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>2. Data rewrite, location unchanged: same as PG — type changes / volatile-default columns rewrite the table and indexes; CREATE INDEX CONCURRENTLY builds online; VACUUM FULL / CLUSTER lock the table, huge tables need windows or tools like pg_repack <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>3. Data relocation: same as PG — changing partition keys/strategy, partition merge/split, CLUSTER reordering require rebuilds, not online <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>4. Constraint validation: same NOT VALID + VALIDATE CONSTRAINT two-phase pattern as PG <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>EDB tooling (Migration Portal) assists DDL rewriting in Oracle migrations <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>Difference check: no DDL behavior differences vs community PG found in EDB&#x27;s single-node official docs <code>(no evidence found)</code>.</li>
+<li>Scale: categories 2 and 4 cost O(n) — small and huge tables are two different worlds <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Semantics: DDL is mostly transactional (except CREATE INDEX CONCURRENTLY, which cannot run in a transaction block); ALTER TABLE takes ACCESS EXCLUSIVE and long transactions stall DDL <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> / <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> Multi-tenancy &amp; resource isolation <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Limited resource-group capability in the PG ecosystem).</p>
 <ul>

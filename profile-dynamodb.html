@@ -170,7 +170,7 @@
 <div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-neutral">不适用</span></h3><div class="dim-body"><p><strong>不适用</strong>（schemaless，无 DDL 概念）。</p>
 <ul>
 <li>无 schema，属性随时增减，无 DDL 痛点 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
-<li>加 GSI 是在线后台构建，大表回填耗时但不阻塞 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>最接近&quot;在线 DDL&quot;的是 GSI：在已有表上加全局二级索引是在线的——表在构建期间保持可用，DynamoDB 分&quot;资源分配+回填&quot;两阶段建索引并追踪并发写入；但每次 UpdateTable 只能建一个 GSI，且 LSI 建表后永远加不了 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>GSI 回填期间写放大，WCU 规划要留余量 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（表级吞吐隔离；无集群内多租户）。</p>
@@ -375,6 +375,8 @@
 <div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-neutral">N/A</span></h3><div class="dim-body"><p><strong>N/A</strong> (Schemaless; no DDL concept).</p>
 <ul>
 <li>No schema; attributes come and go with no DDL pain <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>The closest thing to &quot;online DDL&quot; is a GSI: adding a global secondary index to an existing table is online — the table stays available while DynamoDB builds the index in two phases (resource allocation, then backfilling) and tracks concurrent writes; but each UpdateTable can create only one GSI, and an LSI can never be added after table creation <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>GSI backfilling amplifies writes — leave headroom in WCU planning <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 <li>Adding a GSI builds online in the background; backfills take time on huge tables but don&#x27;t block <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>GSI backfill amplifies writes — leave WCU headroom <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>

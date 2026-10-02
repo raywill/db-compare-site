@@ -164,8 +164,9 @@
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（无传统 DDL；payload 索引在线建）。</p>
 <ul>
-<li>无表结构，payload 字段随时增减 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
-<li>payload 索引可在线创建，大集合构建耗时 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>此处的&quot;schema 演进&quot;指 collection 配置与 payload 索引的变更：无表结构，payload 字段随时增减 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>payload 索引可随时在线创建，Qdrant 在后台完成构建与优化 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>向量维度/距离度量建集合后不可改，改需重建集合重导数据；改 HNSW 参数（m/ef_construct）会触发后台全量重建，重建完成前旧索引继续服务、无停机 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（collection 逻辑隔离）。</p>
 <ul>
@@ -354,7 +355,9 @@
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (No traditional DDL; payload indexes built online).</p>
 <ul>
-<li>No table structure; payload fields come and go <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>&quot;Schema evolution&quot; here means changes to collection config and payload indexes: no table structure; payload fields come and go <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Payload indexes can be created online at any time; Qdrant completes the build and optimization in the background <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Vector size/distance cannot be changed after collection creation — changing them means recreating the collection and re-ingesting data; changing HNSW params (m/ef_construct) triggers a background full rebuild while the old index keeps serving, with no downtime <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 <li>Payload indexes can be created online; builds take time on huge collections <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> Multi-tenancy &amp; resource isolation <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Collection-level logical isolation).</p>
@@ -543,7 +546,7 @@
 <ul>
 <li>领域：备份恢复 / 数据架构</li>
 <li>机制：collection snapshot / full snapshot 是时点备份，可经 API 创建、下载、上传、URL 恢复（含 checksum 校验与优先级参数）；单机启动时 CLI <code>--snapshot</code> 恢复仅限单节点；分片级恢复要求分片配置严格一致。</li>
-<li>推到边缘：快照之间没有 WAL/增量日志可以追——两次快照之间的写入，快照里没有，原生没有连续 PITR。社区生产 runbook 的标准答案是双路径：Path A 从快照恢复（RPO=快照间隔，常为 24h），Path B 从事实主库（Postgres 等）重放并重新 embedding（RPO 可到分钟级，但 100 万行重嵌要 30–60 分钟）。恢复是&quot;原地替换 collection&quot;，误操作恢复等于删数据。快照恢复不校验 embedding 模型版本——用旧快照恢复到新模型版本的集群，查出来的是&quot;能跑但语义已漂移&quot;的索引。</li>
+<li>推到边缘：快照之间没有 WAL/增量日志可以追——两次快照之间的写入，快照里没有，原生没有连续 PITR。社区生产 runbook 的常见做法是双路径：Path A 从快照恢复（RPO=快照间隔，常为 24h），Path B 从事实主库（Postgres 等）重放并重新 embedding（RPO 可到分钟级，但 100 万行重嵌要 30–60 分钟）。恢复是&quot;原地替换 collection&quot;，误操作恢复等于删数据。快照恢复不校验 embedding 模型版本——用旧快照恢复到新模型版本的集群，查出来的是&quot;能跑但语义已漂移&quot;的索引。</li>
 <li>选型含义：Qdrant 必须被设计为可重建的派生索引——原文、内容哈希、embedding 模型版本必须保存在事实主库/对象存储；备份策略 = 快照（快速回滚）+ 主库重放链路（RPO 兜底），且重放链路要定期演练；把&quot;从主库全量重建&quot;写进灾难恢复手册，而不是只测快照恢复。</li>
 <li>来源：官方文档（snapshots，单机 CLI 恢复限制）；社区 restore runbook 实测（双路径 RPO）；社区共识。</li>
 </ul>
@@ -593,7 +596,7 @@
 <ul>
 <li>Domain: backup/recovery / data architecture</li>
 <li>Mechanism: collection snapshots / full snapshots are point-in-time backups creatable, downloadable, uploadable, and recoverable via API (with checksum verification and priority parameters); single-node CLI <code>--snapshot</code> recovery is single-node-only; shard-level recovery demands strictly matching shard configuration.</li>
-<li>At the edge: there is no WAL/incremental log to replay between snapshots — writes between two snapshots exist in neither, and there is no native continuous PITR. The standard community production answer is two paths: Path A, restore from snapshot (RPO = snapshot interval, often 24h); Path B, replay from the system of record (Postgres etc.) and re-embed (RPO down to minutes, but re-embedding 1M rows takes ~30–60 min). Recovery replaces the collection in place — a mistaken recovery deletes data. Snapshot restore doesn&#x27;t validate embedding model versions — restoring an old snapshot into a cluster on a new model version yields an index that runs but has semantically drifted.</li>
+<li>At the edge: there is no WAL/incremental log to replay between snapshots — writes between two snapshots exist in neither, and there is no native continuous PITR. The common community production practice is two paths: Path A, restore from snapshot (RPO = snapshot interval, often 24h); Path B, replay from the system of record (Postgres etc.) and re-embed (RPO down to minutes, but re-embedding 1M rows takes ~30–60 min). Recovery replaces the collection in place — a mistaken recovery deletes data. Snapshot restore doesn&#x27;t validate embedding model versions — restoring an old snapshot into a cluster on a new model version yields an index that runs but has semantically drifted.</li>
 <li>Implication: Qdrant must be designed as a rebuildable derived index — source text, content hashes, and embedding model versions live in the system of record / object storage; backup strategy = snapshots (fast rollback) + a replay pipeline from the primary store (RPO backstop), rehearsed regularly; put &quot;full rebuild from the primary store&quot; in the DR handbook, not just snapshot recovery.</li>
 <li>Sources: official docs (snapshots; single-node CLI recovery limits); community restore runbooks, field-tested (dual-path RPO); community consensus.</li>
 </ul>

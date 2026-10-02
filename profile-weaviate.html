@@ -157,8 +157,9 @@
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（class 属性可加；无传统 DDL）。</p>
 <ul>
-<li>class 的 property 可随时新增，无锁表概念 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
-<li>已有属性类型不可改，改需重建 class <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>此处的&quot;schema 演进&quot;指 class 定义的变更：property 可随时新增，无锁表概念 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>已有属性的数据类型不可改，改需重建 class 重导数据 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>class 级配置（如 vectorizer）的在线变更：官方文档无明确说明，按&quot;未找到证据&quot;处理，不做断言 <code>未找到证据</code>。</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（multi-tenancy 租户隔离；无资源限流）。</p>
 <ul>
@@ -345,7 +346,9 @@
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Class properties addable; no traditional DDL).</p>
 <ul>
-<li>Class properties can be added anytime; no table-lock concept <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>&quot;Schema evolution&quot; here means changes to class definitions: properties can be added anytime; no table-lock concept <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>An existing property&#x27;s data type cannot be changed — changing it means recreating the class and re-importing data <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Online changes to class-level config (e.g. vectorizer): no explicit statement found in official docs — treated as &quot;no evidence found&quot;, no claim made <code>(no evidence found)</code>.</li>
 <li>Existing property types are immutable — rebuild the class to change <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> Multi-tenancy &amp; resource isolation <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Multi-tenancy data isolation; no resource throttling).</p>

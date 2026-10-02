@@ -163,11 +163,14 @@
 <li>PG 版：pg_cron + 分区裁剪，沿用 PG 生态做法 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>无原生行级 TTL；大表逐行 DELETE 又慢又胀 undo <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（MySQL 版在线 DDL 有限；PG 版原生）。</p>
+<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（PG 标准版四类同社区 PG；Limitless 分片版有官方 DDL 限制；MySQL 版在线 DDL 有限）。</p>
 <ul>
-<li>Aurora MySQL：InnoDB online DDL，加列多可在线，但改主键/列类型仍重建，大表用 gh-ost 更稳 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
-<li>Aurora PG：同 PG 原生在线 DDL <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
-<li>快照恢复/回溯（backtrack）可作为 DDL 翻车后的兜底 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>一、只改定义，不碰数据：Aurora PG 同社区 PG（加可空列/非 volatile 默认列/重命名/删列标记/NOT VALID 约束/COMMENT，O(1)）；Aurora MySQL 同 InnoDB，加列多可在线 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>二、重写数据，但数据住哪不变：Aurora PG 标准版同社区 PG——改列类型需重写，CREATE INDEX CONCURRENTLY 在线建索引（AWS 官方运维指南对 Aurora/RDS 直接沿用社区 PG 的 CONCURRENTLY / REINDEX CONCURRENTLY / pg_repack 手段）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>；<strong>Aurora PG Limitless（分片版）有官方 DDL 限制：分片表不支持 CREATE UNIQUE INDEX CONCURRENTLY</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>；Aurora MySQL 改主键/列类型仍重建，大表用 gh-ost 更稳 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>三、搬数据：Aurora PG 标准版同社区 PG（改分区键/分区策略、分区合并拆分、CLUSTER 重排需重建，不在线）；Limitless 分片表的搬数据类操作同样不在线，且受官方 DDL 限制文档约束 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>四、验证约束：Aurora PG 同社区 PG（NOT VALID + VALIDATE CONSTRAINT 两阶段）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>；Aurora MySQL 加约束走 InnoDB 路径，大表注意锁 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>规模：第二、四类代价 O(n)，小表大表两个世界 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>语义：Aurora PG 版 DDL 事务性/锁/长事务卡 DDL 同社区 PG（CREATE INDEX CONCURRENTLY 不能在事务块里跑）；Aurora MySQL 版 DDL 非事务性（隐式提交），翻车靠快照恢复/回溯（backtrack）兜底 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>/<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（集群级隔离；Serverless v2 自动扩缩）。</p>
 <ul>
@@ -373,11 +376,14 @@
 <li>PG flavor: pg_cron + partition pruning, same as the PG ecosystem <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>No native row-level TTL; row-by-row DELETE on huge tables is slow and bloats undo <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Limited online DDL on MySQL flavor; native on PG flavor).</p>
+<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (PG standard edition follows community PG&#x27;s four categories; Limitless sharded edition has official DDL restrictions; MySQL flavor&#x27;s online DDL is limited).</p>
 <ul>
-<li>Aurora MySQL: InnoDB online DDL covers many add-column cases, but PK changes / type changes still rebuild — gh-ost is safer for huge tables <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
-<li>Aurora PG: native PG online DDL <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
-<li>Snapshot restore / backtrack can bail out a failed DDL <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>1. Definition-only changes (metadata, O(1)): Aurora PG matches community PG (nullable / non-volatile-default columns, renames, DROP COLUMN tombstones, NOT VALID constraints, COMMENT — O(1)); Aurora MySQL follows InnoDB, most add-column ops online <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>2. Data rewrite, location unchanged: Aurora PG standard edition matches community PG — type changes rewrite; CREATE INDEX CONCURRENTLY builds online (AWS&#x27;s official ops guidance applies community PG&#x27;s CONCURRENTLY / REINDEX CONCURRENTLY / pg_repack playbook directly to Aurora/RDS) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>; <strong>Aurora PG Limitless (sharded) has official DDL restrictions: CREATE UNIQUE INDEX CONCURRENTLY is not supported on sharded tables</strong> <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>; Aurora MySQL PK changes / type changes still rebuild — gh-ost is safer for huge tables <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>3. Data relocation: Aurora PG standard edition matches community PG (changing partition keys/strategy, partition merge/split, CLUSTER reordering require rebuilds, not online); relocation-class ops on Limitless sharded tables are likewise not online and are bound by the official DDL-limitations doc <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>4. Constraint validation: Aurora PG matches community PG (NOT VALID + VALIDATE CONSTRAINT two-phase) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>; Aurora MySQL constraint adds follow the InnoDB path — mind the locks on huge tables <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Scale: categories 2 and 4 cost O(n) — small and huge tables are two different worlds <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Semantics: Aurora PG flavor&#x27;s DDL transactionality / locking / long-transaction-stalls-DDL match community PG (CREATE INDEX CONCURRENTLY cannot run in a transaction block); Aurora MySQL DDL is non-transactional (implicit commit), with snapshot restore / backtrack as the bailout <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span> / <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> Multi-tenancy &amp; resource isolation <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Cluster-level isolation; Serverless v2 auto-scaling).</p>
 <ul>

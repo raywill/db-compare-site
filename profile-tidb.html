@@ -166,11 +166,14 @@
 <li>TTL 作业与 GC 配合，大表过期删对前台影响小 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>TTL 列要求有索引，设计表时要注意 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（在线 DDL（F1 机制），分布式强项）。</p>
+<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（F1 在线 DDL；全部支持的操作都在线，含分布式回填）。</p>
 <ul>
-<li>基于 Google F1 论文的在线 DDL，加列/加索引不阻塞读写 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
-<li>DDL 是集群级串行队列，大量并发 DDL 会排队 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
-<li>加索引是分布式回填，大表耗时但前台无感 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li><strong>只改定义</strong>：加列只改元数据（默认值存 schema、不回填历史行，O(1)）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>；重命名、改 DEFAULT 同理在线。</li>
+<li><strong>重写但位置不变</strong>：加索引是分布式回填——按 Region 切分、多 worker 并行构建，限流保护前台延迟，完成后原子切换；大表耗时但读写不阻塞 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li><strong>搬数据</strong>：TiDB 无单机式 COPY 重建锁表；重分布=分布式回填/重组，天然在线。但 clustered 类型主键的增删、分区表上的列类型变更等明确不支持（查证为无）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li><strong>验证约束</strong>：无 NOT VALID 两阶段语法；唯一性验证即&quot;加索引=分布式回填&quot;，在线完成 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li><strong>规模</strong>：回填类操作代价 O(n)——分布式并行+限流，大表只是&quot;慢&quot;而不是&quot;锁&quot;，这是与 MySQL 系的本质区别 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li><strong>语义</strong>：DDL 由 DDL owner 经 job 队列异步执行、多状态流转（none→…→public），不参与用户事务、不能包进事务回滚 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>；v6.2+ 单条 ALTER 支持多 schema 变更（同一对象改两次报错），ALGORITHM=… 只作断言、不改变实际算法 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>；v6.3+ 元数据锁（v6.5 默认开）：有未提交事务的表上 DDL 被阻塞——&quot;在线 DDL&quot;≠&quot;随时 DDL&quot;，长事务照样卡 DDL <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（Resource Control（RU）租户级限流）。</p>
 <ul>
@@ -377,11 +380,14 @@
 <li>TTL jobs coordinate with GC; expiry deletes barely affect foreground traffic <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>The TTL column needs an index — design tables accordingly <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Online DDL (F1 mechanism); distributed strength).</p>
+<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (F1-style online DDL; every supported operation runs online, including distributed backfills).</p>
 <ul>
-<li>Google-F1-paper online DDL; add-column/index never blocks reads/writes <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
-<li>DDL uses a cluster-wide serial queue; heavy concurrent DDL queues up <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
-<li>Index adds are distributed backfills — slow on huge tables but invisible to foreground <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li><strong>Definition-only changes</strong>: adding a column touches metadata only — the default is stored in the schema, historical rows are never backfilled, O(1) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>; renames and DEFAULT changes are online the same way.</li>
+<li><strong>Data rewrite, same location</strong>: index adds are distributed backfills — split by Region, built by parallel workers, throttled to protect foreground latency, activated by an atomic switch. Slow on huge tables, but reads/writes never block <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li><strong>Data moves</strong>: no single-node COPY rebuild-and-lock in TiDB; redistribution is a distributed backfill/reorg, online by design. But some operations are explicitly unsupported (verified absent, official docs): adding/dropping a CLUSTERED primary key, column-type changes on partitioned tables.</li>
+<li><strong>Constraint validation</strong>: no NOT VALID two-phase syntax; uniqueness is validated by the online distributed index backfill itself <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li><strong>Scale</strong>: backfill-class operations cost O(n) — distributed, parallel, throttled. On huge tables that means &quot;slow&quot;, not &quot;locked&quot;: the fundamental difference from the MySQL lineage <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li><strong>Semantics</strong>: DDL runs asynchronously through a DDL-owner job queue with multi-state transitions (none → … → public); it does not participate in user transactions and cannot be rolled back inside one <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. Since v6.2, a single ALTER can carry multiple schema changes (touching the same object twice errors out); <code>ALGORITHM=…</code> is only an assertion and never changes the real algorithm <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. Metadata locks since v6.3 (on by default in v6.5): DDL on a table with uncommitted transactions gets blocked — &quot;online DDL&quot; ≠ &quot;DDL anytime&quot;; long transactions still stall DDL <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> Multi-tenancy &amp; resource isolation <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Resource Control (RU) tenant-level throttling).</p>
 <ul>

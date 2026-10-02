@@ -164,11 +164,14 @@
 <li>分区表滚动 + 在线重定义配合，生命周期管理覆盖最完整 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>功能多在企业版，授权成本高 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（在线重定义/Edition，在线 DDL 标杆）。</p>
+<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（四类全在线：在线重定义+EBR，业界标杆）。</p>
 <ul>
-<li>DBMS_REDEFINITION 在线重定义表、Edition 在线升级应用，业界标杆 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
-<li>加列（尤其 nullable）多是在线元数据操作 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
-<li>功能强但操作复杂，对 DBA 功力要求高 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>类1·只改定义：加可空列/带默认值列（11g+ 多为元数据级）、重命名、删列（SET UNUSED 打标记）、COMMENT 只动数据字典、不重写行 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>类2·重写数据位置不变：直接 ALTER 改列类型多为离线重写；在线路径是 DBMS_REDEFINITION——后台建中间表+物化视图日志增量追踪+FINISH 原子切换 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>；CREATE/ALTER INDEX … ONLINE 建/重建索引不阻塞 DML <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>类3·搬数据：换表空间/改分区/改组织方式、改分区键走 DBMS_REDEFINITION 在线搬 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>；应用级 schema 升级走 Edition-based redefinition（editioning view + crossedition trigger），零停机且无需单独授权 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>类4·验证约束：ENABLE NOVALIDATE 先上线约束（只约束新 DML）+ 后 VALIDATE 全表验证，两阶段分开 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>规模：类2/4 代价 O(n)，小表大表两个世界——在线重定义需中间表约 2 倍空间 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>；先用 CAN_REDEF_TABLE 验表资格 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>语义：DDL 前后各一次隐式 COMMIT，不可回滚（会先提交当前事务再执行） <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>；FINISH_REDEF_TABLE 完成瞬间短暂独占锁 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>；长事务持有 DDL 锁会卡住后续 DDL（DDL_LOCK_TIMEOUT 控制等待） <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。依据版本：Oracle Database 26ai/21c 文档、EBR 开发指南 12.2。</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（PDB+Resource Manager，多租户标杆）。</p>
 <ul>
@@ -379,11 +382,14 @@
 <li>Rolling partitions plus online redefinition make lifecycle coverage the most complete <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Mostly Enterprise Edition features with high license cost <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Online redefinition / Editions; the online-DDL benchmark).</p>
+<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (All four classes online: redefinition + EBR; the benchmark).</p>
 <ul>
-<li>DBMS_REDEFINITION online table redefinition and Edition-based app upgrades are the industry benchmark <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
-<li>Add-column (especially nullable) is usually an online metadata op <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
-<li>Powerful but operationally complex; demands skilled DBAs <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Class 1 - definition-only: adding nullable/defaulted columns (metadata-level since 11g), renames, dropping via SET UNUSED, COMMENTs touch only the data dictionary <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Class 2 - rewrite in place: plain ALTER for column-type changes is usually an offline rewrite; the online path is DBMS_REDEFINITION — interim table built in the background + materialized-view-log change tracking + atomic switch at FINISH <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>; CREATE/ALTER INDEX … ONLINE doesn&#x27;t block DML <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Class 3 - data moves: tablespace changes, repartitioning, reorganization go through DBMS_REDEFINITION online <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>; app-level schema upgrades use Edition-based redefinition (editioning views + crossedition triggers) with zero downtime and no extra license <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Class 4 - constraint validation: ENABLE NOVALIDATE brings the constraint online for new DML only, then VALIDATE scans the table — two separate phases <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Scale: classes 2/4 cost O(n) — small and huge tables are different worlds; online redefinition needs ~2x space for the interim table <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>; check eligibility with CAN_REDEF_TABLE first <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Semantics: one implicit COMMIT before and after every DDL, so DDL can&#x27;t roll back (current transaction is committed first) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>; FINISH_REDEF_TABLE takes a brief exclusive lock <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>; long transactions holding DDL locks block later DDL (DDL_LOCK_TIMEOUT controls the wait) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>. Based on: Oracle Database 26ai/21c docs, EBR Developer&#x27;s Guide 12.2.</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> Multi-tenancy &amp; resource isolation <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (PDB + Resource Manager; the multi-tenancy benchmark).</p>
 <ul>
@@ -557,7 +563,7 @@
 <li>推到边缘：<ul>
 <li>interconnect 抖动/丢包/延迟毛刺 → CSS 心跳超时 → 少数派节点被<strong>驱逐（evict）</strong>，实例直接被 kill。DBA 经常看到的是 ORA-29702、CRS-1609/1611，然后&quot;节点没了&quot;。这不是 bug，是设计哲学：<strong>数据正确性优先于可用性</strong>。</li>
 <li>写热点块（如序列、热点索引根块）在节点间来回传递，<code>gc buffer busy</code> 等待事件飙升——Cache Fusion 从&quot;加速器&quot;变成&quot;放大器&quot;。RAC 扩展的是&quot;吞吐&quot;，不是&quot;单热点写&quot;。</li>
-<li>脑裂时 Voting Disk 仲裁，输的一方被 I/O fencing 隔离——&quot;杀节点&quot;是 Oracle 解决脑裂的标准答案，不是协商。</li>
+<li>脑裂时 Voting Disk 仲裁，输的一方被 I/O fencing 隔离——&quot;杀节点&quot;是 Oracle 解决脑裂的常规做法，不是协商。</li>
 <li>互联网络与业务网络混用、私网 MTU 不一致、网卡 bonding 配错，是生产环境脑裂/误驱逐最常见的三个人为原因。</li>
 </ul></li>
 <li>选型含义：RAC 要求独立的私网 interconnect（万兆起步）、共享存储、奇数 voting disk；POC 必须压&quot;跨节点写热点&quot;和&quot;私网抖动&quot;两个场景；接受&quot;为保正确性可以杀节点&quot;的哲学再选 RAC。</li>
@@ -642,7 +648,7 @@
 <li>At the edge:<ul>
 <li>Interconnect jitter/packet loss/latency spikes → CSS heartbeat timeout → minority nodes get <strong>evicted</strong>, instances killed outright. What DBAs often see is ORA-29702, CRS-1609/1611, and then &quot;the node is gone&quot;. This isn&#x27;t a bug; it&#x27;s design philosophy: <strong>data correctness over availability</strong>.</li>
 <li>Hot-write blocks (sequences, hot index root blocks) bouncing between nodes drive <code>gc buffer busy</code> waits through the roof — Cache Fusion turns from &quot;accelerator&quot; into &quot;amplifier&quot;. RAC scales &quot;throughput&quot;, not &quot;single-hotspot writes&quot;.</li>
-<li>On split-brain, Voting Disk arbitrates; the loser gets isolated by I/O fencing — &quot;killing the node&quot; is Oracle&#x27;s standard answer to split-brain, not negotiation.</li>
+<li>On split-brain, Voting Disk arbitrates; the loser gets isolated by I/O fencing — &quot;killing the node&quot; is Oracle&#x27;s standard practice for split-brain, not negotiation.</li>
 <li>Sharing the interconnect with the business network, mismatched MTU on the private network, and misconfigured NIC bonding are the three most common human causes of production split-brain/false eviction.</li>
 </ul></li>
 <li>Selection implication: RAC requires a dedicated private interconnect (10GbE minimum), shared storage, and an odd number of voting disks; POC must stress two scenarios — &quot;cross-node hot writes&quot; and &quot;private-network jitter&quot;; only choose RAC if you accept the philosophy that &quot;nodes may be killed to protect correctness&quot;.</li>

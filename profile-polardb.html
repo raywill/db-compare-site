@@ -169,10 +169,15 @@
 <li>MySQL/PG 版继承各自生态的分区过期做法 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>无原生行级 TTL <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（同源在线 DDL 能力）。</p>
+<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（PG 版四类同社区 PG；MySQL 版在线 DDL 有限）。</p>
 <ul>
-<li>MySQL 版同 InnoDB online DDL 限制，大表建议 gh-ost <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
-<li>PG 版同 PG 原生在线 DDL <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>一、只改定义，不碰数据：PG 版同社区 PG（加可空列/非 volatile 默认列/重命名/删列标记/NOT VALID 约束/COMMENT，O(1)）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>；MySQL 版同 InnoDB online DDL，加列多可在线 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>二、重写数据，但数据住哪不变：PG 版同社区 PG（改列类型需重写；CREATE INDEX CONCURRENTLY 在线建索引；VACUUM FULL/CLUSTER 锁表）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>；MySQL 版改主键/列类型仍重建，大表建议 gh-ost <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>三、搬数据：PG 版同社区 PG（改分区键/分区策略、分区合并拆分、CLUSTER 重排需重建，不在线）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>四、验证约束：PG 版同社区 PG（NOT VALID + VALIDATE CONSTRAINT 两阶段）<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>差异核验：未找到阿里云官方文档对 PolarDB PG 引擎层 DDL 差异的声明 <code>未找到证据</code>。</li>
+<li>规模：第二、四类代价 O(n)，小表大表两个世界 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>语义：PG 版 DDL 事务性/锁/长事务卡 DDL 同社区 PG（CREATE INDEX CONCURRENTLY 不能在事务块里跑）；MySQL 版 DDL 非事务性（隐式提交）<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（集群级隔离为主，无资源组）。</p>
 <ul>
@@ -371,10 +376,15 @@
 <li>MySQL/PG flavors inherit their ecosystems&#x27; partition-expiry patterns <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>No native row-level TTL <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Same-lineage online DDL capabilities).</p>
+<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (PG flavor follows community PG&#x27;s four categories; MySQL flavor&#x27;s online DDL is limited).</p>
 <ul>
-<li>MySQL flavor shares InnoDB online-DDL limits; gh-ost advised for huge tables <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
-<li>PG flavor has native PG online DDL <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>1. Definition-only changes (metadata, O(1)): PG flavor matches community PG (nullable / non-volatile-default columns, renames, DROP COLUMN tombstones, NOT VALID constraints, COMMENT — O(1)) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>; MySQL flavor follows InnoDB online DDL, most add-column ops online <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>2. Data rewrite, location unchanged: PG flavor matches community PG (type changes rewrite; CREATE INDEX CONCURRENTLY builds online; VACUUM FULL / CLUSTER lock the table) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>; MySQL flavor PK changes / type changes still rebuild — gh-ost advised for huge tables <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>3. Data relocation: PG flavor matches community PG (changing partition keys/strategy, partition merge/split, CLUSTER reordering require rebuilds, not online) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>4. Constraint validation: PG flavor matches community PG (NOT VALID + VALIDATE CONSTRAINT two-phase) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Difference check: no engine-level DDL differences for PolarDB&#x27;s PG flavor found in Alibaba Cloud&#x27;s official docs <code>(no evidence found)</code>.</li>
+<li>Scale: categories 2 and 4 cost O(n) — small and huge tables are two different worlds <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Semantics: PG flavor&#x27;s DDL transactionality / locking / long-transaction-stalls-DDL match community PG (CREATE INDEX CONCURRENTLY cannot run in a transaction block); MySQL flavor DDL is non-transactional (implicit commit) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> Multi-tenancy &amp; resource isolation <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Mostly cluster-level isolation).</p>
 <ul>
@@ -643,7 +653,7 @@
 <div class="lang-block lang-zh">
 <ol>
 <li><strong>只读节点秒级扩容，加读能力不搬数据（MySQL / PG 通用）</strong><ul>
-<li>为什么是真的：存算分离下只读节点挂载同一份 PolarStore 共享存储，通过 redo 物理复制追主，没有 RDS 加从库时的&quot;全量数据复制&quot;阶段。官方口径新增只读节点约 5 分钟，社区实测和用户案例普遍认可&quot;加读节点快一个数量级&quot;是真实机制红利。</li>
+<li>为什么是真的：存算分离下只读节点挂载同一份 PolarStore 共享存储，通过 redo 物理复制追主，没有 RDS 加从库时的&quot;全量数据复制&quot;阶段。官方口径新增只读节点约 5 分钟，社区实测和用户案例普遍认可&quot;加读节点显著更快&quot;是真实机制红利。</li>
 <li>边缘与限度：①&quot;秒级/分钟级&quot;是节点启动上线，不是流量生效——官方 FAQ 实锤：新增只读节点前已建立的读写分离连接<strong>不会</strong>自动把请求转发到新节点，必须断开重连；②写密集时 redo 产生速度超过只读节点回放速度，延迟从毫秒级放大；③每个只读节点都是独立计费的计算节点；④加只读节点只扩展读，<strong>写吞吐天花板永远是单主节点</strong>。</li>
 <li>来源：阿里云官方 FAQ<span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>；社区共识（CSDN/掘金选型帖，2026）。观察版本：PolarDB for MySQL 8.0、PolarDB-PG 14/15/16</li>
 </ul></li>
@@ -672,7 +682,7 @@
 <div class="lang-block lang-en" hidden>
 <ol>
 <li><strong>Second-level read-node scale-out, adding read capacity moves no data (MySQL / PG)</strong><ul>
-<li>Why it&#x27;s true: under compute-storage separation, read-only nodes mount the same PolarStore shared storage and catch up with the primary via redo physical replication — no &quot;full data copy&quot; phase like adding an RDS replica. Official statement: adding a read-only node takes ~5 minutes; community field tests and user cases widely recognize &quot;read-node addition an order of magnitude faster&quot; as a genuine mechanistic dividend.</li>
+<li>Why it&#x27;s true: under compute-storage separation, read-only nodes mount the same PolarStore shared storage and catch up with the primary via redo physical replication — no &quot;full data copy&quot; phase like adding an RDS replica. Official statement: adding a read-only node takes ~5 minutes; community field tests and user cases widely recognize &quot;read-node addition significantly faster&quot; as a genuine mechanistic dividend.</li>
 <li>Edges and limits: ① &quot;Second/minute-level&quot; is node startup and going live, not traffic taking effect — the official FAQ confirms: read/write-splitting connections established before a new read-only node is added will <strong>not</strong> automatically forward requests to the new node; they must be dropped and rebuilt; ② under write intensity, redo generation speed exceeds read-only node replay speed and lag blows up from millisecond-level; ③ each read-only node is an independently billed compute node; ④ adding read-only nodes only scales reads — <strong>the write-throughput ceiling is always the single primary</strong>.</li>
 <li>Sources: Alibaba Cloud official FAQ <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>; community consensus (CSDN/Juejin selection posts, 2026). Observed versions: PolarDB for MySQL 8.0, PolarDB-PG 14/15/16</li>
 </ul></li>

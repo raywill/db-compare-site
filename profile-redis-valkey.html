@@ -171,8 +171,9 @@
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-neutral">不适用</span></h3><div class="dim-body"><p><strong>不适用</strong>（无 schema，无 DDL）。</p>
 <ul>
-<li>KV/数据结构无 schema，无 DDL 概念 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
-<li>RediSearch 索引 schema 变更需重建 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>本维度在此系统实际指&quot;数据结构/配置的在线变更&quot;：键无 schema，类型由写入命令隐式决定（SET 即 string，HSET 即 hash），结构演进是应用层约定 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>在线变更限于运维面：CONFIG SET 改配置、MODULE LOAD 加载模块，均不碰数据 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>RediSearch 索引 schema 变更需重建索引 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（db 编号逻辑隔离；无资源限流）。</p>
 <ul>
@@ -375,7 +376,9 @@
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-neutral">N/A</span></h3><div class="dim-body"><p><strong>N/A</strong> (No schema, no DDL).</p>
 <ul>
-<li>KV/data structures have no schema and no DDL concept <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>What this dimension means here is &quot;online changes to data structures/config&quot;: keys carry no schema; the type is implied by the write command (SET yields a string, HSET a hash), and structural evolution is an application-layer convention <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Online changes are ops-only: CONFIG SET rewrites config, MODULE LOAD loads modules — neither touches data <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>RediSearch index schema changes require rebuilding the index <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 <li>RediSearch index schema changes need rebuilds <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> Multi-tenancy &amp; resource isolation <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (DB-number logical isolation; no resource throttling).</p>

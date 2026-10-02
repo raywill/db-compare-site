@@ -169,10 +169,14 @@
 <li>YSQL 也支持表级 TTL 属性，过期后台清理 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>墓碑与 compaction 行为同 Cassandra 系，需同样运维 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（PG 兼容在线 DDL；分布式协调有延迟）。</p>
+<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（在线索引回填与改列类型在线；改分布键未找到证据；分阶段验证未找到证据；DDL 默认非事务性）。</p>
 <ul>
-<li>YSQL 兼容 PG 在线 DDL 语义，加列/并发建索引可用 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
-<li>分布式下 DDL 需跨节点协调，完成延迟高于单机 PG <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>只改定义：加列/删列/改默认值只改元数据，在线（官方 safe 操作清单） <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>重写数据：<code>ALTER COLUMN … TYPE</code> 需全表重写，但分区表、带规则表不支持，CDC 流 / xCluster 下需重写时亦不支持 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>；建索引默认在线并发构建（分布式并行回填 + 增量镜像） <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>搬数据：无显式主键的表加主键走全表重写 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>；改已存在主键/分布键官方文档无明确说明（<strong>未找到证据</strong>）。</li>
+<li>验证约束：加约束在线（官方 safe 清单） <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>；是否支持 NOT VALID 分阶段验证，官方文档无明确说明（<strong>未找到证据</strong>）。</li>
+<li>规模：重写/回填 O(n)，分布式并行仍随数据量与 tablet 数放大 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>语义：DDL 默认非事务性——事务内 DDL 自治执行，ROLLBACK 不回滚（issue #1404） <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>；事务性 DDL 为 Early Access，默认关闭 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>；同一库并发 DDL 不支持，冲突报错需应用重试 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>；普通 CREATE INDEX 默认在线构建，不可放显式事务块内（issue #6240） <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>；schema 经 catalog 版本 + 心跳传播，各节点缓存按错误/重试刷新 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。（依据 v2025.2 LTS 官方文档，2026-10-02 核验）</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（逻辑隔离为主；无租户资源组）。</p>
 <ul>
@@ -369,10 +373,14 @@
 <li>YSQL also supports a table-level TTL attribute with background cleanup <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Tombstone/compaction behavior matches the Cassandra family; same ops care needed <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (PG-compatible online DDL; cross-node coordination lag).</p>
+<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (Online index backfill and column-type changes are online; changing the distribution key has no evidence; staged validation has no evidence; DDL is non-transactional by default).</p>
 <ul>
-<li>YSQL matches PG online-DDL semantics; add-column/concurrent index builds work <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
-<li>Distributed DDL needs cross-node coordination — slower to complete than single-node PG <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Definition-only: add/drop column and default changes touch metadata only and are online (official safe-operation list) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Data-rewriting: <code>ALTER COLUMN … TYPE</code> requires a full table rewrite, but is unsupported for partitioned tables and tables with rules, and for tables with CDC streams / under xCluster when a rewrite is needed <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>; index builds are concurrent/online by default (distributed parallel backfill plus incremental mirroring) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Data-moving: adding a primary key to a table without an explicit one runs as a full table rewrite <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>; changing an existing primary key/distribution key has no explicit statement in the official docs (<strong>no evidence found</strong>).</li>
+<li>Constraint validation: adding constraints is online (official safe list) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>; whether <code>NOT VALID</code> staged validation is supported has no explicit statement in the official docs (<strong>no evidence found</strong>).</li>
+<li>Scale: rewrites/backfills cost O(n); distributed parallelism still scales with data volume and tablet count <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Semantics: DDL is non-transactional by default — DDL inside a transaction runs autonomously and survives ROLLBACK (issue #1404) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>; transactional DDL is Early Access and off by default <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>; concurrent DDLs on the same database are unsupported and raise conflicts the application must retry <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>; a plain CREATE INDEX builds online and cannot go inside an explicit transaction block (issue #6240) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>; schema propagates via catalog version plus heartbeats, with per-node caches refreshed on error/retry <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. (Per official docs for v2025.2 LTS; verified 2026-10-02)</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> Multi-tenancy &amp; resource isolation <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Mostly logical isolation; no tenant resource groups).</p>
 <ul>

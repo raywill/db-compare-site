@@ -164,10 +164,15 @@
 <li>无行级 TTL；主键模型 DELETE 代价高 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>存储分层（storage medium）可做冷热分离 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（Light schema change 加列轻量）。</p>
+<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（fast schema evolution 加/删列轻量；改类型/键列重写代价高；改分桶是异步重写）。</p>
 <ul>
-<li>Light schema change 加列走轻量路径 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
-<li>改列类型/key 列需重写，大表代价高 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>只改定义不碰数据：fast_schema_evolution=true 的表（建表时指定；shared-nothing 自 v3.2、shared-data 自 v3.3 默认开启）加/删列走轻量路径、命令同步返回 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>；rename/comment/分区/swap 本就是同步操作 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>重写数据但位置不变：改列类型、改 key 列、建 rollup/物化视图是异步 schema change job，重写数据、耗时随数据量 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>；SHOW ALTER 查进度、CANCEL 可取消 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>搬数据：改分桶方式/分桶数是异步重写 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>；主键列不可改 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>；sort key 可用 ALTER TABLE ... ORDER BY 重指定但删不掉 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>验证约束：主键模型自带唯一+非空约束 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>；NOT NULL 列支持 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>；独立的 CHECK/UNIQUE/外键约束不执行（查证为无）<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。<ul>
+<li><strong>规模</strong>：第二/三类代价 O(n)，tablet 数/数据量越大越慢；同一张表一次只能跑一个 schema change <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li><strong>语义</strong>：列/分桶/rollup 操作异步——提交即返回成功，实际后台执行 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>；rename/comment 等同步返回即完成 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>；DDL 全表事务性未找到证据。</li>
+</ul></li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（workload group 资源组限流）。</p>
 <ul>
@@ -300,7 +305,10 @@
 <div class="dim-item"><h3><span class="dim-num">7</span> Connection model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — FE accepts MySQL protocol (port 9030), compatible with MySQL clients and BI tools; Stream Load uses FE/BE HTTP (8030); Arrow Flight SQL high-speed channel since v3.5. Connection pooling lives in the application side or external proxies — the FE is a query coordinator, not a connection pooler. Evidence: official docs + community consensus.</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">8</span> Transactions &amp; isolation levels <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — OLAP positioning, no general OLTP transactions; write-side single-database transactions: Stream Load transaction interface (prepare + commit two-phase, exactly-once for the Flink connector), multi-table-in-one-database transactions since v4.0 (cross-database in development), label mechanism for deduplication (at-most-once semantics), <code>idle_transaction_timeout</code> auto-rollback; plus Group Commit merging high-frequency small batches. Cross-database transactions and multi-statement interactive transactions: verified absent; rigorous &quot;snapshot isolation&quot; claims pending verification. Evidence: official docs (Stream Load transaction interface).</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">9</span> Replication &amp; consistency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — default 3 replicas (<code>replication_num=3</code>) with tablets spread across replicas; since v3.4 writes commit on majority-replica success (previously a missing single replica could fail the whole write); reads use versioned visibility (visible version), each write batch atomically visible. <strong>Edges</strong>: consistency is &quot;per-table version level&quot;, not cross-table distributed strong consistency; shared-data FE leader failover once caused in-flight transaction loss (see Deep dive 1). Evidence: official docs + community consensus.</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">10</span> Scaling <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — native scale-out. Shared-nothing: add BE nodes, tablets rebalance automatically (costs IO/network for redistribution); shared-data: stateless CN compute nodes, elastic in seconds (K8s HPA), Warehouses provide physical isolation between workloads. <strong>Hard constraints</strong>: the two modes cannot be mixed in one cluster or converted into each other (explicit in official docs); shared-data requires homogeneous CN hardware. Evidence: official docs.</p></div></div>
+<div class="dim-item"><h3><span class="dim-num">10</span> Scaling <span class="verdict v-neutral">class-2/3 cost is</span></h3><div class="dim-body"><p>class-2/3 cost is O(n) — more tablets / more data, slower; one schema-change job per table at a time <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</p>
+<ul>
+<li><strong>Semantics</strong>: column/bucket/rollup operations are asynchronous — submission returns success while the job runs in the background <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>; rename/comment return only when finished <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>; no evidence found for whole-table DDL transactional semantics.</li>
+</ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">11</span> Compatibility <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> — MySQL protocol compatible (drivers / ORMs / BI tools plug in); SQL syntax partially MySQL-compatible (analytical subset); no stored procedures / triggers (OLAP positioning — verified absent from the official capability matrix). Evidence: official docs + community consensus.</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">12</span> License &amp; business model <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> — Apache 2.0 fully open source (including shared-data and other core capabilities); commercialization = CelerData / MirrorShip cloud services (Serverless billed by compute usage) + cloud-vendor managed integrations + support. No absolute prices (they expire quickly). Evidence: official statements + community consensus.</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">13</span> Chinese-language resources <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (rich) — complete official Chinese docs, active Chinese community, abundant CSDN / blog practices; English docs equally complete. Evidence: community consensus.</p></div></div>
@@ -362,10 +370,12 @@
 <li>No row-level TTL; DELETE on primary-key models is costly <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Storage-medium tiering supports hot-cold separation <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Light schema change for add-column).</p>
+<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (Fast schema evolution for lightweight add/drop column; type/key-column rewrites are expensive; rebucketing is an async rewrite).</p>
 <ul>
-<li>Light schema change puts add-column on a lightweight path <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
-<li>Type/key-column changes rewrite data — expensive on huge tables <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Definition-only, data untouched: on tables with fast_schema_evolution=true (creation-only property; shared-nothing since v3.2, on by default in shared-data since v3.3), ADD/DROP COLUMN takes the lightweight path and returns synchronously <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>; rename/comment/partition/swap are synchronous by design <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Rewrite data in place: changing column types, changing key columns, and building rollups/materialized views run as async schema-change jobs that rewrite data, with cost scaling with data volume <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>; SHOW ALTER for progress, CANCEL to abort <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Move data: changing the bucketing method or bucket count is an async rewrite <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>; primary-key columns cannot be modified <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>; the sort key can be reassigned via ALTER TABLE ... ORDER BY but not deleted <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Validate constraints: Primary Key tables carry unique + NOT NULL constraints on the key <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>; NOT NULL columns are supported <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>; standalone CHECK/UNIQUE/foreign-key constraints are not enforced (verified absent) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> Multi-tenancy &amp; resource isolation <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Workload-group resource throttling).</p>
 <ul>
@@ -746,7 +756,7 @@
 </blockquote>
 <ol>
 <li><strong>查询快，尤其是多表 Join</strong><ul>
-<li>为什么是真的：全向量化引擎 + CBO + Pipeline，TPC-H / TPC-DS 这类复杂分析是主场；社区大量&quot;从 Hive / Presto 迁过来查询快一个数量级&quot;的实测（厂商口径的倍数不采信，但&quot;变快&quot;的方向是社区共识）。</li>
+<li>为什么是真的：全向量化引擎 + CBO + Pipeline，TPC-H / TPC-DS 这类复杂分析是主场；社区大量&quot;从 Hive / Presto 迁过来查询明显变快&quot;的实测（厂商口径的倍数不采信，但&quot;变快&quot;的方向是社区共识）。</li>
 <li>边缘与限度：快的前提是统计信息新鲜、tablet 规划合理；单表极限扫描拼不过 ClickHouse（向量化鼻祖 + 更高压缩比）；外表查询受对象存储延迟限制。以及 benchmark 跑的是&quot;调优后的上限&quot;，不是&quot;你建表第一天的下限&quot;。</li>
 <li>来源：社区共识；观察版本：v3.5 / v4.1。</li>
 </ul></li>
@@ -778,7 +788,7 @@
 </blockquote>
 <ol>
 <li><strong>Fast queries, especially multi-table joins</strong><ul>
-<li>Why it&#x27;s real: fully vectorized engine + CBO + Pipeline; TPC-H / TPC-DS style complex analytics are its home turf; community field reports of &quot;an order of magnitude faster than Hive / Presto after migration&quot; (vendor-claimed multiples not adopted, but the direction of &quot;faster&quot; is community consensus).</li>
+<li>Why it&#x27;s real: fully vectorized engine + CBO + Pipeline; TPC-H / TPC-DS style complex analytics are its home turf; community field reports of &quot;noticeably faster than Hive / Presto after migration&quot; (vendor-claimed multiples not adopted, but the direction of &quot;faster&quot; is community consensus).</li>
 <li>Edges and limits: speed assumes fresh statistics and sane tablet planning; it can&#x27;t beat ClickHouse on single-table scan extremes (the vectorization originator with higher compression); external-table queries are object-storage-latency-bound. And benchmarks show a tuned ceiling, not your day-one floor.</li>
 <li>Sources: community consensus; observed on v3.5 / v4.1.</li>
 </ul></li>

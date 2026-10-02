@@ -106,9 +106,9 @@
 <div class="dim-item"><h3><span class="dim-num">11</span> 兼容性 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>。PostgreSQL wire protocol v3 + 多数 PG 语法/工具可用，但不是 PG 内核。v26.3 官方文档明确缺口：range types、events、drop primary key、XML functions、列级权限、XA、template 建库、FDW、session-scoped advisory locks（仅 transaction-scoped 支持）。来源等级：官方文档（v26.3）</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">12</span> 许可证与商业模式 <span class="verdict v-yes">有（商业许可，非开源）</span></h3><div class="dim-body"><p><strong>有（商业许可，非开源）</strong>。Apache 2.0（2017–2019）→ BSL（2019–2024）→ CockroachDB Software License（2024–今）；2024-11 起年收入 &lt; $10M 组织免费 Enterprise；2026 起新版本源码私有。Cloud 按 RU/存储计费（Basic 层级含免费额度，第三方口径，待官方复核）；自托管商业授权价格不公开（询价）。来源等级：官方博客 + 第三方报道 + 待验证</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">13</span> 中文资料丰富度 <span class="verdict v-partial">部分支持（偏少）</span></h3><div class="dim-body"><p><strong>部分支持（偏少）</strong>（编辑判断）。官方文档以英文为主，中文社区实践帖远少于 OceanBase/TiDB。来源等级：编辑判断，待规模化采集验证</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">14</span> 性能与延迟特征 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（用延迟换全球可用性；吞吐随节点线性扩展）。</p>
+<div class="dim-item"><h3><span class="dim-num">14</span> 性能与延迟特征 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（用延迟换全球可用性；吞吐随节点数扩展）。</p>
 <ul>
-<li>单行读写延迟毫秒级（跨地域更高），高于单机 DB；吞吐随节点数线性扩展 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>单行读写延迟毫秒级（跨地域更高），高于单机 DB；吞吐随节点数提升 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>follower reads / 就近 leaseholder 降低读尾延迟 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>热点行/高冲突事务是性能杀手，schema 设计需避免全局序列热点 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
@@ -166,11 +166,14 @@
 <li>大表定时删注意拆批，避免长事务拖慢 MVCC GC <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 <li>原生 TTL 的 feature request 长期 open，短期别指望 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（声明式在线 schema 变更，并发友好）。</p>
+<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（四类全在线；DDL 默认非事务性）。</p>
 <ul>
-<li>schema 变更是在线声明式的，多语句可并发执行不阻塞读写 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
-<li>大表加索引是后台分布式回填，前台无感 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
-<li>极端场景下 schema 变更仍可能排队，变更期间避免混用 DDL+DML 大事务 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>只改定义：加可空列、重命名、删列（打标记）、COMMENT 只改系统表元数据，代价 O(1) 与表大小无关 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>重写数据：改列类型、加二级索引走后台分布式回填，读写不阻塞；大回填可能临时占用至约 3 倍存储，官方建议低峰执行 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>搬数据：<code>ALTER TABLE … ALTER PRIMARY KEY</code> 与 <code>SET LOCALITY</code> 均在线执行；但主键变更进行中同表禁止其他在线变更 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>验证约束：支持 <code>NOT VALID</code> 先加约束、再 <code>VALIDATE CONSTRAINT</code> 分阶段验证 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>规模：第二、四类代价 O(n)，小表大表两个世界；大回填耗算力，官方明确建议低峰执行 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>语义：DDL 一般不入事务（官方已知限制；多语句事务中 DDL 可能部分提交，错误码 XXA00）；删列回滚可能无法正确恢复（官方已知限制）；变更以 job 运行，<code>SHOW JOBS</code> 监控、可暂停/恢复/取消 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。（依据 v26.x 官方文档，2026-10-02 核验）</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（admission control 有限；无租户资源组）。</p>
 <ul>
@@ -314,9 +317,9 @@
 <div class="dim-item"><h3><span class="dim-num">11</span> Compatibility <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong>. PostgreSQL wire protocol v3 + most PG syntax/tools work, but it is not a PG kernel. v26.3 official docs list explicit gaps: range types, events, drop primary key, XML functions, column-level privileges, XA, template databases, FDW, session-scoped advisory locks (only transaction-scoped supported). Evidence level: official docs (v26.3)</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">12</span> License &amp; business model <span class="verdict v-neutral">Commercial license</span></h3><div class="dim-body"><p><strong>Commercial license (not open source)</strong>. Apache 2.0 (2017–2019) → BSL (2019–2024) → CockroachDB Software License (2024–present, free Enterprise for organizations under $10M revenue since 2024-11); since 2026 new-version source is private. Cloud is billed by RU/storage (third parties report a free allowance for the Basic tier — pending official verification); self-hosted commercial license pricing is not public (request a quote). Evidence level: official blog + third-party statement + to-be-verified</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">13</span> Chinese-language resources <span class="verdict v-neutral">Partially supporte</span></h3><div class="dim-body"><p><strong>Partially supported (on the scarce side)</strong> (editorial judgment). Official docs are primarily English; Chinese community practice posts are far fewer than for OceanBase/TiDB. Evidence level: editorial judgment, pending scaled data collection</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">14</span> Performance &amp; latency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (trades latency for global availability; throughput scales linearly).</p>
+<div class="dim-item"><h3><span class="dim-num">14</span> Performance &amp; latency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (trades latency for global availability; throughput scales with node count).</p>
 <ul>
-<li>Single-row read/write latency in milliseconds (higher across regions), above single-node DBs; throughput scales linearly with node count <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Single-row read/write latency in milliseconds (higher across regions), above single-node DBs; throughput grows with node count <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Follower reads and nearby leaseholders cut read tail latency <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Hot rows/high-contention transactions are the performance killer — schema design must avoid global-sequence hotspots <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
@@ -374,11 +377,14 @@
 <li>Batch large deletes to avoid long transactions slowing MVCC GC <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 <li>The native-TTL feature request has been open for years; don&#x27;t count on it soon <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Declarative online schema changes; concurrency-friendly).</p>
+<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (All four classes online; DDL is non-transactional by default).</p>
 <ul>
-<li>Schema changes are declarative and online; multiple statements run concurrently without blocking reads/writes <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
-<li>Index backfills on huge tables are distributed background work, invisible to foreground traffic <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
-<li>In edge cases schema changes can queue; avoid mixing DDL with huge DML transactions during changes <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Definition-only: adding nullable columns, renames, column drops (tombstoned), and comments touch only catalog metadata — O(1), independent of table size <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Data-rewriting: column type changes and secondary-index builds run as distributed background backfills without blocking reads/writes; large backfills can temporarily need ~3x storage — run them off-peak <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Data-moving: <code>ALTER TABLE … ALTER PRIMARY KEY</code> and <code>SET LOCALITY</code> both execute online; no other online schema change may start on the same table while a primary-key change is in progress <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Constraint validation: <code>NOT VALID</code> constraints followed by staged <code>VALIDATE CONSTRAINT</code> are supported <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Scale: classes 2 and 4 cost O(n) — small and large tables are two different worlds; large backfills consume compute, and official docs advise off-peak execution <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Semantics: DDL generally does not run inside transactions (documented limitation; DDL in multi-statement transactions can partially commit, error code XXA00); column-drop rollbacks may not restore correctly (documented limitation); changes run as jobs — monitor with <code>SHOW JOBS</code>, pausable/resumable/cancelable <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>. (Per official docs on the v26.x line; verified 2026-10-02)</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> Multi-tenancy &amp; resource isolation <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Limited admission control; no tenant resource groups).</p>
 <ul>

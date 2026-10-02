@@ -217,9 +217,13 @@
 <li>Time Travel/Fail-safe 是保留期的延伸，不是业务 TTL 语义 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>保留期产生存储费用，设太长烧钱 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-yes">有（元数据操作在线，无锁表概念）</span></h3><div class="dim-body"><ul>
-<li>加列/改列多是元数据操作，在线完成 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
-<li>微分区存储下无传统&#x27;锁表&#x27;概念，并发 DDL 友好 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>只改定义：加列/改名/删列/COMMENT 均为元数据操作，即时在线；微分区存储无传统&quot;锁表&quot;概念，并发 DDL 友好 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>/<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>重写数据但住哪不变：ALTER COLUMN … SET DATA TYPE 仅支持兼容放宽（NUMBER 精度、VARCHAR 长度）；不兼容的改类型需&quot;建新列回填&quot;或重建表 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
+<li>搬数据：ALTER TABLE … CLUSTER BY 随时可改、语句本身即时生效；实际数据重聚簇由自动聚簇在后台完成，按 serverless credit 计费，大表是数小时量级 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>验证约束：NOT NULL 与 CHECK 强制执行；PK/UNIQUE/FK 仅信息性不强制（默认 NOVALIDATE/NORELY，加约束不扫描全表），错标 RELY 会让优化器按&quot;假唯一&quot;改写查询 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>规模：第二、三类代价 O(n)；大表重聚簇是&quot;数小时 + 烧 serverless credit&quot;，小表大表两个世界 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>语义：每条 DDL 自成一个事务、隐式提交、不可回滚；重建类迁移可用 SWAP WITH 做单事务原子切换；DDL 之后 time travel 查询历史数据的 schema 行为，官方文档未明确说明（未找到证据） <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
 <li>每个 warehouse 是独立计算集群，团队/业务按 warehouse 隔离，noisy neighbor 天然规避 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
@@ -451,9 +455,13 @@
 <li>Time Travel/Fail-safe extend retention; they are not business TTL <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Retention consumes storage billing — long periods get expensive <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><ul>
-<li>Add/alter column are mostly metadata ops, done online <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
-<li>Micro-partition storage has no traditional table-lock concept; DDL is concurrency-friendly <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-neutral">Partially supporte</span></h3><div class="dim-body"><ul>
+<li>Definition-only changes: add/rename/drop column and COMMENT are metadata ops, instant and online; micro-partition storage has no traditional table-lock concept, so concurrent DDL is friendly <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> / <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Same-location rewrites: ALTER COLUMN … SET DATA TYPE only supports compatible widening (NUMBER precision, VARCHAR length); incompatible type changes need a new-column backfill or a table rebuild <code>(community tested)</code>.</li>
+<li>Data moves: ALTER TABLE … CLUSTER BY can run anytime and takes effect instantly as a statement; the actual data reclustering happens in the background via automatic clustering, billed as serverless credits — hours for huge tables <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Constraint validation: NOT NULL and CHECK are enforced; PK/UNIQUE/FK are informational only (defaults NOVALIDATE/NORELY, so adding them scans nothing) — a wrongly set RELY lets the optimizer rewrite queries on a false uniqueness assumption <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Scale: class 2/3 costs are O(n); reclustering a huge table is &quot;hours + burning serverless credits&quot; — small and huge tables are two different worlds <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Semantics: each DDL statement is its own transaction — implicitly committed, not rollbackable; rebuild-style migrations can use SWAP WITH for a single-transaction atomic cutover; how time travel reads historical data after a DDL schema change is not stated in the official docs (no evidence found) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> Multi-tenancy &amp; resource isolation <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><ul>
 <li>Each warehouse is an isolated compute cluster; teams/workloads isolate by warehouse, sidestepping noisy neighbors <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
@@ -766,7 +774,7 @@
 <li><strong>Zero ops: no indexes, partitions, or vacuum to manage</strong> Why it&#x27;s true: micro-partitions auto-split, auto-cluster, auto-compress; the classic DBA trio (indexing, partitioning, vacuuming) doesn&#x27;t exist in Snowflake; SaaS rolling upgrades mean no patching. Edge/failure: what&#x27;s zero-ops is infrastructure, not cost — auto-clustering, warehouse sizing, and Time Travel retention are all paid knobs; nobody managing it doesn&#x27;t mean nobody pays the bill. Source: official docs + community consensus.</li>
 <li><strong>Elasticity and concurrency isolation: peak seasons don&#x27;t interfere</strong> Why it&#x27;s true: warehouses start/stop/resize independently; multi-cluster warehouses auto-scale with concurrency; ETL, BI, and ad-hoc each get their own warehouse so slow queries can&#x27;t kill someone else&#x27;s dashboard. Edge/failure: what&#x27;s isolated is performance, not cost — every warehouse burns credits independently; warehouse sprawl (one always-on large warehouse per team) is the #1 bill-explosion cause. Source: official docs + community consensus.</li>
 <li><strong>Engineering happiness from Time Travel/cloning</strong> Why it&#x27;s true: <code>UNDROP</code> for dropped tables, <code>AT</code> for history, second-level cloning of test environments — data engineers consistently describe it as &quot;can&#x27;t go back&quot;; pipeline debugging cost drops off a cliff. Edge/failure: happiness is billed by storage volume; 90-day retention on daily-full-refresh tables can make Time Travel storage multiples of the table itself. Source: official docs + community consensus.</li>
-<li><strong>Silky semi-structured handling</strong> Why it&#x27;s true: VARIANT + schema-on-read — JSON logs COPY in and are queryable immediately, <code>FLATTEN</code> unpacks nesting; iteration speed is an order of magnitude faster than &quot;define schema first&quot; warehouses. Edge/failure: weaker query performance and cost than typed columns; deeply nested VARIANT at extreme scale amplifies scans. Source: official docs + community consensus.</li>
+<li><strong>Silky semi-structured handling</strong> Why it&#x27;s true: VARIANT + schema-on-read — JSON logs COPY in and are queryable immediately, <code>FLATTEN</code> unpacks nesting; iteration speed is significantly faster than &quot;define schema first&quot; warehouses. Edge/failure: weaker query performance and cost than typed columns; deeply nested VARIANT at extreme scale amplifies scans. Source: official docs + community consensus.</li>
 <li><strong>Most mature dbt seat</strong> Why it&#x27;s true: dbt-snowflake is among the most mature adapters; Dynamic Tables pair well with dbt incremental models; Fivetran/Airbyte one-click ELT — the default choice of the modern data stack. Edge/failure: dbt full-refresh models are big credit killers on Snowflake — incremental strategy must match; MDS tool subscriptions stack on top of the Snowflake bill, so total cost of ownership must be counted together. Source: community consensus.</li>
 </ol>
 </div>
@@ -835,7 +843,7 @@
 <li><strong>零运维：没有索引、分区、 vacuum 要管</strong> 为什么是真的：微分区自动切分、自动聚簇、自动压缩，DBA 的传统三件套（建索引、调分区、做 vacuum）在 Snowflake 里不存在；SaaS 滚动升级，用户不打补丁。 边缘与失效条件：零运维的是&quot;基础设施&quot;，不是&quot;成本&quot;——自动聚簇、仓库选型、Time Travel 保留期全是花钱的旋钮；没人管不等于没人付账单。 来源：官方文档 + 社区共识。</li>
 <li><strong>弹性与并发隔离：大促/月结互不干扰</strong> 为什么是真的：仓库独立启停升降配，多集群仓库按并发自动扩；ETL、BI、ad-hoc 各用各的仓库，慢查询拖不死别人的大盘。 边缘与失效条件：隔离的是性能，不是成本——每个仓库独立烧 credit；仓库蔓延（每团队一个常开大仓库）是账单爆炸的头号原因。 来源：官方文档 + 社区共识。</li>
 <li><strong>Time Travel/克隆带来的工程幸福感</strong> 为什么是真的：误删表 <code>UNDROP</code>、查历史 <code>AT</code>、秒级克隆出测试环境——数据工程师第一次用都有&quot;回不去了&quot;的感觉；pipeline 调试成本断崖下降。 边缘与失效条件：幸福感按存储量计费；90 天保留 + 每日全量刷新的表，Time Travel 存储可能超过表本身数倍。 来源：官方文档 + 社区共识。</li>
-<li><strong>半结构化处理丝滑</strong> 为什么是真的：VARIANT + schema-on-read，JSON 日志直接 COPY 进来就能查，<code>FLATTEN</code> 展开嵌套；对比传统数仓&quot;先定 schema 再进数&quot;，迭代速度快一个数量级。 边缘与失效条件：查询性能与成本弱于强类型列；VARIANT 套 VARIANT 的深层嵌套在超大规模下会放大扫描。 来源：官方文档 + 社区共识。</li>
+<li><strong>半结构化处理丝滑</strong> 为什么是真的：VARIANT + schema-on-read，JSON 日志直接 COPY 进来就能查，<code>FLATTEN</code> 展开嵌套；对比传统数仓&quot;先定 schema 再进数&quot;，迭代速度明显更快。 边缘与失效条件：查询性能与成本弱于强类型列；VARIANT 套 VARIANT 的深层嵌套在超大规模下会放大扫描。 来源：官方文档 + 社区共识。</li>
 <li><strong>dbt 生态位最成熟</strong> 为什么是真的：dbt-snowflake 适配器最成熟，Dynamic Tables 与 dbt 增量模型配合好；Fivetran/Airbyte 一键 ELT，现代数据栈（MDS）的默认选项。 边缘与失效条件：dbt 全量刷新（full-refresh）模型在 Snowflake 上是大 credit 杀手，增量策略必须配对；MDS 工具链的订阅费叠加 Snowflake 账单，总拥有成本要一起算。 来源：社区共识。</li>
 </ol>
 </div>

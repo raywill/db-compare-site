@@ -166,9 +166,12 @@
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（schemaless；索引后台构建）。</p>
 <ul>
-<li>无 schema，文档结构随时变，无 DDL 锁表问题 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
-<li>建索引后台执行，大集合耗时但不阻塞读写 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
-<li>4.2+ 支持 rolling 之外的 resharding 在线重分片 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>此处的&quot;schema 演进&quot;实际指三件事：文档形状自由演进、集合校验规则（validation）、索引构建——没有传统 DDL <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>加字段零代价：文档结构随时变，不存在锁表或重写 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>校验规则属&quot;验证约束&quot;类：collMod 可随时增改 $jsonSchema 规则（只改定义）；加规则不回扫已有文档，validationLevel: moderate 下历史违规文档的更新可豁免，strict 则校验全部写入 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>建索引属&quot;重写数据但数据住哪不变&quot;类：4.2+ hybrid 构建全程不阻塞读写（首尾仅短暂排他锁），background 选项已被忽略 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>语义注记：validation 只约束未来写入，不做历史数据清洗；大规模 reshape 靠应用迁移脚本，非 DDL <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>规模注记：索引构建是全集合扫描+排序，耗时与资源消耗随数据量增长，大集合建议低峰执行 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（逻辑隔离为主；Atlas 有一定管控）。</p>
 <ul>
@@ -377,7 +380,12 @@
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Schemaless; background index builds).</p>
 <ul>
-<li>No schema; document shape evolves freely with no DDL locking <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>&quot;Schema evolution&quot; here means three things: free document-shape evolution, collection validation rules, and index builds — no traditional DDL <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Adding fields costs nothing: document shape changes anytime, with no locking or rewriting <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Validation rules are the &quot;validate constraints&quot; class: collMod can add or change $jsonSchema rules at any time (definition-only); new rules never rescan existing documents, and validationLevel moderate exempts historically non-conforming documents on update while strict validates every write <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Index builds are the &quot;rewrite data, data stays put&quot; class: 4.2+ hybrid builds never block reads or writes (only brief exclusive locks at start and end); the background option is ignored <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Semantics note: validation constrains future writes only — it never cleans historical data; large-scale reshaping is an application migration script, not DDL <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Scale note: an index build is a full collection scan plus sort; time and resource cost grow with data size, so build large indexes off-peak <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 <li>Index builds run in the background; slow on huge collections but non-blocking <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>4.2+ supports online resharding <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 </ul></div></div>

@@ -108,7 +108,7 @@
 <div class="dim-item"><h3><span class="dim-num">13</span> 中文资料丰富度 <span class="verdict v-neutral">中等</span></h3><div class="dim-body"><p><strong>中等</strong>。官方文档提供中文版；中文社区实战文章少于 Cloud SQL<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。来源等级：官方文档 + 社区共识</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">14</span> 性能与延迟特征 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（Google 托管 PG；分析加速是卖点）。</p>
 <ul>
-<li>官方称 OLTP 约 2 倍 vanilla PG、分析查询快一个数量级<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span><span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
+<li>官方称 OLTP 约 2 倍 vanilla PG、分析查询快约 10 倍<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span><span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
 <li>列存引擎自动加速 HTAP 查询；写扩展靠纵向升级规格 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>实际表现依赖 Google Cloud 网络与实例规格，跨区延迟需实测 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
@@ -166,10 +166,15 @@
 <li>AlloyDB 备份保留策略管的是备份，不管业务数据过期 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>大分区表 DROP 分区是 O(1) 元数据操作，比 DELETE 高效得多 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（PG 原生在线 DDL，加列/建索引不锁表）。</p>
+<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（同 PG 四类行为：类1在线/类2部分/类3需重建/类4两阶段）。</p>
 <ul>
-<li>继承 PG：加 nullable 列是元数据操作，CREATE INDEX CONCURRENTLY 不阻塞写 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
-<li>改列类型/加非空约束仍需重写或全表扫描，大表要规划窗口 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>一、只改定义，不碰数据：同 PG，加可空列/非 volatile 默认列/重命名/删列标记/NOT VALID 约束/COMMENT 均为 O(1) 元数据操作 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>二、重写数据，但数据住哪不变：同 PG，改列类型/volatile 默认列需全表+索引重写；CREATE INDEX CONCURRENTLY 在线建索引（PG 12+ REINDEX CONCURRENTLY）；VACUUM FULL/CLUSTER 锁表 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>三、搬数据：同 PG，改分区键/分区策略、分区合并拆分、CLUSTER 重排需重建，不在线 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>四、验证约束：NOT VALID + VALIDATE CONSTRAINT 两阶段同 PG <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>差异核验：谷歌 AlloyDB 官方文档未找到引擎层 DDL 差异声明（文档只在 DMS 迁移场景提到用 pglogical.replicate_ddl_command 复制 DDL）<code>未找到证据</code>。</li>
+<li>规模：第二、四类代价 O(n)，小表大表两个世界 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>语义：DDL 大多事务性（CREATE INDEX CONCURRENTLY 例外，不能在事务块里跑）；ALTER TABLE 拿 ACCESS EXCLUSIVE，长事务卡 DDL <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（实例级隔离；无细粒度资源组）。</p>
 <ul>
@@ -313,7 +318,7 @@
 <div class="dim-item"><h3><span class="dim-num">13</span> Chinese-language resources <span class="verdict v-neutral">Moderate</span></h3><div class="dim-body"><p><strong>Moderate</strong>. Official documentation available in Chinese; fewer Chinese community hands-on articles than Cloud SQL <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>. Source level: official docs + community consensus</p></div></div>
 <div class="dim-item"><h3><span class="dim-num">14</span> Performance &amp; latency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Google-managed PG; analytical acceleration is the selling point).</p>
 <ul>
-<li>Officially ~2x vanilla PostgreSQL on OLTP and an order of magnitude on analytical queries <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
+<li>Officially ~2x vanilla PostgreSQL on OLTP and about 10x on analytical queries <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span> <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
 <li>Columnar engine auto-accelerates HTAP queries; write scaling via vertical upgrades <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Real-world results depend on Google Cloud networking and instance sizing; cross-region latency needs your own tests <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
@@ -371,10 +376,15 @@
 <li>AlloyDB backup retention governs backups, not business-data expiry <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Dropping a partition is an O(1) metadata operation, far cheaper than DELETE <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Native PG online DDL; add-column/index without locking).</p>
+<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (same four categories as PG: 1 online / 2 partial / 3 requires rebuild / 4 two-phase).</p>
 <ul>
-<li>Inherits PG: adding a nullable column is a metadata op; CREATE INDEX CONCURRENTLY doesn&#x27;t block writes <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
-<li>Changing column types / adding NOT NULL still rewrites or scans the table — plan windows for huge tables <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>1. Definition-only changes (metadata, O(1)): same as PG — add-column / non-volatile-default columns / renames / DROP COLUMN tombstones / NOT VALID constraints / COMMENT are all O(1) metadata ops <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>2. Data rewrite, location unchanged: same as PG — type changes / volatile-default columns rewrite the table and indexes; CREATE INDEX CONCURRENTLY builds online (REINDEX CONCURRENTLY since PG 12); VACUUM FULL / CLUSTER lock the table <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>3. Data relocation: same as PG — changing partition keys/strategy, partition merge/split, CLUSTER reordering require rebuilds, not online <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>4. Constraint validation: same NOT VALID + VALIDATE CONSTRAINT two-phase pattern as PG <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Difference check: no engine-level DDL differences found in Google&#x27;s AlloyDB official docs (docs only mention DDL in the DMS migration context, via pglogical.replicate_ddl_command) <code>(no evidence found)</code>.</li>
+<li>Scale: categories 2 and 4 cost O(n) — small and huge tables are two different worlds <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Semantics: DDL is mostly transactional (except CREATE INDEX CONCURRENTLY, which cannot run in a transaction block); ALTER TABLE takes ACCESS EXCLUSIVE and long transactions stall DDL <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> Multi-tenancy &amp; resource isolation <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Instance-level isolation; no fine-grained resource groups).</p>
 <ul>

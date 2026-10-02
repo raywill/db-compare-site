@@ -210,10 +210,13 @@
 <li>过期自动删且不收删除费，是成本治理常用手段 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>过期是整表/整分区粒度，无行级 TTL <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-yes">有（加列/放宽模式在线）</span></h3><div class="dim-body"><ul>
-<li>加列、放宽 required-&gt;nullable 等是在线元数据操作 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
-<li>列改名/改类型支持有限，部分需重建表 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
-<li>分区/聚簇变更代价高，建表时一次定好 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>只改定义：加列、改名（RENAME COLUMN）、放宽 REQUIRED→NULLABLE 均为在线元数据操作 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>重写数据但住哪不变：ALTER COLUMN SET DATA TYPE 仅支持兼容 coercion（INT64→NUMERIC/BIGNUMERIC/FLOAT64 等）；不兼容的改类型必须 CTAS/复制重建表 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>搬数据：分区/聚簇规格建表后不可原地修改，改聚簇必须重建表（CTAS 或复制表+改名）；重建按扫描字节计查询费 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>验证约束：PK/FK 只能声明为 NOT ENFORCED、纯信息性（优化器提示，数据违例会算出错误结果）；NOT NULL 在写入时强制执行；列 DEFAULT 只对未来写入生效 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>/<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>规模：第二、三类代价 O(n)；PB 级表 CTAS 重建是&quot;数小时 + 按扫描量烧钱&quot;，小表大表两个世界 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
+<li>语义：单条 DDL 原子；DDL 不允许写进事务——改分区/聚簇的多步重建（建新表+删旧+改名）没有原子性，中间有窗口期 <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
 <li>预留 slot 按项目/团队分配，互不抢占 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
@@ -464,11 +467,14 @@
 <li>Expiry auto-deletes at no deletion cost — a standard cost-governance lever <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Expiry is table-/partition-granular; no row-level TTL <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Online add-column / schema relaxation).</p>
+<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (Online add-column/relaxation; type change &amp; clustering changes limited).</p>
 <ul>
-<li>Add-column and relaxation (required→nullable) are online metadata ops <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
-<li>Renames / type changes are limited; some need table rebuilds <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
-<li>Partitioning/clustering changes are costly — get them right at creation <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Definition-only changes: add-column, RENAME COLUMN, and relaxing REQUIRED→NULLABLE are all online metadata ops <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Same-location rewrites: ALTER COLUMN SET DATA TYPE only supports compatible coercion (INT64→NUMERIC/BIGNUMERIC/FLOAT64 etc.); incompatible type changes require rebuilding the table via CTAS or copy <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Data moves: partitioning/clustering specs can&#x27;t be changed in place after creation — changing clustering means rebuilding the table (CTAS or copy-table + rename), billed as a query on scanned bytes <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Constraint validation: PK/FK can only be declared NOT ENFORCED — purely informational (optimizer hints; violated data yields wrong results); NOT NULL is enforced on writes; column DEFAULT applies to future writes only <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> / <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Scale: class 2/3 costs are O(n); rebuilding a PB-scale table via CTAS is &quot;hours + paying per scanned byte&quot; — small and huge tables are two different worlds <code>(community tested)</code>.</li>
+<li>Semantics: a single DDL statement is atomic; DDL can&#x27;t run inside a transaction — so a multi-step rebuild for partitioning/clustering changes (create new + drop old + rename) has no atomicity, with a window in between <code>(community tested)</code>.</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> Multi-tenancy &amp; resource isolation <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Slot reservations/assignments; compute isolation).</p>
 <ul>

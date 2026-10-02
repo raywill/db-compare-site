@@ -165,9 +165,10 @@
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（动态字段；集合 schema 相对固定）。</p>
 <ul>
-<li>支持动态字段（dynamic field）容纳新增属性 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
-<li>集合 schema（向量维度、度量类型）建后基本不可改，改需重建 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>此处的&quot;schema 演进&quot;指 collection 定义的变更：建集合时可开 enable_dynamic_field，未定义字段以 key-value 存入保留动态字段，随查随用 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>v2.5 及更早 schema 建后不可变；v2.6+ 支持 add_collection_field() 追加 nullable 标量字段，v3.0+ 支持删标量字段——向量维度/度量类型始终不可改，改需重建集合重导数据 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>加索引是在线后台构建 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>collection 别名可随时改指向，是&quot;零停机切换集合&quot;的标准做法 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（RBAC+库级隔离；资源组有限）。</p>
 <ul>
@@ -361,9 +362,12 @@
 <li>Collections accept ttl.seconds; expired data is cleaned in the background <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Cleanup is asynchronous, not exact-time; reclaimed with compaction <code>(to be verified)</code>.</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Dynamic fields; collection schema largely fixed).</p>
+<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (Dynamic fields; collection schema largely fixed).</p>
 <ul>
-<li>Dynamic fields absorb new attributes <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>&quot;Schema evolution&quot; here means changes to the collection definition: enable_dynamic_field at creation stores undefined fields as key-value pairs in a reserved dynamic field, usable in search and filters <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Schema is immutable in v2.5 and earlier; v2.6+ supports add_collection_field() to append nullable scalar fields, v3.0+ supports dropping scalar fields — vector dimensions/metric type are never changeable; changing them means recreating the collection and re-ingesting data <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Index creation is an online background build <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Collection aliases can be repointed anytime — the standard practice for zero-downtime collection swaps <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Collection schema (vector dim, metric type) is effectively immutable after creation — changes need rebuild <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Index building runs online in the background <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 </ul></div></div>

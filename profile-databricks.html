@@ -210,10 +210,13 @@
 <li>流式表/物化视图的增量过期逻辑需自己写清理任务 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 <li>VACUUM 默认 7 天保留期防并发读写冲突，调小有风险 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
-<li>Delta Lake 支持 schema 自动演进与 mergeSchema，流批写入加列不中断 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
-<li>列改名/改类型需 overwrite 或 column mapping，有代价 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
-<li>Unity Catalog 下表结构变更可审计 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
+<li>只改定义：加列走 mergeSchema/schema evolution，流批写入不中断；启用 column mapping 后改名/删列是纯元数据操作，不重写 Parquet 文件 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>重写数据但住哪不变：兼容类型放宽（INT→LONG 等）需开启 delta.enableTypeWidening 特性（Delta 3.2+/4.0）才是元数据操作；不兼容的改类型需 overwriteSchema 重写 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>搬数据：ALTER TABLE … CLUSTER BY（Liquid Clustering）本身是元数据操作、即时在线，但只影响未来写入；历史数据保持旧布局，需显式 OPTIMIZE（FULL）重写，按集群计算计费 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>验证约束：NOT NULL 与 CHECK 强制执行，违例写入直接失败；PK/FK/UNIQUE 仅信息性不强制（需 Unity Catalog 与对应 Runtime 版本），只做优化器提示与血缘 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>规模：第二、三类代价 O(n)；TB 级表 OPTIMIZE FULL 是&quot;数小时 + 集群烧钱&quot;，小表大表两个世界 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>语义：Delta 事务日志保证 DDL 单语句原子提交；读走快照隔离、写走乐观并发，DDL 不阻塞并发读写；time travel 按版本保留各自 schema，旧版本可按旧 schema 查询 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>/<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-yes">有</span></h3><div class="dim-body"><ul>
 <li>工作区、集群/ SQL Warehouse 按团队隔离，Unity Catalog 做数据权限 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
@@ -466,11 +469,14 @@
 <li>Streaming tables/materialized views need custom cleanup jobs for expiry logic <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>VACUUM defaults to 7-day retention to protect concurrent readers; lowering it is risky <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Delta schema evolution / mergeSchema).</p>
+<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (Delta schema evolution online; type change / clustering-key change have costs).</p>
 <ul>
-<li>Delta Lake supports automatic schema evolution and mergeSchema; streaming/batch writes tolerate new columns <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
-<li>Renames / type changes need overwrite or column mapping, at a cost <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
-<li>Schema changes are auditable under Unity Catalog <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Definition-only changes: add-column goes through mergeSchema/schema evolution without interrupting streaming or batch writes; with column mapping enabled, rename/drop column are pure metadata ops that never rewrite Parquet files <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Same-location rewrites: compatible type widening (INT→LONG etc.) is a metadata op only with the delta.enableTypeWidening table feature (Delta 3.2+/4.0); incompatible type changes need an overwriteSchema rewrite <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Data moves: ALTER TABLE … CLUSTER BY (Liquid Clustering) is itself a metadata op and online instantly, but it only affects future writes — existing data keeps the old layout until an explicit OPTIMIZE (FULL) rewrites it, billed as cluster compute <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Constraint validation: NOT NULL and CHECK are enforced and violating writes fail outright; PK/FK/UNIQUE are informational only (require Unity Catalog and the matching Runtime version), serving as optimizer hints and lineage <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Scale: class 2/3 costs are O(n); OPTIMIZE FULL on a TB-scale table is &quot;hours + burning cluster compute&quot; — small and huge tables are two different worlds <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Semantics: the Delta transaction log makes each DDL an atomic single-statement commit; reads use snapshot isolation and writes use optimistic concurrency, so DDL never blocks concurrent reads/writes; time travel keeps each version&#x27;s own schema, and old versions are queryable under their old schema <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> / <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> Multi-tenancy &amp; resource isolation <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Workspace/cluster isolation + Unity Catalog).</p>
 <ul>

@@ -215,9 +215,12 @@
 <li>Spectrum 外表生命周期由 S3 生命周期策略管 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><ul>
-<li>ADD COLUMN 等轻量，但 DISTKEY/SORTKEY 变更需建新表+导数据 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
-<li>DDL 期间拿表锁，并发查询排队，大表变更要规划窗口 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
-<li>无 gh-ost 类生态，靠&#x27;建新表切换&#x27;手工操作 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>只改定义：ADD COLUMN/RENAME COLUMN/DROP COLUMN 在线（每次只能加一列），但拿 AccessExclusiveLock：持有通常 &lt;1 秒，风险在排队——持续查询的表上 ALTER 排不上锁，后续查询又排在它后面 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>/<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>重写数据但住哪不变：ALTER COLUMN TYPE 官方语法仅限 varchar 长度调整；通用改列类型不支持，走&quot;加新列→回填→删旧列→改名&quot;四步；改压缩编码（ENCODE）有语法支持 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>/<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>搬数据：ALTER DISTKEY/ALTER DISTSTYLE/ALTER SORTKEY 语法原生支持，语句本身是元数据变更、即时生效；实际数据重分布/重排序由 Automatic Table Optimization 后台异步完成，不阻塞读写，但大表后台重组耗时数小时且占用集群资源 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>/<span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>验证约束：PK/FK/UNIQUE 仅信息性不强制（优化器提示，数据不合规会算出错误结果）；NOT NULL 强制执行 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>规模：第二、三类代价 O(n)；大表四步改类型/后台重组是&quot;数小时 + 占集群&quot;，小表大表两个世界 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>语义：ALTER 拿表级排他锁，低峰期执行或设 lock_timeout 快失败重试；加带 DEFAULT 的列是否触发全行回填、DDL 是否可回滚，官方文档未明确说明（未找到证据） <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-yes">有（WLM 查询队列，查询级资源管理）</span></h3><div class="dim-body"><ul>
 <li>WLM 按队列分配内存/并发，业务按队列隔离 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
@@ -470,11 +473,14 @@
 <li>Big-table DELETEs are costly — design time-ordered table rotation instead <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 <li>Spectrum external-table lifecycle is governed by S3 lifecycle policies <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Some ALTERs lock tables; costly on huge tables).</p>
+<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (Add-column online but takes locks; DISTKEY/SORTKEY alterable with background reorganization).</p>
 <ul>
-<li>ADD COLUMN is light, but DISTKEY/SORTKEY changes need new-table + data copy <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
-<li>DDL takes table locks; concurrent queries queue — plan windows for huge-table changes <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
-<li>No gh-ost-like ecosystem; manual new-table cutover is the norm <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Definition-only changes: ADD COLUMN / RENAME COLUMN / DROP COLUMN are online (one column per statement), but take an AccessExclusiveLock: the hold is usually &lt;1s — the risk is queueing, where ALTER can&#x27;t acquire the lock on a constantly queried table and later queries queue behind it <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> / <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Same-location rewrites: the official ALTER COLUMN TYPE syntax only covers varchar length changes; general type changes aren&#x27;t supported — the path is a four-step &quot;add new column → backfill → drop old → rename&quot;; changing compression encoding (ENCODE) has syntax support <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> / <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Data moves: ALTER DISTKEY / ALTER DISTSTYLE / ALTER SORTKEY are natively supported; the statement itself is a metadata change that takes effect instantly, while actual data redistribution/resorting is done asynchronously in the background by Automatic Table Optimization — non-blocking for reads/writes, but hours of cluster resources for huge tables <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span> / <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Constraint validation: PK/FK/UNIQUE are informational only (optimizer hints; non-conforming data yields wrong results); NOT NULL is enforced <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Scale: class 2/3 costs are O(n); the four-step type change or background reorganization on a huge table is &quot;hours + cluster occupancy&quot; — small and huge tables are two different worlds <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Semantics: ALTER takes a table-level exclusive lock — run it off-peak or set lock_timeout to fail fast and retry; whether adding a column with DEFAULT triggers a full-row backfill, and whether DDL is rollbackable, are not stated in the official docs (no evidence found) <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> Multi-tenancy &amp; resource isolation <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (WLM query queues; query-level resource management).</p>
 <ul>

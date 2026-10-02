@@ -163,10 +163,14 @@
 <li>分区表 + 定时任务删分区是常用做法 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 <li>行级自动过期能力弱于 Cassandra 系，需应用层配合 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（分布式在线 DDL）。</p>
+<div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（类1/2在线；类3/4公开证据不足，诚实降级）。</p>
 <ul>
-<li>多数 DDL 在线执行，加列/建索引不阻塞业务 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
-<li>分布式场景下 DDL 有全局协调，大表建索引是后台任务 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>类1·只改定义：加列/删列/改列属性是 schema 版本元数据变更，不停服 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>类2·重写数据位置不变：大表建索引是后台任务 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>；列类型变更等的数据重写在合并（major freeze）时统一应用 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>类3·搬数据：改主键/列类型时禁止并发其他 DDL（需独占 DDL 窗口） <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>；是否为后台搬+增量追踪+原子切换，未找到公开说明 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</li>
+<li>类4·验证约束：加约束时的全表验证行为、分阶段验证机制，未找到公开说明 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。</li>
+<li>规模：类2/4 代价 O(n)；合并是重操作、一般一天一次、宜放在业务低峰 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>语义：DDL 进入异步队列执行，客户端退出后仍可能继续、不可随事务回滚 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>；官方对 DDL 事务语义（隐式提交？）无明确说明 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>；长事务是否卡 DDL 未找到公开说明 <span class="ev ev-tbd" data-zh="待验证" data-en="to-be-verified">待验证</span>。依据版本：OceanBase V4.2.5/V4.3.3 Reference、OBCA V4.0 培训材料。</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（资源单元/资源池，租户级隔离标杆）。</p>
 <ul>
@@ -372,10 +376,14 @@
 <li>Partitioned tables with scheduled partition drops are the common pattern <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 <li>Row-level auto-expiry is weaker than the Cassandra family; app-layer help needed <code>(to be verified)</code>.</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Distributed online DDL).</p>
+<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (Classes 1/2 online; public evidence insufficient for classes 3/4 — honestly downgraded).</p>
 <ul>
-<li>Most DDL runs online; add-column/index builds don&#x27;t block traffic <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
-<li>Distributed DDL needs global coordination; huge-table index builds are background jobs <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>Class 1 - definition-only: add/drop/modify column attributes are schema-version metadata changes with no downtime <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Class 2 - rewrite in place: large-table index builds are background jobs <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>; data rewrites such as column-type changes are applied during major freeze <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Class 3 - data moves: changing a primary key or column type forbids concurrent DDL (needs an exclusive DDL window) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>; whether it uses background move + incremental tracking + atomic switch has no public documentation <code>(to be verified)</code>.</li>
+<li>Class 4 - constraint validation: full-table validation behavior when adding constraints and any phased-validation mechanism have no public documentation <code>(to be verified)</code>.</li>
+<li>Scale: classes 2/4 cost O(n); major freeze is heavyweight — usually once a day, best in off-peak hours <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Semantics: DDL runs in an async queue and may continue after the client disconnects; it can&#x27;t roll back with a transaction <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>; the vendor has no explicit statement on DDL transactional semantics (implicit commit?) <code>(to be verified)</code>; no public statement on whether long transactions block DDL <code>(to be verified)</code>. Based on: OceanBase V4.2.5/V4.3.3 Reference, OBCA V4.0 training material.</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> Multi-tenancy &amp; resource isolation <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (Resource units/pools; the tenant-isolation benchmark).</p>
 <ul>

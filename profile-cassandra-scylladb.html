@@ -42,12 +42,12 @@
 <div class="profile-hero">
   <a class="back" href="index.html"><span data-zh="← 返回首页" data-en="← Back to home">← 返回首页</span></a>
   <h1>Apache Cassandra / ScyllaDB</h1>
-  <div class="meta-row"><span class="cat cat-kvdoc" data-zh="KV · 宽列 · 文档" data-en="KV · Wide-column · Document">KV · 宽列 · 文档</span> <span class="tag"><span data-zh="#宽列" data-en="#wide-column">#宽列</span></span> <span class="tag"><span data-zh="#最终一致性" data-en="#eventual-consistency">#最终一致性</span></span> <span class="tag"><span data-zh="#可调一致性" data-en="#tunable-consistency">#可调一致性</span></span> <span class="tag"><span data-zh="#无主架构" data-en="#leaderless">#无主架构</span></span> <span class="tag"><span data-zh="#线性扩展" data-en="#linear-scaling">#线性扩展</span></span> <span class="tag"><span data-zh="#高写入" data-en="#write-heavy">#高写入</span></span> <span class="tag"><span data-zh="#CQL" data-en="#CQL">#CQL</span></span> <span class="tag"><span data-zh="#跨数据中心" data-en="#cross-DC">#跨数据中心</span></span></div>
+  <div class="meta-row"><span class="cat cat-kvdoc" data-zh="KV · 宽列 · 文档" data-en="KV · Wide-column · Document">KV · 宽列 · 文档</span> <span class="tag"><span data-zh="#宽列" data-en="#wide-column">#宽列</span></span> <span class="tag"><span data-zh="#最终一致性" data-en="#eventual-consistency">#最终一致性</span></span> <span class="tag"><span data-zh="#可调一致性" data-en="#tunable-consistency">#可调一致性</span></span> <span class="tag"><span data-zh="#无主架构" data-en="#leaderless">#无主架构</span></span> <span class="tag"><span data-zh="#水平扩展" data-en="#linear-scaling">#水平扩展</span></span> <span class="tag"><span data-zh="#高写入" data-en="#write-heavy">#高写入</span></span> <span class="tag"><span data-zh="#CQL" data-en="#CQL">#CQL</span></span> <span class="tag"><span data-zh="#跨数据中心" data-en="#cross-DC">#跨数据中心</span></span></div>
   <p class="oneliner"><div class="lang-block lang-zh">
-<p>宽列分布式 NoSQL 的鼻祖与它的 C++ 重写：为&quot;写密集、永远在线、线性扩展&quot;而生的最终一致性存储。Cassandra 是生态与许可证中立性的代表；ScyllaDB 是单节点性能与尾延迟的代表，代价是 2025 年起的 source-available 许可证与更小的社区。</p>
+<p>宽列分布式 NoSQL 的鼻祖与它的 C++ 重写：为&quot;写密集、永远在线、水平扩展&quot;而生的最终一致性存储。Cassandra 是生态与许可证中立性的代表；ScyllaDB 是单节点性能与尾延迟的代表，代价是 2025 年起的 source-available 许可证与更小的社区。</p>
 </div>
 <div class="lang-block lang-en" hidden>
-<p>The original wide-column distributed NoSQL and its C++ rewrite: storage built for &quot;write-heavy, always-on, linearly scalable&quot; workloads, with tunable consistency on an eventually consistent base. Cassandra stands for ecosystem maturity and license neutrality; ScyllaDB stands for per-node performance and tail-latency control — at the cost of a source-available license since 2025 and a smaller community.</p>
+<p>The original wide-column distributed NoSQL and its C++ rewrite: storage built for &quot;write-heavy, always-on, horizontally scalable&quot; workloads, with tunable consistency on an eventually consistent base. Cassandra stands for ecosystem maturity and license neutrality; ScyllaDB stands for per-node performance and tail-latency control — at the cost of a source-available license since 2025 and a smaller community.</p>
 </div></p>
   <div class="ai-dive-row" data-product="Apache Cassandra / ScyllaDB">
     <span class="ai-dive-label" data-zh="用 AI 深挖这款：" data-en="Deep-dive with AI:">用 AI 深挖这款：</span>
@@ -128,7 +128,7 @@
 </ul></li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">13</span> 中文资料丰富度 <span class="verdict v-neutral">Cassandra 中等</span></h3><div class="dim-body"><p>Cassandra <strong>中等</strong>（官方文档以英文为主；CSDN/博客中文教程多，但大量内容停留在 3.x/4.0 时代）；ScyllaDB <strong>较少</strong>（官方英文文档为主，中文社区内容稀缺）——均为社区共识。</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">14</span> 性能与延迟特征 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（写吞吐线性扩展的标杆；读看调优）。</p>
+<div class="dim-item"><h3><span class="dim-num">14</span> 性能与延迟特征 <span class="verdict v-yes">有</span></h3><div class="dim-body"><p><strong>有</strong>（写吞吐随节点扩展的标杆；读看调优）。</p>
 <ul>
 <li>Cassandra：加节点即加写吞吐，调优得当单集群百万写入/秒量级（视硬件，社区实测）<span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>。</li>
 <li>ScyllaDB（C++ 重写）官方称单节点数倍于 Cassandra<span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>；seastar 分片-per-core 架构 <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>。</li>
@@ -190,9 +190,12 @@
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">24</span> 在线 DDL 与 Schema 演进 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（加列轻量但 schema 变更最终一致）。</p>
 <ul>
-<li>加列是轻量元数据操作，但 schema 变更在集群内最终一致，混合版本期读写可能异常 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
-<li>不支持删列后重建同名列等操作，schema 演进约束多 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
+<li>此处的 schema 演进即 CQL 的 ALTER TABLE：加列/删列属&quot;只改定义不碰数据&quot;类，官方文档明确为常量时间操作，不重写数据 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>主键/聚簇键建表后永远不可改，改需重建表导数据（&quot;搬数据&quot;类，但无在线路径） <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>删列内容在 compaction 时懒删除；删列后重建同名列允许，除非原列是非 frozen 的集合类型 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>schema 变更经 gossip 在集群内最终一致传播：混合版本期读写可能异常，并发 DDL 可能导致 schema 不一致，生产变更后用 nodetool describecluster 确认各节点 schema 一致 <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>。</li>
 <li>ScyllaDB 的 schema 变更做了 Raft 化改进，一致性更好 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
+<li>语义注记：CQL 没有 CHECK/外键/默认值约束，ADD 列不校验已有数据，&quot;验证约束&quot;类在此系统基本缺席 <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>。</li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">25</span> 多租户与资源隔离 <span class="verdict v-partial">部分支持</span></h3><div class="dim-body"><p><strong>部分支持</strong>（keyspace 逻辑隔离；无资源限流）。</p>
 <ul>
@@ -358,7 +361,7 @@
 </ul></li>
 </ul></div></div>
 <div class="dim-item"><h3><span class="dim-num">13</span> Chinese-language resources <span class="verdict v-neutral">Cassandra is moder</span></h3><div class="dim-body"><p>Cassandra is <strong>moderate</strong> (official docs are primarily English; many CSDN/blog Chinese tutorials exist but much of the content is stuck in the 3.x/4.0 era); ScyllaDB is <strong>sparse</strong> (official English docs dominate; Chinese community content is scarce) — both per community consensus.</p></div></div>
-<div class="dim-item"><h3><span class="dim-num">14</span> Performance &amp; latency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (the benchmark for linearly scaling write throughput; reads depend on tuning).</p>
+<div class="dim-item"><h3><span class="dim-num">14</span> Performance &amp; latency <span class="verdict v-yes">Supported</span></h3><div class="dim-body"><p><strong>Supported</strong> (the benchmark for write throughput that scales with node count; reads depend on tuning).</p>
 <ul>
 <li>Cassandra: add nodes to add write throughput; well-tuned single clusters reach millions of writes/sec (hardware-dependent, community-tested) <span class="ev ev-tested" data-zh="社区实测" data-en="community-tested">社区实测</span>.</li>
 <li>ScyllaDB (C++ rewrite) claims multiple-x per-node vs Cassandra <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>; seastar shard-per-core architecture <span class="ev ev-vendor" data-zh="厂商口径" data-en="vendor claim">厂商口径</span>.</li>
@@ -418,9 +421,14 @@
 <li>Expired data is reclaimed by compaction; tombstone buildup hurts read performance <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 <li>For TTL-heavy workloads lower gc_grace_seconds and watch tombstone ratios <code>(community tested)</code>.</li>
 </ul></div></div>
-<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-neutral">Partial</span></h3><div class="dim-body"><p><strong>Partial</strong> (Lightweight add-column but eventually-consistent schema changes).</p>
+<div class="dim-item"><h3><span class="dim-num">24</span> Online DDL &amp; schema evolution <span class="verdict v-partial">Partially supported</span></h3><div class="dim-body"><p><strong>Partially supported</strong> (Lightweight add-column but eventually-consistent schema changes).</p>
 <ul>
-<li>Adding a column is a lightweight metadata op, but schema changes propagate eventually — mixed-version reads/writes can misbehave <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Schema evolution here means CQL ALTER TABLE: adding or dropping a column is the &quot;definition-only&quot; class — officially a constant-time operation that rewrites no data <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Primary/clustering keys can never be altered after creation; changing them means rebuilding the table and migrating data (the &quot;move data&quot; class, with no online path) <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Dropped column contents are removed lazily during compaction; re-adding a same-name column is allowed unless it was a non-frozen collection <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Schema changes propagate through the cluster via gossip with eventual consistency: mixed-version reads/writes can misbehave, and concurrent DDLs can cause schema disagreement — verify agreement with nodetool describecluster after production changes <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
+<li>ScyllaDB moved schema changes onto Raft, improving consistency <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
+<li>Semantics note: CQL has no CHECK/foreign-key/default constraints, and ADD never validates existing data — the &quot;validate constraints&quot; class is essentially absent here <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 <li>Many restrictions (e.g. no re-adding a dropped column name); schema evolution is constrained <span class="ev ev-consensus" data-zh="社区共识" data-en="community consensus">社区共识</span>.</li>
 <li>ScyllaDB Raft-ified schema changes for better consistency <span class="ev ev-official" data-zh="官方文档" data-en="official docs">官方文档</span>.</li>
 </ul></div></div>
@@ -560,7 +568,7 @@
 <div class="lang-block lang-zh">
 <ol>
 <li><strong>无主对等架构 + 可调一致性：为&quot;写不能停&quot;而生</strong> 真本事：没有主从之分，任何节点都可做 coordinator；一致性级别按查询指定——<code>LOCAL_QUORUM</code> 在多活跨 DC 部署下兼顾延迟与正确性。这是 Cassandra 系在断网、单 DC 故障下仍能写入的根本原因。 边缘真相：见深水区一——quorum 数学只保证&quot;读写集合相交&quot;，不保证&quot;所有副本最终收敛&quot;；后者靠 repair，而 repair 是运维动作不是自动魔法。</li>
-<li><strong>线性横向扩展：加机器就扩容</strong> 真本事：shared-nothing，加节点、数据自动重分布，在线完成；从 3 节点到上百节点的扩展曲线是这一品类立身之本（Apple、Netflix 级部署是公开报道的背书）。 边缘真相：扩容期间 streaming 吃网络与 IO，高峰期扩容等于给飞行中的飞机换引擎；Cassandra vnode 拓扑下大集群加节点历史上偏慢（ScyllaDB 的 tablets 正是为治这个）。</li>
+<li><strong>水平扩展：加机器就扩容</strong> 真本事：shared-nothing，加节点、数据自动重分布，在线完成；从 3 节点到上百节点的扩展曲线是这一品类立身之本（Apple、Netflix 级部署是公开报道的背书）。 边缘真相：扩容期间 streaming 吃网络与 IO，高峰期扩容等于给飞行中的飞机换引擎；Cassandra vnode 拓扑下大集群加节点历史上偏慢（ScyllaDB 的 tablets 正是为治这个）。</li>
 <li><strong>ScyllaDB 的 shard-per-core 重写：把多核吃干抹净</strong> 真本事：C++ / Seastar，每核一个独立 shard，无共享内存、无 GC、无锁，用户态 IO 调度；同等吞吐所需节点数显著少于 Cassandra（TCO 优势的来源，独立测试多观测到 2x 起，10x 多为厂商口径）。 边缘真相：见深水区四——热点分区仍受单个 shard 上限约束；对硬件亲和（NUMA、本地 NVMe）要求高，超售严重的虚拟化环境收益打折。</li>
 <li><strong>Cassandra 5.0 的 SAI + 原生向量搜索：查询能力的补课</strong> 真本事：Storage-Attached Indexes（SAI）把二级索引做进存储引擎，终结了传统二级索引&quot;全集群 fan-out&quot;的痼疾；原生向量与 ANN 搜索让 Cassandra 能直接服务 RAG/推荐场景。 边缘真相：这些能力只在 5.0+，3.11/4.x 老集群享受不到；SAI 仍不是关系型索引的替代品，query-first 建模的纪律不能丢。</li>
 <li><strong>ScyllaDB Alternator：DynamoDB 的逃生舱</strong> 真本事：线级兼容 DynamoDB API，DynamoDB 用户可不改应用逻辑迁移，顺带甩掉按请求计费的账单（&quot;sticker shock&quot;是官方反复引用的迁移动因）。 边缘真相：兼容的是 API 不是 DynamoDB 的运维语义（限流、分区行为仍是 ScyllaDB 内核）；DynamoDB 的强一致读/GIS 等高级语义需逐项验证。</li>
@@ -569,7 +577,7 @@
 <div class="lang-block lang-en" hidden>
 <ol>
 <li><strong>Leaderless peer architecture + tunable consistency: built so writes never stop</strong> The real deal: no primary/replica distinction — any node can serve as coordinator; consistency level is chosen per query — <code>LOCAL_QUORUM</code> balances latency and correctness in multi-active cross-DC deployments. This is the fundamental reason the Cassandra family keeps accepting writes during network partitions or single-DC failures. The edge truth: see deep-dive 1 — quorum math only guarantees &quot;read and write sets intersect&quot;, not &quot;all replicas eventually converge&quot;; the latter depends on repair, and repair is an operational action, not automatic magic.</li>
-<li><strong>Linear horizontal scaling: add machines, get capacity</strong> The real deal: shared-nothing — adding nodes redistributes data online without downtime; the scaling curve from 3 nodes to hundreds of nodes is what this category lives by (Apple- and Netflix-scale deployments are publicly reported endorsements). The edge truth: streaming during scale-out eats network and IO — expanding at peak traffic is like swapping an airplane&#x27;s engine mid-flight; large Cassandra clusters historically expanded slowly under the vnode topology (ScyllaDB&#x27;s tablets exist precisely to fix that).</li>
+<li><strong>Horizontal scaling: add machines, get capacity</strong> The real deal: shared-nothing — adding nodes redistributes data online without downtime; the scaling curve from 3 nodes to hundreds of nodes is what this category lives by (Apple- and Netflix-scale deployments are publicly reported endorsements). The edge truth: streaming during scale-out eats network and IO — expanding at peak traffic is like swapping an airplane&#x27;s engine mid-flight; large Cassandra clusters historically expanded slowly under the vnode topology (ScyllaDB&#x27;s tablets exist precisely to fix that).</li>
 <li><strong>ScyllaDB&#x27;s shard-per-core rewrite: squeezing every core dry</strong> The real deal: C++ / Seastar — one independent shard per core, no shared memory, no GC, no locks, userspace IO scheduling; the node count needed for equivalent throughput is materially lower than Cassandra (the source of its TCO advantage — independent tests commonly observe 2x and up; 10x figures are mostly vendor claims). The edge truth: see deep-dive 4 — a hot partition is still bounded by a single shard&#x27;s ceiling; adding cores won&#x27;t help, the fix is at the modeling layer (scatter the keys); it demands hardware affinity (NUMA, local NVMe) — heavily oversold virtualized environments discount the gains.</li>
 <li><strong>Cassandra 5.0&#x27;s SAI + native vector search: catching up on query capability</strong> The real deal: Storage-Attached Indexes (SAI) push secondary indexing into the storage engine, ending the legacy secondary index&#x27;s &quot;fan-out across the whole cluster&quot; pathology; native vector and ANN search let Cassandra directly serve RAG/recommendation workloads. The edge truth: these exist only in 5.0+ — 3.11/4.x clusters don&#x27;t get them; SAI is still no substitute for relational indexes, and query-first modeling discipline remains mandatory.</li>
 <li><strong>ScyllaDB Alternator: DynamoDB&#x27;s escape hatch</strong> The real deal: wire-compatible with the DynamoDB API — DynamoDB users can migrate without changing application logic, shedding per-request billing along the way (&quot;sticker shock&quot; is the migration driver the vendor repeatedly cites). The edge truth: what&#x27;s compatible is the API, not DynamoDB&#x27;s operational semantics (throttling, partition behavior are still the ScyllaDB engine); advanced DynamoDB semantics like strongly consistent reads / GIS need item-by-item verification.</li>
@@ -727,7 +735,7 @@
 <li>为什么是真的：无主架构 + hinted handoff + 可调一致性，单节点甚至单 DC 故障下写路径不中断；这是从 Facebook 收件箱/Digg 时代一路验证下来的核心资产。</li>
 <li>边缘与限度：可用性的代价是&quot;一致性靠运维&quot;——repair、hint 窗口、gc_grace 三者配错会出现静默分歧；<code>CL=ALL</code> 下可用性优势荡然无存。口碑成立的前提是团队愿意为最终一致性配运维纪律。</li>
 </ul></li>
-<li><strong>加机器就扩容的线性扩展</strong><ul>
+<li><strong>加机器就扩容的水平扩展</strong><ul>
 <li>为什么是真的：shared-nothing + 一致性哈希，扩容是在线的数据重分布，不停服；从个位数节点到数百节点的案例是公开报道过的。</li>
 <li>边缘与限度：Cassandra vnode 拓扑下大集群加节点历史上偏慢且不均；扩容期的 streaming 与数据均衡吃网络 IO，高峰期扩容要选低峰窗口；以及很多人高估了自己对&quot;百节点扩展&quot;的真实需求。</li>
 </ul></li>
@@ -751,7 +759,7 @@
 <li>Why it&#x27;s true: leaderless architecture + hinted handoff + tunable consistency — the write path survives single-node, even single-DC, failures; this core asset has been validated continuously since the Facebook inbox / Digg era.</li>
 <li>Edge and limits: the price of availability is &quot;consistency by operations&quot; — misconfiguring repair, hint windows, and gc_grace produces silent divergence; under <code>CL=ALL</code> the availability advantage evaporates entirely. The reputation holds only if the team is willing to pair eventual consistency with operational discipline.</li>
 </ul></li>
-<li><strong>Linear scaling: add machines, get capacity</strong><ul>
+<li><strong>Horizontal scaling: add machines, get capacity</strong><ul>
 <li>Why it&#x27;s true: shared-nothing + consistent hashing — scaling out is online data redistribution, no downtime; the publicly reported cases range from single-digit nodes to hundreds.</li>
 <li>Edge and limits: under Cassandra&#x27;s vnode topology, large-cluster scale-outs were historically slow and uneven; scale-out-era streaming and data rebalancing eat network IO — pick off-peak windows for expansions at peak traffic; and many teams overestimate their real need for &quot;hundred-node scaling&quot;.</li>
 </ul></li>
@@ -817,7 +825,7 @@
 <h2><span data-zh="判决" data-en="Verdict">判决</span></h2>
 <div class="lang-block lang-zh">
 <ul>
-<li><strong>一句话定位</strong>：写密集、永远在线、线性扩展场景的默认选项之一；要生态与许可证中立选 Cassandra，要单机性能与低运维选 ScyllaDB（接受新许可证）。</li>
+<li><strong>一句话定位</strong>：写密集、永远在线、水平扩展场景的默认选项之一；要生态与许可证中立选 Cassandra，要单机性能与低运维选 ScyllaDB（接受新许可证）。</li>
 <li><strong>适合谁</strong>：<ul>
 <li>日均写入亿级、key-value 型访问的物联网/日志/埋点/用户行为存储；</li>
 <li>多活跨 DC、&quot;写不能停&quot;优先于&quot;强一致&quot;的业务；</li>
@@ -840,7 +848,7 @@
 </div>
 <div class="lang-block lang-en" hidden>
 <ul>
-<li><strong>One-liner</strong>: One of the default options for write-heavy, always-on, linearly scaling workloads; choose Cassandra for ecosystem maturity and license neutrality, ScyllaDB for per-node performance and low-maintenance operation (accepting the new license).</li>
+<li><strong>One-liner</strong>: One of the default options for write-heavy, always-on, horizontally scaling workloads; choose Cassandra for ecosystem maturity and license neutrality, ScyllaDB for per-node performance and low-maintenance operation (accepting the new license).</li>
 <li><strong>Best for</strong>:<ul>
 <li>IoT / logging / event-tracking / user-behavior stores with hundreds of millions of daily writes and key-value-style access;</li>
 <li>Multi-active cross-DC businesses where &quot;writes must not stop&quot; outranks &quot;strong consistency&quot;;</li>
