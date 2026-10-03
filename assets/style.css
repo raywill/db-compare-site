@@ -301,6 +301,18 @@ html[lang="en"] .dim-h-en{font-size:13.5px;font-weight:600;color:inherit}
 /* PK 提示 */
 .pk-note{background:var(--accent-soft);border:1px solid #c9dbff;border-radius:10px;padding:10px 16px;font-size:14px;margin:12px 0;max-width:900px}
 .pk-select.dimmed{opacity:.5}
+/* 用户吐槽页 */
+.rant-disclaimer{background:#fffbeb;border:1px solid #f59e0b;border-left:6px solid #f59e0b;border-radius:10px;padding:18px 22px;margin:0 0 20px;max-width:1000px;overflow-wrap:anywhere}
+.rant-disclaimer p{margin:8px 0;font-size:14px}
+.rant-disclaimer ul{margin:8px 0;padding-left:20px;font-size:14px}
+.rant-disclaimer li{margin:4px 0;font-size:14px}
+.rant-badges{display:flex;gap:8px;flex-wrap:wrap;margin:2px 0 12px}
+.rant-badge{font-size:12px;border-radius:999px;padding:2px 10px;font-weight:700;white-space:nowrap}
+.rant-ev-corroborated{background:#dcfce7;color:#166534}
+.rant-ev-single{background:#f1f5f9;color:#475569}
+.rant-suspect{background:#fef2f2;color:#b91c1c;border:1px solid #fecaca}
+.rant-fixed{background:#eff6ff;color:#1d4ed8}
+.rant-ev-line{margin:5px 0}
 @media (max-width:720px){
   .topbar-inner{flex-wrap:wrap;height:auto;padding:10px 16px;gap:12px}
   .tray-panel{position:fixed;left:12px;right:12px;top:64px;width:auto;max-height:60vh}
