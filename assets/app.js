@@ -1,11 +1,11 @@
 (function () {
 'use strict';
 
-/* 导航顺序归一化：首页、维度对比、用户吐槽、AI选型、场景案例、方法论。同步执行（nav 已解析），老页面无需重推即可收敛，无闪烁 */
+/* 导航顺序归一化：首页、维度对比、AI选型、场景案例、用户吐槽、方法论。同步执行（nav 已解析），老页面无需重推即可收敛，无闪烁 */
 (function () {
 var nav = document.querySelector('nav.mainnav');
 if (!nav) return;
-var order = ['index.html', 'compare.html', 'rants.html', 'advisor.html', 'cases.html', 'methodology.html'];
+var order = ['index.html', 'compare.html', 'advisor.html', 'cases.html', 'rants.html', 'methodology.html'];
 var links = nav.querySelectorAll('a'), byHref = {}, i;
 for (i = 0; i < links.length; i++) byHref[links[i].getAttribute('href')] = links[i];
 for (i = 0; i < order.length; i++) { if (byHref[order[i]]) nav.appendChild(byHref[order[i]]); }
