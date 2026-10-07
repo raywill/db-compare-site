@@ -744,6 +744,7 @@ def page_shell(title_zh, title_en, body_html, active="index", tail_scripts=""):
         ("compare.html", "维度对比", "Compare"),
         ("advisor.html", "AI选型", "AI Selection"),
         ("cases.html", "场景案例", "Case Library"),
+        ("rants.html", "用户吐槽", "User Rants"),
         ("methodology.html", "方法论", "Methodology"),
     ]
     nav_html = "\n".join(
@@ -1177,19 +1178,14 @@ def case_card_html(case, prod_by_slug, fav_index, fav_titles):
         else:
             ps, nm = "", rc.strip()
         num = fav_lookup(fav_index, ps, nm)
-        if not ps or ps not in prod_by_slug:
-            # 引用无法解析：降级为纯文本，不渲染死链
-            c_links.append(html.escape(nm))
+        if not ps or ps not in prod_by_slug or not num or (ps, num) not in fav_titles:
+            # 引用无法解析：直接丢弃（宁缺毋滥）；构建末尾会打印"相关能力未匹配"警告
             continue
-        href = "profile-%s.html#fav-%s-%d" % (ps, ps, num) if num else \
-            "profile-%s.html" % ps
-        if ps and num and (ps, num) in fav_titles:
-            tzh, ten = fav_titles[(ps, num)]
-            c_links.append('<a href="%s"><span data-zh="%s" data-en="%s">%s</span></a>'
-                           % (href, html.escape(tzh, quote=True),
-                              html.escape(ten, quote=True), html.escape(tzh)))
-        else:
-            c_links.append('<a href="%s">%s</a>' % (href, html.escape(nm)))
+        href = "profile-%s.html#fav-%s-%d" % (ps, ps, num)
+        tzh, ten = fav_titles[(ps, num)]
+        c_links.append('<a href="%s"><span data-zh="%s" data-en="%s">%s</span></a>'
+                       % (href, html.escape(tzh, quote=True),
+                          html.escape(ten, quote=True), html.escape(tzh)))
     title_en = en["title"] if en else zh["title"]
     # 来源：编号引用列表（每条依据列清楚）
     refs_zh = [x.strip() for x in (zf.get("来源", "") or "").split("；") if x.strip()]
@@ -1230,7 +1226,8 @@ def case_card_html(case, prod_by_slug, fav_index, fav_titles):
            html.escape(zh["title"], quote=True), html.escape(title_en, quote=True),
            html.escape(zh["title"]), ctype_cls, ctype_zh, ctype_en, ctype_zh,
            "\n".join(tag_chips), "\n".join(rows),
-           refs_html, "、".join(p_links) or "—", "、".join(c_links) or "—",
+           refs_html, '<span data-zh="、" data-en=", ">、</span>'.join(p_links) or "—",
+           '<span data-zh="、" data-en=", ">、</span>'.join(c_links) or "—",
            html.escape(verify_zh, quote=True), html.escape(verify_en, quote=True),
            html.escape(verify_zh)))
 
@@ -1311,6 +1308,7 @@ function caseFilterInit(){
   bindDim('[data-cphase-btn]',function(){return fPhase;},function(v){fPhase=v;});
   bindDim('[data-cdb-btn]',function(){return fDb;},function(v){fDb=v;});
   bindDim('[data-cfam-btn]',function(){return fFam;},function(v){fFam=v;});
+  window.__repaintCasesBar=renderActive;
   apply();
 }
 document.addEventListener('DOMContentLoaded',caseFilterInit);
@@ -1401,6 +1399,544 @@ def cases_page_html(cases, prod_by_slug, fav_index, fav_titles):
         '<div class="case-list">\n%s\n</div>' % (phase_btns, db_groups_html, fam_btns, len(cases), cards))
     return page_shell("DB 选型参考 - 场景案例库", "DB Compare - Case Library", body,
                       active="cases", tail_scripts="<script>%s</script>" % CASE_FILTER_JS)
+
+
+# ---------------------------------------------------------------------------
+# 用户吐槽（tucao-pilot 解析：31 款 × 中英草稿 + disclaimer.md）
+# ---------------------------------------------------------------------------
+
+RANT_DIR = SITE.parent.parent.parent / "research_notes" / "tucao-pilot"
+
+# 问题类型标签：中文 → (筛选 id, 英文)
+RANT_TAG_MAP = {
+    "性能问题": ("perf", "Performance"),
+    "稳定与故障": ("stability", "Stability & Incidents"),
+    "运维复杂度": ("ops", "Operational Complexity"),
+    "升级迁移": ("upgrade", "Upgrades & Migration"),
+    "成本账单": ("cost", "Cost & Billing"),
+    "生态与信任": ("eco", "Ecosystem & Trust"),
+}
+RANT_TAG_EN2ID = {en: tid for zh, (tid, en) in RANT_TAG_MAP.items()}
+
+# 证据等级 → 印证 id（中文 / 英文）
+RANT_EV_ZH = {"多方印证": "corroborated", "单方声音": "single"}
+RANT_EV_EN = {"Corroborated": "corroborated", "Single voice": "single"}
+
+
+def parse_rant_file(path):
+    """解析吐槽草稿文件。返回 (sources, cards)：
+    sources: {编号: (url, 描述)}；cards: [{"title":..., "fields":{...}}]。
+    字段值支持多行续行（缩进行追加到当前字段）；备注字段加粗与否两种写法都认。"""
+    sources, cards = {}, []
+    try:
+        lines = path.read_text(encoding="utf-8").splitlines()
+    except OSError:
+        return sources, cards
+    cur, cur_field = None, None
+    in_sources = False
+    for ln in lines:
+        s = ln.strip()
+        if re.match(r"^##\s+", s):
+            if cur:
+                cards.append(cur)
+                cur, cur_field = None, None
+            in_sources = bool(re.match(r"^##\s+(来源清单|Source list)", s))
+            continue
+        m = re.match(r"^###\s*\[[^\]]+\]\s*(.+)$", s)
+        if m:
+            in_sources = False
+            if cur:
+                cards.append(cur)
+            cur = {"title": m.group(1).strip(), "fields": {}}
+            cur_field = None
+            continue
+        if in_sources:
+            m = re.match(r"^(\d+)\.\s+(https?://\S+)\s*[—–\-]\s*(.*)$", s)
+            if m:
+                sources[int(m.group(1))] = (m.group(2).strip(), m.group(3).strip())
+            continue
+        if cur is None:
+            continue
+        if ln and not ln[0].isspace() and s.startswith("- "):
+            m2 = re.match(r"^-\s+\*\*(.+?)\*\*\s*[:：]\s*(.*)$", s)
+            if m2:
+                cur_field = m2.group(1).strip()
+                cur["fields"][cur_field] = m2.group(2).strip()
+                continue
+            m3 = re.match(r"^-\s+([^*:：]+?)\s*[:：]\s*(.*)$", s)
+            if m3:
+                cur_field = m3.group(1).strip()
+                cur["fields"][cur_field] = m3.group(2).strip()
+                continue
+            cur_field = None
+        elif cur_field is not None and s:
+            prev = cur["fields"].get(cur_field, "")
+            cur["fields"][cur_field] = (prev + "\n" + s) if prev else s
+    if cur:
+        cards.append(cur)
+    return sources, cards
+
+
+def _rant_tag_ids_zh(tag_str):
+    ids = []
+    for t in re.split(r"[、,，]", tag_str or ""):
+        t = t.strip()
+        if t and t in RANT_TAG_MAP:
+            tid = RANT_TAG_MAP[t][0]
+            if tid not in ids:
+                ids.append(tid)
+    return ids
+
+
+def _rant_year(text):
+    # 取年份最大值，但剔除未来年份（EOL 日期、2038 问题等文本中的未来年份不是事件年份）
+    import datetime as _dt
+    cap = _dt.date.today().year
+    years = [int(y) for y in re.findall(r"\b(?:19|20)\d{2}\b", text or "")
+             if int(y) <= cap]
+    return max(years) if years else 0
+
+
+def _rant_fixed_version(*texts):
+    for t in texts:
+        m = re.search(r"已修复于\s*([vV]?\d[\w.\-]*)", t or "")
+        if m:
+            return m.group(1)
+        m = re.search(r"[Ff]ixed in\s+([vV]?\d[\w.\-]*)", t or "")
+        if m:
+            return m.group(1)
+    return ""
+
+
+def load_rants(slugs):
+    """组装全部吐槽卡片；做中英 1:1、标签收敛、孤立来源引用自检；
+    返回按（多方印证优先，年份倒序）排好的列表。"""
+    rants = []
+    for slug in slugs:
+        zsrc, zcards = parse_rant_file(RANT_DIR / (slug + ".md"))
+        esrc, ecards = parse_rant_file(RANT_DIR / (slug + ".en.md"))
+        if len(zcards) != len(ecards):
+            print("  [用户吐槽] %s 中英卡数不一致: zh=%d en=%d" % (slug, len(zcards), len(ecards)))
+        for i, zc in enumerate(zcards):
+            ec = ecards[i] if i < len(ecards) else None
+            ef = ec["fields"] if ec else {}
+            zf = zc["fields"]
+            evz, eve = zf.get("证据等级", ""), ef.get("Evidence level", "")
+            ev = "single"
+            for k, v in RANT_EV_ZH.items():
+                if k in evz:
+                    ev = v
+                    break
+            else:
+                for k, v in RANT_EV_EN.items():
+                    if k in eve:
+                        ev = v
+                        break
+                else:
+                    print("  [用户吐槽] %s#%d 印证等级无法识别" % (slug, i + 1))
+            suspect = ("来源存疑" in evz or "来源存疑" in eve
+                       or "Questionable" in evz or "Questionable" in eve)
+            raw_tags = [t.strip() for t in re.split(r"[、,，]", zf.get("标签", "") or "")
+                        if t.strip()]
+            for t in raw_tags:
+                if t not in RANT_TAG_MAP:
+                    print("  [用户吐槽] %s#%d 标签未收敛: %s" % (slug, i + 1, t))
+            tag_ids = _rant_tag_ids_zh(zf.get("标签", ""))
+            fixed = _rant_fixed_version(zf.get("备注", ""), evz,
+                                        ef.get("Note", ""), eve)
+            year = _rant_year(zf.get("生产验证", "") + "\n" + ef.get("Production evidence", ""))
+            rants.append({
+                "slug": slug, "idx": i,
+                "title_zh": zc["title"], "title_en": ec["title"] if ec else zc["title"],
+                "zf": zf, "ef": ef, "sources": zsrc, "sources_en": esrc,
+                "ev": ev, "suspect": suspect, "fixed": fixed,
+                "year": year, "tags": tag_ids,
+            })
+        for r in [x for x in rants if x["slug"] == slug]:
+            refs = set()
+            for fld, pat in (("生产验证", r"来源\s*(\d+)"), ("备注", r"来源\s*(\d+)"),
+                             ("Production evidence", r"Source\s*(\d+)"), ("Note", r"Source\s*(\d+)")):
+                src = r["zf"] if "来源" in fld or "备注" in fld else r["ef"]
+                refs.update(int(x) for x in re.findall(pat, src.get(fld, "")))
+            for n in sorted(refs):
+                if n not in zsrc or n not in r.get("sources_en", zsrc):
+                    print("  [用户吐槽] %s#%d 引用了不存在的来源 %d" % (slug, r["idx"] + 1, n))
+    rants.sort(key=lambda r: (0 if r["ev"] == "corroborated" else 1,
+                              -(r["year"] or 0), r["slug"], r["idx"]))
+    return rants
+
+
+def _rant_evidence_html(text, sources, lang):
+    """把“来源 N”/“Source N”替换为可点击链接，其余裸 URL linkify。"""
+    ref_re = re.compile(r"来源\s*(\d+)" if lang == "zh" else r"Source\s*(\d+)")
+    urls = []
+
+    def _u(m):
+        urls.append(m.group(0))
+        return "\x00U%d\x00" % (len(urls) - 1)
+    t = _URL_RE.sub(_u, text or "")
+    refs = {}
+
+    def _r(m):
+        n = int(m.group(1))
+        refs[n] = m.group(0)
+        return "\x00R%d\x00" % n
+    t = ref_re.sub(_r, t)
+    t = html.escape(t)
+
+    def _ra(m):
+        n = int(m.group(1))
+        if n in sources:
+            url, desc = sources[n]
+            return ('<a href="%s" target="_blank" rel="noopener" title="%s">%s</a>'
+                    % (html.escape(url, quote=True), html.escape(desc, quote=True),
+                       html.escape(refs[n])))
+        return html.escape(refs[n])
+    t = re.sub(r"\x00R(\d+)\x00", _ra, t)
+
+    def _ua(m):
+        u = urls[int(m.group(1))]
+        return '<a href="%s" target="_blank" rel="noopener">%s</a>' % (
+            html.escape(u, quote=True), html.escape(u))
+    t = re.sub(r"\x00U(\d+)\x00", _ua, t)
+    return t
+
+
+def _rant_evidence_lines(text, sources, lang):
+    out = []
+    for raw in (text or "").split("\n"):
+        line = raw.strip()
+        if line.startswith("- "):
+            line = line[2:].strip()
+        if not line:
+            continue
+        out.append('<div class="rant-ev-line">%s</div>'
+                   % _rant_evidence_html(line, sources, lang))
+    return "\n".join(out) or "—"
+
+
+def _disclaimer_inline(t):
+    t = html.escape(t)
+    return re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", t)
+
+
+def _disclaimer_badges(html_text, lang):
+    """把免责声明里印证等级的文字说明换成与卡片一致的徽标。"""
+    if lang == "zh":
+        html_text = html_text.replace(
+            "<li>= 多个",
+            '<li><span class="rant-badge rant-ev-corroborated">多方印证</span> 多个', 1)
+        html_text = html_text.replace(
+            "<li>= 只有",
+            '<li><span class="rant-badge rant-ev-single">单方声音</span> 只有', 1)
+    else:
+        html_text = html_text.replace(
+            "<li>Corroborated =",
+            '<li><span class="rant-badge rant-ev-corroborated">Corroborated</span>', 1)
+        html_text = html_text.replace(
+            "<li>Single voice =",
+            '<li><span class="rant-badge rant-ev-single">Single voice</span>', 1)
+    return html_text
+
+
+def load_disclaimer():
+    """解析 disclaimer.md，返回 (zh_html, en_html)；按引用块段落/列表渲染。"""
+    try:
+        text = (RANT_DIR / "disclaimer.md").read_text(encoding="utf-8")
+    except OSError:
+        return "", ""
+    halves = re.split(r"^---\s*$", text, maxsplit=1, flags=re.M)
+    out = []
+    for hi, half in enumerate(halves[:2]):
+        blocks, buf, lis = [], [], []
+
+        def flush_p():
+            if buf:
+                blocks.append("<p>%s</p>" % " ".join(buf))
+                del buf[:]
+
+        def flush_ul():
+            if lis:
+                blocks.append("<ul>\n%s\n</ul>" % "\n".join(lis))
+                del lis[:]
+        for ln in half.splitlines():
+            s = ln.strip()
+            if not s.startswith(">"):
+                continue
+            t = s[1:].strip()
+            if not t:
+                flush_p()
+                flush_ul()
+                continue
+            if t.startswith("- "):
+                flush_p()
+                lis.append("<li>%s</li>" % _disclaimer_inline(t[2:].strip()))
+            else:
+                flush_ul()
+                buf.append(_disclaimer_inline(t))
+        flush_p()
+        flush_ul()
+        out.append(_disclaimer_badges("\n".join(blocks), "zh" if hi == 0 else "en"))
+    while len(out) < 2:
+        out.append("")
+    return out[0], out[1]
+
+
+def rant_card_html(rant, prod_by_slug):
+    slug = rant["slug"]
+    zf, ef, src = rant["zf"], rant["ef"], rant["sources"]
+    p = prod_by_slug.get(slug, {})
+    name_zh = p.get("name", slug)
+    name_en = p.get("name_en", slug)
+    badges = []
+    if rant["ev"] == "corroborated":
+        badges.append('<span class="rant-badge rant-ev-corroborated">'
+                      '<span data-zh="多方印证" data-en="Corroborated">多方印证</span></span>')
+    else:
+        badges.append('<span class="rant-badge rant-ev-single">'
+                      '<span data-zh="单方声音" data-en="Single voice">单方声音</span></span>')
+    if rant["suspect"]:
+        badges.append('<span class="rant-badge rant-suspect">'
+                      '<span data-zh="来源存疑" data-en="Questionable source">来源存疑</span></span>')
+    if rant["fixed"]:
+        fv = html.escape(rant["fixed"], quote=True)
+        badges.append('<span class="rant-badge rant-fixed">'
+                      '<span data-zh="已修复于 %s" data-en="Fixed in %s">已修复于 %s</span></span>'
+                      % (fv, fv, fv))
+    tag_chips = "".join(
+        '<span class="case-tag" data-zh="%s" data-en="%s">%s</span>'
+        % (html.escape(zh, quote=True), html.escape(en, quote=True), html.escape(zh))
+        for zh, (tid, en) in RANT_TAG_MAP.items() if tid in rant["tags"])
+    rows = []
+    for fzh, fen in [("一句话", "One-liner"), ("窄场景", "Narrow scenario"),
+                     ("机制", "Mechanism"), ("生产验证", "Production evidence"),
+                     ("证据等级", "Evidence level"), ("最后核验", "Last verified")]:
+        zv, evv = zf.get(fzh, ""), ef.get(fen, "")
+        if fzh == "生产验证":
+            src_en = rant.get("sources_en") or src
+            zvh = _rant_evidence_lines(zv, src, "zh")
+            evh = _rant_evidence_lines(evv, src_en, "en")
+        else:
+            zvh = linkify_html(zv) or "—"
+            evh = linkify_html(evv) or "—"
+        rows.append(
+            '<div class="case-field"><dt><span data-zh="%s" data-en="%s">%s</span></dt>'
+            '<dd><div class="lang-block lang-zh">%s</div>'
+            '<div class="lang-block lang-en" hidden>%s</div></dd></div>'
+            % (fzh, fen, fzh, zvh, evh))
+    note_zh, note_en = zf.get("备注", ""), ef.get("Note", "")
+    note_html = ""
+    if note_zh or note_en:
+        note_html = (
+            '<div class="case-field"><dt><span data-zh="备注" data-en="Note">备注</span></dt>'
+            '<dd><div class="lang-block lang-zh">%s</div>'
+            '<div class="lang-block lang-en" hidden>%s</div></dd></div>'
+            % (linkify_html(note_zh) or "—", linkify_html(note_en) or "—"))
+    year_txt = str(rant["year"]) if rant["year"] else "—"
+    return (
+        '<article class="case-card rant-card" id="rant-%s-%d" data-db="%s" data-ev="%s" '
+        'data-tags="%s" data-year="%d">\n'
+        '<h3><span data-zh="%s" data-en="%s">%s</span></h3>\n'
+        '<div class="rant-badges">%s</div>\n'
+        '<div class="case-tags">%s</div>\n'
+        '<dl class="case-fields">\n%s\n%s</dl>\n'
+        '<p class="case-meta"><a href="profile-%s.html">'
+        '<span data-zh="%s" data-en="%s">%s</span></a>'
+        ' <span class="case-verify"><span data-zh="年份：%s" data-en="Year: %s">年份：%s</span></span></p>\n'
+        '</article>'
+        % (slug, rant["idx"], html.escape(slug, quote=True), rant["ev"],
+           html.escape(" ".join(rant["tags"]), quote=True), rant["year"],
+           html.escape(rant["title_zh"], quote=True), html.escape(rant["title_en"], quote=True),
+           html.escape(rant["title_zh"]),
+           "\n".join(badges), tag_chips, "\n".join(rows), note_html,
+           slug, html.escape(name_zh, quote=True), html.escape(name_en, quote=True),
+           html.escape(name_zh), year_txt, year_txt, year_txt))
+
+
+RANT_FILTER_JS = """
+function rantFilterInit(){
+  var fDb='',fEv='',fTag='';
+  function $(s){return document.querySelector(s);}
+  function $all(s){return Array.prototype.slice.call(document.querySelectorAll(s));}
+  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+  function chipLabel(btn){
+    if(!btn){return '';}
+    var sp=btn.querySelector('span[data-zh]');
+    return sp?sp.textContent:btn.textContent.trim();
+  }
+  function isEn(){return document.documentElement.getAttribute('lang')==='en';}
+  function apply(){
+    var n=0;
+    $all('.rant-card').forEach(function(card){
+      var okD=(!fDb)||(card.getAttribute('data-db')===fDb);
+      var okE=(!fEv)||(card.getAttribute('data-ev')===fEv);
+      var tags=(card.getAttribute('data-tags')||'').split(' ').filter(Boolean);
+      var okT=(!fTag)||(tags.indexOf(fTag)>=0);
+      var show=okD&&okE&&okT;
+      card.hidden=!show; if(show){n++;}
+    });
+    var cc=$('#rant-count'); if(cc){cc.textContent=n;}
+    var empty=$('#rant-empty'); if(empty){empty.hidden=(n!==0);}
+    syncUrl();
+    renderActive();
+  }
+  function renderActive(){
+    var box=$('#rant-active'); if(!box){return;}
+    var pills=[];
+    if(fDb){pills.push({k:'db',label:chipLabel(document.querySelector('[data-rdb-btn="'+fDb+'"]'))});}
+    if(fEv){pills.push({k:'ev',label:chipLabel(document.querySelector('[data-rev-btn="'+fEv+'"]'))});}
+    if(fTag){pills.push({k:'tag',label:chipLabel(document.querySelector('[data-rtag-btn="'+fTag+'"]'))});}
+    if(!pills.length){box.hidden=true;box.innerHTML='';return;}
+    box.hidden=false;
+    var t=isEn()?'Selected: ':'\\u5df2\\u9009\\uff1a';
+    box.innerHTML='<span class="cf-active-label">'+t+'</span>'+pills.map(function(p){
+      return '<button type="button" class="cf-pill" data-rpill="'+p.k+'">'+esc(p.label)+'<b>\\u00d7</b></button>';
+    }).join('')+'<button type="button" class="cf-clear" data-rclear>'+(isEn()?'Clear all':'\\u6e05\\u9664\\u5168\\u90e8')+'</button>';
+    $all('[data-rpill]',box).forEach(function(b){
+      b.addEventListener('click',function(){clearOne(b.getAttribute('data-rpill'));});
+    });
+    var cb=box.querySelector('[data-rclear]');
+    if(cb){cb.addEventListener('click',clearAll);}
+  }
+  function clearOne(k){
+    if(k==='db'){fDb='';syncChips('[data-rdb-btn]','');}
+    if(k==='ev'){fEv='';syncChips('[data-rev-btn]','');}
+    if(k==='tag'){fTag='';syncChips('[data-rtag-btn]','');}
+    apply();
+  }
+  function clearAll(){
+    fDb='';fEv='';fTag='';
+    syncChips('[data-rdb-btn]','');syncChips('[data-rev-btn]','');syncChips('[data-rtag-btn]','');
+    apply();
+  }
+  function syncUrl(){
+    try{
+      var u=new URL(location.href);
+      if(fDb){u.searchParams.set('db',fDb);}else{u.searchParams.delete('db');}
+      var s=u.pathname+u.search+u.hash;
+      if(s!==location.pathname+location.search+location.hash){history.replaceState(null,'',s);}
+    }catch(e){}
+  }
+  function initFromUrl(){
+    try{
+      var m=new URLSearchParams(location.search).get('db');
+      if(m&&document.querySelector('[data-rdb-btn=\"'+m+'\"]')){fDb=m;syncChips('[data-rdb-btn]',fDb);}
+    }catch(e){}
+  }
+  function flashBtn(btn,msg){
+    var sp=btn.querySelector('span')||btn;var old=sp.textContent;sp.textContent=msg;
+    setTimeout(function(){sp.textContent=old;},1200);
+  }
+  function syncChips(sel,val){
+    $all(sel).forEach(function(x){
+      var on=(x.getAttribute(sel.slice(1,-1))===val&&val!=='');
+      x.classList.toggle('on',on);
+    });
+  }
+  function bindDim(attrSel,get,set){
+    $all(attrSel).forEach(function(b){
+      b.addEventListener('click',function(){
+        var v=b.getAttribute(attrSel.slice(1,-1));
+        if(get()===v){set('');}
+        else{set(v);}
+        syncChips(attrSel,get());
+        apply();
+      });
+    });
+  }
+  bindDim('[data-rdb-btn]',function(){return fDb;},function(v){fDb=v;});
+  bindDim('[data-rev-btn]',function(){return fEv;},function(v){fEv=v;});
+  bindDim('[data-rtag-btn]',function(){return fTag;},function(v){fTag=v;});
+  var shareBtn=document.getElementById('rant-share');
+  if(shareBtn){shareBtn.addEventListener('click',function(){
+    var url=location.href;
+    var ok=function(){flashBtn(shareBtn,isEn()?'Copied':'已复制');};
+    var no=function(){flashBtn(shareBtn,isEn()?'Copy failed':'复制失败');};
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(url).then(ok,no);}
+    else{var ta=document.createElement('textarea');ta.value=url;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{if(document.execCommand('copy')){ok();}else{no();}}catch(e){no();}document.body.removeChild(ta);}
+  });}
+  initFromUrl();
+  window.__repaintRantsBar=renderActive;
+  apply();
+}
+document.addEventListener('DOMContentLoaded',rantFilterInit);
+"""
+
+
+def rants_page_html(rants, prod_by_slug):
+    dis_zh, dis_en = load_disclaimer()
+    # 产品维度：按领域分组
+    db_counts = {}
+    for r in rants:
+        db_counts[r["slug"]] = db_counts.get(r["slug"], 0) + 1
+    db_groups = []
+    for d, d_zh, d_en in DOMAINS:
+        slugs = [s for s, p in prod_by_slug.items()
+                 if s in db_counts and p["domains"][0] == d]
+        slugs.sort(key=lambda s: (-db_counts[s], s))
+        if slugs:
+            db_groups.append((d_zh, d_en, slugs))
+    db_groups_html = "".join(
+        '<div class="cf-dbgroup"><span class="cf-dbgroup-label">'
+        '<span data-zh="%s" data-en="%s">%s</span></span>'
+        '<div class="cf-chips">%s</div></div>'
+        % (html.escape(d_zh, quote=True), html.escape(d_en, quote=True),
+           html.escape(d_zh), "".join(
+               '<button type="button" class="chip" data-rdb-btn="%s">'
+               '<span data-zh="%s" data-en="%s">%s</span><i class="cf-n">%d</i></button>'
+               % (s,
+                  html.escape(prod_by_slug[s]["name"], quote=True),
+                  html.escape(prod_by_slug[s]["name_en"], quote=True),
+                  html.escape(prod_by_slug[s]["name"]),
+                  db_counts[s])
+               for s in slugs))
+        for d_zh, d_en, slugs in db_groups)
+    # 印证等级维度
+    ev_counts = {"corroborated": 0, "single": 0}
+    for r in rants:
+        ev_counts[r["ev"]] += 1
+    ev_btns = "".join(
+        '<button type="button" class="chip" data-rev-btn="%s">'
+        '<span data-zh="%s" data-en="%s">%s</span><i class="cf-n">%d</i></button>'
+        % (eid, zh, en, zh, ev_counts[eid])
+        for eid, zh, en in [("corroborated", "多方印证", "Corroborated"),
+                            ("single", "单方声音", "Single voice")])
+    # 问题类型维度
+    tag_counts = {tid: 0 for _, (tid, _) in RANT_TAG_MAP.items()}
+    for r in rants:
+        for tid in r["tags"]:
+            tag_counts[tid] += 1
+    tag_btns = "".join(
+        '<button type="button" class="chip" data-rtag-btn="%s">'
+        '<span data-zh="%s" data-en="%s">%s</span><i class="cf-n">%d</i></button>'
+        % (tid, html.escape(zh, quote=True), html.escape(en, quote=True),
+           html.escape(zh), tag_counts[tid])
+        for zh, (tid, en) in RANT_TAG_MAP.items())
+    cards = "\n".join(rant_card_html(r, prod_by_slug) for r in rants)
+    body = (
+        '<div class="hero hero-slim"><h1><span data-zh="用户吐槽" data-en="User Rants">用户吐槽</span></h1>'
+        '<p class="hero-sub"><span data-zh="只收录客户自发的负面体验：生产事故、账单惊吓、升级翻车、运维深坑。每条都附原始引用源与印证标注。"\n'
+        ' data-en="Customer-volunteered negative experiences only: production incidents, billing shocks, upgrade mishaps, operational pitfalls. Every entry carries its original source and corroboration label.">'
+        '只收录客户自发的负面体验：生产事故、账单惊吓、升级翻车、运维深坑。每条都附原始引用源与印证标注。</span></p></div>'
+        '<div class="rant-disclaimer"><div class="lang-block lang-zh">\n%s\n</div>'
+        '<div class="lang-block lang-en" hidden>\n%s\n</div></div>'
+        '<div class="case-filters">'
+        '<div class="cf-row"><span class="cf-label"><span data-zh="数据库" data-en="Database">数据库</span></span>'
+        '<div class="cf-chips-col"><div class="cf-chips">%s</div></div></div>'
+        '<div class="cf-row"><span class="cf-label"><span data-zh="印证等级" data-en="Corroboration">印证等级</span></span>'
+        '<div class="cf-chips">%s</div></div>'
+        '<div class="cf-row"><span class="cf-label"><span data-zh="问题类型" data-en="Issue type">问题类型</span></span>'
+        '<div class="cf-chips">%s</div></div>'
+        '<div class="cf-active" id="rant-active" hidden></div>'
+        '<p class="case-count"><span data-zh="找到 " data-en="">找到 </span>'
+        '<b id="rant-count">%d</b><span data-zh=" 条吐槽" data-en=" rants"> 条吐槽</span>'
+        ' <button id="rant-share" type="button" class="copy-btn"><span data-zh="🔗 复制链接" data-en="🔗 Copy link">🔗 复制链接</span></button></p></div>'
+        '<div class="case-empty" id="rant-empty" hidden><span data-zh="没有匹配的吐槽，换个条件试试。"\n'
+        ' data-en="No matching rants — try different filters.">没有匹配的吐槽，换个条件试试。</span></div>'
+        '<div class="case-list">\n%s\n</div>' % (dis_zh, dis_en, db_groups_html, ev_btns, tag_btns,
+                                                len(rants), cards))
+    return page_shell("DB 选型参考 - 用户吐槽", "DB Compare - User Rants", body,
+                      active="rants", tail_scripts="<script>%s</script>" % RANT_FILTER_JS)
 
 
 # ---------------------------------------------------------------------------
@@ -2510,23 +3046,28 @@ GROUPS = [
 
 def advisor_page_html(products):
 
-    opts_a, opts_b = [], []
+    opts_a, opts_b, opts_a_en, opts_b_en = [], [], [], []
     for prod in products:
         nm = html.escape(prod["name"])
         v = html.escape(prod["name"], quote=True)
+        nm_e = html.escape(prod.get("name_en") or prod["name"])
+        v_e = html.escape(prod.get("name_en") or prod["name"], quote=True)
         opts_a.append('<option value="%s"%s>%s</option>' % (v, " selected" if prod["name"] == "OceanBase" else "", nm))
         opts_b.append('<option value="%s"%s>%s</option>' % (v, " selected" if prod["name"] == "TiDB" else "", nm))
+        opts_a_en.append('<option value="%s"%s>%s</option>' % (v_e, " selected" if prod["name"] == "OceanBase" else "", nm_e))
+        opts_b_en.append('<option value="%s"%s>%s</option>' % (v_e, " selected" if prod["name"] == "TiDB" else "", nm_e))
     _extra = ["Pinecone", "Elasticsearch", "Neo4j"]
     _extra_opts = "".join('<option value="%s">%s</option>' % (html.escape(x, quote=True), html.escape(x)) for x in _extra)
     _core_a, _core_b = "".join(opts_a), "".join(opts_b)
+    _core_a_en, _core_b_en = "".join(opts_a_en), "".join(opts_b_en)
     sel_a_zh = ('<optgroup label="本站深度档案（%d 款）">%s</optgroup>'
                 '<optgroup label="更多热门库（暂无本站档案）">%s</optgroup>') % (len(products), _core_a, _extra_opts)
     sel_b_zh = ('<optgroup label="本站深度档案（%d 款）">%s</optgroup>'
                 '<optgroup label="更多热门库（暂无本站档案）">%s</optgroup>') % (len(products), _core_b, _extra_opts)
     sel_a_en = ('<optgroup label="Profiled on this site (%d)">%s</optgroup>'
-                '<optgroup label="More popular databases (no profile yet)">%s</optgroup>') % (len(products), _core_a, _extra_opts)
+                '<optgroup label="More popular databases (no profile yet)">%s</optgroup>') % (len(products), _core_a_en, _extra_opts)
     sel_b_en = ('<optgroup label="Profiled on this site (%d)">%s</optgroup>'
-                '<optgroup label="More popular databases (no profile yet)">%s</optgroup>') % (len(products), _core_b, _extra_opts)
+                '<optgroup label="More popular databases (no profile yet)">%s</optgroup>') % (len(products), _core_b_en, _extra_opts)
     pk_zh = """
 <div class="subnav">
   <a href="#pk">多库 PK</a>
@@ -2963,6 +3504,18 @@ html[lang="en"] .dim-h-en{font-size:13.5px;font-weight:600;color:inherit}
 /* PK 提示 */
 .pk-note{background:var(--accent-soft);border:1px solid #c9dbff;border-radius:10px;padding:10px 16px;font-size:14px;margin:12px 0;max-width:900px}
 .pk-select.dimmed{opacity:.5}
+/* 用户吐槽页 */
+.rant-disclaimer{background:#fffbeb;border:1px solid #f59e0b;border-left:6px solid #f59e0b;border-radius:10px;padding:18px 22px;margin:0 0 20px;max-width:1000px;overflow-wrap:anywhere}
+.rant-disclaimer p{margin:8px 0;font-size:14px}
+.rant-disclaimer ul{margin:8px 0;padding-left:20px;font-size:14px}
+.rant-disclaimer li{margin:4px 0;font-size:14px}
+.rant-badges{display:flex;gap:8px;flex-wrap:wrap;margin:2px 0 12px}
+.rant-badge{font-size:12px;border-radius:999px;padding:2px 10px;font-weight:700;white-space:nowrap}
+.rant-ev-corroborated{background:#dcfce7;color:#166534}
+.rant-ev-single{background:#f1f5f9;color:#475569}
+.rant-suspect{background:#fef2f2;color:#b91c1c;border:1px solid #fecaca}
+.rant-fixed{background:#eff6ff;color:#1d4ed8}
+.rant-ev-line{margin:5px 0}
 @media (max-width:720px){
   .topbar-inner{flex-wrap:wrap;height:auto;padding:10px 16px;gap:12px}
   .tray-panel{position:fixed;left:12px;right:12px;top:64px;width:auto;max-height:60vh}
@@ -2979,11 +3532,11 @@ _DIVE_EN_JS = _js_sq(_DEEPDIVE_TPL["prompt_en"].replace("{{CANDIDATES}}", "{name
 JS = """(function () {
 'use strict';
 
-/* 导航顺序归一化：首页、维度对比、AI选型、场景案例、方法论。同步执行（nav 已解析），老页面无需重推即可收敛，无闪烁 */
+/* 导航顺序归一化：首页、维度对比、AI选型、场景案例、用户吐槽、方法论。同步执行（nav 已解析），老页面无需重推即可收敛，无闪烁 */
 (function () {
 var nav = document.querySelector('nav.mainnav');
 if (!nav) return;
-var order = ['index.html', 'compare.html', 'advisor.html', 'cases.html', 'methodology.html'];
+var order = ['index.html', 'compare.html', 'advisor.html', 'cases.html', 'rants.html', 'methodology.html'];
 var links = nav.querySelectorAll('a'), byHref = {}, i;
 for (i = 0; i < links.length; i++) byHref[links[i].getAttribute('href')] = links[i];
 for (i = 0; i < order.length; i++) { if (byHref[order[i]]) nav.appendChild(byHref[order[i]]); }
@@ -3207,7 +3760,7 @@ var on = sel.indexOf(c[k].slug) >= 0;
 var dis = (!on && sel.length >= MAX_SEL)? ' disabled': '';
 items += '<button type="button" class="tray-item' + (on? ' on': '') +
 '" data-sel-toggle="' + c[k].slug + '"' + dis + '>' +
-'<span class="tick">' + (on? '✓': '＋') + '</span>' + escHtml(c[k].name) + '</button>';
+'<span class="tick">' + (on? '✓': '＋') + '</span>' + escHtml(prodName(c[k].slug)) + '</button>';
 }
 if (items) h2 += '<div class="tray-group"><div class="tray-group-h">' + escHtml(dn) + '</div>' + items + '</div>';
 }
@@ -3404,6 +3957,8 @@ pre.textContent = pre._raw.split('{{CANDIDATES}}').join(repl);
 }
 
 function refreshDynamicText() {
+if(window.__repaintCasesBar){window.__repaintCasesBar();}
+if(window.__repaintRantsBar){window.__repaintRantsBar();}
 renderTray();
 paintAddCmpButtons();
 paintPkNote();
@@ -3641,6 +4196,7 @@ def main():
     fav_index, fav_titles = build_fav_index(_slugs)
     prod_by_slug = {p["slug"]: p for p in products}
     cases = load_cases()
+    rants = load_rants(_slugs)
 
     outputs = {}
     global _CATALOG_SCRIPT
@@ -3653,6 +4209,7 @@ def main():
     for p in products:
         outputs["profile-%s.html" % p["slug"]] = apply_badges(profile_page_html(p))
     outputs["cases.html"] = apply_badges(cases_page_html(cases, prod_by_slug, fav_index, fav_titles))
+    outputs["rants.html"] = apply_badges(rants_page_html(rants, prod_by_slug))
     cmp_body, cmp_cells = compare_page_html(products)
     # 分片数量随内容大小变化，先删旧分片避免残留（如 cmp-32.js 之后不再生成时）
     for _old in (SITE / "assets").glob("cmp-*.js"):
@@ -3686,6 +4243,7 @@ def main():
             n_fav_cards += max(len(zc), len(ec))
     print("客户经验：%d / %d 产品有内容，共 %d 张卡片" % (n_fav, len(products), n_fav_cards))
     print("场景案例：%d 个" % len(cases))
+    print("用户吐槽：%d 张卡片" % len(rants))
     for c in cases:
         for ps in _split_list(c["zh"]["fields"].get("相关产品", "")):
             if ps == "无":
