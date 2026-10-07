@@ -229,7 +229,7 @@ var on = sel.indexOf(c[k].slug) >= 0;
 var dis = (!on && sel.length >= MAX_SEL)? ' disabled': '';
 items += '<button type="button" class="tray-item' + (on? ' on': '') +
 '" data-sel-toggle="' + c[k].slug + '"' + dis + '>' +
-'<span class="tick">' + (on? '✓': '＋') + '</span>' + escHtml(c[k].name) + '</button>';
+'<span class="tick">' + (on? '✓': '＋') + '</span>' + escHtml(prodName(c[k].slug)) + '</button>';
 }
 if (items) h2 += '<div class="tray-group"><div class="tray-group-h">' + escHtml(dn) + '</div>' + items + '</div>';
 }
@@ -426,6 +426,8 @@ pre.textContent = pre._raw.split('{{CANDIDATES}}').join(repl);
 }
 
 function refreshDynamicText() {
+if(window.__repaintCasesBar){window.__repaintCasesBar();}
+if(window.__repaintRantsBar){window.__repaintRantsBar();}
 renderTray();
 paintAddCmpButtons();
 paintPkNote();

@@ -3837,6 +3837,7 @@ function caseFilterInit(){
   bindDim('[data-cphase-btn]',function(){return fPhase;},function(v){fPhase=v;});
   bindDim('[data-cdb-btn]',function(){return fDb;},function(v){fDb=v;});
   bindDim('[data-cfam-btn]',function(){return fFam;},function(v){fFam=v;});
+  window.__repaintCasesBar=renderActive;
   apply();
 }
 document.addEventListener('DOMContentLoaded',caseFilterInit);
